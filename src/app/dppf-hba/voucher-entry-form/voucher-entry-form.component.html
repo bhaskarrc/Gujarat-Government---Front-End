@@ -1,0 +1,454 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Voucher Entry</div>
+            <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+                <li class="breadcrumb-item active" aria-current="page">Voucher Entry</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="voucherForm" (ngSubmit)="voucherData()">
+                <!-- Voucher Entry -->
+                <div class="box box-primary">
+                    <div class="box-header">Voucher Entry </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="inwardNo" placeholder="Inward No. " (change)="enterInwardNo()"
+                                        formControlName="inwardNo" required>
+                                    <mat-icon matSuffix class="searchIcon" (click)="inwardNo()">search
+                                    </mat-icon>
+                                    <div class="error-wrapper"
+                                        *ngIf="voucherForm.controls.inwardNo.touched || (voucherForm.controls.inwardNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="voucherForm.controls.inwardNo.errors?.required">
+                                            {{errorMessages.INWARDNO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="inwardDate" placeholder="Inward Date " required>
+                                    <!-- <input matInput [matDatepicker]="picker" formControlName="inwardDate" placeholder="Inward Date ">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker> -->
+                                </mat-form-field>
+                                <div class="error-wrapper"
+                                    *ngIf="voucherForm.controls.inwardDate.touched || (voucherForm.controls.inwardDate.errors && isSubmitted)">
+                                    <mat-error *ngIf="voucherForm.controls.inwardDate.errors?.required">
+                                        {{errorMessages.INWARDDATE}}
+                                    </mat-error>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Treasury/PAO " formControlName="treasuryPao">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="HBA/MCA" formControlName="hbaMca">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Year" formControlName="year">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Month" formControlName="month">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Credit/Debit" formControlName="credir">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="TC/Challan " numbersOnly
+                                        formControlName="tcChallanAMount">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Major Head " numbersOnly formControlName="majorHead">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Major Head  Amount " numbersOnly
+                                        formControlName="majorHeadAmount">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="head" placeholder="Head ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="headCtrl"
+                                                [placeholderLabel]="'Find Head...'"
+                                                [noEntriesFoundLabel]="'no matching   found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="
+                      let hd of head_list" [value]="hd.value">
+                                            {{ hd.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder=" Head Amount" numbersOnly formControlName="headAmount">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Voucher Details
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class="box-body">
+                    <div class=" row">
+
+                        <div class="col-sm-12  ">
+
+                            <table mat-table [dataSource]="recoveryDataSource" aria-describedby="voucherDetailsTable"
+                                class="table-responsive mt-3">
+                                <ng-container matColumnDef="parent1">
+                                    <th mat-header-cell *matHeaderCellDef colspan="6" class="centerAlign">
+                                        Voucher Details </th>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="voucherNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Voucher No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput [(ngModel)]="element.voucherNo" value="element.voucherNo"
+                                                maxlength="5" (blur)="voucherNoHidden(element)" [ngModelOptions]="{standalone:
+                              true}" [disabled]="element.voucherNoDisabled"></mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef>Total </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="cardexNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Cardex No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element;let i = index;">
+
+                                        <span *ngIf="element.cardexNo">{{element.cardexNo}}</span>
+
+                                        <mat-form-field class="example-full-width" *ngIf="!element.cardexNo">
+                                            <input matInput value="{{element.cardexNo}}" decimalLimitTwoOnly
+                                                (keydown.enter)="recoveryData()" maxlength="3" [datoAutoFocus]="false"
+                                                (change)="enterDdoName(element,i)">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="ddo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">DDO Name
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element">
+
+                                        <span *ngIf="element.ddo">{{element.ddo}}</span>
+
+                                        <mat-form-field class="example-full-width" *ngIf="!element.ddo">
+                                            <input matInput value="{{element.ddo}}" (keydown.enter)="recoveryData()"
+                                                [datoAutoFocus]="false">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+                                </ng-container>
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Amount (Rs.)
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element  let i =index">
+                                        <mat-form-field class="example-full-width" class="rightAlign">
+                                            <input matInput [(ngModel)]="element.amount" value="element.amount
+                                          |
+                                          number:'1.2-2'" maxlength="16" decimalLimitTwoOnly [ngModelOptions]="{standalone:
+                                          true}">
+
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                        {{totalRecovery() | number:'1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"></th>
+                                    <td mat-cell *matCellDef="let row; let i= index;" class="centerAlign">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null;onCheck($event,row,i)"
+                                            [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" style="width: 4%;">Action</th>
+                                    <td mat-cell *matCellDef="let
+                                element;let i=index">
+                                        <table class="iconTable" aria-describedby="actionBtn">
+                                            <tbody>
+                                                <tr>
+
+                                                    <td width="30">
+                                                        <div *ngIf="(element.voucherNo); then notHidden else isHidden">
+                                                        </div>
+                                                        <ng-template #isHidden>
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                *ngIf="recoveryDataSource && recoveryDataSource.data && (i == recoveryDataSource.data.length - 1)"
+                                                                style="color:lightgray;cursor:default;">add</i>
+                                                        </ng-template>
+                                                        <ng-template #notHidden>
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                *ngIf="recoveryDataSource && recoveryDataSource.data && (i == recoveryDataSource.data.length - 1)"
+                                                                (click)="addRecoveryDetailRow(i)">add</i>
+                                                        </ng-template>
+                                                    </td>
+                                                    <td width="30" *ngIf="(i > 0)">
+                                                        <i class="material-icons
+                                                    plus
+                                                    delete" aria-hidden="true" (click)="deleteRowRecovery(i)">
+                                                            delete
+                                                        </i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="['parent1']" class="example-second-header-row">
+                                </tr>
+
+                                <tr mat-header-row *matHeaderRowDef="recoveryColumn"></tr>
+                                <tr mat-row *matRowDef="let row;
+                              let i=
+                              index;columns:recoveryColumn"></tr>
+                                <tr mat-footer-row *matFooterRowDef="recoveryColumn"></tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <br>
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Challan Details
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class="box-body">
+                    <div class=" row">
+
+                        <div class="col-sm-12">
+
+                            <table mat-table [dataSource]="recoveryDataSourceChallan"
+                                aria-describedby="challanDetailsTable" class=" table-responsive mt-3">
+                                <ng-container matColumnDef="parent1">
+                                    <th mat-header-cell *matHeaderCellDef colspan="6" class="centerAlign">
+                                        Challan Details </th>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="voucherNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Voucher No
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element">
+
+                                        <span *ngIf="element.voucherNo">{{element.voucherNo}}</span>
+
+                                        <mat-form-field class="example-full-width" *ngIf="!element.voucherNo">
+                                            <input matInput value="{{element.voucherNo}}" decimalLimitTwoOnly
+                                                (keydown.enter)="recoveryDataChallan()" [datoAutoFocus]="true">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef>Total </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="challanNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Challan No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element">
+
+                                        <span *ngIf="element.challanNo">{{element.challanNo}}</span>
+
+                                        <mat-form-field class="example-full-width" *ngIf="!element.challanNo">
+                                            <input matInput value="{{element.challanNo}}" decimalLimitTwoOnly
+                                                (keydown.enter)="recoveryDataChallan()" [datoAutoFocus]="false">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="remainingAmount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Remaining Amount
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element  let i =index" class="rightAlign">
+                                        {{ calculateRemainingAMount(element) | number:'1.2-2' }}
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                        {{totalRemainingAmountValue()| number:'1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="challanAmount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Challan Amount
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element  let i =index">
+                                        <mat-form-field class="example-full-width" class="rightAlign">
+                                            <input matInput [(ngModel)]="element.challanAmount" value="element.challanAmount
+                                          |
+                                          number:'1.2-2'" maxlength="16" decimalLimitTwoOnly [ngModelOptions]="{standalone:
+                                          true}">
+
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                        {{totalChallanAmount() | number:'1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+
+
+
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Voucher Amount (Rs.)
+                                    </th>
+                                    <td mat-cell *matCellDef="let
+                                  element  let i =index">
+                                        <mat-form-field class="example-full-width" class="rightAlign">
+                                            <input matInput id="amount-{{i+1}}" [(ngModel)]="element.amount" id="amtId"
+                                                decimalLimitTwoOnly value="element.amount
+                                          |
+                                          number:'1.2-2'" maxlength="16" [ngModelOptions]="{standalone:
+                                          true}">
+
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                        {{totalRecoveryChallan() | number:'1.2-2'}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" style="width: 4%;">Action</th>
+                                    <td mat-cell *matCellDef="let
+                                element;let i=index">
+                                        <table class="iconTable" aria-describedby="actionBtn">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30">
+                                                        <i class="material-icons plus add" aria-hidden="true"
+                                                            title="Delete" (click)="addRecoveryDetailRowChallan(i);"
+                                                            *ngIf="(i == recoveryDataSourceChallan.data.length - 1)">
+                                                            add
+                                                        </i>
+                                                    </td>
+                                                    <td width="30">
+                                                        <i class="material-icons plus delete" *ngIf="(i > 0)"
+                                                            aria-hidden="true" title="Delete"
+                                                            (click)="deleteRowRecoveryChallan(i)">
+                                                            delete
+                                                        </i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="['parent1']" class="example-second-header-row">
+                                </tr>
+
+                                <tr mat-header-row *matHeaderRowDef="recoveryColumnChallan"></tr>
+                                <tr mat-row *matRowDef="let row;
+                              let i=
+                              index;columns:recoveryColumnChallan"></tr>
+                                <tr mat-footer-row *matFooterRowDef="recoveryColumnChallan"></tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <!-- Common Button -->
+        <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Save">
+                    save
+                </i>
+                Save
+            </button>
+            <button type="reset" mat-raised-button color="accent">
+                <i class="material-icons" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+
+            <button type="button" mat-raised-button color="warn" (click)="onClickListing()">
+                <i class="material-icons" aria-hidden="true" title="Listing">
+                    list
+                </i>
+                Listing
+            </button>
+            <button type="button" mat-raised-button class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+        <!-- End Common Button -->
+    </div>
+</div>

@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>RAO Objection Entry Screen</div>
+    </div>
+
+
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">RAO Objection Entry Screen</li>
+      </ol>
+    </nav>
+
+    <form [formGroup]="raoObjectEntryForm">
+
+      <div class="panel-group">
+        <!-- Search Bills For RAO Objection Entry -->
+        <div class="box box-primary">
+          <div class="box-header">Search Bills For RAO Objection Entry</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="Voucher No." formControlName="voucherNo" required>
+                  <div class="error-wrapper"
+                    *ngIf="raoObjectEntryForm.controls.voucherNo.touched || (raoObjectEntryForm.controls.voucherNo.errors)">
+                    <mat-error *ngIf="raoObjectEntryForm.controls.voucherNo.errors?.required">
+                      {{errorMessages.VOUCHER_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="voucherDate" [max]="maxDate" [matDatepicker]="voucherDate"
+                    placeholder="Voucher Date" readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="voucherDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #voucherDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="raoObjectEntryForm.controls.voucherDate.touched || (raoObjectEntryForm.controls.voucherDate.errors)">
+                    <mat-error *ngIf="raoObjectEntryForm.controls.voucherDate.errors?.required">
+                      {{errorMessages.VOUCHER_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="majorHead" placeholder="Major Head">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'"
+                        [noEntriesFoundLabel]="'no
+                                matching Major Head
+                                found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let
+                            majorHead of majorHead_list
+                            | filterSelectInput:
+                            majorHeadCtrl.value" [value]="majorHead.value" matTooltip="{{majorHead.viewValue}}">
+                      {{majorHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+
+            </div>
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="search()">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <!-- End Search Bills For RAO Objection Entry -->
+      </div>
+    </form>
+    <!-- Result For Post Audit Bills Search -->
+    <div class="panel-group" *ngIf='isSearch'>
+      <div class="box box-primary">
+        <div class="box-header">Result For Post Audit Bills Search</div>
+        <div class="box-body">
+
+          <div class="mat-elevation-z8 table-responsive mt-2">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="raoObjectEntry">
+              <ng-container matColumnDef="checkbox">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                </th>
+                <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                  <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox"
+                    title="Select" (change)="checkboxValueChange()"></mat-checkbox>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+              <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+                <td mat-cell *matCellDef="let element; let i = index;">
+                  {{ i + 1 }} </td>
+              </ng-container>
+              <ng-container matColumnDef="voucherNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Voucher No.</th>
+                <td mat-cell *matCellDef="let element"> {{element.voucherNo}} </td>
+              </ng-container>
+              <ng-container matColumnDef="voucherDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Voucher Date </th>
+                <td mat-cell *matCellDef="let element">{{ element.voucherDate}}
+                  <!-- <span *ngIf="element.date && element.date != '-'">{{element.date | date : 'dd/MM/yyyy'}}  </span>-->
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="billRefNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Ref No.</th>
+                <td mat-cell *matCellDef="let element"> {{element.billRefNo}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="tokenNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Token No.</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.tokenNo}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="voucherAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 90px;">Voucher Amount
+                </th>
+                <td mat-cell *matCellDef="let element" class="rightAlign "> {{element.voucherAmount}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="billType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill type</th>
+                <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="cardexNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cardex No.</th>
+                <td mat-cell *matCellDef="let element"> {{element.cardexNo}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ddoName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DDO Name</th>
+                <td mat-cell *matCellDef="let element"> {{element.ddoName}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="majorHead">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- End Result For Post Audit Bills Search -->
+    <!-- Result Objection And Settelment Details -->
+    <div class="panel-group" *ngIf='isChecked && isSearch'>
+      <div class="box box-primary">
+        <div class="box-header">Result Objection And Settelment Details</div>
+        <div class="box-body">
+          <form [formGroup]='resultObjectionAndSettelmentDetailsForm'>
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="Employee Name" formgroupName="employeeName">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="RAO Letter No" formgroupName="raoLetterNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="Settelment Amount" formgroupName="settelmentAmount">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="settelmentDate" formControlName="settelmentDate" readonly
+                    placeholder="Bill Date" minDate='todayDate'>
+                  <mat-datepicker-toggle matSuffix [for]="settelmentDate"></mat-datepicker-toggle>
+                  <mat-datepicker #settelmentDate></mat-datepicker>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="Settelment Letter No." formgroupName="settelmentLetterNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <textarea matInput class="textarea" placeholder="Objection" formgroupName="objection"></textarea>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <textarea matInput class="textarea" placeholder="Remarks" formgroupName="remarks"></textarea>
+                </mat-form-field>
+              </div>
+              <div class="form-action-button">
+
+                <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                  <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                    save
+                  </i>
+                  Save RAO Details
+                </button>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- End Result Objection And Settelment Details -->
+  </div>
+</div>

@@ -1,0 +1,2135 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Double Lock to Single Lock</div>
+            <div class="font-heading">
+                <b>Reference No:</b> 19-20/STM/DSL/001</div>
+            <div class="font-heading">
+                <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Double Lock to Single Lock</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="lockForm">
+                <div class="box box-primary">
+                    <!-- Entry Section -->
+                    <div class="box-header">Double Lock to Single Lock</div>
+                    <div class="box-body">
+
+                        <div #parentGrids>
+
+                            <div class="row">
+                                <!-- Financial Year -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width disabled">
+                                        <input matInput type="text" formControlName="finYear"
+                                            placeholder="Financial Year" required readonly>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.finYear.touched && (lockForm.controls.finYear.errors)">
+                                            <mat-error *ngIf="lockForm.controls.finYear.errors.required">
+                                                {{errorMessages.FIN_YEAR}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- Treasury Office -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width disabled">
+                                        <mat-label>Treasury Office</mat-label>
+                                        <input matInput formControlName="toffice" [value]="tofficeVal" required
+                                            readonly>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.toffice.touched && (lockForm.controls.toffice.errors)">
+                                            <mat-error *ngIf="lockForm.controls.toffice.errors.required">
+                                                {{errorMessages.TRE}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width disabled">
+                                        <mat-label>Date of Transfer</mat-label>
+                                        <input matInput type="text" formControlName="dateName"
+                                            [value]="date | date: 'dd-MMM-yyyy'" placeholder="Date of Transfer" required
+                                            readonly>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.dateName.touched && (lockForm.controls.dateName.errors)">
+                                            <mat-error *ngIf="lockForm.controls.dateName.errors.required">
+                                                {{errorMessages.DATE}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- Issue To -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-label>Issue To</mat-label>
+                                        <input matInput type="text" formControlName="issue" [value]="issueVal"
+                                            placeholder="Issue To" required>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.issue.touched && (lockForm.controls.issue.errors)">
+                                            <mat-error *ngIf="lockForm.controls.issue.errors.required">
+                                                {{errorMessages.ISSUE_TO}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- Mode of transfer -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="transferMode" #modeTransfer
+                                            placeholder="Mode of transfer" (selectionChange)="updateAdd()" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="transferModeCtrl"
+                                                    [placeholderLabel]="'Find Mode of transfer...'"
+                                                    [noEntriesFoundLabel]="'no Mode of transfer found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let ch of transferMode_List | filterSelectInput:transferModeCtrl.value"
+                                                [value]="ch.value">
+                                                {{ch.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.transferMode.touched && (lockForm.controls.transferMode.errors)">
+                                            <mat-error *ngIf="lockForm.controls.transferMode.errors.required">
+                                                {{errorMessages.MODE}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- List of Authorized Challan -->
+                                <div class="col-sm-3" *ngIf="modeTransfer.value=='2'">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="challan" #authChallan
+                                            placeholder="List of Authorized Challan" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="challanCtrl"
+                                                    [placeholderLabel]="'Find Authorized Challan...'"
+                                                    [noEntriesFoundLabel]="'no Authorized Challan found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let ch of challan_List | filterSelectInput:challanCtrl.value"
+                                                [value]="ch.value">
+                                                {{ch.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.challan.touched && (lockForm.controls.challan.errors)">
+                                            <mat-error *ngIf="lockForm.controls.challan.errors.required">
+                                                {{errorMessages.CHALLAN_LIST}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3" *ngIf="modeTransfer.value=='1'">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="stamp" #stampType placeholder="Type of Stamp"
+                                            (selectionChange)="changeStamp()" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="stampCtrl"
+                                                    [placeholderLabel]="'Find Type of Stamp...'"
+                                                    [noEntriesFoundLabel]="'no Stamps found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let stm of stamp_List | filterSelectInput:stampCtrl.value"
+                                                [value]="stm.value">
+                                                {{stm.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+
+                                        <div class="error-wrapper"
+                                            *ngIf="lockForm.controls.stamp.touched && (lockForm.controls.stamp.errors)">
+                                            <mat-error *ngIf="lockForm.controls.stamp.errors.required">
+                                                {{errorMessages.STAMP_TYPE}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+
+            <!-- For Manual Mode  -->
+            <div *ngIf="modeTransfer.value=='1'">
+                <div class="heading-section ng-star-inserted mt-1" *ngIf="lockForm.controls.stamp.value">
+                    <div class="col-md-4 col-sm-12 title">Stamp Type</div>
+                </div>
+
+                <!-- Type of Stamp -->
+                <div *ngIf="lockForm.controls.stamp.value" class="recovertTitle"><b>{{stampName}}</b></div>
+                <table mat-table *ngIf="lockForm.controls.stamp.value" [dataSource]="dataSourceStamp"
+                    aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                    </ng-container>
+
+                    <!-- Select -->
+                    <ng-container matColumnDef="checkbox">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Select</th>
+                        <td mat-cell *matCellDef="let item;let i = index;" class="centerAlign">
+                            <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox"
+                                title="Select" (change)="checkboxValueChange(item)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <mat-form-field floatLabel="never">
+                                <input matInput [value]="element.stampNo" [(ngModel)]="element.stampNo"
+                                    [ngModelOptions]="{standalone: true}">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <mat-form-field floatLabel="never">
+                                <input matInput [value]="element.sheetNo" [(ngModel)]="element.sheetNo"
+                                    [ngModelOptions]="{standalone: true}">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+
+                            <mat-form-field class="full-width leftAlign">
+                                <input matInput type="number" min="0" required>
+                            </mat-form-field>
+
+                        </td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsMan"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsMan;"></tr>
+                </table>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" (click)="whenAddClick()" title="Add">
+                    <i class="material-icons" aria-hidden="true">
+                        add
+                    </i>
+                    Add
+                </button>
+            </div>
+
+            <!-- Vendor Name and Code -->
+            <div class="col-md-3 ng-star-inserted" *ngIf="modeTransfer.value=='2' && onAdd">
+                <mat-form-field class="full-width">
+                    <input matInput type="text" [value]="venNameVal" placeholder="Vendor Name and Code"
+                        [disabled]="true">
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="modeTransfer.value=='1'">
+                <table mat-table *ngIf="onAdd || onAdd2 || onAdd3 || onAdd4 || onAdd5 ||
+                onAdd6 || onAdd7 || onAdd8 || onAdd9 || onAdd10 || onAdd11 || onAdd12"
+                    [dataSource]="dataSourceFinalHeading" aria-describedby="doubleSingleToTable"
+                    class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                    </ng-container>
+
+                    <!-- Select -->
+                    <ng-container matColumnDef="stampType">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Type Of Stamp</th>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd && onCheck && dataSourceFinal1.data.length > 0"
+                    [dataSource]="dataSourceFinal1" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab1(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd2 && onCheck2 && dataSourceFinal2.data.length > 0"
+                    [dataSource]="dataSourceFinal2" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab2(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd3 && onCheck3 && dataSourceFinal3.data.length > 0"
+                    [dataSource]="dataSourceFinal3" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab3(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd4 && onCheck4 && dataSourceFinal4.data.length > 0"
+                    [dataSource]="dataSourceFinal4" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>-</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab4(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd5 && onCheck5 && dataSourceFinal5.data.length > 0"
+                    [dataSource]="dataSourceFinal5" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab5(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd6 && onCheck6 && dataSourceFinal6.data.length > 0"
+                    [dataSource]="dataSourceFinal6" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab6(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd7 && onCheck7 && dataSourceFinal7.data.length > 0"
+                    [dataSource]="dataSourceFinal7" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab7(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd8 && onCheck8 && dataSourceFinal8.data.length > 0"
+                    [dataSource]="dataSourceFinal8" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>-</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab8(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd9 && onCheck9 && dataSourceFinal9.data.length > 0"
+                    [dataSource]="dataSourceFinal9" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab9(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd10 && onCheck10 && dataSourceFinal10.data.length > 0"
+                    [dataSource]="dataSourceFinal10" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab10(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd11 && onCheck11 && dataSourceFinal11.data.length > 0"
+                    [dataSource]="dataSourceFinal11" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab11(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+                <table mat-table *ngIf="onAdd12 && onCheck12 && dataSourceFinal12.data.length > 0"
+                    [dataSource]="dataSourceFinal12" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">{{element.stampNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.sheetNo}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.from}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            {{element.to}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">10
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                            <div class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteFinalTab12(i)"
+                                        title="Delete">delete</i></a>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFinal;"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+
+
+                <table mat-table *ngIf="onAdd || onAdd2 || onAdd3 || onAdd4 || onAdd5 ||
+                onAdd6 || onAdd7 || onAdd8 || onAdd9 || onAdd10 || onAdd11 || onAdd12"
+                    [dataSource]="dataSourceFinalHeading" aria-describedby="doubleSingleToTable"
+                    class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <td mat-footer-cell *matFooterCellDef>Gross Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <td mat-footer-cell *matFooterCellDef>5</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <td mat-footer-cell *matFooterCellDef>50</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <td mat-footer-cell *matFooterCellDef>10</td>
+                    </ng-container>
+
+                    <!-- Action -->
+                    <ng-container matColumnDef="action">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumnsFinal"></tr>
+                </table>
+
+            </div>
+
+
+            <div *ngIf="modeTransfer.value=='2'">
+                <table *ngIf="onAddChallan  && modeTransfer.value=='2'"
+                    mat-table [dataSource]="dataSource" aria-describedby="doubleSingleToTable" class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Type of Stamp</th>
+                        <td mat-cell *matCellDef="let element;let i=index"> {{element.stampType}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Label / Stamp In Each Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>400</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">No. Of Stamps (Label / Stamp)</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.stampNo" [(ngModel)]="element.stampNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.stampNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>36</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.sheetNo" [(ngModel)]="element.sheetNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.sheetNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>60</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <mat-form-field class="full-width leftAlign">
+                                <input matInput type="text" [value]="element.from" [(ngModel)]="element.from"
+                                    [ngModelOptions]="{standalone: true}" [disabled]="element.isDisable" required>
+                            </mat-form-field>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <mat-form-field class="full-width leftAlign">
+                                <input matInput type="text" [value]="element.to" [(ngModel)]="element.to"
+                                    [ngModelOptions]="{standalone: true}" [disabled]="element.isDisable" required>
+                            </mat-form-field>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity Available in Double Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>30</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be transfer to Single Lock</th>
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+
+                            <mat-form-field class="full-width leftAlign" [ngStyle]="{'width': '70%'}">
+                                <input matInput type="number" min="0" [value]="8" required>
+                            </mat-form-field>
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>24</td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+                <table *ngIf="onAddChallan  && modeTransfer.value=='2'"
+                    mat-table [dataSource]="dataSourceChallanPaper" aria-describedby="doubleSingleToTable"
+                    class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let element;let i=index"> {{element.stampType}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>2</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.stampNo" [(ngModel)]="element.stampNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.stampNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>24</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.sheetNo" [(ngModel)]="element.sheetNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.sheetNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>40</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.from}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.to}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>19</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+
+                            <mat-form-field class="full-width leftAlign" [ngStyle]="{'width': '70%'}">
+                                <input matInput type="number" min="0" [value]="8" required>
+                            </mat-form-field>
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>16</td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+                <table *ngIf="onAddChallan  && modeTransfer.value=='2'"
+                    mat-table [dataSource]="dataSource2" aria-describedby="doubleSingleToTable"
+                    class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-cell *matCellDef="let element;let i=index"> {{element.stampType}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.unitVal}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.labelSheet}} </td>
+                        <td mat-footer-cell *matFooterCellDef>320</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.stampNo" [(ngModel)]="element.stampNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.stampNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>24</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+                            <div *ngIf="modeTransfer.value=='1'">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="element.sheetNo" [(ngModel)]="element.sheetNo"
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="modeTransfer.value!='1'">
+                                {{element.sheetNo}}
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>40</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.from}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.to}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.availQty}} </td>
+                        <td mat-footer-cell *matFooterCellDef>14</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <td mat-cell *matCellDef="let element" class="leftAlign">
+
+                            <mat-form-field class="full-width leftAlign" [ngStyle]="{'width': '70%'}">
+                                <input matInput type="number" min="0" [value]="8" required>
+                            </mat-form-field>
+                            <i class="material-icons floatRgt btn-history" title="View History"
+                                (click)="directiveObject.openHistoryDoubleSingle(element)">history</i>
+
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>16</td>
+                    </ng-container>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+                <table *ngIf="onAddChallan  && modeTransfer.value=='2'"
+                    mat-table [dataSource]="dataSourceFinalHeading" aria-describedby="doubleSingleToTable"
+                    class="mat-elevation-z8">
+
+                    <!-- Sr. No.  -->
+                    <ng-container matColumnDef="position">
+                        <td mat-footer-cell *matFooterCellDef>Gross Total</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stampType">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination -->
+                    <ng-container matColumnDef="denomination">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Denomination Code -->
+                    <ng-container matColumnDef="unitVal">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!--  Label / Stamp In Each Sheet -->
+                    <ng-container matColumnDef="labelSheet">
+                        <td mat-footer-cell *matFooterCellDef>722</td>
+                    </ng-container>
+
+                    <!-- No. Of Stamps (Label / Stamp) -->
+                    <ng-container matColumnDef="stampNo">
+                        <td mat-footer-cell *matFooterCellDef>84</td>
+                    </ng-container>
+
+                    <!-- Total Sheet -->
+                    <ng-container matColumnDef="sheetNo">
+                        <td mat-footer-cell *matFooterCellDef>140</td>
+                    </ng-container>
+
+                    <!-- From Series -->
+                    <ng-container matColumnDef="from">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- To Series -->
+                    <ng-container matColumnDef="to">
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <!-- Available Quantity in Double Lock -->
+                    <ng-container matColumnDef="availQty">
+                        <td mat-footer-cell *matFooterCellDef>58</td>
+                    </ng-container>
+
+                    <!-- Quantity to be transfer -->
+                    <ng-container matColumnDef="qtyTransfer">
+                        <td mat-footer-cell *matFooterCellDef>56</td>
+                    </ng-container>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true" title="Save">
+                        save
+                    </i>
+                    Save as Draft
+                </button>
+
+                <button mat-raised-button type="submit" (click)="directiveObject.sumbit('doubleSingleLock')"
+                    class="green">
+                    <i class="material-icons">
+                        done
+                    </i> Submit
+                </button>
+
+                <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                    <i class="material-icons" aria-hidden="true" title="Listing">
+                        list
+                    </i>
+                    Listing
+                </button>
+                <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()"
+                    class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="Dashboard">
+                        close
+                    </i>
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>

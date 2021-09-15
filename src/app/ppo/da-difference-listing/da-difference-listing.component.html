@@ -1,0 +1,213 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>DA Difference Listing</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">DA Difference Listing</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="daDifferenceListingForm" (ngSubmit)="daDifferenceListingFormData()">
+                <!-- search fields -->
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                            <span *ngIf="optionCtrl">
+                        <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                          {{option.ppoNo}}
+                        </mat-option>
+                      </span>
+                                        </mat-autocomplete>
+                                        <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="inwardFronDate" [matDatepicker]="picker1" placeholder="Inward From Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="inwardToDate" [matDatepicker]="picker2" placeholder="Inward To Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="branchCode" placeholder="Branch Code">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="branchCTRL" [placeholderLabel]="'Find Branch Code...'" [noEntriesFoundLabel]="'No matching Branch Code found'" numbersOnly>
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let branchName of branchList | filterSelectInput:branchCTRL.value" [value]="branchName.value">
+                                                {{branchName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="retirementDate" [matDatepicker]="retirementDate" placeholder="Retirement Date">
+                                        <mat-datepicker-toggle matSuffix [for]="retirementDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #retirementDate [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="headCode" formControlName="headCode" placeholder="Head Code">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="headCodeCtrl" [placeholderLabel]="'Select Head Code...'" [noEntriesFoundLabel]="'no matching Head Code found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let HC of headCode_list | filterSelectInput : headCodeCtrl.value : 'viewValue'" [value]="HC.value" matTooltip="{{HC.viewValue}}">
+                                                {{HC.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="onSearch();">
+                              <i class="material-icons" aria-hidden="true" title="search">search</i>
+                              Search
+                            </button>
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                              <i class="material-icons" aria-hidden="true" title="reset">
+                                restore
+                              </i>
+                              Reset
+                            </button>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </form>
+            <br>
+            <!-- filtered data table -->
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table [dataSource]="daDifferenceDataSource" width="100%" id="browseTable" aria-describedby="daDifferenceListing" matSort>
+
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            <mat-checkbox (change)="$event ? directiveObj.masterToggle(daDifferenceDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(daDifferenceDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(daDifferenceDataSource)"
+                                [aria-label]="directiveObj.checkboxLabel(daDifferenceDataSource)">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="centerAlign">
+                            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(daDifferenceDataSource,row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="srno">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            Sr. No. </th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{ i + 1 }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ppoNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.ppoNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.name}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="commencementDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Commencement Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.commencementDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="bank">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bank Branch</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.bank}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="paidAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Arrear Amount</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.paidAmount}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Status</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.status}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row" scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element" style="text-align: center;" class="action-btn-i centerAlign">
+                            <a><i class="material-icons plus view-icon" title="Print" aria-hidden="true">
+                print
+              </i></a>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="daDifferenceDataColumn"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: daDifferenceDataColumn;"></tr>
+                </table>
+                <!-- table ends -->
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+            <!-- Common Button -->
+            <div class="form-action-button">
+                <button mat-raised-button type="submit" color="primary"> Generate Bill</button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+            </div>
+            <!-- Common Button ends-->
+
+        </div>
+    </div>
+</div>

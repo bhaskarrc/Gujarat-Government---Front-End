@@ -1,0 +1,144 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Pensioner letter Inward</div>
+            <div class="font-heading"><strong>Reference No.</strong> 19-20/PPO/PD/001
+            </div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Pension Letter Inward</li>
+            </ol>
+        </nav>
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="false">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Pensioner letter Inward Details
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class=" form-datatable-list">
+                    <form class="col-md-12" [formGroup]="pensionLetterForm" (ngSubmit)="onSearch()">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="First Name" formControlName="fName" alphabetOnly required>
+                                    <div class="error-wrapper" *ngIf="pensionLetterForm.controls.fName.touched && pensionLetterForm.controls.fName.errors">
+                                        <mat-error *ngIf="pensionLetterForm.controls.fName.errors.required">
+                                            {{errMsg.FIRST_NAME}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Middle Name" formControlName="mName" alphabetOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Last Name" formControlName="lName" alphabetOnly required>
+                                    <div class="error-wrapper" *ngIf="pensionLetterForm.controls.lName.touched && pensionLetterForm.controls.lName.errors">
+                                        <mat-error *ngIf="pensionLetterForm.controls.lName.errors.required">
+                                            {{errMsg.LAST_NAME}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="date" [matDatepicker]="date" placeholder="date" required>
+                                    <mat-datepicker-toggle matSuffix [for]="date">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #date></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="pensionLetterForm.controls.date.touched && pensionLetterForm.controls.date.errors">
+                                        <mat-error *ngIf="pensionLetterForm.controls.date.errors.required">
+                                            {{errMsg.DATE}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <textarea class="set-text-height" formControlName="desc" matInput placeholder="Description" alphabetOnly required></textarea>
+                                    <div class="error-wrapper" *ngIf="pensionLetterForm.controls.desc.touched && pensionLetterForm.controls.desc.errors">
+                                        <mat-error *ngIf="pensionLetterForm.controls.desc.errors.required">
+                                            {{errMsg.DESCRIPTION}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="auditor" placeholder="Auditor" #singleSelect1 required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="auditorCtrl" [placeholderLabel]="'Find Auditor...'" [noEntriesFoundLabel]="'no matching Auditor found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let auditor of auditor_list | filterSelectInput: auditorCtrl.value" [value]="auditor.value">
+                                            {{auditor.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="pensionLetterForm.controls.auditor.touched && pensionLetterForm.controls.auditor.errors">
+                                        <mat-error *ngIf="pensionLetterForm.controls.auditor.errors.required">
+                                            {{errMsg.AUDITOR_NAME}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <!-- common buttons -->
+                            <div class="form-action-button">
+
+                                <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+                                    <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                                <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                                    <i class="material-icons" title="Reset" aria-hidden="true">
+                                        restore
+                                    </i>
+                                    Reset
+                                </button>
+                                <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToSavedBillList()">
+                                    <i class="material-icons" title="Listing" aria-hidden="true">
+                                        list
+                                    </i>
+                                    Listing
+                                </button>
+                                <button type="button" mat-raised-button class="btnClose" title="Close">
+                                    <i class="material-icons" title="Close" aria-hidden="true">
+                                        close
+                                    </i>
+                                    Close
+                                </button>
+
+                            </div>
+                            <!-- common buttons end -->
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>

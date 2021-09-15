@@ -1,0 +1,381 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      Audit Fees Detail Register
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/AFDR/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Audit Fees Detail Register</li>
+      </ol>
+    </nav>
+
+    <!-- form -->
+    <form [formGroup]="auditFeeDetailsRegister" (ngSubmit)="auditFeeDetailsRegisterData()">
+      <div class="box box-primary">
+        <div class="box-header">Audit Fees Detail Register</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- district -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="districtName" placeholder="District" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- id -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="id" [max]="15" placeholder="ID" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.instituteType.touched || (auditFeeDetailsRegister.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- if institute type is others -->
+            <div class="col-sm-3" *ngIf="auditFeeDetailsRegister.controls.instituteType.value === '11'">
+              <mat-form-field>
+                <input matInput formControlName="others" placeholder="Others" required alphabetsSpaceOnly>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.others.touched || (auditFeeDetailsRegister.controls.others.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.others.errors?.required">
+                    {{errorMessages.REASON}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteName" placeholder="Institute Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                      [placeholderLabel]="'Find Institute Name...'"
+                      [noEntriesFoundLabel]="'No matching Institute Name found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.instituteName.touched || (auditFeeDetailsRegister.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.instituteName.errors?.required">
+                    {{errorMessages.INSTITUTE_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditYear" placeholder="Audit Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                      [noEntriesFoundLabel]="'No matching Audit Year found'" numbersHyphenOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditYearList |
+                      filterSelectInput:auditYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.auditYear.touched || (auditFeeDetailsRegister.controls.auditYear.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.auditYear.errors?.required">
+                    {{errorMessages.AUDIT_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- recoverable audit fees -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="recoverableAmountFee" placeholder="Recoverable Audit Fees" [max]="20"
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.recoverableAmountFee.touched || (auditFeeDetailsRegister.controls.recoverableAmountFee.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.recoverableAmountFee.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- actual received audit fees -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="actualReceivedAuditFee" placeholder="Actual Received Audit Fees"
+                  [max]="20" numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.actualReceivedAuditFee.touched || (auditFeeDetailsRegister.controls.actualReceivedAuditFee.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.actualReceivedAuditFee.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit fee received date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="auditFeeReceivedDate" [max]="maxDate"
+                  [matDatepicker]="auditFeeReceivedDate" placeholder="Audit Fees Received Date" required>
+                <mat-datepicker-toggle matSuffix [for]="auditFeeReceivedDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #auditFeeReceivedDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.auditFeeReceivedDate.touched || (auditFeeDetailsRegister.controls.auditFeeReceivedDate.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.auditFeeReceivedDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- pending recovery  -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="pendingRecovery" placeholder="Pending Recovery" [max]="20"
+                  numbersOnlyKeypress [value]="calculatePendingRecovery()">
+                <div class="error-wrapper"
+                  *ngIf="auditFeeDetailsRegister.controls.pendingRecovery.touched || (auditFeeDetailsRegister.controls.pendingRecovery.errors && isSubmitted)">
+                  <mat-error *ngIf="auditFeeDetailsRegister.controls.pendingRecovery.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- remarks -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <textarea matInput cdkTextareaAutosize placeholder="Remarks" formControlName="remarks"
+                  numbersAlphabetsOnly></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- form data -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary" title="Add" (click)="add();">
+            <i class="material-icons" aria-hidden="true">add</i>
+            Add
+          </button>
+          <button type="button" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- listing -->
+    <div class="mat-elevation-z8 table-responsive mt-2">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="additionalMandaysRegister">
+
+        <!-- sr no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- id -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">ID </th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.id}}
+          </td>
+        </ng-container>
+
+        <!-- institute type -->
+        <ng-container matColumnDef="instituteType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Type</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteType}}
+          </td>
+        </ng-container>
+
+        <!-- institute name -->
+        <ng-container matColumnDef="instituteName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteName}}
+          </td>
+        </ng-container>
+
+        <!-- audit year -->
+        <ng-container matColumnDef="auditYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditYear}}
+          </td>
+        </ng-container>
+
+        <!-- recoverable audit fees -->
+        <ng-container matColumnDef="recoverableAmountFee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Recoverable Audit Fees</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.recoverableAmountFee}}
+          </td>
+        </ng-container>
+
+        <!-- actual received audit fees -->
+        <ng-container matColumnDef="actualReceivedAuditFee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Actual Received Audit Fees</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.actualReceivedAuditFee}}
+          </td>
+        </ng-container>
+
+
+        <!-- audit fees received date -->
+        <ng-container matColumnDef="auditFeeReceivedDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Fees Received Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditFeeReceivedDate | date: 'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- pending recovery -->
+        <ng-container matColumnDef="pendingRecovery">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pending Recovery</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.pendingRecovery}}
+          </td>
+        </ng-container>
+
+        <!-- remarks -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Remarks</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.remarks}}
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action </th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tbody>
+                <tr>
+                  <td width="30">
+                    <i class="material-icons plus add" aria-hidden="true">
+                      edit
+                    </i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetFormData()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../audit-fees-details-register-report']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" title="Print" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+    </div>
+
+  </div>
+</div>

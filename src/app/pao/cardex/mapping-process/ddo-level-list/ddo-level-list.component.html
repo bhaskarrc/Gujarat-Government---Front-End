@@ -1,0 +1,225 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>DDO Level Details</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Cardex</li>
+        <li class="breadcrumb-item active" aria-current="page">DDO Level Details</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Add Search fields -->
+      <form [formGroup]="ddoverificationForm" (ngSubmit)="ddoverificationData()">
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+            <!-- DDO Level Details -->
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="cardexno" maxlength="6" numbersOnly placeholder="Cardex No."
+                    formControlName="cardexno">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="ddono" maxlength="6" numbersOnly placeholder="DDO No." formControlName="ddono">
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="ddoname" formControlName="ddoname" placeholder="Office Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="ddonameCtrl" [placeholderLabel]="'Select Office Name ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let ddonames of ddoname_list | filterSelectInput : ddonameCtrl.value : 'viewValue'"
+                      [value]="ddonames.value" [matTooltip]="ddonames.viewValue">
+                      {{ddonames.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput numbersOnly [matDatepicker]="picker" placeholder="From date">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput numbersOnly [matDatepicker]="picker2" placeholder="To date">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="statu" formControlName="statu" placeholder="Status">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="statusctrl" [placeholderLabel]="'Select Status ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let status of status_list | filterSelectInput : statusctrl.value : 'viewValue'"
+                      [value]="status.value" [matTooltip]="status.viewValue">
+                      {{status.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- End DDO Level Details -->
+          </div>
+        </div>
+
+        <!-- DDO Level Details Table -->
+        <div class="mat-elevation-z8  mt-2">
+          <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8 " aria-describedby="ddoLevelList">
+            <ng-container matColumnDef="srno">
+              <ng-container matColumnDef="srno">
+                <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                  {{i + 1}}
+                </td>
+              </ng-container>
+              <td mat-cell *matCellDef="let row" class="centerAlign">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                  [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="cardexno">
+              <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+                {{element.cardexno}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddono">
+              <th mat-header-cell *matHeaderCellDef scope="row"> DDO NO</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+                {{element.ddono}}
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="ddoname">
+              <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.ddoname}}
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="fromDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Effective From Date</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.fromDate}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="toDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Effective To Date</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.toDate}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef scope="row">Type</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.type}}
+              </td>
+            </ng-container>
+
+
+
+
+            <ng-container matColumnDef="ddoApproverName">
+              <th mat-header-cell *matHeaderCellDef scope="row">DDO Approver Name</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.ddoApproverName}}
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="view_image">
+              <th mat-header-cell *matHeaderCellDef scope="row">View Image</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+
+                <a class="signaure">
+                  <i class="material-icons plus view-icon" aria-hidden="true" title="Signature">playlist_add_check</i>
+                  <div class="box-body signature-box">
+                    <div class="img centerAlign">
+                      <img src="assets/images/sign.png" alt="ifms-logo">
+                    </div>
+                  </div>
+                </a>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="lywith">
+              <th mat-header-cell *matHeaderCellDef scope="row">Lying with</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+                {{element.lywith}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.status}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                <div class="centerAlign">
+
+                  <a><i class="material-icons plus edit-icon" title="Add">add</i></a>&nbsp;
+                  <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                  <a><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>&nbsp;
+                  <i class="material-icons plus delete" (click)="delete(i)" title="Delete">delete</i>&nbsp;
+                </div>
+              </td>
+            </ng-container>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+          </table>
+        </div>
+        <!-- End DDO Level Details Table -->
+      </form>
+    </div>
+  </div>
+</div>

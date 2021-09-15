@@ -1,0 +1,253 @@
+<div class="container">
+    <div class="grievance-form form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div style=" width: 100%; text-align: center;">Grievance Registration Form</div>
+
+        </div>
+
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Add Details
+                    </ng-template>
+                    <div class="box-body">
+                        <form [formGroup]="grievanceRegistrationForm" (ngSubmit)="grievanceRegistrationFormData()">
+                            <div class="row">
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                            <span *ngIf="optionCtrl">
+                        <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                          {{option.ppoNo}}
+                        </mat-option>
+                      </span>
+                                        </mat-autocomplete>
+                                        <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input matInput name="pensionerName" placeholder="Pensioner Name" formControlName="pensionerName" maxlength="45" required>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.pensionerName.touched && grievanceRegistrationForm.controls.pensionerName.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.departnameNameFromWhichRetired.errors.required">
+                                                {{errorMessage.PENSIONER_NAME}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <textarea matInput name="address" placeholder="Address" formControlName="address" maxlength="45"></textarea>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input matInput name="pincode" placeholder="PIN Code" formControlName="pincode" maxlength="12" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <mat-select name="grievanceState" formControlName="grievanceState" placeholder="State">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="stateCtrl" [placeholderLabel]="'Select State...'" [noEntriesFoundLabel]="'no matching State found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let stateName of state_list | filterSelectInput : stateCtrl.value : 'viewValue'" [value]="stateName.value">
+                                                {{stateName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <mat-select name="grievanceCountry" formControlName="grievanceCountry" placeholder="Country">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="countryCtrl" [placeholderLabel]="'Select country...'" [noEntriesFoundLabel]="'no matching country found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let countryName of country_list | filterSelectInput : countryCtrl.value : 'viewValue'" [value]="countryName.value">
+                                                {{countryName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input matInput name="mobile" placeholder="Mobile Number" formControlName="mobile" maxlength="10" numbersOnly required>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.mobile.touched && grievanceRegistrationForm.controls.mobile.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.mobile.errors.required">
+                                                {{errorMessage.MOBILE}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input matInput name="phone" placeholder="Phone Number" formControlName="phone" maxlength="15" numbersOnly>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.phone.touched && grievanceRegistrationForm.controls.phone.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.phone.errors.required">
+                                                {{errorMessage.PHONE_NUMBER}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <input matInput name="email" placeholder="Email ID" formControlName="email" maxlength="25" required>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.email.touched && grievanceRegistrationForm.controls.email.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.email.errors.required">
+                                                {{errorMessage.EMAIL}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <mat-select name="departnameNameFromWhichRetired" formControlName="departnameNameFromWhichRetired" placeholder="Department Name " required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="departmentListFromWhichRetiredCtrl" [placeholderLabel]="'Select Department ...'" [noEntriesFoundLabel]="'no matching Department found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let pensioType of departmentListFromWhichRetired_list | filterSelectInput : departmentListFromWhichRetiredCtrl.value : 'viewValue'" [value]="pensioType.value">
+                                                {{pensioType.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.departnameNameFromWhichRetired.touched && grievanceRegistrationForm.controls.departnameNameFromWhichRetired.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.departnameNameFromWhichRetired.errors.required">
+                                                {{errorMessage.DEPARTMENT_RETIRED}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <mat-select name="nameOfTreasuryOffice" formControlName="nameOfTreasuryOffice" placeholder="Name of the Treasury Office From Retired" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="nameOfTreasuryOfficeCtrl" [placeholderLabel]="'Select Treasury Office...'" [noEntriesFoundLabel]="'no matching Treasury Office found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let treasuryOffice of nameOfTreasuryOffice_list | filterSelectInput : nameOfTreasuryOfficeCtrl.value : 'viewValue'" [value]="treasuryOffice.value">
+                                                {{treasuryOffice.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.nameOfTreasuryOffice.touched && grievanceRegistrationForm.controls.nameOfTreasuryOffice.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.nameOfTreasuryOffice.errors.required">
+                                                {{errorMessage.NAME_OF_TREASURY}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <mat-select formControlName="classification" placeholder="Grievance classification">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="grievanceCtrl" [placeholderLabel]="'Select Grievance classification...'" [noEntriesFoundLabel]="'no matching Grievance classification found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let item of grievance_list | filterSelectInput : grievanceCtrl.value : 'viewValue'" [value]="item.value">
+                                                {{item.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-6" style="padding:0 30px;">
+                                    <mat-form-field>
+                                        <textarea matInput name="grievanceDescription" placeholder="Grievance Description" formControlName="grievanceDescription" maxlength="45" required></textarea>
+                                        <div class="error-wrapper" *ngIf="grievanceRegistrationForm.controls.grievanceDescription.touched && grievanceRegistrationForm.controls.grievanceDescription.errors">
+                                            <mat-error *ngIf="grievanceRegistrationForm.controls.grievanceDescription.errors.required">
+                                                {{errorMessage.DESCRIPTION}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+
+                            </div>
+                            <div class="legend" style="color:red">
+                                <sup>*</sup> Mandatory fields
+                            </div>
+                            <!-- Common Button -->
+                            <div class="form-action-button">
+
+                                <button mat-raised-button type="submit" class="green" title="Submit">
+                  <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                                <button type="reset" mat-raised-button color="accent" title="Reset">
+                  <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+                                <button type="button" mat-raised-button class="btnClose" title="Close">
+                  <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                  </i>
+                  Close
+                </button>
+                            </div>
+                            <!-- Common Button ends-->
+                        </form>
+
+                    </div>
+                </mat-tab>
+                <!-- attachment tab -->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Attachment
+                    </ng-template>
+
+                    <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+                        <!-- Common Button -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                  save
+                </i>
+                Save as Draft
+              </button>
+                            <button mat-raised-button type="submit" class="green" title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                            <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+                            <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['']" routerLinkActive="router-link-active">
+                <i class="material-icons" title="Listing" aria-hidden="true">
+                  list
+                </i>
+                Listing
+              </button>
+                            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                  close
+                </i>
+                Close
+              </button>
+                        </div>
+                        <!-- Common Button ends-->
+
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

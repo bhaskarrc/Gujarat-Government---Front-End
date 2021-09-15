@@ -1,0 +1,359 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">Workflow Register Report
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/WRR/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Workflow Register Report</li>
+      </ol>
+    </nav>
+
+
+    <form [formGroup]="workflowRegister" (ngSubmit)="submitFormData()">
+      <div class="box box-primary">
+        <div class="box-header">Search</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- date type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="dateType" placeholder="Date Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="dateTypeCtrl" [placeholderLabel]="'Find Date Type...'"
+                      [noEntriesFoundLabel]="'No matching Date Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of dateTypeList |
+                      filterSelectInput:dateTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.dateType.touched || (workflowRegister.controls.dateType.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.dateType.errors?.required">
+                    {{errorMessages.DATE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- from date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="fromDate" [matDatepicker]="fromDate" [max]='maxDate'
+                  placeholder="From Date" readonly required>
+                <mat-datepicker-toggle matSuffix [for]="fromDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #fromDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.fromDate.touched || (workflowRegister.controls.fromDate.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.fromDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- to date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="toDate" [matDatepicker]="toDate" [max]='maxDate' placeholder="To Date"
+                  readonly required>
+                <mat-datepicker-toggle matSuffix [for]="toDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #toDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.toDate.touched || (workflowRegister.controls.toDate.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.toDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- district name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="districtName" placeholder="District Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="districtNameCtrl" [placeholderLabel]="'Find District Name...'"
+                      [noEntriesFoundLabel]="'No matching District Name found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of districtNameList |
+                    filterSelectInput:districtNameCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.districtName.touched || (workflowRegister.controls.districtName.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.districtName.errors?.required">
+                    {{errorMessages.DISTRICT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- financial year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="finYear" placeholder="Financial Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                      [noEntriesFoundLabel]="'No matching Financial Year found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of finYearList |
+                      filterSelectInput:finYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.instituteType.touched || (workflowRegister.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteName" placeholder="Institute Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                      [placeholderLabel]="'Find Institute Name...'"
+                      [noEntriesFoundLabel]="'No matching Institute Name found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="workflowRegister.controls.instituteName.touched || (workflowRegister.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="workflowRegister.controls.instituteName.errors?.required">
+                    {{errorMessages.INSTITUTE_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+
+          </div>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="button" mat-raised-button color="primary" title="Search">
+            <i class="material-icons" aria-hidden="true">search</i>
+            Search
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- <div class="mat-elevation-z8  mt-2 overflow-x-scroll"> -->
+    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="workflowRegisterReport">
+
+      <!-- serial no -->
+      <ng-container matColumnDef="serialNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Sr.No.</th>
+        <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">{{i+1}}</td>
+      </ng-container>
+
+      <!-- institute name -->
+      <ng-container matColumnDef="instituteName">
+        <th mat-header-cell *matHeaderCellDef scope="row">Institute Name</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.instituteName}}
+        </td>
+      </ng-container>
+
+      <!-- audit year -->
+      <ng-container matColumnDef="auditYear">
+        <th mat-header-cell *matHeaderCellDef scope="row">Audit Year</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.auditYear}}
+        </td>
+      </ng-container>
+
+      <!-- sanction mandays -->
+      <ng-container matColumnDef="sanctionMandays">
+        <th mat-header-cell *matHeaderCellDef scope="row">Sanction Mondays</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+          {{element.sanctionMandays}}
+        </td>
+      </ng-container>
+
+      <!-- additional mandays -->
+      <ng-container matColumnDef="additionalMandays">
+        <th mat-header-cell *matHeaderCellDef scope="row">Additional Mondays</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+          {{element.additionalMandays}}
+        </td>
+      </ng-container>
+
+      <!-- total mandays -->
+      <ng-container matColumnDef="totalMondays">
+        <th mat-header-cell *matHeaderCellDef scope="row">Total Mondays</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+          {{element.totalMondays}}
+        </td>
+      </ng-container>
+
+      <!-- utilized mandays -->
+      <ng-container matColumnDef="utilizedMondays">
+        <th mat-header-cell *matHeaderCellDef scope="row">Utilized Mondays</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+          {{element.utilizedMondays}}
+        </td>
+      </ng-container>
+
+      <!-- saved mandays -->
+      <ng-container matColumnDef="savedMondays">
+        <th mat-header-cell *matHeaderCellDef scope="row">Saved Mondays</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+          {{element.savedMondays}}
+        </td>
+      </ng-container>
+
+      <!-- auditor name -->
+      <ng-container matColumnDef="auditorName">
+        <th mat-header-cell *matHeaderCellDef scope="row">Name Of Auditor</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.auditorName}}
+        </td>
+      </ng-container>
+
+      <!-- audit start date -->
+      <ng-container matColumnDef="auditStartDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Audit Start Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.auditStartDate}}
+        </td>
+      </ng-container>
+
+      <!-- audit end date -->
+      <ng-container matColumnDef="auditEndDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Audit End Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.auditEndDate}}
+        </td>
+      </ng-container>
+
+      <!-- report submitted date -->
+      <ng-container matColumnDef="reportSubmittedDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Report Submitted Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.reportSubmittedDate}}
+        </td>
+      </ng-container>
+
+      <!-- report issued date -->
+      <ng-container matColumnDef="reportIssueDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Report Issue Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.reportIssueDate}}
+        </td>
+      </ng-container>
+
+      <!-- no of para -->
+      <ng-container matColumnDef="para">
+        <th mat-header-cell *matHeaderCellDef scope="row">No Of Para</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          {{element.para}}
+        </td>
+      </ng-container>
+
+      <!-- action -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+          <i class="material-icons plus add" title="Edit" aria-hidden="true">
+            edit
+          </i>
+          <a><i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i></a>
+        </td>
+      </ng-container>
+
+      <!-- Header Section Of table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Data Fetch From .TS File to table -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+    </table>
+
+    <!-- paginator -->
+    <mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" title="Submit" (click)="directiveObject.workflowDetails()">
+        <i class="material-icons" aria-hidden="true">done</i>
+        Submit</button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+    </div>
+  </div>
+</div>

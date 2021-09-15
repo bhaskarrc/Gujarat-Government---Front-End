@@ -1,0 +1,292 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>8011 AG Data Listing</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/AGL/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+        <li class="breadcrumb-item active" aria-current="page">8011 AG Data Listing</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- form -->
+      <form [formGroup]="agDataListingForm" (ngSubmit)="agDataListingFormData()">
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Search</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+
+              <div class="row">
+
+                <!-- ag office name -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="agOfficeName" placeholder="AG Office Name">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="agOfficeNameCtrl"
+                          [placeholderLabel]="'Find AG Office Name...'"
+                          [noEntriesFoundLabel]="'No matching AG Office Name found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>--None--</mat-option>
+                      <mat-option *ngFor="let item of agOfficeNameList | filterSelectInput:agOfficeNameCtrl.value"
+                        [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- month -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="month" placeholder="Month">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                          [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>--None--</mat-option>
+                      <mat-option *ngFor="let item of monthList | filterSelectInput:monthCtrl.value"
+                        [value]="item.value">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- year -->
+                <div class="col-md-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="year" placeholder="Year">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Find Year...'"
+                          [noEntriesFoundLabel]="'No matching Year found'" numbersOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>--None--</mat-option>
+                      <mat-option *ngFor="let item of yearList | filterSelectInput:yearCtrl.value" [value]="item.value">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- form action button -->
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Search" (click)="onSearch()">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                    <button type="reset" mat-raised-button color="accent" title="Reset">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+                <!-- form action button end -->
+
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+      <!-- form end -->
+      <br>
+
+      <div class="mat-elevation-z8 mt-3 table-responsive" *ngIf="showTable">
+        <!-- table start -->
+        <table mat-table [dataSource]="agDataListingDataSource" width="100%" aria-describedby="agDataListing" matSort>
+
+          <!-- sr header  -->
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+              Serial No.
+            </th>
+          </ng-container>
+
+          <!-- ag office name header -->
+          <ng-container matColumnDef="agOfficeName">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+              AG Office Name
+            </th>
+          </ng-container>
+
+          <!-- year header  -->
+          <ng-container matColumnDef="year">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+              Year
+            </th>
+          </ng-container>
+
+          <!-- month header -->
+          <ng-container matColumnDef="month">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+              Month
+            </th>
+          </ng-container>
+
+          <!-- insurance fund header -->
+          <ng-container matColumnDef="insuranceFund">
+            <th mat-header-cell [attr.colspan]="2" *matHeaderCellDef scope="row">
+              Insurance Fund
+            </th>
+          </ng-container>
+
+          <!-- saving fund header -->
+          <ng-container matColumnDef="savingFund">
+            <th mat-header-cell [attr.colspan]="2" *matHeaderCellDef scope="row">
+              Saving Fund
+            </th>
+          </ng-container>
+
+          <!-- total haeder -->
+          <ng-container matColumnDef="total">
+            <th mat-header-cell [attr.colspan]="2" *matHeaderCellDef scope="row">
+              Total
+            </th>
+          </ng-container>
+
+          <!-- receipt insurance header  -->
+          <ng-container matColumnDef="receiptInsuranceAmount">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Receipt
+            </th>
+          </ng-container>
+
+          <!-- expenditure insurance header -->
+          <ng-container matColumnDef="expenditureInsuranceAmount">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Expenditure
+            </th>
+          </ng-container>
+
+          <!-- receipt saving header  -->
+          <ng-container matColumnDef="receiptSavingAmount">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Receipt
+            </th>
+          </ng-container>
+
+          <!-- expenditure saving header -->
+          <ng-container matColumnDef="expenditureSavingAmount">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Expenditure
+            </th>
+          </ng-container>
+
+          <!-- receipt total -->
+          <ng-container matColumnDef="totalReceipt">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Receipt
+            </th>
+          </ng-container>
+
+          <!--expenditure total -->
+          <ng-container matColumnDef="totalExpenditure">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Expenditure
+            </th>
+          </ng-container>
+
+          <!-- sr no -->
+          <ng-container matColumnDef="srno1">
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+
+          <!-- ag office name -->
+          <ng-container matColumnDef="agOfficeNameData">
+            <td mat-cell *matCellDef="let element">
+              {{element.agOfficeNameData}}
+            </td>
+          </ng-container>
+
+
+          <!-- year -->
+          <ng-container matColumnDef="yearData">
+            <td mat-cell *matCellDef="let element">
+              {{element.yearData}}
+            </td>
+          </ng-container>
+
+          <!-- month -->
+          <ng-container matColumnDef="monthData">
+            <td mat-cell *matCellDef="let element">
+              {{element.monthData}}
+            </td>
+          </ng-container>
+
+          <!-- receipt insurance fund amount -->
+          <ng-container matColumnDef="receiptInsuranceAmountData">
+            <td mat-cell *matCellDef="let element" class="rightAlign">
+              {{element.receiptInsuranceAmountData}}
+            </td>
+          </ng-container>
+
+          <!-- expenditure insurance fund amount -->
+          <ng-container matColumnDef="expenditureInsuranceAmountData">
+            <td mat-cell *matCellDef="let element" class="rightAlign">
+              {{element.expenditureInsuranceAmountData}}
+            </td>
+          </ng-container>
+
+          <!-- receipt saving fund amount -->
+          <ng-container matColumnDef="receiptSavingAmountData">
+            <td mat-cell *matCellDef="let element" class="rightAlign">
+              {{element.receiptSavingAmountData}}
+            </td>
+          </ng-container>
+
+          <!-- expenditure saving fund amount -->
+          <ng-container matColumnDef="expenditureSavingAmountData">
+            <td mat-cell *matCellDef="let element" class="rightAlign">
+              {{element.expenditureSavingAmountData}}
+            </td>
+          </ng-container>
+
+          <!-- receipt total -->
+          <ng-container matColumnDef="totalReceiptData">
+            <td mat-cell *matCellDef="let element; let i = index" class="rightAlign">
+              {{calculateTotalReceiptAmount(i)}}
+            </td>
+          </ng-container>
+
+          <!-- expenditure total -->
+          <ng-container matColumnDef="totalExpenditureData">
+            <td mat-cell *matCellDef="let element; let i = index" class="rightAlign">
+              {{calculateTotalExpenditureAmount(i)}}
+            </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="header1"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-header-row *matHeaderRowDef="header2"></tr>
+          <!-- Footer Section Of table -->
+          <tr mat-row *matRowDef="let row; columns: agDataCoulmns;"></tr>
+        </table>
+        <!-- table end -->
+
+        <!-- paginator -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+
+  </div>
+</div>

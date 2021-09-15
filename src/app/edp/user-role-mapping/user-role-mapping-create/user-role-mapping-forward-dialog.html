@@ -1,0 +1,218 @@
+<div class="container">
+    <div class="row">
+        <div class="heading-section ng-star-inserted">
+            <div>DDO Office Creation</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <mat-tab-group mat-stretch-tabs class="standing-est-tabing mat-form-field" [selectedIndex]="selectedIndex">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+                    Comment
+                </ng-template>
+                <div class="row header-detail">
+                    <div class="col-sm-4 colPadding" *ngFor="let item of headerJso">
+                        <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+                        <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+                    </div>
+                </div>
+
+                <div class="forward-module-container">
+                    <div class="forward-dialog-left">
+                        <div class="col-sm-12">
+                            <div class="form-datatable-list history-common-section">
+                                <b class="htry-hding-name">Comment History:</b>
+                                <div class="category-deprt"><b>Revenue Department</b></div>
+                                <div *ngFor="let comments of forwardDialog_history_list" class="column-box">
+                                    <div class="histy-box">
+                                        <div class="txt-heading">
+                                            {{comments.userName}} ({{comments.role}})
+                                        </div>
+                                        <div class="txt-heading"> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+                                    </div>
+                                    <div class="comment-text">
+                                        <span *ngIf="comments.comment.length > 250">{{comments.comment | slice:0:249}}<a
+                                                (click)="readMoreId = comments.id;"
+                                                *ngIf="readMoreId != comments.id">&nbsp;&nbsp;..read more</a></span>
+                                        <span *ngIf="readMoreId == comments.id">{{comments.comment | slice:249}}<a
+                                                (click)="readMoreId = undefined;"
+                                                *ngIf="readMoreId == comments.id">&nbsp;&nbsp;less</a></span>
+                                        <span *ngIf="comments.comment.length < 250">{{comments.comment}}</span>
+                                        <div class="box-opener">
+                                            <p class="flexicon">
+                                                <a *ngFor="let file of attachment" (click)="checkDisplayFile(file)"
+                                                    class="attachmentType"
+                                                    (click)="file_name = file.fileName;">{{file.fileName}}
+                                                    <i class="material-icons iconset">
+                                                        save_alt
+                                                    </i>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-datatable-list action-common-section">
+                        <form class="col-sm-12" [formGroup]="actionForm" (ngSubmit)="forwardConsolidate()">
+                            <div *ngIf="show">
+                                <div *ngFor="let file of attachment">
+                                    <div *ngIf="file_name === file.fileName">
+                                        <img *ngIf="file.imgStatus && file.fileType == 'image'" src="{{file.filePath}}"
+                                            alt="file.filePath">
+                                        <span *ngIf="file.pdfStatus && file.fileType == 'pdf'">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="showAction">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="actionCode" placeholder="Action" #singleSelect1
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="actionCtrl"
+                                                        [placeholderLabel]="'Find Action...'"
+                                                        [noEntriesFoundLabel]="'no matching Action found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let action of filteredAction | async"
+                                                    [value]="action.value">
+                                                    {{action.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="userCode" placeholder="User" #singleSelect1
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="userCodeCtrl"
+                                                        [placeholderLabel]="'Find User...'"
+                                                        [noEntriesFoundLabel]="'no matching User found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let user of filteredUserCode | async"
+                                                    [value]="user.value">
+                                                    {{user.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="Comment"
+                                                [formControl]="additionalText"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div mat-dialog-actions>
+                                    <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                                            done
+                                        </i> Submit</button>
+                                    <button type="button" mat-raised-button (click)="onNoClick()" class="btnClose">
+                                        <i class="material-icons" title="EDP dashboard">
+                                            close
+                                        </i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Attachments" class="full-width">
+                <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                    <ng-container matColumnDef="attachmentType">
+                        <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                        <td mat-cell *matCellDef="let item;let i = index;">
+                            <mat-select placeholder="Attachment Type" #singleSelect1 required
+                                [(ngModel)]="item.attachmentType">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="attachmentTypeCodeCtrl"
+                                        [placeholderLabel]="'Find Attachment Type...'"
+                                        [noEntriesFoundLabel]="'no matching Attachment Type found'">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let AT of filteredAttachmentTypeCode | async" [value]="AT.value">
+                                    {{AT.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="fileName">
+                        <th mat-header-cell *matHeaderCellDef>File name</th>
+                        <td mat-cell *matCellDef="let item">
+                            <mat-form-field floatLabel="never">
+                                <textarea matInput [value]="item.name" [(ngModel)]="item.name"></textarea>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="browse">
+                        <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                        <td mat-cell *matCellDef="let i = index" class="centerAlign">
+                            <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                                Files</button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="uploadedFileName">
+                        <th mat-header-cell *matHeaderCellDef>Uploaded file name</th>
+                        <td mat-cell *matCellDef="let item">
+                            <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <td mat-cell *matCellDef="let item; let i = index">
+                            <table class="iconTable">
+                                <tbody>
+                                    <tr>
+                                        <td width="30">
+                                            <i class="material-icons plus delete"
+                                                *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1"
+                                                (click)="deleteBrowse(i)">
+                                                delete
+                                            </i>
+                                        </td>
+                                        <td width="30">
+                                            <i class="material-icons plus add"
+                                                *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                (click)="addBrowse()">
+                                                add
+                                            </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                </table>
+                <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+                <div class="form-action-button">
+                    <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                        done
+                    </i> Submit</button>
+                <button type="button" mat-raised-button (click)="onNoClick()" class="btnClose">
+                    <i class="material-icons" title="EDP dashboard">
+                        close
+                    </i>
+                    Close
+                </button>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>

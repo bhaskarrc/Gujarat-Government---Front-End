@@ -1,0 +1,682 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>Cheque For Correction</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Cheque </li>
+        <li class="breadcrumb-item active" aria-current="page">Cheque For Correction</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- form  start -->
+      <form [formGroup]="chequePreprationForm" (ngSubmit)="chequePreprationFormData()">
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="false" class="nopadding">
+
+            <!-- search  start-->
+            <mat-expansion-panel-header>
+              <div class="heading-section">
+                Search
+              </div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="billReferenceNo" placeholder="Reference Number"
+                      formControlName="billReferenceNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="tokenNo" maxlength="6" numbersOnly placeholder="Token No."
+                      formControlName="tokenNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="ddoNo" maxlength="6" numbersOnly placeholder="DDO No."
+                      formControlName="ddoNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="cardexNo" numbersOnly maxlength="6" placeholder="Cardex No."
+                      formControlName="cardexNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="ddoName" formControlName="ddoName" placeholder="Office Name">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="ddoNameCtrl" [placeholderLabel]="'Select Office Name ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let item of ddoNameList | filterSelectInput : ddoNameCtrl.value : 'viewValue'"
+                        [value]="item.value">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker2" placeholder="Bill Inward date" [max]="maxDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="chequeNo" numbersOnly placeholder="Cheque No" formControlName="chequeNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="chequeAmount" numbersOnly placeholder="Cheque Amount"
+                      formControlName="chequeAmount">
+                  </mat-form-field>
+                </div>
+
+                <!-- form action button -->
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+
+                    <button type="submit" mat-raised-button color="primary" title="Search" (click)="onSearch()">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+
+                    <button type="reset" mat-raised-button color="accent" title="Reset">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+
+                  </div>
+
+                </div>
+                <!-- End form action button -->
+
+              </div>
+            </div>
+            <!-- search ends -->
+
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+      <!-- form end -->
+
+      <br>
+
+      <!-- on click on search button -->
+      <div *ngIf="selectedAll">
+
+        <!-- form start -->
+        <form [formGroup]="inwardChequeForm" (ngSubmit)="inwarChequeData()">
+
+          <!-- cheque inward -->
+          <div class="box box-primary">
+            <div class="box-header"> Cheque Inward </div>
+            <div class="box-body">
+              <div class="mat-elevation-z8 table-responsive mt-2">
+
+                <!-- table start -->
+                <table mat-table matSort [dataSource]="newDataSource" aria-describedby="chequeForCorretionNew">
+
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Select</th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      <mat-checkbox (click)="billDetails($event)"></mat-checkbox>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="tokenNo">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Token No. </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.tokenNo}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="inwardDate">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Inward Date </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.inwardDate}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cardex">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Cardex No </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.cardex}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ddo">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> DDO No </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.ddo}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="office">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> office Name </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.office}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cType">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Cheque Details </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.cType}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeNo">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Cheque No. </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.chequeNo}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque Correction Type</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="dropdown-status">
+                        <mat-form-field class="full-width">
+                          <mat-select formControlName="chequeType" (selectionChange)="onTypeChange($event)">
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="chequeTypeCtrl"
+                                [placeholderLabel]="'Find Cheque Type...'" [noEntriesFoundLabel]="'no matching Cheque Type
+                                found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let item of chequeTypeList |
+                              filterSelectInput: chequeTypeCtrl.value : 'viewValue'" [value]="item.value"
+                              matTooltip="{{item.viewValue}}">
+                              {{item.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeStatus">
+                    <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Cheque Status </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.chequeStatus}}
+
+                    </td>
+                  </ng-container>
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="newDisplayedColumns"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: newDisplayedColumns;"></tr>
+                </table>
+                <!-- table ends -->
+              </div>
+            </div>
+          </div>
+          <!-- cheque inward ends -->
+
+          <!-- if cheque box in cheque inward table is selected -->
+          <div class="box box-primary" *ngIf="isSearch">
+
+            <!-- bill cheque details -->
+            <div class="box-header">Bill Cheque Details </div>
+            <div class="box-body">
+
+              <div class="mat-elevation-z8 table-responsive mt-2">
+
+                <!-- table start -->
+                <table mat-table [dataSource]="detailsNewDataSource" aria-describedby="billChequeDetails">
+
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Select</th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cardexNo">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Cardex No. </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.cardexNo}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="inwardDate">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Inward Date </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.inwardDate}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="partyName">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Party Name </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.partyName}}
+                      <br>
+                      {{element.partyName1}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="dispatchDate">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Dispatch Date </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.dispatchDate}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="billNetAmount">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Bill Net Amount </th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      {{element.billNetAmount}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeAmount">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Cheque Amount (In Rs.)</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      {{element.chequeAmount}}
+                      <br>
+                      {{element.chequeAmount1}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeTodate">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Cheque To Date </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.chequeTodate}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeFromDate">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Cheque From Date </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.chequeFromDate}}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeNo">
+                    <th mat-header-cell scope="row" *matHeaderCellDef> Cheque No. </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.chequeNo}}
+                      <br>
+                      {{element.chequeNo1}}
+                    </td>
+                  </ng-container>
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="detailsNewDisplayedColumns"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: detailsNewDisplayedColumns;"></tr>
+                </table>
+                <!-- table end -->
+              </div>
+            </div>
+            <!-- bill cheque details end -->
+
+          </div>
+
+          <!-- cancel pop up -->
+          <div class="box box-primary" *ngIf="isCancel">
+
+            <div class="heading-section ng-star-inserted">
+              <div>Cancel Cheque</div>
+              <div class="font-heading rightAlign"><strong>Total Cheque Amount:</strong>1500.00</div>
+            </div>
+
+            <!-- old cheque preparatio details -->
+            <div class="box-body">
+              <div class="box box-primary">
+                <div class="box-header"> Old Cheque Prepration Details </div>
+                <div class="box-body">
+
+                  <!-- table start -->
+                  <table mat-table [dataSource]="newDataSourceCancel" class="mat-elevation-z8"
+                    aria-describedby="chequePrepraion">
+
+                    <ng-container matColumnDef="chequeType">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Cheque Type
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.chequeType}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="inFavourof">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> IN FAVOUR OF</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.inFavourof}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="accountNo">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Account NO.
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.accountNo}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="chequeAmount">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Cheque Amount</th>
+                      <td mat-cell *matCellDef="let element" class="rightAlign">
+                        {{element.chequeAmount}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                      <td mat-cell *matCellDef="let element" class="centerAlign">
+                        <a class="delete-icon" (click)="delete(element)"><i class="material-icons plus delete"
+                            aria-hidden="true" title="delete">delete_forever</i></a>
+                      </td>
+                    </ng-container>
+
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="newDisplayedColumnsCancel"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: newDisplayedColumnsCancel;"></tr>
+                  </table>
+                  <!-- table end -->
+                </div>
+              </div>
+
+              <!-- cheque information -->
+              <div class="box box-primary">
+                <div class="box-header"> Cheque Information </div>
+                <div class="box-body">
+
+                  <!-- table start -->
+                  <table mat-table [dataSource]="chequeDataSource" class="mat-elevation-z8"
+                    aria-describedby="chequeInfo">
+
+                    <ng-container matColumnDef="srno">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Select</th>
+                      <td mat-cell *matCellDef="let element; let i= index" class="centerAlign">
+                        <mat-checkbox (click)="billDetails()"></mat-checkbox>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reasonName">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Reason Of Cancelation
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                          <mat-select name="reasonName" formControlName="reasonName"
+                            (selectionChange)='onReasonCancel($event)'>
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="reasonNameCtrl"
+                                [placeholderLabel]="'Select Reason ...'"
+                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+
+                            <mat-option *ngFor="let item of reasonNameList |
+                              filterSelectInput : reasonNameCtrl.value : 'viewValue'" [value]="item.value">
+                              {{item.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+
+                        <mat-form-field floatLabel="never" *ngIf="isOthersCancel">
+                          <input matInput name="reasonOfCancelation" formControlName="reasonOfCancelation"
+                            placeholder="Reason Of Cancelation" required>
+                        </mat-form-field>
+
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="chequeType">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Cheque Type</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.chequeType}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="inFavourof">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> IN FAVOUR OF</th>
+                      <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never">
+                          <input matInput [(ngModel)]="element.inFavourof" [ngModelOptions]="{standalone: true}"
+                            required [disabled]='toggleButton'>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="accountNo">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Account NO.
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never">
+                          <input matInput [value]="element.accountNo" [(ngModel)]="element.accountNo"
+                            [ngModelOptions]="{standalone: true}" numbersOnly required [disabled]='toggleButton'>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="chequeAmount">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Cheque Amount</th>
+                      <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="rightAlign">
+                          <input matInput [value]="element.chequeAmount" [(ngModel)]="element.chequeAmount"
+                            [ngModelOptions]="{standalone: true}" numbersOnly required [disabled]='toggleButton'>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                      <td mat-cell *matCellDef="let element" class="centerAlign">
+                        <a class="delete-icon" (click)="delete(element)"><i class="material-icons plus delete"
+                            aria-hidden="true" title="delete">delete_forever</i></a>
+                      </td>
+                    </ng-container>
+
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="chequeDisplayedColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: chequeDisplayedColumns;"></tr>
+                  </table>
+                  <!-- table end -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- cancel pop up ends -->
+
+          <!-- Rename pop up -->
+          <div class="box-body" *ngIf="isRename">
+            <div class="box box-primary">
+              <div class="box-header"> Cheque Rename </div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput name="favourOfOld" placeholder="IN FAVOUR OF(OLD)" formControlName="favourOfOld">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput name="chequeAmountRename" maxlength="10" decimalLimitTwoOnly numbersOnly
+                        placeholder="Cheque Amount(in Rs.)" formControlName="chequeAmountRename">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name="type" formControlName="type" placeholder="Type" readonly>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Select Type ...'"
+                            [noEntriesFoundLabel]="'no matching type found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of typeList | filterSelectInput : typeCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput name="favourOfNew" maxlength="10" numbersOnly placeholder="IN FAVOUR OF(New)"
+                        formControlName="favourOfNew" required>
+                      <div class="error-wrapper"
+                        *ngIf="inwardChequeForm.controls.favourOfNew.touched || (inwardChequeForm.controls.favourOfNew.errors && isSubmitted)">
+                        <mat-error *ngIf="inwardChequeForm.controls.favourOfNew.errors?.required">
+                          {{errorMessages.IN_FAVOUR_OF_NEW}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name="reason" formControlName="reason" (selectionChange)="onReasonRename($event)"
+                        placeholder="Reason">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="reasonCtrl" [placeholderLabel]="'Select Reason ...'"
+                            [noEntriesFoundLabel]="'no matching type found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of reasonList | filterSelectInput : reasonCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="isOthersRename">
+                    <mat-form-field class="full-width">
+                      <textarea matInput class="reasonTxtArea" autocomplete="off" name="reasonTxtArea"
+                        formControlName="reasonTxtArea" placeholder="Other Reason" required></textarea>
+                    </mat-form-field>
+                    <div class="error-wrapper"
+                      *ngIf="inwardChequeForm.controls.reasonTxtArea.touched || (inwardChequeForm.controls.reasonTxtArea.errors && isSubmitted)">
+                      <mat-error *ngIf="inwardChequeForm.controls.reasonTxtArea.errors?.required">
+                        {{errorMessages.OTHER_REASON}}
+                      </mat-error>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Rename pop up ends -->
+
+          <!-- Duplicate pop up -->
+          <div class="box-body" *ngIf="isDuplicate">
+            <div class="box box-primary">
+              <div class="box-header"> Cheque Duplicate</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput name="favourOfOldDuplicate" placeholder="IN FAVOUR OF(OLD)"
+                        formControlName="favourOfOldDuplicate">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput name="chequeAmountDuplicate" maxlength="10" decimalLimitTwoOnly numbersOnly
+                        placeholder="Cheque Amount(in Rs.)" formControlName="chequeAmountDuplicate">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name="reason" formControlName="reasonDuplicate"
+                        (selectionChange)="onReasonDuplicate($event)" placeholder="Reason">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="reasonDuplicateCtrl"
+                            [placeholderLabel]="'Select Reason ...'" [noEntriesFoundLabel]="'no matching type found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of reasonDuplicateList | filterSelectInput : reasonDuplicateCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="isOthersDuplicate">
+                    <mat-form-field class="full-width">
+                      <textarea matInput class="textarea" autocomplete="off" name="reasonTxtAreaDuplicate"
+                        formControlName="reasonTxtAreaDuplicate" placeholder="Other Reason" required></textarea>
+                    </mat-form-field>
+                    <div class="error-wrapper"
+                      *ngIf="inwardChequeForm.controls.reasonTxtAreaDuplicate.touched || (inwardChequeForm.controls.reasonTxtAreaDuplicate.errors && isSubmitted)">
+                      <mat-error *ngIf="inwardChequeForm.controls.reasonTxtAreaDuplicate.errors?.required">
+                        {{errorMessages.OTHER_REASON}}
+                      </mat-error>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Duplicate pop up ends -->
+
+
+          <!-- action button -->
+          <div class="form-action-button">
+
+            <button mat-raised-button type="submit" class="green" title="Submit">
+              <i aria-hidden="true" class="material-icons">
+                done
+              </i> Submit
+            </button>
+
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+              <i class="material-icons" aria-hidden="true">
+                close
+              </i>
+              Close
+            </button>
+
+          </div>
+          <!-- action button ends -->
+
+        </form>
+        <!-- form end -->
+      </div>
+    </div>
+  </div>
+</div>

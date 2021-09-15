@@ -1,0 +1,362 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Liason Office Data Entry </div>
+    </div>
+
+
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Liason Office Data Entry </li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="liasonOfficeForm" (ngSubmit)="liasonOfficeData()">
+        <!-- Liason Office Data Entry -->
+        <div class="box box-primary">
+          <div class="box-header">Liason Office Data Entry</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="voucherName" maxlength="5" numbersOnly placeholder="Voucher No">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="voucherDate" [max]="maxDate" readonly placeholder="Voucher Date"
+                    [matDatepicker]="picker">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="cardexNo" numbersOnly maxlength="4" placeholder="Cardex No.">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="demand" maxlength="6" placeholder="Demand No." numbersOnly>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="billtypes" formControlName="billtypes" placeholder="Bill Type" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="billtypeCtrl" [placeholderLabel]="'Select Bill Type ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let billt of billtype_list | filterSelectInput : billtypeCtrl.value : 'viewValue'"
+                      [value]="billt.value" [matTooltip]="billt.viewValue">
+                      {{billt.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="majorHead" formControlName="majorHead" placeholder="Major Head" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let mjhead of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="mjhead.value" [matTooltip]="mjhead.viewValue">
+                      {{mjhead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="billAmount" class="rightAlign" maxlength="16"
+                    placeholder="Bill Amount" numbersOnly value="0.00">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="tcbill" formControlName="tcbBll" placeholder="TC Bill">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let tc of tcbill_list " [value]="tc.value" [matTooltip]="tc.viewValue">
+                      {{tc.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!-- Common Button -->
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" (click)="addData()">
+                    + Add
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+
+                </div>
+              </div>
+              <!-- End Common Button -->
+            </div>
+            <div *ngIf="isvisible">
+              <!-- Table Liason Office Data Entry -->
+              <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable"
+                aria-describedby="liasonOfficeDataEntry">
+                <ng-container matColumnDef="srNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    SR No.
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index; ">
+                    {{i + 1}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="voucherNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Voucher No
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.voucherNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="voucherDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Voucher Date
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.voucherDate}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Cardex No.
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.cardexNo}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="damand">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Demand
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.damand}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="billType">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Bill Type
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.billType}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="majorHead">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Major Head
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.majorHead}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Bill Amount
+                  </th>
+                  <td mat-cell *matCellDef="let element; " class="rightAlign">
+                    {{element.billAmount}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                  <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+                    <a>
+                      <i class="material-icons plus delete" aria-hidden="true" (click)="deleteentry(index)">delete
+                      </i>
+                    </a>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+              </table>
+              <!-- End Table Liason Office Data Entry -->
+              <br>
+              <!-- Total Require -->
+              <div class="row">
+                <div class="col-sm-6 leftAlign">
+                  <strong> Total No of Bills :</strong>
+                  <span class="totalbillamt">1</span>
+                </div>
+                <div class="col-sm-6 rightAlign">
+                  <strong> Total Amount :</strong>
+                  <span class="totalbillamt">1000.00</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Liason Office Data Entry -->
+        <!-- Liason Office Cheque Entry -->
+        <div class="box box-primary">
+          <div class="box-header">Liason Office Cheque Entry</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="partyName" placeholder="Party Name">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="chequeNo" numbersOnly maxlength="10" placeholder="Cheque No.">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="chequeDate" [max]="maxDate" readonly placeholder="Cheque Date"
+                    [matDatepicker]="picker2">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="chequeAmount" maxlength="16" class="rightAlign"
+                    placeholder="Cheque Amount" numbersOnly>
+                </mat-form-field>
+              </div>
+              <!-- Common Button -->
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" (click)="chequeAddData()">
+                    + Add
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+              <!-- End Common Button -->
+            </div>
+            <div *ngIf="chequeisvisible">
+              <!-- Table Liason Office Cheque Entry -->
+              <table mat-table [dataSource]="chequedataSourceBrowse" width="100%" id="browseTable"
+                aria-describedby="liasonDataCheque">
+                <ng-container matColumnDef="srNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    SR No.
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index; ">
+                    {{i + 1}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="partyName">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Party Name
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.partyName}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="chequeNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Cheque No
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.chequeNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="chequeDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Cheque Date
+                  </th>
+                  <td mat-cell *matCellDef="let element; ">
+                    {{element.chequeDate}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="chequeAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    Cheque Amount
+                  </th>
+                  <td mat-cell *matCellDef="let element; " class="rightAlign">
+                    {{element.chequeAmount}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                  <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+                    <a>
+                      <i class="material-icons plus delete" aria-hidden="true" (click)="deletecheque(index)">delete
+                      </i>
+                    </a>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="chequedisplayedBrowseColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: chequedisplayedBrowseColumns;"></tr>
+              </table>
+              <!-- End Table Liason Office Cheque Entry -->
+              <br>
+              <!-- Total Require -->
+              <div class="row">
+                <div class="col-sm-6 leftAlign">
+                  <strong> Total No of Cheques :</strong>
+                  <span class="totalbillamt">1</span>
+                </div>
+                <div class="col-sm-6 rightAlign">
+                  <strong> Total Cheque Amount :</strong>
+                  <span class="totalbillamt">1000.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Liason Office Cheque Entry -->
+        <!-- common Button -->
+        <div class="form-action-button">
+
+
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="Save">
+              save
+            </i>
+            Save
+          </button>
+
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Close">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End common Button -->
+      </form>
+    </div>
+  </div>
+</div>

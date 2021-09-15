@@ -1,0 +1,943 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- Screen Name -->
+    <div class="heading-section ng-star-inserted">
+      <div>IT Declaration</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Payroll</a></li>
+        <li class="breadcrumb-item active" aria-current="page">IT Declaration</li>
+      </ol>
+    </nav>
+
+    <!-- Form Starts -->
+    <form [formGroup]="itDeclarationForm" (ngSubmit)="itDeclarationFormData()">
+      <div class="panel-group">
+        <!-- Search Panel Starts -->
+        <div class="box box-primary">
+          <div class="box-header">IT Declaration</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <!-- Input Field for DDO number -->
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field class="full-width">
+                  <input matInput #input [value]="" placeholder="DDO No" formControlName="ddoNo" readonly />
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Cardex Number -->
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field class="full-width">
+                  <input matInput #input [value]="" placeholder="Cardex No" formControlName="cardexNo" readonly />
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Office Name -->
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field class="full-width">
+                  <input matInput #input [value]="" placeholder=" Office Name" formControlName="ddoOffice" readonly />
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for district -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="District" formControlName="district">
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Financial Year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="financialYear" placeholder="Financial Year" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="financialYearCtrl"
+                        [placeholderLabel]="'Find Financial Year...'"
+                        [noEntriesFoundLabel]="'no matching Financial Year found'" numbersHyphenOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let FY of finYearList | filterSelectInput: financialYearCtrl.value"
+                      [value]="FY.value">
+                      {{FY.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="itDeclarationForm.controls.financialYear.touched && itDeclarationForm.controls.financialYear.errors">
+                    <mat-error *ngIf="itDeclarationForm.controls.financialYear.errors.required">
+                      {{errorMessage.FINANCIAL_YEAR}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Employee ID -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="Employee No." formControlName="employeeID" maxlength="10"
+                    numbersOnly required>
+                  <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber()">search</mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="itDeclarationForm.controls.employeeID.touched && itDeclarationForm.controls.employeeID.errors">
+                    <mat-error *ngIf="itDeclarationForm.controls.employeeID.errors.required">
+                      {{errorMessage.EMPLOYEE_NUMBER}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Employee Name -->
+              <div class="col-sm-3" *ngIf="showEmployeeDetails">
+                <mat-form-field class="disabled">
+                  <input matInput type="text" placeholder="Employee Name" formControlName="employeeName" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Employee Type -->
+              <div class="col-sm-3" *ngIf="showEmployeeDetails">
+                <mat-form-field class="disabled">
+                  <input matInput type="text" placeholder="Employee Class" formControlName="employeeClass" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Designation -->
+              <div class="col-sm-3" *ngIf="showEmployeeDetails">
+                <mat-form-field class="disabled">
+                  <input matInput type="text" placeholder="Category" formControlName="category" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Joining Date -->
+              <div class="col-sm-3" *ngIf="showEmployeeDetails">
+                <mat-form-field>
+                  <input matInput formControlName="joiningDate" [matDatepicker]="picker1" placeholder="Joining Date"
+                    readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1 [disabled]="true"></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Retirement Date -->
+              <div class="col-sm-3" *ngIf="showEmployeeDetails">
+                <mat-form-field>
+                  <input matInput formControlName="retirementDate" [matDatepicker]="picker2"
+                    placeholder="Retirement Date" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2 [disabled]="true"></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- Buttons for Search and Reset Starts -->
+              <div class=" form-action-button">
+                <button type="button" mat-raised-button color="primary" (click)="showAccordion()">
+                  <i class="material-icons" aria-hidden="true" title="Search">search</i>
+                  Search
+                </button>
+              </div>
+              <!-- Buttons for Search and Reset Ends -->
+
+            </div>
+          </div>
+        </div>
+        <!-- Search Panel Ends -->
+
+        <!-- Listing accordion for 80C and 80CCC Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80C and 80CCC</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80C and 80CCC Table Starts -->
+                <table mat-table [dataSource]="EightyCDataSource" matSort aria-describedby="80CAnd80CCCTable">
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionC">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyC" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyCCtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyC_list | filterSelectInput:eightyCCtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountC">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountC" [value]="element.amountC" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}" sevenDigitOnly>
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyCDataSource, 'amountC') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]="fileData.name.pdf" (click)="fileDetails()" target="_blank"><i
+                            class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyC && element.amountC); then notHiddenC else isHiddenC">
+                              </div>
+                              <ng-template #isHiddenC>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyCDataSource && EightyCDataSource.data && (i == EightyCDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+                              </ng-template>
+                              <ng-template #notHiddenC>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyCDataSource && EightyCDataSource.data && (i == EightyCDataSource.data.length - 1)"
+                                  (click)="addEightyCRow(i)">add</i>
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyCDataSource && EightyCDataSource.data && EightyCDataSource.data.length > 1"
+                                (click)="deleteEightyCRow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyCDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyCDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyCDataColumn"></tr>
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80C and 80CCC Ends -->
+
+        <br>
+
+        <!-- Listing accordion for 80D Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80D</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80C and 80CCC Table Starts -->
+                <table mat-table [dataSource]="EightyDDataSource" aria-describedby="eightyDTable" matSort>
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row" scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionD">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyD" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyDCtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyD_list | filterSelectInput:eightyDCtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountD">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountD" [value]="element.amountD" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyDDataSource, 'amountD') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item, i)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]=""><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyD && element.amountD); then notHiddenD else isHiddenD">
+                              </div>
+                              <ng-template #isHiddenD>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyDDataSource && EightyDDataSource.data && (i == EightyDDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+                              </ng-template>
+                              <ng-template #notHiddenD>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyDDataSource && EightyDDataSource.data && (i == EightyDDataSource.data.length - 1)"
+                                  (click)="addEightyDRow(i)">add</i>
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyDDataSource && EightyDDataSource.data && EightyDDataSource.data.length > 1"
+                                (click)="deleteEightyDRow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyDDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyDDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyDDataColumn"></tr>
+
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80C and 80CCC Ends -->
+
+        <br>
+
+        <!-- Listing accordion for 80E Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80E</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80E  Table Starts -->
+                <table mat-table [dataSource]="EightyEDataSource" aria-describedby="eightyETable" matSort>
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionE">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyE" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyECtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyE_list | filterSelectInput:eightyECtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountE">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountE" [value]="element.amountE" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyEDataSource, 'amountE') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item, i)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]=""><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyE && element.amountE); then notHiddenE else isHiddenE">
+                              </div>
+                              <ng-template #isHiddenE>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyEDataSource && EightyEDataSource.data && (i == EightyEDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+                              </ng-template>
+                              <ng-template #notHiddenE>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyEDataSource && EightyEDataSource.data && (i == EightyEDataSource.data.length - 1)"
+                                  (click)="addEightyERow(i)">add</i>
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyEDataSource && EightyEDataSource.data && EightyEDataSource.data.length > 1"
+                                (click)="deleteEightyERow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyEDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyEDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyEDataColumn"></tr>
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80E Ends -->
+
+        <br>
+
+        <!-- Listing accordion for 80G Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80G</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80E  Table Starts -->
+                <table mat-table [dataSource]="EightyGDataSource" matSort aria-describedby="eightyGTable">
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionG">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyG" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyGCtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyG_list | filterSelectInput:eightyGCtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountG">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountG" [value]="element.amountG" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyGDataSource, 'amountG') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item, i)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]=""><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyG && element.amountG); then notHiddenG else isHiddenG">
+                              </div>
+                              <ng-template #isHiddenG>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyGDataSource && EightyGDataSource.data && (i == EightyGDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+
+                              </ng-template>
+                              <ng-template #notHiddenG>
+
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyGDataSource && EightyGDataSource.data && (i == EightyGDataSource.data.length - 1)"
+                                  (click)="addEightyGRow(i)">add</i>
+
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyGDataSource && EightyGDataSource.data && EightyGDataSource.data.length > 1"
+                                (click)="deleteEightyGRow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyGDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyGDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyGDataColumn"></tr>
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80G Ends -->
+
+        <br>
+
+        <!-- Listing accordion for 80TT Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80TT</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80E  Table Starts -->
+                <table mat-table [dataSource]="EightyTTDataSource" matSort aria-describedby="eightyTTTable">
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionTT">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyTT" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyTTCtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyTT_list | filterSelectInput:eightyTTCtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountTT">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountTT" [value]="element.amountTT" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyTTDataSource, 'amountTT') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item, i)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]=""><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyTT && element.amountTT); then notHiddenTT else isHiddenTT">
+                              </div>
+                              <ng-template #isHiddenTT>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyTTDataSource && EightyTTDataSource.data && (i == EightyTTDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+
+                              </ng-template>
+                              <ng-template #notHiddenTT>
+
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyTTDataSource && EightyTTDataSource.data && (i == EightyTTDataSource.data.length - 1)"
+                                  (click)="addEightyTTRow(i)">add</i>
+
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyTTDataSource && EightyTTDataSource.data && EightyTTDataSource.data.length > 1"
+                                (click)="deleteEightyTTRow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyTTDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyTTDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyTTDataColumn"></tr>
+
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80TT Ends -->
+
+        <br>
+
+        <!-- Listing accordion for 80U Starts -->
+        <mat-accordion class="colapsedata" *ngIf="showEmployeeDetails">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Section 80U</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                <!-- Section 80U  Table Starts -->
+                <table mat-table [dataSource]="EightyUDataSource" matSort aria-describedby="eightyUTable">
+
+                  <!-- Serial Number Column -->
+                  <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                      Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                  </ng-container>
+
+                  <!-- Section Column -->
+                  <ng-container matColumnDef="sectionU">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Section</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.section }}
+                      <!-- <mat-form-field class="full-width">
+                        <mat-select [(ngModel)]="element.eightyU" [ngModelOptions]="{standalone: true}">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="eightyUCtrl" [placeholderLabel]="'Find Option...'"
+                              [noEntriesFoundLabel]="'No Matching Option Found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option
+                            *ngFor="let transportAllowanceName  of eightyU_list | filterSelectInput:eightyUCtrl.value"
+                            [value]="transportAllowanceName.value" matTooltip="{{transportAllowanceName.viewValue}}">
+                            {{transportAllowanceName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Salary Component Column -->
+                  <ng-container matColumnDef="amountU">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                      <mat-form-field class="example-full-width rightAlign">
+                        <input matInput [(ngModel)]="element.amountU" [value]="element.amountU" sevenDigitOnly
+                          decimalLimitTwoOnly decimalPoint2 [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{ directiveObj.columnTotal(EightyUDataSource, 'amountU') | number: '1.2-2' }}</td>
+                  </ng-container>
+
+                  <!-- Upload File Column -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Upload File</th>
+                    <td mat-cell *matCellDef="let item; let i = index;" class="text-center">
+                      <div *ngIf="item.fileBrowse">
+                        <button type="button" (click)="openFileGenForm(item.id)" class="btn-browse">
+                          <i class="material-icons">cloud_upload</i> Browse Files
+                        </button>
+                        <input type="file" id="{{item.id}}" style="visibility: hidden; width: 1px;"
+                          (change)="onFileGenForm($event, item)" />
+                      </div>
+                      <div *ngIf="!item.fileBrowse" class="upload-pic-txt">
+                        <a [routerLink]=""><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Action Column -->
+                  <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="(element.eightyU && element.amountU); then notHiddenU else isHiddenU">
+                              </div>
+                              <ng-template #isHiddenU>
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyUDataSource && EightyUDataSource.data && (i == EightyUDataSource.data.length - 1)"
+                                  style="color:lightgray">add</i>
+
+                              </ng-template>
+                              <ng-template #notHiddenU>
+
+                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                  *ngIf="EightyUDataSource && EightyUDataSource.data && (i == EightyUDataSource.data.length - 1)"
+                                  (click)="addEightyURow(i)">add</i>
+
+                              </ng-template>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                *ngIf="EightyUDataSource && EightyUDataSource.data && EightyUDataSource.data.length > 1"
+                                (click)="deleteEightyURow(i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container> -->
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="EightyUDataColumn"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: EightyUDataColumn;let i= index;"></tr>
+                  <!-- Footer Section Of table -->
+                  <tr mat-footer-row *matFooterRowDef="EightyUDataColumn"></tr>
+
+
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Listing accordion for 80U Ends -->
+
+        <div style="margin-top: 15px;" *ngIf="showEmployeeDetails">
+          <div class="form-action-button">
+            <button mat-raised-button type="button" class="green" (click)="onClickSubmit()">
+              <i class="material-icons" aria-hidden="true" title="Submit">done</i> Submit</button>
+
+            <button type="button" mat-raised-button class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Close">close</i>Close</button>
+
+            <button type="button" mat-raised-button color="accent" (click)="clearForm()">
+              <i class="material-icons" aria-hidden="true" title="Reset">restore</i>Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Form Ends -->
+
+  </div>
+</div>

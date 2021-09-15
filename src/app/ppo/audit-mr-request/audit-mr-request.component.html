@@ -1,0 +1,196 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Audit MR Request </div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Audit MR Request
+                </li>
+            </ol>
+        </nav>
+        <!-- search fields -->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="false">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="auditMRRequest" (ngSubmit)="onSearch()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="accountNo" placeholder="Account No" formControlName="accountNo">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Inward/ Reference Number" formControlName="inwardNo" (keypress)="alphabetNumberic($event)">
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="inwardDate" [matDatepicker]="InwardDate" placeholder="Inward/ Reference Date">
+                                    <mat-datepicker-toggle matSuffix [for]="InwardDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #InwardDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-action-button">
+                                <button type="submit" mat-raised-button color="primary">
+                                    <i class="material-icons" aria-hidden="true" title="search">search</i>
+                                    Search
+                                </button>&nbsp;&nbsp;&nbsp;
+                                <button type="reset" mat-raised-button color="accent">
+                                    <i class="material-icons" aria-hidden="true" title="reset">
+                                        restore
+                                    </i>
+                                    Reset
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <!-- filtered data table -->
+
+        <div class="mat-elevation-z8  mt-2">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="auditMRRequest" style="        margin-top: 2em;    ">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                            [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="centerAlign">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="inwardNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward/ Reference Number</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.inwardNo}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="refNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Ref. No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.refNo}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="inwardDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Inward/ Reference Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.inwardDate | date : 'dd/MM/yyyy'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ppoNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.ppoNo}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pensionerName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pensioner Name</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.pensionerName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="reimbursementAmount">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Reimbursement Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                        {{element.reimbursementAmount}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="auditorName">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Auditor Name</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.auditorName}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="grantedAmount">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Granted Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                        {{element.grantedAmount}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                        <a><i class="material-icons plus view-icon" title="View"
+                                aria-hidden="true">remove_red_eye</i></a>
+                        <a (click)="openMedicalReimbursementDailog(element)"><i class="material-icons plus view-icon"
+                                title="Edit" aria-hidden="true">edit</i></a>
+                    </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;"></tr>
+            </table>
+            <!-- table ends -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            <!-- Common Button -->
+            <div class="form-action-button">
+
+                <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+                    <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                    <i class="material-icons" title="Reset" aria-hidden="true">
+                        restore
+                    </i>
+                    Reset
+                </button>
+                <button type="button" mat-raised-button class="print-btn" title="Print">
+                    <i class="material-icons" title="Print" aria-hidden="true">
+                        print
+                    </i>
+                    Print
+                </button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+                    <i class="material-icons" title="Close" aria-hidden="true">
+                        close
+                    </i>
+                    Close
+                </button>
+
+            </div>
+            <!-- Common Button ends-->
+        </div>
+
+    </div>
+</div>

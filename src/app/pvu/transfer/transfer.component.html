@@ -1,0 +1,346 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Transfer</div>
+            <div class="font-heading">
+                <strong>Reference No:</strong> 19-20/PVU/TRFR/001</div>
+            <div class="font-heading">
+                <strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <div class="panel-group">
+            <form [formGroup]="createTransferForm" (ngSubmit)="saveTransferData()">
+                <div class="box box-primary">
+                    <div class="box-header">Transfer Detail</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput name="office_name" formControlName="office_name" placeholder="Office Name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput name="office_order_no" formControlName="office_order_no" placeholder="Order Number" required>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput [matDatepicker]="orderDate" name="order_date" placeholder="Order Date" required>
+                                    <mat-datepicker-toggle matSuffix [for]="orderDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #orderDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
+            <div class="box box-primary">
+                <div class="box-header">Transfer Employee List</div>
+                <div class="box-body" style="overflow: auto;">
+                    <table mat-table [dataSource]="dataSource" class="text-center">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sr No.</th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="employee_no">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Number</th>
+                            <td mat-cell *matCellDef="let element; let i = index">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" [value]="element.employee_no">
+                                    <mat-icon matSuffix (click)="openDialogEmployeeNumber(i)">search</mat-icon>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="employee_name">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Name</th>
+                            <td mat-cell *matCellDef="let element; let i = index">
+                                {{element.employee_name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="designation">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Designation</th>
+                            <td mat-cell *matCellDef="let element; let i = index">
+                                {{element.designation}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="cardex_no">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Cardex No</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.cardex_no}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ddo_no">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">DDO No</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.ddo_no}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="location_name">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Office Name</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.location_name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="subOfficeName">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sub Office Name</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.subOfficeName}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="district_name">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">District Name *</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.district_name">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find District...'" [noEntriesFoundLabel]="'no matching district found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let district of district_list | filterSelectInput: districtCtrl.value" [value]="district.value">
+                                            {{district.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="cardex_No">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Cardex No *</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.cardex_No">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="cardexCtrl" [placeholderLabel]="'Find Cardex No...'" [noEntriesFoundLabel]="'no matching cardex No. found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let cardex of cardexNumber_list | filterSelectInput: cardexCtrl.value" [value]="cardex.value">
+                                            {{cardex.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ddo_code">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">DDO Number *</th>
+                            <td mat-cell *matCellDef="let element;let i = index">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.ddo_code" (selectionChange)="getOfficeName(element,i)">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="ddoCodeCtrl" [placeholderLabel]="'Find DDO Number...'" [noEntriesFoundLabel]="'no matching DDO Number found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let district of ddoNumber_list | filterSelectInput: ddoCodeCtrl.value" [value]="district.value">
+                                            {{district.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="office_name">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Office Name *</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" [value]="element.office_name" readonly>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="sub_office_name">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sub Office Name *</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.sub_office_name">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subOfficeNameCtrl" [placeholderLabel]="'Find Sub OfficeName...'" [noEntriesFoundLabel]="'no matching sub office'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let office of sub_officeName_list | filterSelectInput: subOfficeNameCtrl.value" [value]="office.value">
+                                            {{office.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="relieving_date">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Relieving Date *</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="picker2" #relDate (dateChange)="onRelievingDateChange(relDate.value,element)">
+                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker2></mat-datepicker>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="forenoonAfternoon">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Forenoon/ Afternoon *
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.forenoonAfternoon">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="forenoonAfternoonCtrl" [placeholderLabel]="'Find Forenoon/ Afternoon ...'" [noEntriesFoundLabel]="'no matching Forenoon/ Afternoon found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let reason of forenoonAfternoon_list | filterSelectInput: forenoonAfternoonCtrl.value" [value]="reason.value">
+                                            {{reason.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <!-- <ng-container matColumnDef="tentative_joining_date">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Tentative Joining Date
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="picker2">
+                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker2></mat-datepicker>
+                                </mat-form-field>
+                            </td>
+                        </ng-container> -->
+                        <ng-container matColumnDef="reason_for_transfer">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Reason For Transfer *
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select [(ngModel)]="element.reason_for_transfer">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="reasonForTransferCtrl" [placeholderLabel]="'Find Reason ...'" [noEntriesFoundLabel]="'no matching reason found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let reason of reason_list |filterSelectInput:reasonForTransferCtrl.value" [value]="reason.value">
+                                            {{reason.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Remarks</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="example-full-width">
+                                    <textarea matInput [(ngModel)]="element.remarks"></textarea>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Action</th>
+                            <td mat-cell *matCellDef="let element; let i=index;" class="action-btn-i centerAlign">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30">
+                                                <i class="material-icons plus delete" *ngIf="dataSource && dataSource.data && dataSource.data.length > 1" (click)="deleteRow(i)">
+                                                    delete
+                                                </i>
+                                            </td>
+                                            <td width="30">
+                                                <i class="material-icons plus" *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)" (click)="addRow(i)">
+                                                    add
+                                                </i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="col1">
+                            <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Employee Detail</th>
+                        </ng-container>
+                        <ng-container matColumnDef="col2">
+                            <th mat-header-cell *matHeaderCellDef [attr.colspan]="5"></th>
+                        </ng-container>
+                        <ng-container matColumnDef="current_office_details">
+                            <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Current Office Details</th>
+                        </ng-container>
+                        <ng-container matColumnDef="transfer_location_details">
+                            <th mat-header-cell *matHeaderCellDef [attr.colspan]="5">Transfer Office Details</th>
+                        </ng-container>
+
+                        <!-- <ng-container matColumnDef="select1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2"></th>
+                        </ng-container> -->
+                        <ng-container matColumnDef="sr_no1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">
+                                Sr. No.
+                            </th>
+                        </ng-container>
+                        <ng-container matColumnDef="employee_no1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">Employee Number</th>
+                        </ng-container>
+                        <ng-container matColumnDef="employee_name1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">Employee Name</th>
+                        </ng-container>
+                        <ng-container matColumnDef="designation1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Designation</th>
+                        </ng-container>
+                        <ng-container matColumnDef="cardex_no1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Cardex No</th>
+                        </ng-container>
+                        <ng-container matColumnDef="ddo_no1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">DDO No</th>
+                        </ng-container>
+                        <ng-container matColumnDef="location_name1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Office Name</th>
+                        </ng-container>
+                        <ng-container matColumnDef="subOfficeNameCurrent1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sub Office Name</th>
+                        </ng-container>
+                        <ng-container matColumnDef="district_name1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">District Name *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="cardex_No1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Cardex No *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="ddo_code1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">DDO Code *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="office_name1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Office Name *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="sub_office_name2">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sub Office Name</th>
+                        </ng-container>
+                        <ng-container matColumnDef="relieving_date1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Relieving Date *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="forenoonAfternoon1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Forenoon/ Afternoon *</th>
+                        </ng-container>
+                        <!-- <ng-container matColumnDef="tentative_joining_date1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Tentative Joining Date</th>
+                        </ng-container> -->
+                        <ng-container matColumnDef="reason_for_transfer1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Reason For Transfer *</th>
+                        </ng-container>
+                        <ng-container matColumnDef="remarks1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks</th>
+                        </ng-container>
+                        <ng-container matColumnDef="action1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Action</th>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                            <td mat-cell *matCellDef="let element" colspan="17">No Data Available</td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="['col1','current_office_details', 'transfer_location_details','col2']">
+                        </tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsCopy"></tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+                <div class="form-action-button">
+                    <button type="search" mat-raised-button class="green" (click)="onTransfer()">
+                        <i class="material-icons" aria-hidden="true">done</i> Submit
+                    </button>                                        
+                    <button type="reset" mat-raised-button color="accent" style="margin-left: 5px;" (click)="resetList()">
+                        <i class="material-icons"> restore</i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

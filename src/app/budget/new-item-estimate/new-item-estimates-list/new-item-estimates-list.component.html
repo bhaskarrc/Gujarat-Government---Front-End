@@ -1,0 +1,408 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>New Item Estimate List
+            </div>
+            <!-- <div class='square-box ml-auto'>
+                        <div class='square-outer'>
+                            <div class="square completed"></div>
+                            <div class="square-text">Complete</div>
+                        </div>
+                        <div class='square-outer'>
+                            <div class="square incomplete"></div>
+                            <div class="square-text">Incomplete</div>
+                        </div>
+                    </div> -->
+        </div>
+
+        <!-- <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Budget</a></li>
+                <li class="breadcrumb-item active" aria-current="page">New Item Estimate List</li>
+            </ol>
+        </nav> -->
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search New Item Estimate
+                    </div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="searchListForm" (ngSubmit)="saveEstimate()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="finYear" placeholder="Financial Year" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="finYearCtrl"
+                                                [placeholderLabel]="'Find Financial Year...'"
+                                                [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option *ngFor="let FY of filteredFinYear | async" [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="departmentCode" placeholder="Department"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="departmentCodeCtrl"
+                                                [placeholderLabel]="'Find Department...'"
+                                                [noEntriesFoundLabel]="'no matching Department found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option *ngFor="let department of filteredDepartmentCode | async"
+                                            [value]="department.value">
+                                            {{department.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="revenueCapital" placeholder="Branch Name"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="revenueCapitalCtrl"
+                                                [placeholderLabel]="'Find Branch...'"
+                                                [noEntriesFoundLabel]="'no matching Revenue/Capital'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let revenue of filteredRevenueCapital | async"
+                                            [value]="revenue.value">
+                                            {{revenue.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="estimationFrom" placeholder="Estimation From"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="estimationFromCtrl"
+                                                [placeholderLabel]="'Find Estimation From...'"
+                                                [noEntriesFoundLabel]="'no matching Estimation From found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let estimation of filteredEstimationFrom | async"
+                                            [value]="estimation.value">
+                                            {{estimation.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="estimateFor" placeholder="Estimate For" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="estimateForCtrl"
+                                                [placeholderLabel]="'Find Estimation For...'"
+                                                [noEntriesFoundLabel]="'no matching Estimation For found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let estimation of filteredEstimateFor | async"
+                                            [value]="estimation.value">
+                                            {{estimation.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="demandCode" placeholder="Demand" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="demandCodeCtrl"
+                                                [placeholderLabel]="'Find Demand Code...'"
+                                                [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let demand of filteredDemandCode | async"
+                                            [value]="demand.value"
+                                            matTooltip="{{demand.viewValue}}">
+                                            {{demand.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="majorHeadCode" placeholder="Major Head" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="majorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Major Head...'"
+                                                [noEntriesFoundLabel]="'no matching Major Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let majorhead of filteredMajorHeadCode | async"
+                                            [value]="majorhead.value"
+                                            matTooltip="{{majorhead.viewValue}}">
+                                            {{majorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subMajorHeadCode" placeholder="Sub Major Head"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subMajorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Sub Major Head...'"
+                                                [noEntriesFoundLabel]="'no matching Sub Major Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let submajorhead of filteredSubMajorHeadCode | async"
+                                            [value]="submajorhead.value"
+                                            matTooltip="{{submajorhead.viewValue}}">
+                                            {{submajorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="minorHeadCode" placeholder="Minor Head" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="minorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Minor Head...'"
+                                                [noEntriesFoundLabel]="'no matching Minor Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let minorhead of filteredMinorHeadCode | async"
+                                            [value]="minorhead.value"
+                                            matTooltip="{{minorhead.viewValue}}">
+                                            {{minorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="referenceNumber" placeholder="Form Type"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="referenceNumberCodeCtrl"
+                                                [placeholderLabel]="'Find Form Type...'"
+                                                [noEntriesFoundLabel]="'no matching Reference Number found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let referencenumber of filteredReferenceNumberCode | async"
+                                            [value]="referencenumber.value">
+                                            {{referencenumber.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row displayBlock form-action-button">
+                    <div class="centerAlign">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" aria-hidden="true">search</i>
+                            Search
+                        </button>
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                            <i class="material-icons" aria-hidden="true">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+                    </div>
+
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <div class="col-sm-4 offset-sm-8 mt-2">
+            <!-- <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                </mat-form-field> -->
+        </div>
+
+
+        <!-- <div class="col-sm-12">
+            <div class="row heading-wrap">
+                <h1 class="heading">Standing Charge List</h1>
+                <div class='square-box ml-auto'>
+                    <div class='square-outer'>
+                        <div class="square completed"></div>
+                        <div class="square-text">Complete</div>
+                    </div>
+                    <div class='square-outer'>
+                        <div class="square incomplete"></div>
+                        <div class="square-text">Incomplete</div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- <div class="col-sm-12 table-outer">
+            <div class="list-heading"> -->
+
+        <div class="mat-elevation-z8  customresponsive">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort class="responsive-table">
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr. No.</th>
+                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="formType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Form Type</th>
+                    <td mat-cell *matCellDef="let element"> {{element.formType}} </td>
+                </ng-container>
+
+    
+
+                <ng-container matColumnDef="finYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Financial Year</th>
+                    <td mat-cell *matCellDef="let element"> {{element.finYear}} </td>
+                </ng-container>
+
+
+                <!-- <ng-container matColumnDef="schemeName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name </th>
+                            <td mat-cell *matCellDef="let element"> {{element.schemeName}} </td>
+                        </ng-container> -->
+
+                <ng-container matColumnDef="estimateFrom">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>HoD </th>
+                    <td mat-cell *matCellDef="let element"> {{element.estimateFrom}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="demand">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Demand </th>
+                    <td mat-cell *matCellDef="let element"> {{element.demand}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="majorHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head </th>
+                    <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subMajorHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Sub Major Head </th>
+                    <td mat-cell *matCellDef="let element"> {{element.subMajorHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="minorHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Minor Head </th>
+                    <td mat-cell *matCellDef="let element"> {{element.minorHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Sub Head </th>
+                    <td mat-cell *matCellDef="let element"> {{element.subHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="detailHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Detail Head </th>
+                    <td mat-cell *matCellDef="let element"> {{element.detailHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="chargedVoted">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Charged/ Voted</th>
+                    <td mat-cell *matCellDef="let element"> {{element.chargedVoted}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="css">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>CSS</th>
+                    <td mat-cell *matCellDef="let element"> {{element.css}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="itemName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Name</th>
+                    <td mat-cell *matCellDef="" class="bigtd">
+                        <mat-selection-list #shoes>
+                            <mat-list-option *ngFor="let shoe of typesOfShoes">
+                                {{shoe}}
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="submitedby">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted by</th>
+                    <td mat-cell *matCellDef="let element" >
+                        <mat-list role="list">
+                            <mat-list-item role="listitem">DDO 1</mat-list-item>
+                            <mat-list-item role="listitem">DDO 2</mat-list-item>
+                            <mat-list-item role="listitem">DDO 3</mat-list-item>
+                            <mat-list-item role="listitem">DDO 4</mat-list-item>
+                            <mat-list-item role="listitem">DDO 5</mat-list-item>
+                        </mat-list>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>DDO Proposed Amount</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-list role="list">
+                            <mat-list-item role="listitem">40</mat-list-item>
+                            <mat-list-item role="listitem">50</mat-list-item>
+                            <mat-list-item role="listitem">30</mat-list-item>
+                            <mat-list-item role="listitem">20</mat-list-item>
+                            <mat-list-item role="listitem">20</mat-list-item>
+                        </mat-list>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="refNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference No. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.refNo}} </td>
+                </ng-container>
+
+                <!-- <ng-container matColumnDef="application">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Application</th>
+                            <td mat-cell *matCellDef="let element"> {{element.application}} </td>
+                        </ng-container> -->
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                    <td mat-cell *matCellDef="let element; let i = index;let row;">
+                        {{element.status}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+
+                        <a (click)="consolidate(element)">
+                            <i class="material-icons plus edit-icon" title="Consolidate">
+                                merge_type </i>
+                        </a>
+
+                        <!-- 
+                            <a [routerLink]="'../new-item-estimate'"><i class="material-icons plus edit-icon" title="Edit">
+                                edit </i></a>
+                            <a [routerLink]="'../new-item-view'"><i class="material-icons plus view-icon"
+                                title="View">remove_red_eye</i></a>
+                      
+                        <a class="delete-icon" *ngIf="element.status !== '100%'" (click)="delete(element)"><i
+                                class="material-icons plus delete" title="delete">delete_forever</i></a> -->
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;"
+                    [ngClass]="{'completed': (row.position==1 || row.position==2 || row.position==6 || row.position==7),'incomplete': (row.position!=1 || row.position!=2 || row.position!=6 || row.position!=7)}">
+                </tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+        <!-- </div>
+        </div> -->
+    </div>
+</div>

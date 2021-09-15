@@ -1,0 +1,267 @@
+<div class="container-fluid">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted text-center">
+      Head Of Department
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/BUD/FUF/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Budget</a></li>
+        <li class="breadcrumb-item"><a href="#">Administrative Activities</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Freeze Unfreeze
+          Budget Ceiling</li>
+      </ol>
+    </nav>
+
+
+    <div class="panel-group">
+      <div class="box box-primary">
+        <div class="box-header">Freeze Unfreeze Budget Ceiling</div>
+          <div class="box-body">
+            <div #parentGrids>
+        <!-- <div>Total Budget Ceiling allocated: 100</div> -->
+        <form [formGroup]="headOfDepartMentForm" (ngSubmit)="headOfDepartMentData()">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="financeYeasr" formControlName="financeYear" placeholder="Financial Year">
+                    <mat-option *ngFor="let finance of finance_list" [value]="finance.value">
+                      {{finance.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="show()">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+            </div>
+        </form>
+            </div>
+          </div>
+      </div>
+
+
+        <div class="form-datatable-list" *ngIf="isVissible">
+          <div class="rsClass"> (₹ in Lakhs) </div>
+          <table mat-table [dataSource]="datasource" aria-describedby="headOfDepartment" class="text-center">
+            <ng-container matColumnDef="srno">
+              <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display':
+                'none'}">
+                <b>Sr. No.</b>
+              </th>
+              <td mat-cell *matCellDef="let item; let i= index" class="centerAlign">
+                {{ i + 1 }}
+              </td>
+              <td [ngStyle]="{'display': 'none'}" mat-footer-cell *matFooterCellDef class="leftAlign">Total</td>
+            </ng-container>
+
+            <ng-container matColumnDef="HOD">
+              <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display':
+                'none'}">
+                <b>Department Name</b>
+              </th>
+              <td mat-cell *matCellDef="let element" class="rightAllign">
+                {{element.HOD}}
+              </td>
+              <td class="text-right" mat-footer-cell [attr.colspan]="2" *matFooterCellDef class="leftAlign"><b>Total</b></td>
+            </ng-container>
+
+            <ng-container matColumnDef="budgetCeilingRevenue">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                <b>Revenue</b>
+              </th>
+              <td mat-cell *matCellDef="let element" class="rightAllign">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <mat-form-field floatLabel="never" class="rightAlign">
+                      <input matInput [value]="element.revenue" [(ngModel)]="element.revenue" (blur)="validateRevenue('revenue') ? element.revenue= 0
+                        : ''">
+                      <div class="text-danger" *ngIf="element.revenue
+                      <element.approvedRevenue">
+                        Revenue amount cannot be less than Approved Estimate
+                      </div>
+                      <div class="text-danger" *ngIf="validateRevenue('revenue')">
+                        Revenue amount cannot be greater than total approved
+                        estimate.
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2">
+                    <i class="material-icons btn-history" title="View History" (click)="openHistory()">history</i>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef><b>{{calculation('revenue')}}</b></td>
+            </ng-container>
+
+            <ng-container matColumnDef="budgetCeilingCapital">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                <b>Capital</b>
+              </th>
+              <td mat-cell *matCellDef="let element" class="rightAllign">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <mat-form-field floatLabel="never" class="rightAlign">
+                      <input matInput [value]="element.capital" [(ngModel)]="element.capital" (blur)="validateRevenue('capital') ? element.capital= 0
+                        : ''">
+                      <div class="text-danger" *ngIf="element.capital
+                      <element.approvedCapital">
+                        Capital amount cannot be less than Approved Capital
+                      </div>
+                      <div class="text-danger" *ngIf="validateRevenue('capital')">
+                        Revenue amount cannot be greater than total approved
+                        estimate.
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2">
+                    <i class="material-icons btn-history" title="View History" (click)="openHistory()">history</i>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef><b>{{calculation('capital')}}</b></td>
+            </ng-container>
+
+            <ng-container matColumnDef="approvedBudgetEstimatesRevenue">
+              <th mat-header-cell *matHeaderCellDef scope="row"><b>Revenue</b></th>
+              <td mat-cell *matCellDef="let element" class="text-right
+                rightAllign">
+                {{element.approvedRevenue}}
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef>
+                <b>{{calculation('approvedRevenue')}}</b>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="approvedBudgetEstimatesCapital">
+              <th mat-header-cell *matHeaderCellDef scope="row"><b>Capital</b></th>
+              <td mat-cell *matCellDef="let element" class="text-right
+                rightAllign">
+                {{element.approvedCapital}}
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef>
+                <b>{{calculation('approvedCapital')}}</b>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="remainingCeilingRevenue">
+              <th mat-header-cell *matHeaderCellDef scope="row"><b>Revenue</b></th>
+              <td mat-cell *matCellDef="let element" class="rightAllign
+                text-right">
+                {{element.revenue - element.approvedRevenue}}
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef>
+                <b>{{calcualteRemainRevenue()}}</b>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="remainingCeilingCapital">
+              <th mat-header-cell *matHeaderCellDef scope="row"><b>Capital</b></th>
+              <td mat-cell *matCellDef="let element" class="rightAllign
+                text-right">
+                {{element.capital - element.approvedCapital}}
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef>
+                <b>{{calcualteRemainCapital()}}</b>
+              </td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display':
+                'none'}">
+                <b>Action.</b>
+              </th>
+
+              <td mat-cell *matCellDef="let element;let i= index;" class="action-btn-i centerAlign">
+                <a [routerLink]="'../physical-target'"><i aria-hidden="true" class="material-icons plus edit-icon"
+                    title="Edit">
+                    edit </i></a>
+              </td>
+              <td class="text-right" mat-footer-cell *matFooterCellDef>
+                <b></b>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="SrNo">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sr. No</th>
+            </ng-container>
+
+            <ng-container matColumnDef="hodName">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">HOD Name</th>
+            </ng-container>
+
+            <ng-container matColumnDef="BudgetCeiling1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">Budget
+                Ceiling</th>
+            </ng-container>
+
+            <ng-container matColumnDef="ProposedBudgetCeilingApproved">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">
+                <!-- Budget Ceiling (Approved Budget Estimate) -->
+                Proposed Budget (Pending with AD)
+              </th>
+            </ng-container>
+
+            <!-- <ng-container matColumnDef="RemainingCeiling">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">
+                Remaining Ceiling
+              </th>
+            </ng-container> -->
+            <ng-container matColumnDef="Action">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Action</th>
+            </ng-container>
+            <ng-container matColumnDef="1">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">1</th>
+            </ng-container>
+            <ng-container matColumnDef="2">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">2</th>
+            </ng-container>
+            <ng-container matColumnDef="3">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">3</th>
+            </ng-container>
+            <ng-container matColumnDef="4">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">4</th>
+            </ng-container>
+            <ng-container matColumnDef="5">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">5</th>
+            </ng-container>
+            <ng-container matColumnDef="6">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">6</th>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['SrNo','hodName','BudgetCeiling1','ProposedBudgetCeilingApproved']">
+            </tr>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-header-row class="unsetHeight" *matHeaderRowDef="['1','2','3','4','5','6']"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+          </table>
+
+          <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" class="btn-print">
+              <i class="material-icons" aria-hidden="true">print </i>
+              Print
+            </button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+
+        </div>
+    </div>
+  </div>
+</div>

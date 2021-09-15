@@ -1,0 +1,263 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>8658 Challan Entry</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/CHALENT/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+        <li class="breadcrumb-item active" aria-current="page">8658 Challan Entry</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- form froup -->
+      <form [formGroup]="challanEntryForm" (ngSubmit)="challanEntryFormData()">
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+
+          <!-- challan details -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Challan Details
+            </ng-template>
+
+            <div class="box box-primary">
+              <div class="box-header">Challan Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- employeee no -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="employeeNo" placeholder="Employee No." numbersAlphabetsOnly
+                        required>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.employeeNo.touched && challanEntryForm.controls.employeeNo.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.employeeNo.errors.required">
+                          {{errorMessages.EMPLOYEE_NUMBER}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- employee name -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Employee Name" formControlName="employeeName" alphabetsSpaceOnly
+                        required>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.employeeName.touched && challanEntryForm.controls.employeeName.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.employeeName.errors.required">
+                          {{errorMessages.EMPLOYEE_NAME}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- designation -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="designation" placeholder="Designation" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="designationCtrl"
+                            [placeholderLabel]="'Find Designation...'"
+                            [noEntriesFoundLabel]="'No matching Designation found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of designationList | filterSelectInput:designationCtrl.value"
+                          [value]="item.value" matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.designation.touched && challanEntryForm.controls.designation.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.designation.errors.required">
+                          {{errorMessages.DESIGNATION}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- district -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="district" placeholder="District" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find Distritct...'"
+                            [noEntriesFoundLabel]="'No matching Distritct found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of districtList | filterSelectInput:districtCtrl.value"
+                          [value]="item.value" matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.district.touched && challanEntryForm.controls.district.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.district.errors.required">
+                          {{errorMessages.DISTRICT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- challan no -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Challan No." formControlName="challanNo" numbersOnly required>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.challanNo.touched && challanEntryForm.controls.challanNo.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.challanNo.errors.required">
+                          {{errorMessages.CHALLAN_NUMBER}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- challan date -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="challanDate" [matDatepicker]="picker1" placeholder="Challan Date"
+                        required>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.challanDate.touched && challanEntryForm.controls.challanDate.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.challanDate.errors.required">
+                          {{errorMessages.CHALLAN_DATE}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- group insurance amount -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Group Insurance Amount" formControlName="groupInsuranceAmount"
+                        numbersOnly required>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.groupInsuranceAmount.touched && challanEntryForm.controls.groupInsuranceAmount.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.groupInsuranceAmount.errors.required">
+                          {{errorMessages.GROUP_INSURANCE_AMOUNT}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- month -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="month" placeholder="Month" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                            [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of monthList | filterSelectInput:monthCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="challanEntryForm.controls.month.touched && challanEntryForm.controls.month.errors">
+                        <mat-error *ngIf="challanEntryForm.controls.month.errors.required">
+                          {{errorMessages.MONTH}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- form action button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" title="Next" (click)="goToNext()">
+                Save & Proceed
+                <i class="material-icons" aria-hidden="true">
+                  chevron_right
+                </i>
+              </button>
+            </div>
+          </mat-tab>
+          <!-- challan details end -->
+
+          <!--attachment  -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Attachment
+            </ng-template>
+
+            <!-- selector for attachment -->
+            <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+
+            <!-- attachment action button -->
+            <div class="form-action-button">
+              <button type="button" mat-raised-button color="warn" title="Upload">
+                <i class="material-icons" aria-hidden="true">
+                  publish
+                </i>
+                Upload
+              </button>
+              <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" aria-hidden="true">
+                  close
+                </i>
+                Close
+              </button>
+            </div>
+            <!-- attachment action button ends -->
+
+          </mat-tab>
+          <!--attachment  ends -->
+
+        </mat-tab-group>
+
+        <!-- commmon action button -->
+        <div class="form-action-button">
+
+          <button mat-raised-button color="primary" title="Save as Draft">
+            <i class="material-icons" aria-hidden="true">
+              save
+            </i>
+            Save as Draft
+          </button>
+
+          <button mat-raised-button type="button" class="green" (click)="directiveObject.workflowDetails()"
+            title="Submit">
+            <i class="material-icons" aria-hidden="true">done</i> Submit
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+          <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+            <i class="material-icons" aria-hidden="true">
+              list
+            </i>
+            Listing
+          </button>
+
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+
+        </div>
+        <!-- commmon action button end -->
+
+      </form>
+    </div>
+
+  </div>
+</div>

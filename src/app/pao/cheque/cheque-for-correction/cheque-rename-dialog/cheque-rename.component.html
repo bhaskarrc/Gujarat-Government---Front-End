@@ -1,0 +1,142 @@
+<form [formGroup]="chequeRenameForm">
+  <div class="box-body">
+    <div class="box box-primary">
+      <div class="box-header"> Cheque Rename </div>
+      <div class="box-body">
+        <div class="row">
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="chequeNo" maxlength="12" numbersOnly placeholder="Cheque No."
+                formControlName="chequeNo" required>
+              <div class="error-wrapper"
+                *ngIf="chequeRenameForm.controls.chequeNo.touched || (chequeRenameForm.controls.chequeNo.errors && isSubmitted)">
+                <mat-error *ngIf="chequeRenameForm.controls.chequeNo.errors?.required">
+                  {{errorMessages.CHEQUE_NO}}
+                </mat-error>
+              </div>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="favourOfOld" placeholder="In favour of(OLD)" formControlName="favourOfOld">
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="chequeAmount" maxlength="10"
+                onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" numbersOnly
+                placeholder="Cheque Amount(in Rs.)" formControlName="chequeAmount">
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-select name="type" formControlName="type" placeholder="Type" readonly>
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Select Type ...'"
+                    [noEntriesFoundLabel]="'no matching type found'">
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let item of type_list | filterSelectInput : typeCtrl.value : 'viewValue'"
+                  [value]="item.value">
+                  {{item.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="favourOfNew" maxlength="10" numbersOnly placeholder="In favour of(New)"
+                formControlName="favourOfNew" required>
+              <div class="error-wrapper"
+                *ngIf="chequeRenameForm.controls.favourOfNew.touched || (chequeRenameForm.controls.favourOfNew.errors && isSubmitted)">
+                <mat-error *ngIf="chequeRenameForm.controls.favourOfNew.errors?.required">
+                  {{errorMessages.IN_FAVOUR_OF_NEW}}
+                </mat-error>
+              </div>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="partyAccount" maxlength="10" numbersOnly placeholder="Party Account"
+                formControlName="partyAccount">
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="address" placeholder="Address" formControlName="address">
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker" formControlName="chequeDate" placeholder="Cheque Date"
+                [max]='maxDate'>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-select name="reason" formControlName="reason" (selectionChange)="onReason($event)"
+                placeholder="Reason">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="reasonCtrl" [placeholderLabel]="'Select Reason ...'"
+                    [noEntriesFoundLabel]="'no matching type found'">
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let item of reason_list | filterSelectInput : reasonCtrl.value : 'viewValue'"
+                  [value]="item.value">
+                  {{item.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3" *ngIf="isOthers">
+            <mat-form-field class="full-width">
+              <textarea matInput class="reasonTxtArea" autocomplete="off" name="reasonTxtArea"
+                formControlName="reasonTxtArea" placeholder="Other Reason" required></textarea>
+            </mat-form-field>
+            <div class="error-wrapper"
+              *ngIf="chequeRenameForm.controls.reasonTxtArea.touched || (chequeRenameForm.controls.reasonTxtArea.errors && isSubmitted)">
+              <mat-error *ngIf="chequeRenameForm.controls.reasonTxtArea.errors?.required">
+                {{errorMessages.OTHER_REASON}}
+              </mat-error>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="form-action-button">
+      <button mat-raised-button type="submit" (click)="onRename()" class="green">
+        <i aria-hidden="true" class="material-icons">
+          done
+        </i> Rename
+      </button>
+      <button type="button" mat-raised-button color="warn">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Discard
+      </button>
+      <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+
+  </div>
+
+</form>

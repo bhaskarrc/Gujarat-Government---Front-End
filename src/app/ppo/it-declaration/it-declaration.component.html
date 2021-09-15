@@ -1,0 +1,656 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div> Income-Tax Declaration </div>
+            <div class="font-heading"><strong>Reference No.</strong> 19-20/PPO/PD/001
+            </div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">IT Declaration</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs>
+
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        IT Declaration
+                    </ng-template>
+                    <div style="padding: 1px;">
+                        <!--   Pensioner Details-->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        Pensioner Details
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="pensionerDetails">
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <mat-form-field class="full-width">
+                                                <input type="text" matInput [(formControl)]="ppoNoCtrl"
+                                                    value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto"
+                                                    (blur)="sendPPOData($event.target.value)">
+                                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                                    <span *ngIf="optionCtrl">
+                                                        <mat-option *ngFor="let option of filteredppoNo | async"
+                                                            [value]="option">
+                                                            {{option.ppoNo}}
+                                                        </mat-option>
+                                                    </span>
+                                                </mat-autocomplete>
+                                                <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search
+                                                </mat-icon>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <mat-select name="year" formControlName="year"
+                                                    placeholder="Financial year">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="yearCtrl"
+                                                            [placeholderLabel]="'Select Year ...'"
+                                                            [noEntriesFoundLabel]="'no matching Year found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option
+                                                        *ngFor="let yearName of year_list | filterSelectInput : yearCtrl.value : 'viewValue'"
+                                                        [value]="yearName.value">
+                                                        {{yearName.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="name" placeholder="Pensioner Name"
+                                                    readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput formControlName="retirementDate"
+                                                    [matDatepicker]="retirementDate" placeholder="Retirement Date"
+                                                    readonly>
+                                                <mat-datepicker-toggle matSuffix [for]="retirementDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #retirementDate disabled></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput formControlName="commDate" [matDatepicker]="commDate"
+                                                    placeholder="Commencement Date" readonly>
+                                                <mat-datepicker-toggle matSuffix [for]="commDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #commDate disabled></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="accNo" placeholder="Bank Account No"
+                                                    readonly>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="pensionToBePaid"
+                                                    placeholder="Pension to be paid" readonly>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="pensionPaid" placeholder="Pension paid"
+                                                    readonly>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                        <br>
+
+                        <!--   80C -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80C
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyCForm">
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyCDropDown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyCCtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyC_list |
+                                filterSelectInput:eightyCCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyC"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyC
+                                                    value={{amount_eightyC}} decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowC()">add</i>
+                                        </span>
+                                    </div>
+                                    <div class="row" *ngFor='let element of eightyCdata;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountC($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowC(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionC"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionC()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+                        <br>
+                        <!--     80D -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80D
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyDForm">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyDDropDown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyDCtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyD_list |
+                                filterSelectInput:eightyDCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyD"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyD
+                                                    value={{amount_eightyD}} decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowD()">add</i>
+                                        </span>
+                                    </div>
+                                    <div class="row" *ngFor='let element of eightyDdata;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountD($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowD(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionD"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionD()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+                        <br>
+
+                        <!--   80E -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80E
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyEForm">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyEDropDown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyECtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyE_list |
+                                filterSelectInput:eightyCCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyE"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyE
+                                                    value={{amount_eightyE}} decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowE()">add</i>
+                                        </span>
+                                    </div>
+                                    <div class="row" *ngFor='let element of eightyEdata;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountE($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowE(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionE"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionE()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+                        <br>
+
+                        <!-- 80G -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80G
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyGForm">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyGDropdown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyGCtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyG_list |
+                                filterSelectInput:eightyGCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyG"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyG
+                                                    value={{amount_eightyG}} decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowG()">add</i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row" *ngFor='let element of eightyGdata;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountG($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowG(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionG"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionG()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                        <br>
+
+                        <!--   80TT -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80TT
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyTTForm">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyTTDropDown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyTCtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyT_list |
+                                filterSelectInput:eightyTCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyTT"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyTT
+                                                    value={{amount_eightyTT}} decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowTT()">add</i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row" *ngFor='let element of eightyTTdata;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountT($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowTT(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionTT"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionTT()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                        <br>
+
+                        <!--  80U -->
+                        <mat-accordion class="search-accordian">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <div class="heading-section">
+                                        80U
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <form class="col-md-12" [formGroup]="eightyUForm">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <mat-select formControlName="eightyUDropdown"
+                                                    placeholder="Select Section">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="eightyUCtrl"
+                                                            [placeholderLabel]="'Find Section...'"
+                                                            [noEntriesFoundLabel]="'No matching Section found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let item of eightyU_list |
+                                filterSelectInput:eightyUCtrl.value" [value]="item.value"
+                                                        matTooltip="{{item.viewValue}}">
+                                                        {{item.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput formControlName="amountEightyU"
+                                                    placeholder="Enter the amount" [(ngModel)]=amount_eightyU
+                                                    decimalLimitTwoOnly>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <span>
+                                            <i class="material-icons plus edit-icon" (click)="addRowU()">add</i>
+                                        </span>
+
+                                    </div>
+                                    <div class="row" *ngFor='let element of eightyUData;let i =index'>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input matInput value={{element.dropDown}}>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <mat-form-field class="full-width">
+                                                <input (blur)=changeAmountU($event,i) matInput
+                                                    [(ngModel)]=element.amount [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </div>
+                                        <span *ngIf="isAdd">
+
+                                            <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true">
+                                                edit
+                                            </i>
+                                            <i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"
+                                                (click)="deleteRowU(i)">delete
+                                            </i>
+                                        </span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <mat-form-field class="full-width">
+                                                <input matInput [formControl]="subtotalDeductionU"
+                                                    placeholder="Sub Total Deductions" value={{subdeductionU()}}>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+
+                        <br>
+                        <div>
+                            <mat-form-field class="full-width">
+                                <input matInput [formControl]="totalDeduction" placeholder="Total Deductions"
+                                    value={{deduction()}}>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-tab>
+
+                <!--  Attachments TAB -->
+                <mat-tab label="Attachments">
+                    <ng-template mat-tab-label>
+                        Attachments
+                    </ng-template>
+
+                    <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+                </mat-tab>
+
+            </mat-tab-group>
+
+        </div>
+        <!-- Common Button -->
+        <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" title="Save As
+        Draft">
+                <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                    save
+                </i>
+                Save as Draft
+            </button>
+            <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+                Submit</button>
+            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button color="warn" title="Listing">
+                <i class="material-icons" title="Listing" aria-hidden="true">
+                    list
+                </i>
+                Listing
+            </button><button type="button" mat-raised-button class="print-btn" title="Print">
+                <i class="material-icons" title="Print" aria-hidden="true">
+                    print
+                </i>
+                Print
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+
+        </div>
+        <!-- Common Button ends-->
+    </div>
+</div>

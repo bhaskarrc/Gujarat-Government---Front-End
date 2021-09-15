@@ -1,0 +1,225 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Cardex Verification</div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/TBILL/CHQPRIN/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Cardex</li>
+        <li class="breadcrumb-item active" aria-current="page">Cardex TO Level Verification</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="toverificationFrom" (ngSubmit)="toverificationData()">
+        <!-- Cardex TO Level Verification -->
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="ddoName" formControlName="ddoName" placeholder="Office Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="ddonameCtrl" [placeholderLabel]="'Select Office Name ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let ddonames of ddoname_list | filterSelectInput : ddonameCtrl.value : 'viewValue'"
+                      [value]="ddonames.value" [matTooltip]="ddonames.viewValue">
+                      {{ddonames.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="ddoNo" maxlength="6" numbersOnly placeholder="DDO No." formControlName="ddoNo">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="cardexNo" maxlength="6" numbersOnly placeholder="Cardex No."
+                    formControlName="cardexNo">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput numbersOnly [matDatepicker]="picker" placeholder="From date">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput numbersOnly [matDatepicker]="picker2" placeholder="To date">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="statu" formControlName="statu" placeholder="Status">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="statusctrl" [placeholderLabel]="'Select Status ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let status of status_list | filterSelectInput : statusctrl.value : 'viewValue'"
+                      [value]="status.value">
+                      {{status.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Cardex TO Level Verification -->
+        <br>
+        <!-- Table Cardex TO Level Verification  -->
+        <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8 " aria-describedby="toLevelForm">
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+                [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+                [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+                [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row" class="text-center">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? directiveObject.selection.toggle(row) : null"
+                [checked]="directiveObject.selection.isSelected(row) "
+                [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+              </mat-checkbox>
+            </td>
+
+          </ng-container>
+          <ng-container matColumnDef="cardexNo">
+            <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+            <td mat-cell *matCellDef="let element" class="centerAlign">
+              {{element.cardexNo}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ddoNo">
+            <th mat-header-cell *matHeaderCellDef scope="row"> DDO NO.</th>
+            <td mat-cell *matCellDef="let element" class="centerAlign">
+              {{element.ddoNo}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="ddoName">
+            <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.ddoName}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fromDate">
+            <th mat-header-cell *matHeaderCellDef scope="row">Effective From Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.fromDate}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="toDate">
+            <th mat-header-cell *matHeaderCellDef scope="row">Effective To Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.toDate}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef scope="row">Type</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.type}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="view_image">
+            <th mat-header-cell *matHeaderCellDef scope="row">View Image</th>
+            <td mat-cell *matCellDef="let element" class="centerAlign">
+              <a class="signaure">
+                <i class="material-icons plus view-icon" aria-hidden="true">insert_photo</i>
+                <div class="box-body signature-box">
+                  <div class="img centerAlign">
+                    <img src="assets/images/sign.png" alt="ifms-logo">
+                  </div>
+                </div>
+              </a>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="view_delete_image">
+            <th mat-header-cell *matHeaderCellDef scope="row">Upload Image</th>
+            <td mat-cell *matCellDef="let element" class="centerAlign">
+              <button type="button" (click)="openFileSelector2()" class="btn-browse">
+                <i class="material-icons">cloud_upload</i> Browse Files
+              </button>
+              <input type="file" id="fileBrowse-nominee" style="visibility: hidden; width: 1px;"
+                (change)="onFileSelection2($event, item)" />
+
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.status}}
+            </td>
+          </ng-container>
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+        </table>
+        <!-- End Table Cardex TO Level Verification  -->
+        <br>
+        <!-- note -->
+        <div class="legend">
+          1. Total File size should be under 2MB
+          <br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+        </div>
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"><i
+              class="material-icons">
+              done
+            </i> Submit</button>
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+
+    </div>
+  </div>
+</div>

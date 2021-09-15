@@ -1,0 +1,232 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Saved Pension Bills</div>
+
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Saved Pension Bills</li>
+            </ol>
+        </nav>
+        <!-- search fields -->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="false">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search Bills
+                    </div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="searchSavedPensionBills" (ngSubmit)="searchBill()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="headCode" placeholder="Head Code ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="headCodeCtrl" [placeholderLabel]="'Find Head Code ...'" [noEntriesFoundLabel]="'No matching Head Code '">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let HC  of headCodeType | filterSelectInput:headCodeCtrl.value" [value]="HC.value" matTooltip="{{HC.viewValue}}">
+                                            {{HC.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Bank Branch Code" formControlName="bankCode" [maxlength]="8" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="billCreatedFrom" [matDatepicker]="billCreatedFrom" placeholder="Bill Created From Date">
+                                    <mat-datepicker-toggle matSuffix [for]="billCreatedFrom">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #billCreatedFrom></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="billCreatedTo" [matDatepicker]="billCreatedTo" placeholder="Bill Created To Date">
+                                    <mat-datepicker-toggle matSuffix [for]="billCreatedTo">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #billCreatedTo></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" formControlName="majorHead">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="billType" placeholder="Bill Type" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="billTypeCtrl" [placeholderLabel]="'Find Bill Types...'" [noEntriesFoundLabel]="'no matching Bill Types found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let billType of billType_list | filterSelectInput: billTypeCtrl.value" [value]="billType.viewValue">
+                                            {{billType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="status" formControlName="status" placeholder="Status">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Select Status...'" [noEntriesFoundLabel]="'no matching Status found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let statusName of status_list | filterSelectInput : statusCtrl.value : 'viewValue'" [value]="statusName.value">
+                                            {{statusName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons" aria-hidden="true" title="search">search</i>
+                        Search
+                    </button>&nbsp;&nbsp;&nbsp;
+                    <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                        <i class="material-icons" aria-hidden="true" title="reset">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <br>
+        <!-- filtered data table -->
+        <div class="mat-elevation-z8 table-responsive mt-2">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="savedBill">
+
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox [checked]="checkbox" [(ngModel)]="checkbox" title="Select All">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                        <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox" title="Select"></mat-checkbox>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                </ng-container>
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+                    <td mat-cell *matCellDef="let element; let i = index;" class="centerAlign">
+                        {{ i + 1 }} </td>
+                </ng-container>
+                <ng-container matColumnDef="auditorName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Auditor Name</th>
+                    <td mat-cell *matCellDef="let element"> {{element.auditorName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="billDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Date</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;">{{ element.billDate}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="billType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Type</th>
+                    <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="majorHead">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.majorHead}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="netAmount">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Net Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.netAmount |number:'2.2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ppoNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO No.</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.ppoNo}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="partyName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Party Name</th>
+                    <td mat-cell *matCellDef="let element"> {{element.partyName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="billControlNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Reference Number</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.billControlNo}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center;" class="action-btn-i centerAlign">
+                        <a>
+                            <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye
+                            </i>
+                        </a>
+                    </td>
+                </ng-container>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Header Section Of table -->
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+                </tr>
+            </table>
+            <!-- table ends -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            <!-- common buttons -->
+            <div class="form-action-button">
+
+                <button mat-raised-button type="submit" class="green" title="Submit" (click)="directiveObject.workflowDetails()">
+                    <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+
+                <button type="button" mat-raised-button class="print-btn" title="Print">
+                    <i class="material-icons" title="Print" aria-hidden="true">
+                        print
+                    </i>
+                    Print
+                </button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+                    <i class="material-icons" title="Close" aria-hidden="true">
+                        close
+                    </i>
+                    Close
+                </button>
+
+            </div>
+            <!-- common buttons end -->
+        </div>
+
+    </div>

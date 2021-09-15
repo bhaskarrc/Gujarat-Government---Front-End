@@ -1,0 +1,221 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Inward MR Request</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">MR</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inward MR Request</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="inwardMRRequstForm" (ngSubmit)="inwardMRRequstFormData()">
+                <div class="box box-primary">
+                    <div class="box-header">Medical reimbursement Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="financialYear" placeholder="Financial Year" formControlName="financialYear" value="2019-2020" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="inwardNo" placeholder="Inward/ Reference Number" formControlName="inwardNo" value="10055/032020/000003" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="inwardDate" placeholder="Inward/ Reference Date" formControlName="inwardDate" value="{{todayDate | date: 'dd/MM/yyyy'}}" readonly>
+
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="nameOfPensioner" placeholder="Name Of Pensioner" formControlName="nameOfPensioner" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="bankCode" placeholder="Bank Code" formControlName="bankCode" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="branch" placeholder="Branch" formControlName="branch" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="paymentMode" formControlName="paymentMode" placeholder="Payment Mode" required disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="paymentModeCtrl" [placeholderLabel]="'Please select Payment Mode...'" [noEntriesFoundLabel]="'no matching Payment Mode found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let paymentModeName of paymentMode_list | filterSelectInput : paymentModeCtrl.value : 'viewValue'" [value]="paymentModeName.value">
+                                            {{paymentModeName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="headCode" placeholder="Head Code" formControlName="headCode" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="medicalAllowance" formControlName="medicalAllowance" placeholder="Medical Allowance" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="medicalAllowanceCtrl" [placeholderLabel]="'Please select Medical Allowance...'" [noEntriesFoundLabel]="'no matching Medical Allowance found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let medicalAllowanceName of medicalAllowance_list | filterSelectInput : medicalAllowanceCtrl.value : 'viewValue'" [value]="medicalAllowanceName.value">
+                                            {{medicalAllowanceName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="medicalAllowanceAmount" placeholder="Medical Allowance Amount" formControlName="medicalAllowanceAmount" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="reimbursementAmount" placeholder="Reimbursement Amount" formControlName="reimbursementAmount" maxlength="10" value="0.00">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="disabled">
+                                    <input matInput name="auditorName" placeholder="Auditor Name" formControlName="auditorName" alphabetsSpaceOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="mat-elevation-z8 mt-2">
+                    <!-- table starts -->
+                    <table mat-table [dataSource]="inwardMRRequestDataSource" class="mat-elevation-z8 " aria-describedby="inwardMrRequest">
+
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                <mat-checkbox (change)="$event ? directiveObj.masterToggle(inwardMRRequestDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(inwardMRRequestDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(inwardMRRequestDataSource)"
+                                    [aria-label]="directiveObj.checkboxLabel(inwardMRRequestDataSource)">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="centerAlign">
+                                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(inwardMRRequestDataSource,row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="srno">
+                            <th mat-header-cell *matHeaderCellDef scope="row" scope="row">
+                                Sr. No. </th>
+                            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="inwardNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Inward/ Reference Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                <a href="javascript:void(0)">{{element.inwardNo}}</a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="reimbursementAmount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Reimbursement Amount</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.reimbursementAmount}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="grantedAmount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Granted Amount</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.grantedAmount}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="inwardDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Inward/ Reference Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.inwardDate}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.status}}
+                            </td>
+                        </ng-container>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-header-row *matHeaderRowDef="inwardMRColumns"></tr>
+                        <!-- Header Section Of table -->
+                        <tr mat-row *matRowDef="let row; columns: inwardMRColumns;"></tr>
+                    </table>
+                    <!-- table ends -->
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                </div>
+                <!-- Common Button -->
+                <div class="form-action-button">
+
+                    <button mat-raised-button type="submit" class="green" title="Submit" (click)="directiveObject.workflowDetails()">
+                        <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                    <button type="button" mat-raised-button color="accent" title="Reset" (click)="reset()">
+                        <i class="material-icons" title="Reset" aria-hidden="true">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+
+                    <button type="button" mat-raised-button class="btnClose" title="Close">
+                        <i class="material-icons" title="Close" aria-hidden="true">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+                <!-- Common Button ends-->
+            </form>
+        </div>
+    </div>
+</div>

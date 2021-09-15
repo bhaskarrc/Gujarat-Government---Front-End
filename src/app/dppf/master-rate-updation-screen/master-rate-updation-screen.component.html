@@ -1,0 +1,873 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      Master Rate Updation
+      <div class="font-heading"><strong>{{refNuber}}</strong> 19-20/DPPF/MRU/001
+      </div>
+      <div class="font-heading"><strong>{{refNuberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Master Rate Updation</li>
+      </ol>
+    </nav>
+    <form [formGroup]="masterRateChangeAdminScreen">
+      <div class="box box-primary">
+        <div class="box-header">{{masterRateInfo}}</div>
+        <!-- Master Rate Updation -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="configurationFor" placeholder="Configuration For" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="configurationForCtrl"
+                      [placeholderLabel]="'Find Configuration...'"
+                      [noEntriesFoundLabel]="'No matching Configuration found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let configuration of configurationFor_list |
+                      filterSelectInput:configurationForCtrl.value" [value]="configuration.value"
+                    matTooltip="{{configuration.viewValue}}">
+                    {{configuration.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper" *ngIf="
+                    masterRateChangeAdminScreen.controls.configurationFor.touched &&
+                    masterRateChangeAdminScreen.controls.configurationFor.errors
+                    ">
+                  <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.configurationFor.errors?.required
+                      ">
+                    {{ errorMessage.CONFIGRATION_FOR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- ng-container for TI -->
+          <ng-container *ngIf="masterRateChangeAdminScreen.controls.configurationFor.value === 1">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="tiRateType" placeholder="TI Rate Type" required
+                    (selectionChange)="onSelectingTiRateType($event)">
+                    <mat-option *ngFor="let tiRateType of tiRateType_list" [value]="tiRateType.value"
+                      matTooltip="{{tiRateType.viewValue}}">
+                      {{tiRateType.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper" *ngIf="
+                    (masterRateChangeAdminScreen.controls.tiRateType.touched &&
+                    masterRateChangeAdminScreen.controls.tiRateType.errors) || isSubmitted
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.tiRateType.errors?.required
+                      ">
+                      {{ errorMessage.TI_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3" *ngIf="masterRateChangeAdminScreen.controls.tiRateType.value === '1'">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="forPension" placeholder="For Pension" required
+                    (selectionChange)="onSelectingForPension($event)">
+                    <mat-option *ngFor="let forPension of forPension_list" [value]="forPension.value"
+                      matTooltip="{{forPension.viewValue}}">
+                      {{forPension.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper" *ngIf="
+                    (masterRateChangeAdminScreen.controls.forPension.touched &&
+                    masterRateChangeAdminScreen.controls.forPension.errors) || isSubmitted
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.forPension.errors?.required
+                      ">
+                      {{ errorMessage.FOR_PENSION}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="headCode" placeholder="Head Code" (selectionChange)="changeDesc()"
+                    required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="headCodeCtrl" [placeholderLabel]="'Find Head Code Type ...'"
+                        [noEntriesFoundLabel]="'No matching Head Code found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let headCode of headCode_list |
+                    filterSelectInput:headCodeCtrl.value" [value]="headCode.value" matTooltip="{{headCode.viewValue}}">
+                      {{headCode.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper" *ngIf="
+                    (masterRateChangeAdminScreen.controls.headCode.touched &&
+                    masterRateChangeAdminScreen.controls.headCode.errors) || isSubmitted
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.headCode.errors?.required
+                      ">
+                      {{ errorMessage.HEAD_CODE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width myalign">
+                  <textarea matInput placeholder="Description Name" formControlName="description"
+                    aria-placeholder="Description"></textarea>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="OLD Rate/Amount" formControlName="oldRate">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="NEW Rate/Amount" formControlName="newRate" required>
+                  <div class="error-wrapper" *ngIf="
+                    (masterRateChangeAdminScreen.controls.newRate.touched &&
+                    masterRateChangeAdminScreen.controls.newRate.errors) || isSubmitted
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.newRate.errors?.required
+                      ">
+                      {{ errorMessage.NEW_AMOUNT_RATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3"
+                *ngIf="isForPensionSelected && masterRateChangeAdminScreen.controls.forPension.value != '1'">
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="OLD Minimum Amount" formControlName="oldMinimumAmount" required>
+                  <div class="error-wrapper" *ngIf="
+                    masterRateChangeAdminScreen.controls.oldMinimumAmount.touched &&
+                    masterRateChangeAdminScreen.controls.oldMinimumAmount.errors
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.oldMinimumAmount.errors?.required
+                      ">
+                      {{ errorMessage.OLD_MINIMUM_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3"
+                *ngIf="masterRateChangeAdminScreen.controls.forPension.value === '2'||masterRateChangeAdminScreen.controls.forPension.value === '3'">
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="NEW Minimum Amount" formControlName="newMinimumAmount" required>
+                  <div class="error-wrapper" *ngIf="
+                  (masterRateChangeAdminScreen.controls.newMinimumAmount.touched &&
+                  masterRateChangeAdminScreen.controls.newMinimumAmount.errors) || isSubmitted
+                  ">
+                    <mat-error *ngIf="
+                    masterRateChangeAdminScreen.controls.newMinimumAmount.errors?.required
+                    ">
+                      {{ errorMessage.NEW_MINIMUM_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="oldEffectiveFromDate" [matDatepicker]="oldEffectiveFromDate"
+                    placeholder="Old Effective from Date" required readonly>
+                  <mat-datepicker-toggle matSuffix [for]="oldEffectiveFromDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #oldEffectiveFromDate></mat-datepicker>
+                  <div class="error-wrapper" *ngIf="
+                    masterRateChangeAdminScreen.controls.oldEffectiveFromDate.touched &&
+                    masterRateChangeAdminScreen.controls.oldEffectiveFromDate.errors
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.oldEffectiveFromDate.errors?.required
+                      ">
+                      {{ errorMessage.OLD_EFFECTIVE_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="effectiveFromDate" [matDatepicker]="effectiveFromDate"
+                    placeholder="Effective from Date" (dateChange)="updatePayment()" required>
+                  <mat-datepicker-toggle matSuffix [for]="effectiveFromDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #effectiveFromDate></mat-datepicker>
+                  <div class="error-wrapper" *ngIf="
+                    (masterRateChangeAdminScreen.controls.effectiveFromDate.touched &&
+                    masterRateChangeAdminScreen.controls.effectiveFromDate.errors) || isSubmitted
+                    ">
+                    <mat-error *ngIf="
+                      masterRateChangeAdminScreen.controls.effectiveFromDate.errors?.required
+                      ">
+                      {{ errorMessage.EFFECTIVE_FROM_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- table section -->
+            <div class="box-body">
+              <div class="">
+                <div class="mat-elevation-z8 mt-2" style="width: 100%;">
+                  <table mat-table [dataSource]="masterRateSource" matSort aria-describedby="masterData">
+
+                    <!-- Payment from month conatiner -->
+                    <ng-container matColumnDef="monthPaymentFrom">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Month<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.monthPaymentFrom" [value]="element.monthPaymentFrom"
+                            [ngModelOptions]="{standalone: true}" required [disabled]="makePaymentFromDisable">
+                            <mat-option *ngFor="let monthPaymentFrom of month_list" [value]="monthPaymentFrom.value"
+                              matTooltip="{{monthPaymentFrom.viewValue}}">
+                              {{monthPaymentFrom.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.monthPaymentFrom.touched &&
+                    element.monthPaymentFrom?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.monthPaymentFrom.errors?.required">
+                              {{ errorMessage.MONTH}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment from year conatiner -->
+                    <ng-container matColumnDef="yearPaymentFrom">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Year<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.yearPaymentFrom" [value]="element.yearPaymentFrom"
+                            [ngModelOptions]="{standalone: true}" required [disabled]="makePaymentFromDisable">
+                            <mat-option *ngFor="let yearPaymentFrom of year_list" [value]="yearPaymentFrom.value"
+                              matTooltip="{{yearPaymentFrom.viewValue}}">
+                              {{yearPaymentFrom.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.yearPaymentFrom.touched &&
+                    element.yearPaymentFrom?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.yearPaymentFrom.errors?.required">
+                              {{ errorMessage.YEAR}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment from container -->
+                    <ng-container matColumnDef="paymentFrom">
+                      <th [attr.colspan]="2" mat-header-cell *matHeaderCellDef scope="row">Payment From</th>
+                    </ng-container>
+
+                    <!-- Payment to month conatiner -->
+                    <ng-container matColumnDef="monthPaymentTo">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Month<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.monthPaymentTo" [value]="element.monthPaymentTo"
+                            [ngModelOptions]="{standalone: true}" required>
+                            <mat-option *ngFor="let monthPaymentTo of month_list" [value]="monthPaymentTo.value"
+                              matTooltip="{{monthPaymentTo.viewValue}}">
+                              {{monthPaymentTo.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.monthPaymentTo.touched &&
+                    element.monthPaymentTo?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.monthPaymentTo.errors?.required">
+                              {{ errorMessage.MONTH}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment to year conatiner -->
+                    <ng-container matColumnDef="yearPaymentTo">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Year<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.yearPaymentTo" [value]="element.yearPaymentTo"
+                            [ngModelOptions]="{standalone: true}" (selectionChange)="changeYearPaymentTo()" required>
+                            <mat-option *ngFor="let yearPaymentTo of year_list" [value]="yearPaymentTo.value"
+                              matTooltip="{{yearPaymentTo.viewValue}}">
+                              {{yearPaymentTo.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.yearPaymentTo.touched &&
+                    element.yearPaymentTo?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.yearPaymentTo.errors?.required">
+                              {{ errorMessage.YEAR}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment to container -->
+                    <ng-container matColumnDef="paymentTo">
+                      <th [attr.colspan]="2" mat-header-cell *matHeaderCellDef scope="row">Payment To</th>
+                    </ng-container>
+
+                    <!-- Payment in month conatiner -->
+                    <ng-container matColumnDef="monthPaymentIn">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Month<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.monthPaymentIn" [value]="element.monthPaymentIn"
+                            [ngModelOptions]="{standalone: true}" required>
+                            <mat-option *ngFor="let monthPaymentIn of month_list" [value]="monthPaymentIn.value"
+                              matTooltip="{{monthPaymentIn.viewValue}}">
+                              {{monthPaymentIn.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.monthPaymentIn.touched &&
+                    element.monthPaymentIn?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.monthPaymentIn.errors?.required">
+                              {{ errorMessage.MONTH}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment in year conatiner -->
+                    <ng-container matColumnDef="yearPaymentIn">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Year<span
+                          style="color:red">*</span></th>
+                      <td mat-cell *matCellDef="let element;let i= index;" class="">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.yearPaymentIn" [value]="element.yearPaymentIn"
+                            [ngModelOptions]="{standalone: true}" (selectionChange)="changeYearPaymentIn()" required>
+                            <mat-option *ngFor="let yearPaymentIn of year_list" [value]="yearPaymentIn.value"
+                              matTooltip="{{yearPaymentIn.viewValue}}">
+                              {{yearPaymentIn.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper" *ngIf="
+                    (element.yearPaymentIn.touched &&
+                    element.yearPaymentIn?.errors) || isSubmitted
+                    ">
+                            <mat-error *ngIf="element.yearPaymentIn.errors?.required">
+                              {{ errorMessage.YEAR}}
+                            </mat-error>
+                          </div>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- Payment in container -->
+                    <ng-container matColumnDef="paymentIn">
+                      <th [attr.colspan]="3" mat-header-cell *matHeaderCellDef scope="row">Payment In</th>
+                    </ng-container>
+
+                    <!-- Action Buttons -->
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+                      <td mat-cell *matCellDef="let element;let i=index">
+                        <table class="iconTable" aria-describedby="actionBtn">
+                          <tbody>
+                            <tr>
+                              <td width="30">
+                                <div
+                                  *ngIf="( element.monthPaymentFrom && element.yearPaymentFrom && element.monthPaymentTo && element.yearPaymentTo && element.monthPaymentIn && element.yearPaymentIn);then iconVisible else iconBlurred">
+                                </div>
+                                <ng-template #iconBlurred>
+                                  <i *ngIf="( masterRateSource && masterRateSource.data && (i == masterRateSource.data.length - 1))"
+                                    class="material-icons plus add" aria-hidden="true"
+                                    style="color:lightgray;cursor:default;">
+                                    add
+                                  </i>
+                                </ng-template>
+                                <ng-template #iconVisible>
+                                  <i *ngIf="( masterRateSource && masterRateSource.data && (i == masterRateSource.data.length - 1))"
+                                    class="material-icons plus add" aria-hidden="true" (click)="addNewRow(i);">
+                                    add
+                                  </i>
+                                </ng-template>
+                              </td>
+                              <td width="30">
+                                <!-- <i class="material-icons plus add" aria-hidden="true" (click)="addNewRow()">
+                                  add
+                                </i> -->
+                                <i class="material-icons plus delete" aria-hidden="true" *ngIf="(masterRateSource.data.length >
+                                    1)" (click)="deleteRow(i)">
+                                  delete
+                                </i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="['paymentFrom','paymentTo','paymentIn']"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+                    <!-- Footer Section of Teble-->
+                    <tr mat-row *matRowDef="let row;
+                              let i=
+                              index;columns:displayColumns"></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="error">**Note: Please make sure that Monthly bill for the month selected in Payment In
+              has not been generated.</div>
+          </ng-container>
+
+          <!-- ng-container for DA -->
+          <ng-container *ngIf="masterRateChangeAdminScreen.controls.configurationFor.value === 2">
+            <form [formGroup]="daForm">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="daRateType" placeholder="DA Rate Type"
+                      (selectionChange)="changeRate($event)" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="daRateTypeCtrl"
+                          [placeholderLabel]="'Find DA Rate Type ...'"
+                          [noEntriesFoundLabel]="'No matching DA Rate Type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let daRateType of daRateType_list |
+                    filterSelectInput:daRateTypeCtrl.value" [value]="daRateType.value"
+                        matTooltip="{{daRateType.viewValue}}">
+                        {{daRateType.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="error-wrapper" *ngIf="
+                    daForm.controls.daRateType.touched &&
+                    daForm.controls.daRateType.errors
+                    ">
+                      <mat-error *ngIf="
+                      daForm.controls.daRateType.errors?.required
+                      ">
+                        {{ errorMessage.DA_RATE_TYPE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="OLD Rate/Amount" formControlName="oldRate">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="NEW Rate/Amount" formControlName="newRate" required>
+                    <div class="error-wrapper" *ngIf="
+                    daForm.controls.newRate.touched &&
+                    daForm.controls.newRate.errors
+                    ">
+                      <mat-error *ngIf="
+                      daForm.controls.newRate.errors?.required
+                      ">
+                        {{ errorMessage.NEW_AMOUNT_RATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="oldEffectiveFromDate" [matDatepicker]="oldEffectiveFromDate"
+                      placeholder="Old Effective from Date" required readonly>
+                    <mat-datepicker-toggle matSuffix [for]="oldEffectiveFromDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #oldEffectiveFromDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    daForm.controls.oldEffectiveFromDate.touched &&
+                    daForm.controls.oldEffectiveFromDate.errors
+                  ">
+                      <mat-error *ngIf="
+                      daForm.controls.oldEffectiveFromDate.errors?.required
+                    ">
+                        {{ errorMessage.OLD_EFFECTIVE_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="effectiveFromDate" [matDatepicker]="effectiveFromDate"
+                      placeholder="Effective from Date" required>
+                    <mat-datepicker-toggle matSuffix [for]="effectiveFromDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #effectiveFromDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    daForm.controls.effectiveFromDate.touched &&
+                    daForm.controls.effectiveFromDate.errors
+                  ">
+                      <mat-error *ngIf="
+                      daForm.controls.effectiveFromDate.errors?.required
+                    ">
+                        {{ errorMessage.EFFECTIVE_FROM_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+          </ng-container>
+
+          <!-- ng-container for GPF -->
+          <!-- <ng-container *ngIf="masterRateChangeAdminScreen.controls.configurationFor.value === 3">
+            <form [formGroup]="gpfForm">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="OLD Rate/Amount" formControlName="oldRate" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="NEW Rate/Amount" formControlName="newRate" required>
+                    <div class="error-wrapper" *ngIf="
+                    gpfForm.controls.newRate.touched &&
+                    gpfForm.controls.newRate.errors
+                    ">
+                      <mat-error *ngIf="
+                      gpfForm.controls.newRate.errors.required
+                      ">
+                        {{ errorMessage.NEW_AMOUNT_RATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="oldEffectiveFromDate" [matDatepicker]="oldEffectiveFromDate"
+                      placeholder="Old Effective from Date" required readonly>
+                    <mat-datepicker-toggle matSuffix [for]="oldEffectiveFromDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #oldEffectiveFromDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    gpfForm.controls.oldEffectiveFromDate.touched &&
+                    gpfForm.controls.oldEffectiveFromDate.errors
+                  ">
+                      <mat-error *ngIf="
+                      gpfForm.controls.oldEffectiveFromDate.errors.required
+                    ">
+                        {{ errorMessage.OLD_EFFECTIVE_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="effectiveFromDate" [matDatepicker]="effectiveFromDate"
+                      placeholder="Effective from Date" required>
+                    <mat-datepicker-toggle matSuffix [for]="effectiveFromDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #effectiveFromDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    gpfForm.controls.effectiveFromDate.touched &&
+                    gpfForm.controls.effectiveFromDate.errors
+                    ">
+                      <mat-error *ngIf="
+                      gpfForm.controls.effectiveFromDate.errors.required
+                      ">
+                        {{ errorMessage.EFFECTIVE_FROM_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+          </ng-container> -->
+
+          <!-- ng-container for ADP -->
+          <ng-container *ngIf="masterRateChangeAdminScreen.controls.configurationFor.value === 4">
+            <form [formGroup]="adpForm">
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="headCodeADP" placeholder="Head Code" (selectionChange)="changeADP()"
+                      required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="headCodeCtrl"
+                          [placeholderLabel]="'Find Head Code Type ...'"
+                          [noEntriesFoundLabel]="'No matching Head Code found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let headCode of headCode_list |
+                    filterSelectInput:headCodeCtrl.value" [value]="headCode.value" matTooltip="{{headCode.viewValue}}">
+                        {{headCode.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.headCodeADP.touched &&
+                    adpForm.controls.headCodeADP.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.headCodeADP.errors?.required
+                      ">
+                        {{ errorMessage.HEAD_CODE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field class="full-width myalign">
+                    <textarea matInput placeholder="Description" formControlName="descriptionADP"
+                      aria-placeholder="Description"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 80 years to less than 85 years(Old Percent) "
+                      formControlName="oldPercentEightyToEightyFive">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 80 years to less than 85 years(New Percent) "
+                      formControlName="newPercentEightyToEightyFive" required>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newPercentEightyToEightyFive.touched &&
+                    adpForm.controls.newPercentEightyToEightyFive.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newPercentEightyToEightyFive.errors?.required
+                      ">
+                        {{ errorMessage.NEW_PERCENT_EIGHTY_TO_EIGHTY_FIVE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 85 years to less than 90 years(Old Percent) "
+                      formControlName="oldPercentEightyFiveToNinety">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 85 years to less than 90 years(New Percent) "
+                      formControlName="newPercentEightyFiveToNinety" required>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newPercentEightyFiveToNinety.touched &&
+                    adpForm.controls.newPercentEightyFiveToNinety.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newPercentEightyFiveToNinety.errors?.required
+                      ">
+                        {{ errorMessage.NEW_PERCENT_EIGHTYFIVE_TO_NINETY}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 90 years to less than 95 years(Old Percent) "
+                      formControlName="oldPercentNinetyToNinetyFive">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 90 years to less than 95 years(New Percent) "
+                      formControlName="newPercentNinetyToNinetyFive" required>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newPercentNinetyToNinetyFive.touched &&
+                    adpForm.controls.newPercentNinetyToNinetyFive.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newPercentNinetyToNinetyFive.errors?.required
+                      ">
+                        {{ errorMessage.NEW_PERCENT_NINTY_TO_NINETYFIVE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 80 years to less than 100 years(Old Percent) "
+                      formControlName="oldPercentEightyToHundred">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="From 80 years to less than 100 years(New Percent) "
+                      formControlName="newPercentEightyToHundred" required>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newPercentEightyToHundred.touched &&
+                    adpForm.controls.newPercentEightyToHundred.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newPercentEightyToHundred.errors?.required
+                      ">
+                        {{ errorMessage.NEW_PERCENT_EIGHTY_TO_HUNDRED}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="100 years or more(Old Percent) "
+                      formControlName="oldPercentHundredYearsOrMore">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="100 years or more(New Percent) "
+                      formControlName="newPercentHundredYearsOrMore" required>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newPercentHundredYearsOrMore.touched &&
+                    adpForm.controls.newPercentHundredYearsOrMore.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newPercentHundredYearsOrMore.errors?.required
+                      ">
+                        {{ errorMessage.NEW_PERCENT_HUNDRED_OR_MORE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field>
+                    <input matInput formControlName="oldEffectiveDate" [matDatepicker]="oldEffectiveDate"
+                      placeholder="Old Effective Date" required readonly>
+                    <mat-datepicker-toggle matSuffix [for]="oldEffectiveDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #oldEffectiveDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.oldEffectiveDate.touched &&
+                    adpForm.controls.oldEffectiveDate.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.oldEffectiveDate.errors?.required
+                      ">
+                        {{ errorMessage.OLD_EFFECTIVE_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field>
+                    <input matInput formControlName="newEffectiveDate" [matDatepicker]="newEffectiveDate"
+                      placeholder="New Effective Date" required>
+                    <mat-datepicker-toggle matSuffix [for]="newEffectiveDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #newEffectiveDate></mat-datepicker>
+                    <div class="error-wrapper" *ngIf="
+                    adpForm.controls.newEffectiveDate.touched &&
+                    adpForm.controls.newEffectiveDate.errors
+                    ">
+                      <mat-error *ngIf="
+                      adpForm.controls.newEffectiveDate.errors?.required
+                      ">
+                        {{ errorMessage.NEW_EFFECTIVE_DATE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+          </ng-container>
+
+        </div>
+        <!-- End Master Rate Updation -->
+      </div>
+      <!-- common Button -->
+      <div class="form-action-button">
+        <button type="submit" mat-raised-button color="primary" title="Save " (click)="save()">
+          <i class="material-icons" title="Save " aria-hidden="true">
+            save
+          </i>
+          Save
+        </button>
+        <!-- <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+          <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button> -->
+        <button type="button" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+          <i class="material-icons" title="Reset" aria-hidden="true">
+            restore
+          </i>
+          Reset
+        </button>
+        <!-- <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['javaScript:void(0)']"
+          routerLinkActive="router-link-active">
+          <i class="material-icons" title="Listing" aria-hidden="true">
+            list
+          </i>
+          Listing
+        </button> -->
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+        <!-- <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" title="Print" aria-hidden="true">
+            print
+          </i>
+          Print
+        </button> -->
+      </div>
+      <!-- End common Button -->
+    </form>
+  </div>
+</div>

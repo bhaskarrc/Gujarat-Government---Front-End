@@ -1,0 +1,109 @@
+<div class="box box-primary">
+  <div class="box-header">Attachment</div>
+  <div class="box-body">
+    <!-- Attachment Table Starts -->
+    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable" aria-describedby="attachment">
+
+      <!-- Attachment Type Serial Number -->
+      <ng-container matColumnDef="srno">
+        <th mat-header-cell *matHeaderCellDef scope="row" style="width: 5%;">
+          Serial No.
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <!-- Attachment Type Column -->
+      <ng-container matColumnDef="attachmentType">
+        <th mat-header-cell *matHeaderCellDef scope="row">Attachment Type</th>
+        <td mat-cell *matCellDef="let item;let i = index;">
+          <mat-select placeholder="Attachment Type" #singleSelect1 [(ngModel)]="item.attachmentType"
+            [ngModelOptions]="{standalone: true}" disabled>
+            <mat-option>
+              <ngx-mat-select-search [formControl]="attachmentTypeCodeCtrl"
+                [placeholderLabel]="'Find Attachment Type...'"
+                [noEntriesFoundLabel]="'no matching Attachment Type found'">
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let AT of attachmentTypeCode" [value]="AT.value">
+              {{AT.viewValue}}
+            </mat-option>
+          </mat-select>
+        </td>
+      </ng-container>
+
+      <!-- File Name Column -->
+      <ng-container matColumnDef="fileName">
+        <th mat-header-cell *matHeaderCellDef scope="row">File name</th>
+        <td mat-cell *matCellDef="let item">
+          <mat-form-field floatLabel="never" class="disabled">
+            <textarea matInput [value]="item.name" [(ngModel)]="item.name" [ngModelOptions]="{standalone: true}"
+              readonly></textarea>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Browse Column -->
+      <ng-container matColumnDef="browse">
+        <th mat-header-cell *matHeaderCellDef scope="row">Browse File</th>
+        <td mat-cell *matCellDef="let i = index" class="centerAlign">
+          <button type="button" class="btn-browse" disabled>Browse
+            Files</button>
+        </td>
+      </ng-container>
+
+      <!-- Uploaded File Name Column -->
+      <ng-container matColumnDef="uploadedFileName">
+        <th mat-header-cell *matHeaderCellDef scope="row">Uploaded file name</th>
+        <td mat-cell *matCellDef="let item">
+          <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+        </td>
+      </ng-container>
+
+      <!-- Uploaded By Column -->
+      <ng-container matColumnDef="uploadedBy">
+        <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+        <td mat-cell *matCellDef="let item">
+          {{item.uploadedBy}}
+        </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+        <td mat-cell *matCellDef="let item; let i = index">
+          <table class="iconTable" aria-describedby="actionBtn">
+            <tbody>
+              <tr>
+                <td width="30">
+                  <i class="material-icons plus delete" aria-hidden="true"
+                    *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1">
+                    delete
+                  </i>
+                </td>
+                <td width="30">
+                  <i class="material-icons plus add" aria-hidden="true"
+                    *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)">
+                    add
+                  </i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </ng-container>
+
+      <!-- Header and Footer Row Definition -->
+      <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+    </table>
+    <!-- Attachment Table Ends -->
+
+    <input type="file" id="fileBrowse" style="visibility: hidden;" />
+    <div class="legend">
+      1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf',
+      JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+    </div>
+  </div>
+</div>

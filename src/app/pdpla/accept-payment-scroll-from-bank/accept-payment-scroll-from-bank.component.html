@@ -1,0 +1,208 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Accept Payment Scroll from Bank
+      </div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/PDPLA/APSB/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+    </div>
+    <!-- Navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PD/PLA</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Accept Payment Scroll from Bank
+        </li>
+      </ol>
+    </nav>
+    <!-- search fields -->
+    <div class="panel-group">
+      <div class="box box-primary">
+        <div class="box-header">Search Detail</div>
+        <div class="box-body">
+          <form [formGroup]="acceptPaymentScrollBankForm">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="scrollFromDate" [matDatepicker]="scrollFromDate" [max]='maxDate'
+                    placeholder="Scroll From Date" readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="scrollFromDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #scrollFromDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="acceptPaymentScrollBankForm.controls.scrollFromDate.touched || (acceptPaymentScrollBankForm.controls.scrollFromDate.errors && isSubmitted)">
+                    <mat-error *ngIf="acceptPaymentScrollBankForm.controls.scrollFromDate.errors?.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="scrollToDate" [matDatepicker]="scrollToDate" [max]='maxDate'
+                    placeholder="Scroll To Date" readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="scrollToDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #scrollToDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="acceptPaymentScrollBankForm.controls.scrollToDate.touched || (acceptPaymentScrollBankForm.controls.scrollToDate.errors && isSubmitted)">
+                    <mat-error *ngIf="acceptPaymentScrollBankForm.controls.scrollToDate.errors?.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='bankName' formControlName='bankName' placeholder='Bank Name'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='bankTypeCtrl' [placeholderLabel]="'Select Bank Name ...'"
+                        [noEntriesFoundLabel]="'no matching Bank Name found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let item of bankType_list | filterSelectInput : bankTypeCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='chequeType' formControlName='chequeType' placeholder='Cheque / Certificate Type'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='chequeTypeCtrl' [placeholderLabel]="'Select Bank Name ...'"
+                        [noEntriesFoundLabel]="'no matching Bank Name found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let item of cheque_list | filterSelectInput : chequeTypeCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+            </div>
+            <!-- Common Action Button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="onSave();">
+                <i class="material-icons" aria-hidden="true" title="search">search</i>
+                Search
+              </button>
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true" title="reset">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+            <!-- End Common Action Button -->
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- filtered data table -->
+    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="scrollFromBank">
+
+      <ng-container matColumnDef="checkBox">
+        <th mat-header-cell *matHeaderCellDef scope="row">
+          <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+            [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+            [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+            [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-center">
+          <mat-checkbox (click)="$event.stopPropagation()"
+            (change)="$event ? directiveObject.selection.toggle(row) : null"
+            [checked]="directiveObject.selection.isSelected(row) "
+            [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="bName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bank Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.bName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="branchCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Branch Code</th>
+        <td mat-cell *matCellDef="let element"> {{element.branchCode}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Scroll Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.sDate}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="challan">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">No. Of Cheques/ Certificate </th>
+        <td mat-cell *matCellDef="let element"> {{element.challan}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque / Certificate type</th>
+        <td mat-cell *matCellDef="let element"> {{element.cType}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Total Amount</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="details">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Details</th>
+        <td mat-cell *matCellDef="let element">
+
+          <a [routerLink]="'../receive-payment-scroll-details'"> {{element.details}} </a></td>
+      </ng-container>
+      <!-- Header Section Of table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Data Fetch From .TS File to table -->
+      <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+      </tr>
+    </table>
+    <!-- End filtered data table -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <!-- Common Action Button -->
+    <div class="form-action-button">
+
+      <button mat-raised-button type="submit" class="green" title="Receive">
+        <i class="material-icons" title="Submit" aria-hidden="true">launch</i>
+        Receive
+      </button>
+
+      <button mat-button mat-raised-button color="primary" class="back-button">
+        <i class="material-icons" aria-hidden="true" title="Back">
+          keyboard_return
+        </i>
+        Reurn
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="close">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+    <!-- End  Common Action Button -->
+
+  </div>
+</div>

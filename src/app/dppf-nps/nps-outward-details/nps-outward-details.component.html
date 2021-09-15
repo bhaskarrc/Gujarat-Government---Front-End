@@ -1,0 +1,223 @@
+<div class="container">
+  <div class="form-wrapper">
+    <!-- Header Section -->
+    <div class="heading-section ng-star-inserted">
+      <div>Outward Details</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF-NPS/AG/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF - NPS</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Outward Details</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="outwardDetailsForm" (ngSubmit)="outwardDetailsFormData()">
+        <!-- Search -->
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="false" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Search</div>
+            </mat-expansion-panel-header>
+            <div class="box-body">
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <input matInput formControlName="inwardNo" placeholder="Inward No." numbersAlphabetsSpaceOnly>
+                    <mat-icon matSuffix class="searchIcon" (click)="openDialogInwardNumber()">
+                      search</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="typeOfInward" placeholder="Type of Inward">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="typeOfInwardCTRL"
+                          [placeholderLabel]="'Find Department...'"
+                          [noEntriesFoundLabel]="'No matching Department found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let typeOnInwardName of typeOnInwardList | filterSelectInput:typeOfInwardCTRL.value"
+                        [value]="typeOnInwardName.value">
+                        {{typeOnInwardName.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="inwardFromDate" [matDatepicker]="picker1"
+                      placeholder="Inward From Date">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="inwardToDate" [matDatepicker]="picker2"
+                      placeholder="Inward To Date">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2 [disabled]="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="department" placeholder="Department">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="departmentCTRL" [placeholderLabel]="'Find Department...'"
+                          [noEntriesFoundLabel]="'No matching Department found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let departmentName of departmentList | filterSelectInput:departmentCTRL.value"
+                        [value]="departmentName.value">
+                        {{departmentName.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+              </div>
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                    <i class="material-icons" aria-hidden="true">search</i> Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- End Search -->
+      </form>
+
+      <br>
+      <!-- Outward Details -->
+      <div class="mat-elevation-z8 mt-2">
+        <table mat-table [dataSource]="outwardDetailDataSource" width="100%" id="browseTable"
+          aria-describedby="npsOutwardDetails" matSort>
+
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              <mat-checkbox (change)="$event ? directiveObj.masterToggle(outwardDetailDataSource) : null"
+                [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(outwardDetailDataSource)"
+                [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(outwardDetailDataSource)"
+                [aria-label]="directiveObj.checkboxLabel(outwardDetailDataSource)">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row" class="centerAlign">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? directiveObj.selection.toggle(row) : null"
+                [checked]="directiveObj.selection.isSelected(row)"
+                [aria-label]="directiveObj.checkboxLabel(outwardDetailDataSource,row)">
+              </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>Total</td>
+          </ng-container>
+          <!-- Serial No. -->
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Serial No.
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <!-- Inward No. -->
+          <ng-container matColumnDef="inwardNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward No.</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.inwardNo}}
+            </td>
+          </ng-container>
+          <!-- Inward Type -->
+          <ng-container matColumnDef="inwardType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward Type</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.inwardType}}
+            </td>
+          </ng-container>
+          <!-- Inward Date -->
+          <ng-container matColumnDef="inwardDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.inwardDate}}
+            </td>
+          </ng-container>
+          <!-- Department -->
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Department</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.department}}
+            </td>
+          </ng-container>
+          <!-- Which Branch/Unit sent from -->
+          <ng-container matColumnDef="whichBranch">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Which Branch/Unit sent from</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.whichBranch}}
+            </td>
+          </ng-container>
+          <!-- Branch User Name -->
+          <ng-container matColumnDef="branchUser">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Branch User Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.branchUser}}
+            </td>
+          </ng-container>
+          <!-- Outward Remark -->
+          <ng-container matColumnDef="outwardRemark">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Outward Remark</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field>
+                <textarea matInput [(ngModel)]="element.outwardRemark" [ngModelOptions]="{standalone: true}"></textarea>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="outwardDataColumn"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: outwardDataColumn;"></tr>
+        </table>
+        <!-- Paginator -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+      </div>
+      <!-- End Outward Details -->
+      <!-- Common Button -->
+      <div class="form-action-button">
+        <button mat-raised-button color="primary" title="Save as Draft">
+          <i class="material-icons" title="Save as Draft" aria-hidden="true">
+            save
+          </i>
+          Save as Draft
+        </button>
+        <button mat-raised-button type="button" class="green" (click)="workflowDetails()">
+          <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+        </button>
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+      <!-- End Common Button -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,263 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- Screen Name -->
+    <div class="heading-section ng-star-inserted">
+      <div>Pay Head Location Mapping </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Payroll</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Pay Head Location Mapping</li>
+      </ol>
+    </nav>
+
+    <!-- Form Starts -->
+    <form [formGroup]="payHeadLocationForm" (ngSubmit)="payHeadLocationFormData()">
+      <div class="box box-primary">
+        <div class="box-header">Pay Head Location Mapping</div>
+        <div class="box-body">
+          <div class=" form-datatable-list">
+
+            <div class="row">
+
+              <!-- Input Field for DDO Number -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width disabled">
+                  <input matInput formControlName="ddoNo" placeholder="DDO No" autocomplete="off" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for Cardex Number -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width disabled">
+                  <input matInput formControlName="cardexNo" placeholder="Cardex No" autocomplete="off" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for DDO Office Name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width disabled">
+                  <input matInput formControlName="officeName" placeholder="Office Name" autocomplete="off" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- Input Field for DDO Name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width disabled">
+                  <input matInput formControlName="district" placeholder="District" autocomplete="off" readonly>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+        <!-- Pay Head Location Table Starts -->
+        <table mat-table [dataSource]="payHeadLocationDataSource" matSort aria-describedby="payHeadLocationTable">
+
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              <mat-checkbox (change)="$event ? directiveObj.masterToggle(payHeadLocationDataSource) : null"
+                [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(payHeadLocationDataSource)"
+                [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(payHeadLocationDataSource)"
+                [aria-label]="directiveObj.checkboxLabel(payHeadLocationDataSource)">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row" class="text-center">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? directiveObj.selection.toggle(row) : null"
+                [checked]="directiveObj.selection.isSelected(row) "
+                [aria-label]="directiveObj.checkboxLabel(payHeadLocationDataSource,row)">
+              </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- Serial Number Column -->
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Sr. No.
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+
+          <!-- Type Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef scope="row">Type*</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="full-width">
+                <mat-select [(ngModel)]="element.type" [ngModelOptions]="{standalone: true}" [value]="element.type"
+                  [disabled]="element.isSubmitted" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Find Type...'"
+                      [noEntriesFoundLabel]="'No matching Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+                  <mat-option *ngFor="let typeName  of typeList | filterSelectInput:typeCtrl.value"
+                    [value]="typeName.value">
+                    {{typeName.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="payHeadLocationForm.controls.type.touched && (payHeadLocationForm.controls.type.errors)">
+                  <mat-error *ngIf="payHeadLocationForm.controls.type.errors?.required">
+                    {{errorMessages.TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- Pay Head Column -->
+          <ng-container matColumnDef="payhead">
+            <th mat-header-cell *matHeaderCellDef scope="row">Pay Head*</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="full-width">
+                <mat-select [(ngModel)]="element.payhead" [ngModelOptions]="{standalone: true}"
+                  [disabled]="element.isSubmitted" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="payHeadCtrl" [placeholderLabel]="'Find Pay Head...'"
+                      [noEntriesFoundLabel]="'No matching Pay Head found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <ng-container *ngIf="element.type == '1'">
+                    <mat-option *ngFor="let payHeadName  of payHeadListEarning | filterSelectInput:payHeadCtrl.value"
+                      [value]="payHeadName.value">
+                      {{payHeadName.viewValue}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="element.type == '2'">
+                    <mat-option *ngFor="let payHeadName  of payHeadListDeduction | filterSelectInput:payHeadCtrl.value"
+                      [value]="payHeadName.value">
+                      {{payHeadName.viewValue}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="element.type == '3'">
+                    <mat-option *ngFor="let payHeadName  of payHeadListRecovery | filterSelectInput:payHeadCtrl.value"
+                      [value]="payHeadName.value">
+                      {{payHeadName.viewValue}}
+                    </mat-option>
+                  </ng-container>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef scope="row">Description</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.type == '1' && element.payhead != ''">
+                {{payHeadListEarning[element.payhead - 1].description}}
+              </ng-container>
+              <ng-container *ngIf="element.type == '2' && element.payhead != ''">
+                {{payHeadListDeduction[element.payhead - 1].description}}
+              </ng-container>
+              <ng-container *ngIf="element.type == '3' && element.payhead != ''">
+                {{payHeadListRecovery[element.payhead - 1].description}}
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <!-- Enable Column -->
+          <ng-container matColumnDef="enable">
+            <th mat-header-cell *matHeaderCellDef scope="row">Enable?</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <mat-checkbox matinput [(ngModel)]="element.enable" [ngModelOptions]="{standalone: true}"
+                [value]="element.enable" required></mat-checkbox>
+              <!-- [disabled]="element.isSubmitted" -->
+              <div class="error-wrapper"
+                *ngIf="payHeadLocationForm.controls.enable.touched && (payHeadLocationForm.controls.enable.errors)">
+                <mat-error *ngIf="payHeadLocationForm.controls.enable.errors?.required">
+                  {{errorMessages.ENABLE}}
+                </mat-error>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Action View/Edit/Delete Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row" width="6%">Action</th>
+            <td mat-cell *matCellDef="let element; let i=index">
+
+              <table class="iconTable" aria-describedby="actionBtn">
+                <tbody>
+                  <tr>
+                    <td width="30">
+                      <div *ngIf="(element.type && element.payhead);  then notHidden else isHidden"></div>
+                      <ng-template #isHidden>
+                        <i class="material-icons plus add" aria-hidden="true" title="Add"
+                          *ngIf="payHeadLocationDataSource && payHeadLocationDataSource.data && (i == payHeadLocationDataSource.data.length - 1)"
+                          style="color:lightgray">add</i>
+                      </ng-template>
+                      <ng-template #notHidden>
+                        <i class="material-icons plus add" aria-hidden="true" title="Add"
+                          *ngIf="payHeadLocationDataSource && payHeadLocationDataSource.data && (i == payHeadLocationDataSource.data.length - 1)"
+                          (click)="addRow(element)">add</i>
+                      </ng-template>
+                    </td>
+                    <td width="30">
+                      <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                        *ngIf="(payHeadLocationDataSource && payHeadLocationDataSource.data && payHeadLocationDataSource.data.length > 1)&&!element.isSubmitted"
+                        (click)="deleteRow(i)">
+                        delete
+                      </i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="payHeadLocationDataColumn"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: payHeadLocationDataColumn;"></tr>
+        </table>
+        <!-- Pay Head Location Table Ends -->
+
+      </div>
+      <!-- Paginator -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+      <!-- Action Buttons Starts -->
+      <div class="form-action-button">
+        <button type="button" mat-raised-button class="back-button" title="Back">
+          <i class="material-icons" title="Back" aria-hidden="true">
+            keyboard_return
+          </i>
+          Back
+        </button>
+        <button mat-raised-button type="button" class="green" title="Submit" (click)="onClickSubmit()">
+          <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+        </button>
+        <button type="button" mat-raised-button color="accent" title="Reset" (click)="resetform()">
+          <i class="material-icons" title="Reset" aria-hidden="true">
+            restore
+          </i>
+          Reset
+        </button>
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+      <!-- Action Buttons Ends -->
+    </form>
+    <!-- Form Ends -->
+  </div>
+</div>

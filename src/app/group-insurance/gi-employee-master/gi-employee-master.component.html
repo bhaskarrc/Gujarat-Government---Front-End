@@ -1,0 +1,614 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>8011 Employee Master</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/EM/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+        <li class="breadcrumb-item active" aria-current="page">8011 Employee Master</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+
+        <!-- employee master -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            Employee Master
+          </ng-template>
+
+          <!-- form -->
+          <form [formGroup]="employeeMasterForm" (ngSubmit)="employeeMasterFormData()">
+
+            <!-- office details -->
+            <div class="box box-primary">
+              <div class="box-header">Office Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- district -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="District" formControlName="district" charactersOnly required>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- treasury office -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="treasuryOffice" placeholder='Treasury Office Name'>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="treasuryOfficeCtrl"
+                            [placeholderLabel]="'Find Treasury Office Name...'"
+                            [noEntriesFoundLabel]="'No matching Treasury Office Name found'" alphabetSpaceCommaOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of treasuryOfficeAhmedabadList | filterSelectInput:treasuryOfficeCtrl.value"
+                          [value]="item.value" matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- ddo no -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO No." formControlName="ddoNo">
+                    </mat-form-field>
+                  </div>
+
+                  <!-- cardex no -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Cardex No." formControlName="cardexNo">
+                    </mat-form-field>
+                  </div>
+
+                  <!-- ddo office name -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO Office Name" formControlName="ddoOfficeName">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- employee master details -->
+            <div class="box box-primary">
+
+              <div class="box-header">Employee Master Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- employee no -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="employeeNo" placeholder="Employee No." numbersAlphabetsOnly
+                        required>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="employeeMasterForm.controls.employeeNo.touched && employeeMasterForm.controls.employeeNo.errors">
+                        <mat-error *ngIf="employeeMasterForm.controls.employeeNo.errors.required">
+                          {{errorMessages.EMPLOYEE_NUMBER}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- employee name -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Employee Name" formControlName="employeeName" alphabetsSpaceOnly
+                        required>
+                      <div class="error-wrapper"
+                        *ngIf="employeeMasterForm.controls.employeeName.touched && employeeMasterForm.controls.employeeName.errors">
+                        <mat-error *ngIf="employeeMasterForm.controls.employeeName.errors.required">
+                          {{errorMessages.EMPLOYEE_NAME}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- schee join date -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="schemeJoinDate" [matDatepicker]="picker1"
+                        placeholder="GI Scheme Joining Date" required>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="employeeMasterForm.controls.schemeJoinDate.touched && employeeMasterForm.controls.schemeJoinDate.errors">
+                        <mat-error *ngIf="employeeMasterForm.controls.schemeJoinDate.errors.required">
+                          {{errorMessages.SCHEME_JOIN_DATE}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- gi scheme joining group -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="GI Scheme Joining Group" formControlName="schemeJoinGroup" required>
+                      <div class="error-wrapper"
+                        *ngIf="employeeMasterForm.controls.schemeJoinGroup.touched && employeeMasterForm.controls.schemeJoinGroup.errors">
+                        <mat-error *ngIf="employeeMasterForm.controls.schemeJoinGroup.errors.required">
+                          {{errorMessages.SCHEME_NUMBER}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- pay scale -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select placeholder="Pay Scale" formControlName="payScale">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="payScaleEmployeeCtrl"
+                            [placeholderLabel]="'Find Pay Scale...'"
+                            [noEntriesFoundLabel]="'No matching Pay Scale found'" numbersHyphenOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of payScaleList | filterSelectInput:payScaleEmployeeCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- employee group change -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="employeeGroupChange" placeholder="Employee Group Change">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="employeeGroupChangeCtrl"
+                            [placeholderLabel]="'Find Employee Group Change...'"
+                            [noEntriesFoundLabel]="'No matching Employee Group Change found'" alphabetOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of employeeGroupList | filterSelectInput:employeeGroupChangeCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- is nominated ias -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="isNominatedIas" placeholder="Is Nominated IAS">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="isNominatedIasCtrl"
+                            [placeholderLabel]="'Find Is Nominated IAS...'"
+                            [noEntriesFoundLabel]="'No matching Is Nominated IAS found'" alphabetOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of isNominatedIasList | filterSelectInput:isNominatedIasCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- continue in state scheme -->
+                  <div class="col-sm-3" *ngIf="employeeMasterForm.controls.isNominatedIas.value === '1'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="continueInStateScheme" placeholder="Continue in State Scheme">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="continueInStateSchemeCtrl"
+                            [placeholderLabel]="'Find Continue in State Scheme...'"
+                            [noEntriesFoundLabel]="'No matching Continue in State Scheme found'" numbersAlphabetsOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of continueInStateSchemeList | filterSelectInput:isNominatedIasCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- gi iplementation date -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="implementationDate" placeholder="GI Implementation Date">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="implementationDateCtrl"
+                            [placeholderLabel]="'Find GI Implementation DateChange...'"
+                            [noEntriesFoundLabel]="'No matching GI Implementation Date found'" numbersAlphabetsOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let implementationDateName of implementationDateList | filterSelectInput:implementationDateCtrl.value"
+                          [value]="implementationDateName.value">
+                          {{implementationDateName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="employeeMasterForm.controls.implementationDate.touched && employeeMasterForm.controls.implementationDate.errors">
+                        <mat-error *ngIf="employeeMasterForm.controls.implementationDate.errors.required">
+                          {{errorMessages.EXPECTED_RATE_CHANGE}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <!-- action button -->
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" title="Next" (click)="goToNext()">
+                  Save & Proceed
+                  <i class="material-icons" aria-hidden="true">
+                    chevron_right
+                  </i>
+                </button>
+              </div>
+              <!-- action button  end-->
+
+
+            </div>
+
+            <!-- action button -->
+            <div class="col-sm-12">
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" title="Add" (click)="addRow()">
+                  <i class="material-icons" aria-hidden="true">add</i> Add
+                </button>
+                <button type="reset" mat-raised-button color="accent" title="Reset">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </div>
+            <!-- action button end -->
+
+          </form>
+
+          <!-- group details -->
+          <div class="box box-primary" *ngIf="employeeMasterForm.controls.employeeGroupChange.value === '1'">
+
+            <div class="box-header">Group Details</div>
+            <div class="box-body">
+              <div class="row">
+
+                <div class="col-sm-12">
+
+                  <!-- table start -->
+                  <table mat-table [dataSource]="groupDetailsDataSource" aria-describedby="accountWiseDetails"
+                    class="table-responsive">
+
+                    <!-- sr no -->
+                    <ng-container matColumnDef="srNo">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Sr.No.
+                      </th>
+                      <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                        {{ i+1 }}
+                      </td>
+                    </ng-container>
+
+                    <!-- group change date  -->
+                    <ng-container matColumnDef="groupChangeDate">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Group Change Date
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                          <input matInput [(ngModel)]="element.groupChangeDate" [matDatepicker]="picker3">
+                          <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                          <mat-datepicker #picker3 [disabled]="false"></mat-datepicker>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- group -->
+                    <ng-container matColumnDef="group">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Group
+                      </th>
+                      <td mat-cell *matCellDef="let element  let i =index">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.group">
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="groupCtrl" [placeholderLabel]="'Find Group...'"
+                                [noEntriesFoundLabel]="'No matching Group found'" alphabetsSpaceOnly>
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let groupName of groupList | filterSelectInput:groupCtrl.value"
+                              [value]="groupName.value">
+                              {{groupName.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <!-- pay scale -->
+                    <ng-container matColumnDef="payScale">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Pay Scale
+                      </th>
+                      <td mat-cell *matCellDef="let  element  let i =index">
+                        <mat-form-field class="full-width">
+                          <mat-select [(ngModel)]="element.payScale">
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="payScaleCtrl"
+                                [placeholderLabel]="'Find Pay Scale...'"
+                                [noEntriesFoundLabel]="'No matching Pay Scale found'" alphabetsSpaceOnly>
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let item of payScaleList | filterSelectInput:payScaleCtrl.value"
+                              [value]="item.value">
+                              {{item.viewValue}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                      </td>
+                    </ng-container>
+
+                    <!-- action -->
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row" style="width: 4%;">Action</th>
+                      <td mat-cell *matCellDef="let  element;let i=index">
+
+                        <table class="iconTable" aria-describedby="actionBtn">
+                          <tbody>
+                            <tr>
+
+                              <td width="30">
+                                <a><i class="material-icons plus add" aria-hidden="true" title="Add"
+                                    (click)="addRecoveryDetailRow(i);"
+                                    *ngIf="(i == groupDetailsDataSource.data.length - 1)">
+                                    add
+                                  </i></a>
+                              </td>
+
+                              <td width="30">
+                                <i class="material-icons plus  delete" aria-hidden="true" (click)="deleteRowRecovery(i)"
+                                  title="Delete" *ngIf="(i > 0)">
+                                  delete
+                                </i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </td>
+                    </ng-container>
+
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="recoveryColumn"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row;let i= index;columns:recoveryColumn"></tr>
+                  </table>
+                  <!-- table ends -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- group details end  -->
+
+        </mat-tab>
+
+        <!-- attachment -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            Attachment
+          </ng-template>
+
+          <!-- selector for attachment -->
+          <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+
+          <!-- action button -->
+          <div class="form-action-button">
+            <button type="button" mat-raised-button color="warn" title="Upload">
+              <i class="material-icons" aria-hidden="true">
+                publish
+              </i>
+              Upload
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+              <i class="material-icons" aria-hidden="true">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+          <!-- action button ends -->
+
+        </mat-tab>
+
+      </mat-tab-group>
+
+      <div class="mat-elevation-z8 mt-2 overflow-x-scroll">
+        <!-- table start -->
+        <table mat-table [dataSource]="employeeMasterDataSource" width="100%" aria-describedby="employeeMaster" matSort>
+
+          <!-- sr no -->
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef scope="row">
+              Serial No.
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+
+          <!-- district -->
+          <ng-container matColumnDef="district">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.district}}
+            </td>
+          </ng-container>
+
+          <!-- treasury office -->
+          <ng-container matColumnDef="treasuryOffice">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DDo Office Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.treasuryOffice}}
+            </td>
+          </ng-container>
+
+          <!-- employee number -->
+          <ng-container matColumnDef="employeeNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Employee No.</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.employeeNumber}}
+            </td>
+          </ng-container>
+
+          <!-- employee name -->
+          <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Employee Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.employeeName}}
+            </td>
+          </ng-container>
+
+          <!-- scheme join date -->
+          <ng-container matColumnDef="schemeJoinDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Gi Scheme Joining Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.schemeJoinDate | date: 'dd-MMM-yyyy'}}
+            </td>
+          </ng-container>
+
+          <!-- scheme join group -->
+          <ng-container matColumnDef="schemeJoinGroup">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">GI Scheme Joining Group</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.schemeJoinGroup}}
+            </td>
+          </ng-container>
+
+          <!-- current group -->
+          <ng-container matColumnDef="currentGroup">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Current Group</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.currentGroup}}
+            </td>
+          </ng-container>
+
+          <!-- group change date -->
+          <ng-container matColumnDef="groupChangeDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Group Change Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.groupChangeDate | date: 'dd-MMM-yyyy'}}
+            </td>
+          </ng-container>
+
+          <!-- is nominated ias -->
+          <ng-container matColumnDef="isNominatedIas">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Is Nominated IAS?</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.isNominatedIas}}
+            </td>
+          </ng-container>
+
+          <!--continue in state scheme  -->
+          <ng-container matColumnDef="continueInStateScheme">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Continue in State Scheme</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.continueInStateScheme }}
+            </td>
+          </ng-container>
+
+          <!-- action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+            <td mat-cell *matCellDef="let element; let i = index" style="text-align: center;"
+              class="action-btn-i centerAlign">
+              <a>
+                <i class="material-icons plus view-icon" aria-hidden="true" title="View"
+                  (click)="goToView()">remove_red_eye
+                </i>
+              </a>
+              <a>
+                <i class="material-icons plus view-icon" aria-hidden="true" title="Edit" (click)="goToEdit(i)">edit
+                </i>
+              </a>
+              <a>
+                <i class="material-icons plus view-icon" aria-hidden="true" title="Delete"
+                  (click)="goToDelete(i)">delete
+                </i>
+              </a>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="employeeMasterDataSourceColumn"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: employeeMasterDataSourceColumn;"></tr>
+        </table>
+        <!-- table end -->
+      </div>
+
+      <!-- paginator -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+
+      <!-- common action button -->
+      <div class="form-action-button">
+
+        <button mat-raised-button color="primary" title="Save as Draft">
+          <i class="material-icons" aria-hidden="true">
+            save
+          </i>
+          Save as Draft
+        </button>
+
+        <button mat-raised-button type="button" class="green" (click)="directiveObject.workflowDetails()"
+          title="Submit">
+          <i class="material-icons" aria-hidden="true">done</i> Submit
+        </button>
+
+        <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+          <i class="material-icons" aria-hidden="true">
+            restore
+          </i>
+          Reset
+        </button>
+
+        <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+          <i class="material-icons" aria-hidden="true">
+            list
+          </i>
+          Listing
+        </button>
+
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+
+        <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" aria-hidden="true">
+            print
+          </i>
+          Print
+        </button>
+
+      </div>
+      <!-- common action button ends -->
+
+    </div>
+  </div>
+</div>

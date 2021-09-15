@@ -1,0 +1,327 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading-section -->
+    <div class="heading-section ng-star-inserted">
+      Pension Pre-Audit Cases Register
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Pension Pre-Audit Cases Register</li>
+      </ol>
+    </nav>
+
+    <!-- Search Criteria -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search Criteria
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="searchForm">
+            <div class="row">
+
+              <!-- retirement from date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="retirementFromDate" [max]="maxDate"
+                    [matDatepicker]="retirementFromDate" placeholder="Retirement From Date">
+                  <mat-datepicker-toggle matSuffix [for]="retirementFromDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #retirementFromDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- retirement to date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="retirementToDate" [max]="maxDate" [matDatepicker]="retirementToDate"
+                    placeholder="Retirement To Date">
+                  <mat-datepicker-toggle matSuffix [for]="retirementToDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #retirementToDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- district name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="districtName" placeholder="District">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="districtNameCtrl"
+                        [placeholderLabel]="'Find District Name...'"
+                        [noEntriesFoundLabel]="'No matching District Name found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of districtNameList |
+                        filterSelectInput:districtNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- audit year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="auditYear" placeholder="Audit Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                        [noEntriesFoundLabel]="'No matching Audit Year found'" numbersHyphenOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of auditYearList |
+                        filterSelectInput:auditYearCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- institute type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteType" placeholder="Institute Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                        [placeholderLabel]="'Find Institute Type...'"
+                        [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- if institute type is others -->
+              <div class="col-sm-3" *ngIf="searchForm.controls.instituteType.value === '11'">
+                <mat-form-field>
+                  <input matInput formControlName="others" placeholder="Others" alphabetsSpaceOnly>
+                </mat-form-field>
+              </div>
+
+              <!-- institute name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteName" placeholder="Institute Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                        [placeholderLabel]="'Find Institute Name...'"
+                        [noEntriesFoundLabel]="'No matching Institute Name found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" (click)="onSearch();" title="search">
+            <i class="material-icons" aria-hidden="true">search</i>
+            Search
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" (click)="clearForm();" title="reset">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- listing -->
+    <div class="mat-elevation-z8 mt-3 overflow-x-scroll">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort
+        aria-describedby="pensionPreAuditCasesRegisterReport">
+
+        <!-- serial no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- id -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">ID</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.id}}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- inward no -->
+        <ng-container matColumnDef="inwardNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward Number</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.inwardNumber}}
+          </td>
+        </ng-container>
+
+        <!-- inward date -->
+        <ng-container matColumnDef="inwardDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Inward Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.inwardDate | date: 'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- pensioner name -->
+        <ng-container matColumnDef="pensionerName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pensioner Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.pensionerName}}
+          </td>
+        </ng-container>
+
+        <!-- designation -->
+        <ng-container matColumnDef="designation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="gray-color" scope="row">Designation</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.designation}}
+          </td>
+        </ng-container>
+
+        <!-- pension office name -->
+        <ng-container matColumnDef="pensionOfficeName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pension Office Name
+          </th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.pensionOfficeName }}
+          </td>
+        </ng-container>
+
+        <!-- ppo  number -->
+        <ng-container matColumnDef="ppoNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO Number</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.ppoNumber}}
+          </td>
+        </ng-container>
+
+        <!-- retirement date -->
+        <ng-container matColumnDef="retirementDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Retirement Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.retirementDate | date:'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- is approved or query -->
+        <ng-container matColumnDef="isApprovedOrQuery">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Is Approved or Query</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.isApprovedOrQuery}}
+          </td>
+        </ng-container>
+
+        <!-- dcrg -->
+        <ng-container matColumnDef="dcrg">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DCRG</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.dcrg}}
+          </td>
+        </ng-container>
+
+        <!-- cvp -->
+        <ng-container matColumnDef="cvp">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">CVP</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.cvp}}
+          </td>
+        </ng-container>
+
+        <!-- ae -->
+        <ng-container matColumnDef="ae">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">AE</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.ae}}
+          </td>
+        </ng-container>
+
+        <!-- outward no -->
+        <ng-container matColumnDef="outwardNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Outward No</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.outwardNo}}
+          </td>
+        </ng-container>
+
+        <!-- outward date -->
+        <ng-container matColumnDef="outwardDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Outward Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.outwardDate}}
+          </td>
+        </ng-container>
+
+        <!-- remarks -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Remarks</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.remarks}}
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action </th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <i class="material-icons plus add" aria-hidden="true">
+              edit
+            </i>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <!-- action button -->
+    <div class="form-action-button">
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,464 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Pensioner Recovery Details/ Over Payment Recovery</div>
+            <div class="font-heading"><strong>Reference No.</strong> 19-20/PPO/PD/001
+            </div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Pensioner Recovery Details
+                </li>
+            </ol>
+        </nav>
+        <form [formGroup]="pensionerRecoveryForm" (ngSubmit)="onSubmit()">
+            <!-- Pensioner Details  -->
+            <div class="box box-primary">
+                <div class="box-header"> Pensioner Details </div>
+                <div class="box-body">
+
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+
+                                <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}"
+                                    placeholder="PPO No" [matAutocomplete]="auto"
+                                    (blur)="sendPPOData($event.target.value)">
+
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                    <span *ngIf="optionCtrl">
+                                        <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                            {{option.ppoNo}}
+                                        </mat-option>
+                                    </span>
+                                </mat-autocomplete>
+
+                                <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput placeholder="Name" formControlName="pensionerName" readonly
+                                    class="text-disabled" required>
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.pensionerName.touched && pensionerRecoveryForm.controls.pensionerName.errors">
+                                    <mat-error *ngIf="pensionerRecoveryForm.controls.pensionerName.errors.required">
+                                        {{errMsg.PENSIONER_NAME}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="bankAndBranch" placeholder="Bank Branch" readonly
+                                    class="text-disabled" required>
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.bankAndBranch.touched && pensionerRecoveryForm.controls.bankAndBranch.errors">
+                                    <mat-error *ngIf="pensionerRecoveryForm.controls.bankAndBranch.errors.required">
+                                        {{errMsg.BANK_BRANCH}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="accountNumber" placeholder="Account Number" readonly
+                                    class="text-disabled" required>
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.accountNumber.touched && pensionerRecoveryForm.controls.accountNumber.errors">
+                                    <mat-error *ngIf="pensionerRecoveryForm.controls.accountNumber.errors.required">
+                                        {{errMsg.ACCOUNT_NO}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="pensionerExpiryDate"
+                                    [matDatepicker]="pensionerExpiryDate" placeholder="Death date of pensioner">
+                                <mat-datepicker-toggle matSuffix [for]="pensionerExpiryDate">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #pensionerExpiryDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="pensionerFamilyExpiryDate"
+                                    [matDatepicker]="pensionerFamilyExpiryDate"
+                                    placeholder="Death date of family member">
+                                <mat-datepicker-toggle matSuffix [for]="pensionerFamilyExpiryDate">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #pensionerFamilyExpiryDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="totalAmountToBeRecovered"
+                                    placeholder="Total Amount to be Recovered" readonly required class="text-disabled">
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.totalAmountToBeRecovered.touched && pensionerRecoveryForm.controls.totalAmountToBeRecovered.errors">
+                                    <mat-error
+                                        *ngIf="pensionerRecoveryForm.controls.totalAmountToBeRecovered.errors.required">
+                                        {{errMsg.RECOVERY_AMOUNT}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="amountRecovered" placeholder="Amount Recovered"
+                                    class="text-disabled" readonly required>
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.amountRecovered.touched && pensionerRecoveryForm.controls.amountRecovered.errors">
+                                    <mat-error *ngIf="pensionerRecoveryForm.controls.amountRecovered.errors.required">
+                                        {{errMsg.RECOVERED_AMOUNT}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="balanceAmountToBeRecovered"
+                                    placeholder="Balance Amount to be Recovered" readonly class="text-disabled"
+                                    required>
+                                <div class="error-wrapper"
+                                    *ngIf="pensionerRecoveryForm.controls.balanceAmountToBeRecovered.touched && pensionerRecoveryForm.controls.balanceAmountToBeRecovered.errors">
+                                    <mat-error
+                                        *ngIf="pensionerRecoveryForm.controls.balanceAmountToBeRecovered.errors.required">
+                                        {{errMsg.BAL_RECOVERED_AMOUNT}}</mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Recovery Details -->
+        <div class="box box-primary">
+            <div class="box-header">Recovery Details</div>
+            <div class="box-body">
+                <div class="mat-elevation-z8">
+                    <!-- table starts -->
+                    <table mat-table [dataSource]="recoveryDataSource" matSort aria-describedby="recovery">
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No</th>
+                            <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">{{i+1}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="recoveryThrough">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                                Recovery Through</th>
+                            <td mat-cell *matCellDef="let element;let i=index">
+                                <mat-form-field class="full-width">
+                                    <mat-select required class="centerAlign" value="{{element.recoveryThrough}}">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="recoveryThroughCtrl"
+                                                [placeholderLabel]="'Find recovery Through...'"
+                                                [noEntriesFoundLabel]="'no matching recovery Through found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let recoveryThrough of recoveryThrough_list |
+                          filterSelectInput: recoveryThroughCtrl.value" [value]="recoveryThrough.value">
+                                            {{recoveryThrough.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="chequeChallanNo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque/Challan Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput value="{{element.chequeChallanNo}}" class="text-normal"
+                                        numbersAlphabetsOnly required>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="chequeChallanDate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque/Challan Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="chequeChallanDate" required>
+                                    <mat-datepicker-toggle matSuffix [for]="chequeChallanDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #chequeChallanDate></mat-datepicker>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="EDPCode">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP Code</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput class="text-normal" value="{{element.EDPCode}}" numbersOnly
+                                        required>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="majorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput class="text-normal" value="{{element.majorHead}}" numbersOnly
+                                        required>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subMajorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Major Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput class="text-normal" value="{{element.subMajorHead}}" numbersOnly>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="minorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Minor Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput class="text-normal" value="{{element.minorHead}}" numbersOnly
+                                        required>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput class="text-normal" value="{{element.subHead}}" numbersOnly
+                                        required>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deductType">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Deduct Type</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field class="full-width">
+                                    <mat-select value="{{element.deductType}}" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="deductTypeCtrl"
+                                                [placeholderLabel]="'Find forward To...'"
+                                                [noEntriesFoundLabel]="'no matching forward To found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let deductType of deductType_list |
+                          filterSelectInput: deductTypeCtrl.value" [value]="deductType.value">
+                                            {{deductType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount (Rs.)</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input tabindex="2" matInput [(ngModel)]="element.amount" class="rightAlign"
+                                        decimalLimitTwoOnly value="{{element.amount}}" decimalPoint2
+                                        [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                {{ totalRecoveryAmount() | number : '1.2-2' }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                                [ngStyle]="{'width':'4%'}">
+                                Action
+                            </th>
+                            <td mat-cell *matCellDef="let element; let i=index">
+                                <table class="iconTable floatRight mr-2" aria-describedby="actionBtn">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30">
+                                                <a><i class="material-icons plus add" aria-hidden="true"
+                                                        (click)="addRecoveryDetailRow(i);"
+                                                        *ngIf="(i == recoveryDataSource.data.length - 1)">
+                                                        add
+                                                    </i></a>
+                                            </td>
+                                            <td width="30" class="floatRight">
+                                                <a><i class="material-icons plus delete" aria-hidden="true"
+                                                        (click)="deleteRecoveryRow(i)" *ngIf="(i > 0)">
+                                                        delete
+                                                    </i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-header-row *matHeaderRowDef="recoveryColumn"></tr>
+                        <!-- Header Section Of table -->
+                        <tr mat-row *matRowDef="let row; let i = index; columns:recoveryColumn"></tr>
+                        <!-- Footer Section Of table -->
+                        <tr mat-footer-row *matFooterRowDef="recoveryColumn"></tr>
+                    </table>
+                    <!-- table ends -->
+                </div>
+
+                <div class="mat-elevation-z8 mt-2">
+                    <!-- table starts -->
+                    <table mat-table [dataSource]="alreadyRecoveredDataSource" matSort
+                        aria-describedby="alreadyRecoveryed">
+                        <ng-container matColumnDef="parent1">
+                            <th mat-header-cell *matHeaderCellDef colspan="11" class="centerAlign">Recovery Details
+                                (Already Recovered) </th>
+                        </ng-container>
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No</th>
+                            <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">{{i+1}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="recoveryThrough">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Recovery Through</th>
+                            <td mat-cell *matCellDef="let element;let i=index">
+                                {{element.recoveryThrough}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="chequeChallanNo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque/Challan Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.chequeChallanNo}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="chequeChallanDate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque/Challan Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.chequeChallanDate}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="EDPCode">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP Code</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.EDPCode}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="majorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.majorHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subMajorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Major Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.subMajorHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="minorHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Minor Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.minorHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.subHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deductType">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Deduct Type</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.deductType}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount (Rs.)</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.amount}}
+                            </td>
+                        </ng-container>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-header-row *matHeaderRowDef="['parent1']" class="example-second-header-row">
+                        </tr>
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="alreadyRecoveredColumn"></tr>
+                        <!-- Footer Section Of table -->
+                        <tr mat-row *matRowDef="let row; let i = index; columns:alreadyRecoveredColumn"></tr>
+
+                    </table>
+                    <!-- table ends -->
+                </div>
+            </div>
+        </div>
+        <!-- common buttons -->
+        <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                    save
+                </i>
+                Save as Draft
+            </button>
+            <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"
+                title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToRecoveryDetails()">
+                <i class="material-icons" title="Listing" aria-hidden="true">
+                    list
+                </i>
+                Listing
+            </button><button type="button" mat-raised-button class="print-btn" title="Print">
+                <i class="material-icons" title="Print" aria-hidden="true">
+                    print
+                </i>
+                Print
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+
+        </div>
+        <!-- common buttons end -->
+
+    </div>
+</div>

@@ -1,0 +1,309 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- Screen Name -->
+        <div class="heading-section ng-star-inserted">
+            <div>Individual Employee Salary processing </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Payroll</a></li>
+                <li class="breadcrumb-item "><a href="javascript:void(0);">Pay Period</a></li>
+                <li class="breadcrumb-item "><a href="javascript:void(0);">Payroll Process</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Individual Employee Salary processing </li>
+            </ol>
+        </nav>
+        <form [formGroup]="individualEmployeeSalaryProcessingForm">
+            <div class="panel-group">
+                <!-- Employee Pay Details Starts -->
+                <div class="box box-primary">
+                    <div class="box-header">Employee Pay Details</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="employeeNumber" placeholder="Employee No.">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="employeeName" placeholder="Employee Name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput formControlName="designation" placeholder="Designation">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="class" placeholder="Class">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="category" placeholder="Employee Category">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="ddoNo" placeholder="DDO No">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="cardexNo" placeholder="Cardex No">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput formControlName="officeName" placeholder="Office Name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="district" placeholder="District">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="payrollType" placeholder="Payroll Type">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput formControlName="payYear" placeholder="Pay Year">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput formControlName="payMonth" placeholder="Pay Month">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Employee Pay Details Ends -->
+            </div>
+
+            <div class="row">
+                <!-- Earning table Starts -->
+                <div class="col-sm-6" style="width: 100%; overflow: auto;">
+                    <div class="mat-elevation-z8 table-responsive">
+                        <table mat-table [dataSource]="earningDataSource" aria-describedby="earningTable">
+
+                            <ng-container matColumnDef="earning">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Earning</th>
+                                <td mat-cell *matCellDef="let element"> {{element.earning}}</td>
+                                <td mat-footer-cell *matFooterCellDef>Total </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                                <td mat-cell *matCellDef="let element" class="rightAlign">
+                                    {{element.amount}}
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                    {{directiveObj.columnTotal(earningDataSource,'amount') | number : '1.2-2'}}</td>
+                            </ng-container>
+
+                            <!-- Header Section Of table -->
+                            <tr mat-header-row *matHeaderRowDef="earningDisplayedColumns"></tr>
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-row *matRowDef="let row; let i = index;columns:earningDisplayedColumns"></tr>
+                            <!-- Footer Section Of table -->
+                            <tr mat-footer-row *matFooterRowDef="earningDisplayedColumns"></tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- Earning table Ends -->
+
+                <!-- Deductions table starts -->
+                <div class="col-sm-6" style="width: 100%; overflow: auto;">
+                    <div class="mat-elevation-z8 table-responsive">
+                        <table mat-table [dataSource]="deductionsDataSource" aria-describedby="deductionTable">
+                            <ng-container matColumnDef="deductions">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Deductions</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div *ngIf="element.deductions ===''; else data"></div>
+                                    <ng-template #data>
+                                        {{element.deductions}}
+                                    </ng-template>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef>Total</td>
+                            </ng-container>
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                                <td mat-cell *matCellDef="let element" class="rightAlign">
+                                    <div *ngIf="element.deductions ===''; else data"></div>
+                                    <ng-template #data>
+                                        {{element.amount}}
+                                    </ng-template>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                    {{directiveObj.columnTotal(deductionsDataSource,'amount') | number : '1.2-2'}}</td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="deductionsDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; let i = index;columns:deductionsDisplayedColumns"></tr>
+                            <tr mat-footer-row *matFooterRowDef="deductionsDisplayedColumns"></tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- Deductions table Ends -->
+
+            </div>
+            <br>
+
+
+            <div class="box-body">
+                <table class="detailCheckTable w-15" style="margin-top: 0;">
+                    <tbody>
+                        <!-- Show Expenditure Total -->
+                        <tr>
+                            <td class="w-15" style="width: 50%;">
+                                <label>Net Pay</label>
+                            </td>
+                            <td class="w-10">
+                                <input class="BUnderLine text-right" matInput
+                                    [value]="''+(this.directiveObj.columnTotal(this.earningDataSource, 'amount') - this.directiveObj.columnTotal(this.deductionsDataSource, 'amount'))"
+                                    readonly>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+
+                <!-- show split field -->
+                <div class="col-sm-6" style="padding: 0;">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="showSplit" placeholder="Show Split?"
+                            (selectionChange)="showSplit($event.value)">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="splitCtrl" [placeholderLabel]="'Find Option...'"
+                                    [noEntriesFoundLabel]="'No matching Option found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let item of boolean_list |
+      filterSelectInput:splitCtrl.value" [value]="item.value">
+                                {{item.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <!-- if show split is Yes -->
+            <div *ngIf="isShowSplit">
+                <div class="row">
+
+                    <!--Split Earning table Starts -->
+                    <div class="col-sm-6" style="width: 100%; overflow: auto;">
+                        <div class="mat-elevation-z8 table-responsive">
+                            <table mat-table [dataSource]="splitEarningDataSource" aria-describedby="splitEarningTable">
+
+                                <ng-container matColumnDef="earning">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Earning</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.earning}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                                        {{element.amount}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="fromDate">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">From Date</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.deductions ===''; else data"></div>
+                                        <ng-template #data>
+                                            {{element.fromDate}}
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="toDate">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">To Date</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.deductions ===''; else data"></div>
+                                        <ng-template #data>
+                                            {{element.toDate}}
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="splitEarningDisplayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; let i = index;columns:splitEarningDisplayedColumns">
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Split Earning table Ends -->
+
+                    <!--Split Deductions table starts -->
+                    <div class="col-sm-6" style="width: 100%; overflow: auto;">
+                        <div class="mat-elevation-z8 table-responsive">
+                            <table mat-table [dataSource]="splitDeductionsDataSource"
+                                aria-describedby="splitDeductionsTable">
+
+                                <ng-container matColumnDef="deductions">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Deductions</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.deductions}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                                        {{element.amount}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="fromDate">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">From Date</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.fromDate}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="toDate">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">To Date</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.toDate}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="noData">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"></th>
+                                    <td mat-cell *matCellDef="let element" colspan="4" class="centerAlign">
+                                        {{element.noData}}</td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="splitDeductionsDisplayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; let i = index;columns:splitDeductionsRows">
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!--Split Deductions table Ends -->
+
+                </div>
+            </div>
+        </form>
+
+        <!-- Action buttons starts -->
+        <div class="form-action-button">
+            <button type="button" mat-raised-button class="btnClose" title="Close"
+                (click)="directiveObj.goToScreen('./payroll/payroll-process');">
+                <i class="material-icons" title="Close" aria-hidden="true">close</i>
+                Close
+            </button>
+        </div>
+        <!-- Action buttons Ends -->
+    </div>
+</div>

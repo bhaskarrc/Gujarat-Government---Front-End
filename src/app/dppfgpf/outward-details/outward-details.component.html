@@ -1,0 +1,367 @@
+<div class="form-wrapper">
+    <div class="pannel-group">
+        <div class="heading-section ng-star-inserted">
+            <div>Outward Details </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/GPF/OD/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Outward Details </li>
+            </ol>
+        </nav>
+        <form [formGroup]='gpfOutwardDetailsForm'>
+            <div class=" box box-primary">
+                <div class="box-header">
+                    Outward Details
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Inward No." formControlName='inwardNumber' (change)="enterInwardNo()" required>
+                                <mat-icon matSuffix (click)="openInwardDialog()">search</mat-icon>
+                                <div class="error-wrapper" *ngIf=" gpfOutwardDetailsForm.controls.inwardNumber.touched &&gpfOutwardDetailsForm.controls.inwardNumber.errors">
+                                    <mat-error *ngIf="gpfOutwardDetailsForm.controls.inwardNumber.errors.required">
+                                        {{ errorMessage.INWARD_NUMBER }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field>
+                                <mat-label>Inward Date</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="dateInward" [max]='maxDate' dateOnly />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Letter  No." formControlName='letterNumber' decimalLimitTwoOnly>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field>
+                                <mat-label>Letter Date</mat-label>
+                                <input matInput [matDatepicker]="letterDatePicker" formControlName="letterDate" [max]='maxDate' dateOnly />
+                                <mat-datepicker-toggle matSuffix [for]="letterDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker #letterDatePicker></mat-datepicker>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="typeOfInward" placeholder="Type Of Inward">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfInwardCtrl" [placeholderLabel]="'Find Type Of Inward...'" [noEntriesFoundLabel]="'no matching Type Of Inward found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfInward
+                      | filterSelectInput: typeOfInwardCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Other" formControlName='other'>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field>
+                                <mat-label>Outward Date</mat-label>
+                                <input matInput [matDatepicker]="outDatePicker" formControlName="dateOutward" [max]='maxDate' dateOnly required />
+                                <mat-datepicker-toggle matSuffix [for]="outDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker #outDatePicker></mat-datepicker>
+                                <div class="error-wrapper" *ngIf=" gpfOutwardDetailsForm.controls.dateOutward.touched &&gpfOutwardDetailsForm.controls.dateOutward.errors">
+                                    <mat-error *ngIf="gpfOutwardDetailsForm.controls.dateOutward.errors.required">
+                                        {{ errorMessage.OUTWARD_DATE }}
+                                    </mat-error>
+                                </div>
+
+                            </mat-form-field>
+                        </div>
+
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="deliveryMode" placeholder="Delivery Mode" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfDeliveryModeCtrl" [placeholderLabel]="'Find Delivery Mode...'" [noEntriesFoundLabel]="'no matching Delivery Mode found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfDeliveryMode
+                      | filterSelectInput: typeOfDeliveryModeCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="
+                  gpfOutwardDetailsForm.controls.deliveryMode.touched &&
+                  gpfOutwardDetailsForm.controls.deliveryMode.errors
+                ">
+                                    <mat-error *ngIf="
+                    gpfOutwardDetailsForm.controls.deliveryMode.errors.required
+                  ">
+                                        {{ errorMessage.TYPE_OF_DELIVERY }}
+                                    </mat-error>
+                                </div>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3" *ngIf="this.gpfOutwardDetailsForm.controls.deliveryMode.value=='1'">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Reference No" formControlName='referenceNo' (keypress)=" decimalLimitTwoOnly   ($event)">
+
+                            </mat-form-field>
+                        </div>
+
+
+
+
+
+                        <div class="col-sm-6 col-md-3" *ngIf="this.gpfOutwardDetailsForm.controls.deliveryMode.value=='4'">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Hand Delivery Address" formControlName='handDelivery'>
+
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-6 col-md-3" *ngIf="this.gpfOutwardDetailsForm.controls.deliveryMode.value=='5'">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Other" formControlName='otherDeliveryMode'>
+
+                            </mat-form-field>
+                        </div>
+
+
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="post" placeholder="Type Of Post" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfPostToCtrl" [placeholderLabel]="'Find Type Of Post...'" [noEntriesFoundLabel]="'no matching Type Of Post found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfPostTo
+                      | filterSelectInput: typeOfPostToCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="
+                  gpfOutwardDetailsForm.controls.post.touched &&
+                  gpfOutwardDetailsForm.controls.post.errors
+                ">
+                                    <mat-error *ngIf="
+                    gpfOutwardDetailsForm.controls.post.errors.required
+                  ">
+                                        {{ errorMessage.TYPE_OF_POST}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="outwardTo" placeholder="Outward To" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfOutwardToCtrl" [placeholderLabel]="'Find Outward To...'" [noEntriesFoundLabel]="'no matching Outward To found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfOutwardTo
+                      | filterSelectInput: typeOfOutwardToCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="
+                  gpfOutwardDetailsForm.controls.outwardTo.touched &&
+                  gpfOutwardDetailsForm.controls.outwardTo.errors
+                ">
+                                    <mat-error *ngIf="
+                    gpfOutwardDetailsForm.controls.outwardTo.errors.required
+                  ">
+                                        {{ errorMessage.TYPE_OF_OUTWARD }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="state" placeholder="State" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfStateCtrl" [placeholderLabel]="'Find State...'" [noEntriesFoundLabel]="'no matching State found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfState
+                      | filterSelectInput: typeOfStateCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="
+                  gpfOutwardDetailsForm.controls.state.touched &&
+                  gpfOutwardDetailsForm.controls.state.errors
+                ">
+                                    <mat-error *ngIf="
+                    gpfOutwardDetailsForm.controls.state.errors.required
+                  ">
+                                        {{ errorMessage.TYPE_OF_STATE }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="district" placeholder="District" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfDistrictCtrl" [placeholderLabel]="'Find District...'" [noEntriesFoundLabel]="'no matching District found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfDistrict
+                      | filterSelectInput: typeOfOutwardToCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="
+                  gpfOutwardDetailsForm.controls.district.touched &&
+                  gpfOutwardDetailsForm.controls.district.errors
+                ">
+                                    <mat-error *ngIf="
+                    gpfOutwardDetailsForm.controls.district.errors.required
+                  ">
+                                        {{ errorMessage.TYPE_OF_DISTRICT }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="taluka" placeholder="Taluka">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfTalukaCtrl" [placeholderLabel]="'Find Taluka...'" [noEntriesFoundLabel]="'no matching Taluka found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfTaluka
+                      | filterSelectInput: typeOfTalukaCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Pincode" formControlName='pincode' maxlength="6" required>
+                                <div class="error-wrapper" *ngIf=" gpfOutwardDetailsForm.controls.pincode.touched &&gpfOutwardDetailsForm.controls.pincode.errors">
+                                    <mat-error *ngIf="gpfOutwardDetailsForm.controls.pincode.errors.required">
+                                        {{ errorMessage.PINCODE }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <textarea matInput placeholder="Address " required formControlName="address"></textarea>
+                                <div class="error-wrapper" *ngIf=" gpfOutwardDetailsForm.controls.address.touched &&gpfOutwardDetailsForm.controls.address.errors">
+                                    <mat-error *ngIf="gpfOutwardDetailsForm.controls.address.errors.required">
+                                        {{ errorMessage.TYPE_OF_ADDRESS }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <textarea matInput placeholder="Remarks " formControlName="remarks"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </form>
+
+
+
+
+
+
+
+        <div class="form-action-button">
+
+            <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+        Submit
+      </button>
+            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+            <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['outward-details-listing']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+        </div>
+
+
+    </div>
+</div>

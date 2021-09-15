@@ -1,0 +1,451 @@
+<div class="container common-workflow-section">
+  <div class="form-wrapper">
+      <div class="heading-section ng-star-inserted">
+          <div>Receipt Estimate Consolidate</div>
+          <div class="font-heading"><strong>Transaction Number:</strong> 19-20/BUD/RE/001</div>
+          <div class="font-heading"><strong>Transaction Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+      </div>
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Budget</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Receipt Estimate Consolidate</li>
+          </ol>
+      </nav>
+      <div>
+          <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+              <mat-tab label="Consolidated View" [disabled]="tabDisable">
+                  <div class="font-heading"><strong>Major Head:</strong> 0020 : Corporation Tax </div>
+                  <div class="rsClass"> (₹ in Lakhs) </div>
+                  <div class="mat-elevation-z8 table-responsive">
+                      <table mat-table #table [dataSource]="dataSource" class="responsive-table">
+
+                        <!-- Sub-Major Head Column -->
+                          <ng-container matColumnDef="subMajorHead">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}"></th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                  {{item.subMajorHead}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Minor Head Column -->
+                          <ng-container matColumnDef="minorHead">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Minor Head</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                  {{item.minorHead}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Weight Column -->
+                          <ng-container matColumnDef="subHead">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sub Head</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                  {{item.subHead}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Symbol Column -->
+                          <ng-container matColumnDef="detailHead">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Detail Head</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                  {{item.detailHead}}
+                              </td>
+                          </ng-container>
+                          <ng-container matColumnDef="ddoNo">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">No. of DDO</th>
+                            <td mat-cell *matCellDef="let item" class="rightAlign">
+                                <a href="" class="hyper-link">{{item.ddoNo}}</a>
+                            </td>
+                        </ng-container>
+
+                          <!-- Symbol Column -->
+                          <ng-container matColumnDef="thirdLastYearReceipt">
+                              <th mat-header-cell *matHeaderCellDef>{{loadThirdLastYear()}}</th>
+
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.thirdLastYearReceipt}}
+                            </td>
+                             <!-- <td mat-cell *matCellDef="let element">
+                                  <mat-form-field floatLabel="never" *ngIf="!expendCharges" class="rightAlign">
+                                      <input matInput (keypress)="decimalKeyPress($event)" value="450" readonly [value]="element.thirdLastYearReceipt" [(ngModel)]="element.thirdLastYearReceipt" (blur)="decimalPoint(element,'thirdLastYearReceipt')">
+                                  </mat-form-field>
+                                  <div *ngIf="expendCharges" class="rightAlign">
+                                      {{element.thirdLastYearReceipt | number : '1.2-2'}}
+                                  </div>
+                              </td> -->
+                          </ng-container>
+
+                          <!-- Fav Column -->
+                          <ng-container matColumnDef="secondLastYearReceipt">
+                              <th mat-header-cell *matHeaderCellDef>{{loadSecondLastYear()}}</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.secondLastYearReceipt}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="lastYearReceipt">
+                              <th mat-header-cell *matHeaderCellDef>{{loadLastYear()}}</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.lastYearReceipt}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Symbol Column -->
+                          <ng-container matColumnDef="thirdLastYearDisbursement">
+                              <th mat-header-cell *matHeaderCellDef>{{loadThirdLastYear()}}</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.thirdLastYearDisbursement}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Fav Column -->
+                          <ng-container matColumnDef="secondLastYearDisbursement">
+                              <th mat-header-cell *matHeaderCellDef>{{loadSecondLastYear()}}</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.secondLastYearDisbursement}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="lastYearDisbursement">
+                              <th mat-header-cell *matHeaderCellDef>{{loadLastYear()}}</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.lastYearDisbursement}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="beReceipt">
+                              <th mat-header-cell *matHeaderCellDef>Receipt</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.beReceipt}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="beDisbursement">
+                              <th mat-header-cell *matHeaderCellDef>Disbursement</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.beDisbursement}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="hodAmountReceipt">
+                              <th mat-header-cell *matHeaderCellDef class="gray-color">Receipt</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.hodAmountReceipt}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="hodAmountDisbursement">
+                              <th mat-header-cell *matHeaderCellDef class="gray-color">Disbursement</th>
+                              <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.hodAmountDisbursement}}
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="hodAmountReceipt1">
+                            <th mat-header-cell *matHeaderCellDef class="gray-color">Receipt</th>
+                            <!-- <td mat-cell *matCellDef="let element">
+                                <mat-form-field floatLabel="never" *ngIf="!expendCharges" class="rightAlign">
+                                    <input matInput (keypress)="decimalKeyPress($event)" value="450">
+                                </mat-form-field>
+                                <div *ngIf="expendCharges" class="rightAlign">
+                                    {{element.hodAmountReceipt1 | number : '1.2-2'}}
+                                </div>
+                            </td> -->
+                            <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.hodAmountReceipt1}}
+                              </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="hodAmountDisbursement2">
+                            <th mat-header-cell *matHeaderCellDef class="gray-color">Disbursement</th>
+                            <!-- <td mat-cell *matCellDef="let element">
+                                <mat-form-field floatLabel="never" *ngIf="!expendCharges" class="rightAlign">
+                                    <input matInput (keypress)="decimalKeyPress($event)" value="450">
+                                </mat-form-field>
+                                <div *ngIf="expendCharges" class="rightAlign">
+                                    {{element.hodAmountDisbursement2 | number : '1.2-2'}}
+                                </div>
+                            </td> -->
+                            <td mat-cell *matCellDef="let item" class="rightAlign">
+                                {{item.hodAmountDisbursement2}}
+                            </td>
+                        </ng-container>
+
+                          <ng-container matColumnDef="provisionRecipt">
+                              <th mat-header-cell *matHeaderCellDef class="gray-color">Receipt</th>
+                              <td mat-cell *matCellDef="let element">
+                                  <mat-form-field floatLabel="never" class="rightAlign">
+                                      <input matInput (keypress)="decimalKeyPress($event)" value="450"  [value]="element.provisionRecipt" [(ngModel)]="element.provisionRecipt" (blur)="decimalPoint(element,'provisionRecipt')">
+                                  </mat-form-field>
+
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="provisionDisbursement">
+                              <th mat-header-cell *matHeaderCellDef class="gray-color">Disbursement</th>
+                              <td mat-cell *matCellDef="let element">
+                                  <mat-form-field floatLabel="never" class="rightAlign">
+                                      <input matInput (keypress)="decimalKeyPress($event)" value="450"  [value]="element.provisionDisbursement" [(ngModel)]="element.provisionDisbursement" (blur)="decimalPoint(element,'provisionDisbursement')">
+                                  </mat-form-field>
+
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="remarks">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Remarks </th>
+                              <td mat-cell *matCellDef="let item">
+                                  <mat-form-field floatLabel="never" *ngIf="!expendCharges">
+                                      <textarea matInput placeholder="Remarks" [value]="item.remarks" [(ngModel)]="item.remarks"></textarea>
+                                  </mat-form-field>
+                                  <div *ngIf="expendCharges">
+                                      {{item.remarks}}
+                                  </div>
+                              </td>
+                          </ng-container>
+
+                          <!-- <ng-container matColumnDef="deductRefundMapping">
+                              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Deduct Refund Mapping
+                              </th>
+                              <td mat-cell *matCellDef="let element">
+                                  <mat-form-field floatLabel="never" *ngIf="!expendCharges" class="rightAlign">
+                                      <input matInput [value]="element.deductRefundMapping" [(ngModel)]="element.deductRefundMapping">
+                                  </mat-form-field>
+                                  <div *ngIf="expendCharges">
+                                      {{element.deductRefundMapping}}
+                                  </div>
+                              </td>
+                          </ng-container> -->
+
+                          <!-- <ng-container matColumnDef="action">
+                          <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Action</th>
+                          <td mat-cell *matCellDef="let item; let i = index">
+                              <table class="iconTable">
+                                  <tbody>
+                                      <tr>
+                                          <td width="30">
+                                              <i class="material-icons plus"
+                                                  *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                                  (click)="addReceipt()">
+                                                  add
+                                              </i>
+                                          </td>
+                                          <td width="30">
+                                              <i class="material-icons plus delete"
+                                                  *ngIf="dataSource && dataSource.data && dataSource.data.length > 1"
+                                                  (click)="deleteReceipt(i)">
+                                                  delete
+                                              </i>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+
+                              
+                          </td>
+                      </ng-container> -->
+
+                          <!-- <ng-container matColumnDef="majorHead1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Major Head</th>
+                          </ng-container> -->
+                          <ng-container matColumnDef="submajorhead1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sub Major Head</th>
+                          </ng-container>
+                          <ng-container matColumnDef="minorhead1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Minor Head</th>
+                          </ng-container>
+                          <ng-container matColumnDef="subhead1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sub Head</th>
+                          </ng-container>
+                          <ng-container matColumnDef="detailhead1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Detail Head</th>
+                          </ng-container>
+                          <ng-container matColumnDef="ddoNo1">
+                            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">DDO No</th>
+                        </ng-container>
+                          <ng-container matColumnDef="accountreceipt">
+                              <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Account Receipt</th>
+                          </ng-container>
+                          <ng-container matColumnDef="accountdisbursement">
+                              <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Account Disbursement</th>
+                          </ng-container>
+                          <ng-container matColumnDef="currentyear1">
+                              <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">BE for {{loadCurrentYear()}}</th>
+                          </ng-container>
+
+                          <ng-container matColumnDef="hodAmountNextYear">
+                              <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Proposed Amount for {{loadNextYear()}}
+                              </th>
+                          </ng-container>
+                          <ng-container matColumnDef="hodAmountNextYearHod">
+                            <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Proposed Amount for 2019-2020 by HOD
+                            </th>
+                        </ng-container>
+                          <ng-container matColumnDef="provisionfinally">
+                              <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Provision finally admitted by F.D
+                              </th>
+                          </ng-container>
+                          <ng-container matColumnDef="remarks1">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks</th>
+                          </ng-container>
+
+                          <!-- <ng-container matColumnDef="deductRefund">
+                              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Deduct Refund Mapping</th>
+                          </ng-container> -->
+                          <!-- <ng-container matColumnDef="action1">
+                          <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Action</th>
+                      </ng-container> -->
+
+                          <button mat-button (click)="saveReceiptEstimate()">Back</button>
+
+                          <tr mat-header-row *matHeaderRowDef="['submajorhead1','minorhead1','subhead1','detailhead1', 'ddoNo1','accountreceipt','accountdisbursement','currentyear1','hodAmountNextYear', 'hodAmountNextYearHod','provisionfinally','remarks1']">
+                          </tr>
+
+                          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                      </table>
+                  </div>
+
+
+                  <div class="form-action-button" *ngIf="!expendCharges">
+                      <button type="submit" mat-raised-button color="primary">
+                          <i class="material-icons" aria-hidden="true" title="Save">
+                              save 
+                          </i>
+                          Save as Draft
+                      </button>
+                      <button mat-raised-button type="submit" class="green">
+                          <i class="material-icons" aria-hidden="true">
+                              done
+                          </i> 
+                          Submit
+                      </button>
+                      <button type="reset" mat-raised-button color="accent">
+                          <i class="material-icons" aria-hidden="true">
+                              restore
+                          </i>
+                          Reset
+                      </button>
+                      <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                          <i class="material-icons" aria-hidden="true" title="Listing">
+                              list
+                          </i>
+                          Listing
+                      </button>
+                      <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                          <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                              close
+                          </i>
+                          Close
+                      </button>
+                      <!-- <button mat-button (click)="backCharge()" mat-raised-button color="primary"
+                                  class="back-button">
+                                  <mat-icon aria-label="icon-button">
+                                      keyboard_return
+                                  </mat-icon>
+                                  Back
+                              </button> -->
+                  </div>
+              </mat-tab>
+              <mat-tab label="Attachments" [disabled]="tabDisable">
+                  <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                      <ng-container matColumnDef="attachmentType">
+                          <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+
+                          <td mat-cell *matCellDef="let item;let i = index;">
+                              <mat-select placeholder="Attachment Type" #singleSelect1 required [(ngModel)]="item.attachmentType">
+                                  <mat-option>
+                                      <ngx-mat-select-search [formControl]="attachmentTypeCodeCtrl" [placeholderLabel]="'Find Attachment Type...'" [noEntriesFoundLabel]="'no matching Attachment Type found'">
+                                      </ngx-mat-select-search>
+                                  </mat-option>
+
+                                  <mat-option *ngFor="let AT of filteredAttachmentTypeCode | async" [value]="AT.value">
+                                      {{AT.viewValue}}
+                                  </mat-option>
+                              </mat-select>
+                          </td>
+                      </ng-container>
+                      <ng-container matColumnDef="fileName">
+                          <th mat-header-cell *matHeaderCellDef>File name</th>
+                          <!-- <td mat-cell *matCellDef="let item"> {{item.serviceType}} </td>-->
+                          <td mat-cell *matCellDef="let item">
+                              <mat-form-field floatLabel="never">
+                                  <input matInput [value]="item.name" [(ngModel)]="item.name">
+                              </mat-form-field>
+                          </td>
+                      </ng-container>
+                      <ng-container matColumnDef="browse">
+                          <th mat-header-cell *matHeaderCellDef>Browse</th>
+                          <!-- <td mat-cell *matCellDef="let item"> {{item.serviceType}} </td>-->
+                          <td mat-cell *matCellDef="let i = index">
+                              <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                                  Files</button>
+                          </td>
+                      </ng-container>
+                      <ng-container matColumnDef="uploadedFileName">
+                          <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                          <!-- <td mat-cell *matCellDef="let item"> {{item.serviceType}} </td>-->
+                          <td mat-cell *matCellDef="let item">
+                              <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                          </td>
+                      </ng-container>
+                      <ng-container matColumnDef="action">
+                          <th mat-header-cell *matHeaderCellDef>Action</th>
+                          <td mat-cell *matCellDef="let item; let i = index">
+                              <table class="iconTable">
+                                  <tbody>
+                                      <tr>
+                                          <td width="30">
+                                              <i class="material-icons plus add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">
+                                                  add
+                                              </i>
+                                          </td>
+                                          <td width="30">
+                                              <i class="material-icons plus delete" *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1" (click)="deleteBrowse(i)">
+                                                  delete
+                                              </i>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                  </table>
+                  <!-- <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
+                  (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                  <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                  <button type="button" (click)="openFileSelector()">Browse Files</button>
+                  </ng-template>
+                  </ngx-file-drop> -->
+                  <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+                  <div class="form-action-button">
+                      <button type="submit" mat-raised-button color="primary">
+                          <i class="material-icons" aria-hidden="true" title="Save">
+                              save
+                          </i>
+                          Upload
+                      </button>
+                      <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                          <i class="material-icons" aria-hidden="true" title="Listing">
+                              list
+                          </i>
+                          Listing
+                      </button>
+                      <button type="button" class="btnClose" mat-raised-button (click)="goToDashboard()">
+                          <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                              close
+                          </i>
+                          Close
+                      </button>
+                  </div>-
+              </mat-tab>
+          </mat-tab-group>
+          <div class="save" title="Save All" *ngIf="!tabDisable">
+              <button mat-mini-fab color="primary" class="saveFloatButton" (click)="saveAllData()">
+                  <mat-icon aria-label="Example icon-button">save</mat-icon>
+              </button>
+          </div>
+      </div>
+  </div>
+</div>

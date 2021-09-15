@@ -1,0 +1,222 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>PD/PLA Challan List</div>
+    </div>
+    <!-- Navigation starts -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">PD/PLA</li>
+        <li class="breadcrumb-item active" aria-current="page">PD/PLA Challan List </li>
+      </ol>
+    </nav>
+    <!-- Navigation ends -->
+    <!-- PD/PLA Challan List search fields -->
+    <div class="box box-primary">
+      <div class="box-header">PD/PLA Challan List</div>
+      <div class="box-body">
+
+        <form [formGroup]="pdplaform">
+          <div class="row">
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="PD/PLA A/C No" formControlName="pdplaAccNo">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Payee Name" formControlName="payeeName">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Challan No" formControlName="challanNo">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput [matDatepicker]="challanDate" placeholder="Challan Date" formControlName="challanDate">
+                <mat-datepicker-toggle matSuffix [for]="challanDate"></mat-datepicker-toggle>
+                <mat-datepicker #challanDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Amount" formControlName="amt">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="transiton-type" formControlName="transType" placeholder="Transaction Type">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="trandCtrl" [placeholderLabel]="'Select Transaction Type ...'"
+                      [noEntriesFoundLabel]="'no matching Transaction Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+
+                  <mat-option *ngFor="let trans of transition_list | filterSelectInput : trandCtrl.value : 'viewValue'"
+                    [value]="trans.value" [matTooltip]="trans.viewValue">
+                    {{trans.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="Internal-TC" formControlName="interTc" placeholder="Internal TC">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="interTcCtrl" [placeholderLabel]="'Select Internal TC ...'"
+                      [noEntriesFoundLabel]="'no matching Internal TC found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+
+                  <mat-option *ngFor="let intTC of TC_list | filterSelectInput : interTcCtrl.value : 'viewValue'"
+                    [value]="intTC.value" [matTooltip]="intTC.viewValue">
+                    {{intTC.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="PD/PLA A/c Name " formControlName="pdplaAccName">
+              </mat-form-field>
+            </div>
+
+
+          </div>
+        </form>
+
+        <!-- Common action button  -->
+        <div class="row displayBlock form-action-button">
+          <div class="centerAlign">
+            <button type="submit" mat-raised-button color="primary">
+              <i class="material-icons" aria-hidden="true">search</i>
+              Search
+            </button>
+            <button type="reset" mat-raised-button color="accent">
+              <i class="material-icons" aria-hidden="true">
+                restore
+              </i>
+              Reset
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- filtered data table -->
+    <div class="mat-elevation-z8 table-responsive mt-2">
+      <table mat-table [dataSource]="dataSourcechallanView" width="100%" matSort aria-describedby="ChallanList">
+
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="srnowidth"> Sr No</th>
+          <td mat-cell *matCellDef="let element let i = index;" class="text-center"> {{ i + 1 }} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="pdplaAcNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PD/PLA Ac No</th>
+          <td mat-cell *matCellDef="let element"> {{element.pdplaAcNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pdplaAcNmae">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PD/PLA A/c Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.pdplaAcNmae}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payiName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Payee Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.payiName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="challanN0">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan No</th>
+          <td mat-cell *matCellDef="let element"> {{element.challanN0}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="challanDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.challanDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="camt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Amount</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.camt}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transferType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Transfer Type</th>
+          <td mat-cell *matCellDef="let element"> {{element.transferType}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="intTc">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Internal TC</th>
+          <td mat-cell *matCellDef="let element"> {{element.intTc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+          <td mat-cell *matCellDef="let item; let i = index" class="centerAlign actionwidthtwo">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tr>
+                <td>
+
+                  <i class="material-icons plus edit-icon" aria-hidden="true" title="Edit">
+                    edit
+                  </i>
+
+                </td>
+                <td>
+                  <a>
+                    <i class="material-icons plus view-icon" aria-hidden="true" title="View">
+                      remove_red_eye
+                    </i>
+                  </a>
+                </td>
+                <td>
+                  <a>
+                    <i class="material-icons plus delete" aria-hidden="true" (click)="deleteEntry(i)">
+                      delete
+                    </i>
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumnschallanView"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumnschallanView;">
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    </div>
+    <!-- Common action button  -->
+    <div class="form-action-button">
+      <button type="button" mat-raised-button class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="close">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>

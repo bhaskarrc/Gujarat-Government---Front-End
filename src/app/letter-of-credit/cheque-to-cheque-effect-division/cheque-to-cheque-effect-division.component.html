@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- Screen Name, Reference No and Reference Date Header -->
+    <div class="heading-section ng-star-inserted">
+      <div>Cheque to Cheque Effect</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/LC/CB/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">LC</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cheque to Cheque Effect</li>
+      </ol>
+    </nav>
+
+    <!-- Form Starts -->
+    <form [formGroup]="chequeToChequeEffectForm" (ngSubmit)="chequeToChequeEffectFormData()">
+      <div class="box box-primary">
+        <div class="box-header">Search</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- Input Field for Missing Cheque Number -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Missing Cheque Number" formControlName="missingChequeNumber" required>
+                <mat-icon matSuffix class="searchIcon" (click)="searchChequeNumber()">search</mat-icon>
+                <div class="error-wrapper"
+                  *ngIf="chequeToChequeEffectForm.controls.missingChequeNumber.touched && chequeToChequeEffectForm.controls.missingChequeNumber.errors">
+                  <mat-error *ngIf="chequeToChequeEffectForm.controls.missingChequeNumber.errors.required">
+                    {{errorMessage.MISSING_CHEQUE_NUMBER}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Division Code -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Division Code" formControlName="divisionCode" required>
+                <div class="error-wrapper"
+                  *ngIf="chequeToChequeEffectForm.controls.divisionCode.touched && chequeToChequeEffectForm.controls.divisionCode.errors">
+                  <mat-error *ngIf="chequeToChequeEffectForm.controls.divisionCode.errors.required">
+                    {{errorMessage.DIVISION_CODE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Cheque Amount -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Cheque Amount (in Rs.)" formControlName="chequeAmount" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Cheque Date -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Cheque Date" formControlName="chequeDate" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Party Name -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Party Name" formControlName="partyName" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Advice Number -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <input matInput placeholder="Advice No." formControlName="adviceNo" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- Input Field for Reason -->
+            <div class="col-sm-4">
+              <mat-form-field>
+                <textarea matInput placeholder="Reason" formControlName="reason"></textarea>
+              </mat-form-field>
+            </div>
+
+            <!-- Buttons for Search and Reset Starts -->
+            <div class="col-sm-12">
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                  <i class="material-icons" aria-hidden="true">search</i> Search
+                </button>
+                <button type="reset" mat-raised-button color="accent">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </div>
+            <!-- Buttons for Search and Reset Ends -->
+
+          </div>
+        </div>
+      </div>
+
+      <div class="mat-elevation-z8 mt-2">
+        <!-- Cheque To Cheque Effect Table Starts -->
+        <table mat-table [dataSource]="ChequeToChequeEffectDataSource" class="mat-elevation-z8 "
+          area-describedby="cheque-to-cheque-effect">
+
+          <!-- Cheque Date Column -->
+          <ng-container matColumnDef="chequeDate">
+            <th mat-header-cell *matHeaderCellDef scope="row">Cheque Date</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field>
+                <input matInput [(ngModel)]="element.chequeDate" [value]="element.chequeDate" [matDatepicker]="picker1"
+                  [ngModelOptions]="{standalone: true}">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+              </mat-form-field>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>Total</td>
+          </ng-container>
+
+          <!-- Cheque Number Column -->
+          <ng-container matColumnDef="chequeNumber">
+            <th mat-header-cell *matHeaderCellDef scope="row">Cheque Number</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field>
+                <input matInput [(ngModel)]="element.chequeNumber" [ngModelOptions]="{standalone: true}"
+                  [value]="element.chequeNumber">
+              </mat-form-field>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- Cheque Amount Column -->
+          <ng-container matColumnDef="chequeAmount">
+            <th mat-header-cell *matHeaderCellDef scope="row">Cheque Amount</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="text-right">
+                <input matInput class="text-right" [(ngModel)]="element.chequeAmount" value="{{element.chequeAmount}}"
+                  (keypress)="directiveObject.decimalKeyPress($event)"
+                  (blur)="directiveObject.decimalPoint(element,'chequeAmount')" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </td>
+            <td mat-footer-cell *matFooterCellDef class="text-right">
+              {{ directiveObject.totalChequeAmount(ChequeToChequeEffectData) | number:'1.2-2'}}</td>
+          </ng-container>
+
+          <!-- Party Name Column -->
+          <ng-container matColumnDef="partyName">
+            <th mat-header-cell *matHeaderCellDef scope="row">Party Name</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field>
+                <input matInput [(ngModel)]="element.partyName" [value]="element.partyName"
+                  [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- Action View/Edit/Delete Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row" scope="row" [ngStyle]="{'width':'4%'}">Action</th>
+            <td mat-cell *matCellDef="let element; let i=index">
+              <table class="iconTable" aria-describedby="actionBtn" area-describedby="icon-table">
+                <tbody>
+                  <tr>
+                    <td width="30">
+                      <div
+                        *ngIf="( element.chequeDate && element.chequeNumber && element.chequeAmount && element.partyName);then iconVisible else iconBlurred">
+                      </div>
+                      <ng-template #iconBlurred>
+                        <i *ngIf="( ChequeToChequeEffectDataSource && ChequeToChequeEffectDataSource.data && (i == ChequeToChequeEffectDataSource.data.length - 1))"
+                          class="material-icons plus add" aria-hidden="true" style="color:lightgray;cursor:default;">
+                          add
+                        </i>
+                      </ng-template>
+                      <ng-template #iconVisible>
+                        <i *ngIf="( ChequeToChequeEffectDataSource && ChequeToChequeEffectDataSource.data && (i == ChequeToChequeEffectDataSource.data.length - 1))"
+                          class="material-icons plus add" aria-hidden="true" (click)="addRow(i);">
+                          add
+                        </i>
+                      </ng-template>
+                    </td>
+                    <td width="30" (click)="deleteRow(i)">
+                      <i class="material-icons plus delete" aria-hidden="true"
+                        *ngIf="(isDelete && ChequeToChequeEffectDataSource.data.length > 1)">
+                        delete
+                      </i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+
+          <!-- Header and Footer Row Definition -->
+          <tr mat-header-row *matHeaderRowDef="ChequeToChequeEffectDataColumn"></tr>
+          <tr mat-row *matRowDef="let row; columns: ChequeToChequeEffectDataColumn;"></tr>
+          <tr mat-footer-row *matFooterRowDef="ChequeToChequeEffectDataColumn"></tr>
+        </table>
+        <!-- Cheque To Cheque Effect Table Ends -->
+      </div>
+
+      <!-- Action Buttons Starts -->
+      <div class="form-action-button">
+        <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+          <i class="material-icons" title="Save As Draft" aria-hidden="true">
+            save
+          </i>
+          Save
+        </button>
+        <button type="reset" mat-raised-button color="accent" title="Reset"
+          (click)="directiveObject.resetForm(chequeToChequeEffectForm)">
+          <i class="material-icons" title="Reset" aria-hidden="true">
+            restore
+          </i>
+          Reset
+        </button>
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+        <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" title="Print" aria-hidden="true">
+            print
+          </i>
+          Print
+        </button>
+      </div>
+      <!-- Action Buttons Ends -->
+    </form>
+    <!-- Form Ends -->
+
+  </div>
+</div>

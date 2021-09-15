@@ -1,0 +1,325 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading-section -->
+    <div class="heading-section ng-star-inserted">
+      Schedule 5: Income Report (District Panchayat Schedule)
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/SF/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Schedule 5: Income Report (District Panchayat Schedule)
+        </li>
+      </ol>
+    </nav>
+
+    <!-- form -->
+    <form [formGroup]="scheduleFive" (ngSubmit)="submitFormData()">
+      <div class="box box-primary">
+        <div class="box-header">Income Report (District Panchayat Schedule)</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- financial year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="financialYear" placeholder="Financial Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="financialYearCtrl"
+                      [placeholderLabel]="'Find Financial Year...'"
+                      [noEntriesFoundLabel]="'No matching Financial Year found'" numberHypenOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of financialYearList |
+                      filterSelectInput:financialYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="scheduleFive.controls.financialYear.touched || (scheduleFive.controls.financialYear.errors && isSubmitted)">
+                  <mat-error *ngIf="scheduleFive.controls.financialYear.errors?.required">
+                    {{errorMessages.FIN_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- district -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="districtName" placeholder="District" value="{{districtName}}" readonly
+                  disabled>
+              </mat-form-field>
+            </div>
+
+            <!-- major head -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="majorHead" placeholder="Major Head" required
+                  (selectionChange)="changeIncome()">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'"
+                      [noEntriesFoundLabel]="'no matching Major Head found'" numbersAlphabetsOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of majorHeadList | filterSelectInput:majorHeadCtrl.value"
+                    [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="scheduleFive.controls.majorHead.touched || (scheduleFive.controls.majorHead.errors && isSubmitted)">
+                  <mat-error *ngIf="scheduleFive.controls.majorHead.errors?.required">
+                    {{errorMessages.MAJOR_HEAD}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- opening balance -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="openingBalance" placeholder="Opening Balance"
+                  value="{{openingBalanceValue}}" readonly disabled>
+              </mat-form-field>
+            </div>
+
+            <!-- income -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="income" placeholder="Income" numbersOnlyKeypress
+                  value="{{incomeValue}}" disabled readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- total income  -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="totalIncome" placeholder="Total Income" numbersOnlyKeypress
+                  [value]="calculateTotalIncomeValue()" readonly>
+              </mat-form-field>
+            </div>
+
+            <!--  amount deposited in govt -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="amountDeposited" placeholder="Amount deposited in Government"
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="scheduleFive.controls.amountDeposited.touched || (scheduleFive.controls.amountDeposited.errors && isSubmitted)">
+                  <mat-error *ngIf="scheduleFive.controls.amountDeposited.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+
+            <!-- closing balance -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="closingBalance" placeholder="Closing Balance"
+                  [value]="calculateClosingBalanceValue()" numbersOnlyKeypress readonly>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" title="Add" (click)="add();">
+            <i class="material-icons" aria-hidden="true">add</i>
+            Add
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- listing -->
+    <div class="mat-elevation-z8  mt-2 table-responsive overflow-y-auto">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="ScheduleFiveEntry">
+
+        <!-- sr no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- financial year -->
+        <ng-container matColumnDef="financialYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Financial Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.financialYear}}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- major head -->
+        <ng-container matColumnDef="majorHead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.majorHead}}
+          </td>
+        </ng-container>
+
+        <!-- opening balance -->
+        <ng-container matColumnDef="openingBalance">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Opening balance</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.openingBalance}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calculateOpeningBalance()}}</td>
+        </ng-container>
+
+        <!-- income -->
+        <ng-container matColumnDef="income">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Income</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.income}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calculateIncome()}}</td>
+        </ng-container>
+
+        <!-- total income -->
+        <ng-container matColumnDef="totalIncome">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Total Income</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.totalIncome}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calculateTotalIncome()}}</td>
+        </ng-container>
+
+        <!-- amount deposited in government -->
+        <ng-container matColumnDef="amountDeposited">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount deposited in Government</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.amountDeposited}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calculateAmountDeposited()}}</td>
+        </ng-container>
+
+        <!-- closing balance -->
+        <ng-container matColumnDef="closingBalance">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Closing Balance</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.closingBalance}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calculateClosingBalance()}}</td>
+        </ng-container>
+
+        <!-- remarks -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Remarks by Creator</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.remarks}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+          <td mat-cell *matCellDef="let element; let i = index" class="action-btn-i centerAlign">
+
+            <i class="material-icons plus view-icon" title="Edit" aria-hidden="true" (click)="editDetails(i)">edit</i>
+            <a [routerLink]=""><i class="material-icons plus view-icon" title="View"
+                aria-hidden="true">remove_red_eye</i></a>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+        </ng-container>
+
+        <!-- span 4 column for total column -->
+        <ng-container matColumnDef="footer1">
+          <td [attr.colspan]="4" mat-footer-cell *matFooterCellDef>Total</td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+        <!-- Footer Section Of table -->
+        <tr mat-footer-row *matFooterRowDef="displayedColumnsTotal"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+    <!-- action button -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+        <i class="material-icons" aria-hidden="true">done</i>
+        Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset()">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['../schedule-five-listing']"
+        routerLinkActive="router-link-active">
+        <i class="material-icons" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+
+    </div>
+
+  </div>
+</div>

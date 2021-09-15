@@ -1,0 +1,714 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      Audit Planning
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Audit Planning</li>
+      </ol>
+    </nav>
+
+    <!-- quaterly audit report planning -->
+    <div class="box box-primary">
+      <div class="box-header">Quarterly Audit Report Planning</div>
+      <div class="box-body">
+        <div class="mat-elevation-z8 table-responsive mt-2">
+          <table mat-table [dataSource]="dataSource" width="100%" matSort
+            aria-describedby="quaterlyAuditReportPlanning">
+
+            <!-- sr no -->
+            <ng-container matColumnDef="serialNo">
+              <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+                Sr. No.
+              </th>
+            </ng-container>
+
+            <!-- quaterly -->
+            <ng-container matColumnDef="quaterly">
+              <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+                Quaterly
+              </th>
+            </ng-container>
+
+            <!-- total -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef scope="row">
+                Total
+              </th>
+            </ng-container>
+
+            <!-- audit Year -->
+            <ng-container matColumnDef="auditYear">
+              <th mat-header-cell [attr.colspan]="2" *matHeaderCellDef scope="row">
+                Audit Year
+              </th>
+            </ng-container>
+
+            <!-- proposed Audit Unit -->
+            <ng-container matColumnDef="proposedAuditUnit">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                Proposed Audit Unit
+              </th>
+            </ng-container>
+
+            <!-- suggested Audit Unit -->
+            <ng-container matColumnDef="suggestedAuditYear">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                Suggested Audit Unit
+              </th>
+            </ng-container>
+
+            <!--  total footer-->
+            <ng-container matColumnDef="footer">
+              <td mat-footer-cell [attr.colspan]="2" *matFooterCellDef>Total</td>
+            </ng-container>
+
+            <!-- serial no -->
+            <ng-container matColumnDef="serialNo1">
+              <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+                {{i+1}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign">Total</td>
+            </ng-container>
+
+            <!-- institute type -->
+            <ng-container matColumnDef="quaterly1">
+              <td mat-cell *matCellDef="let element;let i= index;">
+                {{element.quaterly1}}
+              </td>
+            </ng-container>
+
+            <!-- audit unit -->
+            <ng-container matColumnDef="proposedAuditUnit1">
+              <td mat-cell *matCellDef="let element">
+                {{element.proposedAuditUnit1}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>{{totalAuditUnit()}}</td>
+            </ng-container>
+
+            <!-- proposed audit unit -->
+            <ng-container matColumnDef="suggestedAuditUnit1">
+              <td mat-cell *matCellDef="let element">
+                {{element.suggestedAuditUnit1}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>{{totalSuggestedAuditUnit()}}</td>
+            </ng-container>
+
+            <!-- suggested audit unit -->
+            <ng-container matColumnDef="total1">
+              <td mat-cell *matCellDef="let element">
+                {{element.total1}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>{{total()}}</td>
+            </ng-container>
+
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="['serialNo','quaterly','auditYear','total']"></tr>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="['proposedAuditUnit','suggestedAuditYear']"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row
+              *matRowDef="let row; columns: ['serialNo1','quaterly1','proposedAuditUnit1','suggestedAuditUnit1','total1'];let i= index;">
+            </tr>
+            <!-- Footer Section Of table -->
+            <tr mat-footer-row *matFooterRowDef="['footer','proposedAuditUnit1','suggestedAuditUnit1','total1']"></tr>
+          </table>
+
+          <!-- paginator -->
+          <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+        <br>
+
+        <!-- form -->
+        <form [formGroup]="quaterlyAuditReportPlanning" (ngSubmit)="submitFormData()">
+          <div class="box box-primary">
+            <div class="box-body">
+              <div class="row">
+
+                <!-- financial year -->
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="financialYear" placeholder="Financial Year" numberHypenOnly
+                      required>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.financialYear.touched || (quaterlyAuditReportPlanning.controls.financialYear.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.financialYear.errors?.required">
+                        {{errorMessages.YEAR}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <!-- quaterly -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="quaterly" placeholder="Querterly" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="quaterlyCtrl" [placeholderLabel]="'Find Querterly ...'"
+                          [noEntriesFoundLabel]="'No matching Querterly found'" alphabetNumberHypenOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let item of quaterlyList |
+                      filterSelectInput:quaterlyCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.quaterly.touched || (quaterlyAuditReportPlanning.controls.quaterly.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.quaterly.errors?.required">
+                        {{errorMessages.YES_NO}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <!-- district -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="district" placeholder="District" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find District ...'"
+                          [noEntriesFoundLabel]="'No matching District found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let item of districtList |
+                      filterSelectInput:districtCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.district.touched || (quaterlyAuditReportPlanning.controls.district.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.district.errors?.required">
+                        {{errorMessages.DISTRICT}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <!-- institute type -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                          [placeholderLabel]="'Find Institute Type...'"
+                          [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.instituteType.touched || (quaterlyAuditReportPlanning.controls.instituteType.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.instituteType.errors?.required">
+                        {{errorMessages.INSTITUTE_TYPE}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <!-- proposed audit year -->
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="proposedAuditYear" placeholder="Proposed Audit Year"
+                      numberHypenOnly required>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.proposedAuditYear.touched || (quaterlyAuditReportPlanning.controls.instituteType.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.proposedAuditYear.errors?.required">
+                        {{errorMessages.P_YEAR}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <!-- suggested audit year -->
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="suggestedAuditUnit" placeholder="Suggested Audit Unit" required>
+                    <div class="error-wrapper"
+                      *ngIf="quaterlyAuditReportPlanning.controls.suggestedAuditUnit.touched || (quaterlyAuditReportPlanning.controls.suggestedAuditUnit.errors && isSubmitted)">
+                      <mat-error *ngIf="quaterlyAuditReportPlanning.controls.suggestedAuditUnit.errors?.required">
+                        {{errorMessages.MANDAYS}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </div>
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" title="Add" (click)="add();">
+                <i class="material-icons" aria-hidden="true">add</i>
+                Add
+              </button>
+              <button type="reset" mat-raised-button color="accent" title="Reset" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="mt-2">
+          <table class="table-css mt-2">
+            <tr class="tr-css">
+              <td class="header">Sr. No.</td>
+              <td class="header">Financial Year</td>
+              <td class="header ">Quaterly</td>
+              <td class="header">District</td>
+              <td class="header">Institute Type</td>
+              <td class="header">Proposed Audit Year</td>
+              <td class="header">Proposed Audit Unit</td>
+              <td class="header">Suggested Audit Unit</td>
+              <td class="header">Total</td>
+              <td class="header">Action</td>
+            </tr>
+            <tr class="tr-css ">
+              <td class="td-css centerAlign bottom-row" rowspan="2">1</td>
+              <td class="td-css  bottom-row" rowspan="2">2018-19</td>
+              <td class="td-css  bottom-row" rowspan="2">April 2018-June 2018</td>
+              <td class="td-css  bottom-row">Ahmedabad</td>
+              <td class="td-css  bottom-row">District Panchayat</td>
+              <td class="td-css  bottom-row">2018-19</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">20</td>
+              <td class="td-css    oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css ">
+              <td class="td-css bottom-row ">Gandhinagar</td>
+              <td class="td-css  bottom-row">Taluka Panchayat</td>
+              <td class="td-css  bottom-row">2017-18</td>
+              <td class="td-css  bottom-row">20</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">30</td>
+              <td class="td-css  oddRow bottom-row">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css evenRow">
+              <td class="td-css centerAlign bottom-row">2</td>
+              <td class="td-css  bottom-row">2018-19</td>
+              <td class="td-css  bottom-row">July 2018-August 2018</td>
+              <td class="td-css  bottom-row">Bhavnagar</td>
+              <td class="td-css  bottom-row">Municipal Corporation</td>
+              <td class="td-css  bottom-row">2018-19</td>
+              <td class="td-css  bottom-row">25</td>
+              <td class="td-css  bottom-row">20</td>
+              <td class="td-css  bottom-row">45</td>
+              <td class="td-css  bottom-row oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css ">
+              <td class="td-css centerAlign bottom-row" rowspan="3">3</td>
+              <td class="td-css  bottom-row" rowspan="3">2018-19</td>
+              <td class="td-css  bottom-row" rowspan="3">October 2018-December 2018</td>
+              <td class="td-css  bottom-row">Surat</td>
+              <td class="td-css  bottom-row">Municipal Corporation</td>
+              <td class="td-css  bottom-row">2017-18</td>
+              <td class="td-css  bottom-row">30</td>
+              <td class="td-css  bottom-row">15</td>
+              <td class="td-css  bottom-row">45</td>
+              <td class="td-css  oddRow bottom-row">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+
+            <tr class="tr-css ">
+              <td class="td-css  bottom-row">Rajkot</td>
+              <td class="td-css  bottom-row">District Panchayat</td>
+              <td class="td-css  bottom-row">2018-19</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">20</td>
+              <td class="td-css  oddRow bottom-row">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css ">
+              <td class="td-css  bottom-row ">Surat</td>
+              <td class="td-css  bottom-row">District Panchayat</td>
+              <td class="td-css  bottom-row">2018-19</td>
+              <td class="td-css  bottom-row">25</td>
+              <td class="td-css  bottom-row">0</td>
+              <td class="td-css  bottom-row">25</td>
+              <td class="td-css  oddRow bottom-row">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css evenRow">
+              <td class="td-css centerAlign bottom-row" rowspan="10">4</td>
+              <td class="td-css  bottom-row" rowspan="10">2018-19</td>
+              <td class="td-css  bottom-row" rowspan="10">January 2019-March 2019</td>
+              <td class="td-css  bottom-row" rowspan="2">Ahmedabad</td>
+              <td class="td-css  bottom-row">District Panchayat</td>
+              <td class="td-css  bottom-row">2019-20</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  bottom-row">0</td>
+              <td class="td-css  bottom-row">10</td>
+              <td class="td-css  oddRow bottom-row">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css  ">Taluka Panchayat</td>
+              <td class="td-css  ">2018-19</td>
+              <td class="td-css  ">36</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">36</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css " rowspan="2">Gandhinagar</td>
+              <td class="td-css  ">District Panchayat</td>
+              <td class="td-css  ">2019-20</td>
+              <td class="td-css  ">46</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">46</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css  ">Taluka Panchayat</td>
+              <td class="td-css  ">2018-19</td>
+              <td class="td-css  ">28</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">28</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css " rowspan="2">Rajot</td>
+              <td class="td-css  ">District Panchayat</td>
+              <td class="td-css  ">2019-20</td>
+              <td class="td-css  ">18</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">18</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css  ">Taluka Panchayat</td>
+              <td class="td-css  ">2018-19</td>
+              <td class="td-css  ">7</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">7</td>
+              <td class="td-css  ">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+
+            <tr class="tr-css bottom-row evenRow ">
+              <td class="td-css " rowspan="2">Bhavnagar</td>
+              <td class="td-css  ">District Panchayat</td>
+              <td class="td-css  ">2019-20</td>
+              <td class="td-css  ">23</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">23</td>
+              <td class="td-css ">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css  ">Taluka Panchayat</td>
+              <td class="td-css  ">2018-19</td>
+              <td class="td-css  ">10</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">10</td>
+              <td class="td-css  ">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css " rowspan="2">Surat</td>
+              <td class="td-css  ">District Panchayat</td>
+              <td class="td-css  ">2019-20</td>
+              <td class="td-css  ">19</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">19</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="tr-css bottom-row evenRow">
+              <td class="td-css  ">Taluka Panchayat</td>
+              <td class="td-css  ">2018-19</td>
+              <td class="td-css  ">8</td>
+              <td class="td-css  ">0</td>
+              <td class="td-css  ">8</td>
+              <td class="td-css  oddRow">
+                <table class="iconTable" aria-describedby="actionBtn">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                            title="View">remove_red_eye</i></a>
+                      </td>
+                      <td width="30">
+                        <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                          edit
+                        </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

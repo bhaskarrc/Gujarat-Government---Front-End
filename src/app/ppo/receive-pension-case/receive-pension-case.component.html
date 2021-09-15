@@ -1,0 +1,219 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Receive Pension Cases</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void()">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void()">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Receive Pension Cases</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="receivePensionCaseForm" (ngSubmit)="receivePensionCaseFormData()">
+                <!-- search fields -->
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                            <span *ngIf="optionCtrl">
+                                                <mat-option *ngFor="let option of filteredppoNo | async"
+                                                    [value]="option">
+                                                    {{option.ppoNo}}
+                                                </mat-option>
+                                            </span>
+                                        </mat-autocomplete>
+                                        <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search
+                                        </mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="oldTreasury" formControlName="oldTreasury" placeholder="Old Treasury/PPO Office">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="oldTreasuryCtrl" [placeholderLabel]="'Select Treasury ...'" [noEntriesFoundLabel]="'no matching Treasury found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let oldTreasuryName of treasury_list | filterSelectInput : oldTreasuryCtrl.value : 'viewValue'" [value]="oldTreasuryName.value">
+                                                {{oldTreasuryName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                                        <i class="material-icons" aria-hidden="true">search</i>
+                                        Search
+                                    </button>
+                                    <button type="reset" mat-raised-button color="accent">
+                                        <i class="material-icons" aria-hidden="true">
+                                            restore
+                                        </i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <br>
+                <!-- filtered data table -->
+                <div class="mat-elevation-z8 mt-2">
+                    <table mat-table [dataSource]="receivePensionDataSource" class="mat-elevation-z8 " aria-describedby="receivePensionCase">
+
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                <mat-checkbox (change)="$event ? directiveObj.masterToggle(receivePensionDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(receivePensionDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(receivePensionDataSource)"
+                                    [aria-label]="directiveObj.checkboxLabel(receivePensionDataSource)">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="centerAlign">
+                                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(receivePensionDataSource,row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="srno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                Sr. No. </th>
+                            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ppoNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPO Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                <a href="javascript:void()">{{element.ppoNo}}</a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pensionerName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Pensioner Name</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.pensionerName}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="oldTreasury">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Old Treasury</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.oldTreasury}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="branch">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Branch</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput type="text" formControlName="branch" value="{{element.branch}}" numbersOnly>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="bank">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Bank</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <mat-select name="bank" formControlName="bank" placeholder="Bank">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="bankCtrl" [placeholderLabel]="'Select Bank ...'" [noEntriesFoundLabel]="'no matching Bank found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let bankName of bank_list | filterSelectInput : bankCtrl.value : 'viewValue'" [value]="bankName.value">
+                                            {{bankName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="bankBranch">
+                            <th mat-header-cell *matHeaderCellDef scope="row">bankBranch</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <mat-select name="bankBranch" formControlName="bankBranch" placeholder="Branch">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="branchCtrl" [placeholderLabel]="'Select Branch ...'" [noEntriesFoundLabel]="'no matching Branch found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let branchName of branch_list | filterSelectInput : branchCtrl.value : 'viewValue'" [value]="branchName.value">
+                                            {{branchName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="accountNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Account Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <input matInput type="text" value="{{element.accountNo}}" numbersOnly>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="auditor">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Audior</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-form-field>
+                                    <mat-select name="auditorName" formControlName="auditorName" placeholder="Auditor">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="auditorCTRL" [placeholderLabel]="'Select Auditor ...'" [noEntriesFoundLabel]="'no matching Auditor found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let auditorName of auditor_list | filterSelectInput : auditorCTRL.value : 'viewValue'" [value]="auditorName.value">
+                                            {{auditorName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-header-row *matHeaderRowDef="receivePensionColumns"></tr>
+                        <!-- Header Section Of table -->
+                        <tr mat-row *matRowDef="let row; columns: receivePensionColumns;"></tr>
+                    </table>
+                    <!-- table ends -->
+                    <!-- common button -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="warn" title="send">
+                            <i class="material-icons" aria-hidden="true">arrow_downward</i> Receive
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons" aria-hidden="true">
+                                highlight_off
+                            </i>
+                            Reject
+                        </button>
+                        <!-- common button ends -->
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

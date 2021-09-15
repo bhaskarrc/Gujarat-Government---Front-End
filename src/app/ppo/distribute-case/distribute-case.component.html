@@ -1,0 +1,183 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Distribute Case</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Distribute Case</li>
+            </ol>
+        </nav>
+        <form [formGroup]="distributedCase">
+            <mat-accordion class="colapsedata">
+                <mat-expansion-panel [expanded]="false" class="nopadding">
+                    <mat-expansion-panel-header>
+                        <div class="heading-section">Search</div>
+                    </mat-expansion-panel-header>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                        <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                            {{option.ppoNo}}
+                                        </mat-option>
+                                    </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="headCode" placeholder="Head Code ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="headCodeCtrl" [placeholderLabel]="'Find Head Code ...'" [noEntriesFoundLabel]="'No matching Head Code '">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="let HC  of headCodeType | filterSelectInput:headCodeCtrl.value" [value]="HC.value" matTooltip="{{HC.viewValue}}">
+                                            {{HC.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Bank Code" formControlName="bankCode" [maxlength]="8" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons" aria-hidden="true" title="search">search</i>
+                        Search
+                    </button>
+
+                            <button type="reset" mat-raised-button color="accent"><i class="material-icons" aria-hidden="true"
+                            title="reset">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </form>
+
+        <br>
+
+        <!-- filtered data table -->
+        <table mat-table [dataSource]="distributeDataSource" class="mat-elevation-z8" aria-describedby="distributeCase">
+
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? directiveObj.masterToggle(distributeDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(distributeDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(distributeDataSource)"
+                        [aria-label]="directiveObj.checkboxLabel(distributeDataSource)">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="centerAlign">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(distributeDataSource,row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ppoNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">PPO No. </th>
+                <td mat-cell *matCellDef="let element;">{{element.ppoNo}} </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef scope="row"> Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schemeType">
+                <th mat-header-cell *matHeaderCellDef scope="row">Scheme Type</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="mrt">
+                        <mat-select placeholder="Scheme Type" [(ngModel)]="element.schemeType" disabled>
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="schemeCtrl" [placeholderLabel]="'Find Scheme...'" [noEntriesFoundLabel]="'No matching Scheme'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let SCHEM  of schemeType | filterSelectInput:schemeCtrl.value" [value]="SCHEM.value">
+                                {{SCHEM.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="branchCode">
+                <th mat-header-cell *matHeaderCellDef scope="row"> Branch Code</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="mrt">
+                        <input matInput placeholder="Description" [(ngModel)]="element.branchCode" required readonly>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="bank">
+                <th mat-header-cell *matHeaderCellDef scope="row"> Bank</th>
+                <td mat-cell *matCellDef="let element"> {{element.bank}} </td>
+            </ng-container>
+            <ng-container matColumnDef="branch">
+                <th mat-header-cell *matHeaderCellDef scope="row"> Branch</th>
+                <td mat-cell *matCellDef="let element"> {{element.branch}} </td>
+            </ng-container>
+            <ng-container matColumnDef="accountNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Account No.</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="mrt">
+                        <input matInput placeholder="Description" [(ngModel)]="element.accountNo" readonly>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="auditor">
+                <th mat-header-cell *matHeaderCellDef scope="row">Auditor</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="mrt">
+                        <mat-select placeholder="Auditor" [(ngModel)]="element.auditor" required>
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="AuditorCtrl" [placeholderLabel]="'Find Auditor...'" [noEntriesFoundLabel]="'No matching Auditor'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let auditor  of auditors | filterSelectInput:AuditorCtrl.value" [value]="auditor.value">
+                                {{auditor.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+            </tr>
+        </table>
+        <!-- table ends -->
+        <!-- Common Button -->
+        <div class="form-action-button">
+            <button mat-raised-button color="primary" (click)="fwdInwardData()">
+                Forward</button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                <i class="material-icons" title="Close" aria-hidden="true"> close</i>Close
+            </button>
+        </div>
+        <!-- Common Button ends-->
+    </div>
+</div>

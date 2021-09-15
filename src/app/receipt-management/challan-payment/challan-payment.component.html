@@ -1,0 +1,830 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Challan Payment</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">Receipt Management </li>
+                <li class="breadcrumb-item active" aria-current="page">Challan Payment </li>
+            </ol>
+        </nav>
+
+        <form [formGroup]="receiptManegmentForm">
+            <ng-template mat-tab-label>
+                Challan Payment Detail
+            </ng-template>
+            <!--Personal/ Organization Details-->
+            <div class="box box-primary">
+                <div class="box-header"> Personal/ Organization Details</div>
+                <div class="box-body">
+                    <div class="row">
+                        <!--Challan Number-->
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput formControlName="challanNum" placeholder="Challan Number" required>
+                                <mat-icon matSuffix class="searchIcon">
+                                  search
+                                </mat-icon>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.challanNum.touched && receiptManegmentForm.controls.challanNum.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.challanNum.errors.required">
+                                        {{errorMessages.CHALLAN_NO}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Name of payer-->
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput formControlName="nameOfprayer" placeholder="Name of payer" required>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.nameOfprayer.touched && receiptManegmentForm.controls.nameOfprayer.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.nameOfprayer.errors.required">
+                                        {{errorMessages.PYER_NAME}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Phone-->
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput type="number" formControlName="phone" placeholder="Phone" maxlength="10"
+                                    required>
+
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.phone.touched && receiptManegmentForm.controls.phone.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.phone.errors.required">
+                                        {{errorMessages.PHONE}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Email-->
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <input matInput type="email" placeholder="Email Id" name="myEmail" email
+                                    pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+                                    formControlName="emailID">
+
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.emailID.touched && receiptManegmentForm.controls.emailID.errors">
+                                    <mat-error
+                                        *ngIf="receiptManegmentForm.controls.emailID.errors && receiptManegmentForm.controls.emailID.errors.pattern">
+                                        Please enter the valid Email ID.
+                                    </mat-error>
+                                </div>
+
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="legend">
+                            <p style="color: red;font-weight: bold;margin-bottom: 0;">NOTE: Search challan by using challan no 
+                                field which are prepared in IFMS 2.0 system.</p>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+            </div>
+
+            <!--Location Details-->
+            <div class="box box-primary">
+                <div class="box-header"> Location Details</div>
+                <div class="box-body">
+                    <div class="row">
+
+
+
+                        <!--Department-->
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <mat-select name="Department" formControlName="department" placeholder="Department"
+                                    (selectionChange)="selectDepartment($event.value)">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="departCtrl"
+                                            [placeholderLabel]="'Select Department ...'"
+                                            [noEntriesFoundLabel]="'no matching Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let department of department_list | filterSelectInput : departCtrl.value : 'viewValue'"
+                                        [value]="department.value">
+                                        {{department.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Head of Department-->
+                        <!-- Finance Dept dropdown-->
+                        <div class="col-sm-3" *ngIf="departmentType == '1'">
+                            <mat-form-field>
+                                <mat-select name="Head Department" formControlName="headDepartment"
+                                    placeholder="Head of Department">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="headdepartCtrl"
+                                            [placeholderLabel]="'Select Head of Department ...'"
+                                            [noEntriesFoundLabel]="'no matching Head of Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let hod of headDepartmentForFinance_list | filterSelectInput : headdepartCtrl.value : 'viewValue'"
+                                        [value]="hod.value">
+                                        {{hod.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <!-- Labour dept  dropdown-->
+                        <div class="col-sm-3" *ngIf="departmentType == '2'">
+                            <mat-form-field>
+                                <mat-select name="Head Department" formControlName="headDepartment"
+                                    placeholder="Head of Department">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="headdepartCtrl"
+                                            [placeholderLabel]="'Select Head of Department ...'"
+                                            [noEntriesFoundLabel]="'no matching Head of Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let hod of headDepartmentForLabour_list | filterSelectInput : headdepartCtrl.value : 'viewValue'"
+                                        [value]="hod.value">
+                                        {{hod.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <!-- Revenue Dept dropdown-->
+                        <div class="col-sm-3" *ngIf="departmentType == '3'">
+                            <mat-form-field>
+                                <mat-select name="Head Department" formControlName="headDepartment"
+                                    placeholder="Head of Department">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="headdepartCtrl"
+                                            [placeholderLabel]="'Select Head of Department ...'"
+                                            [noEntriesFoundLabel]="'no matching Head of Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let hod of headDepartmentForRevenue_list | filterSelectInput : headdepartCtrl.value : 'viewValue'"
+                                        [value]="hod.value">
+                                        {{hod.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Tax Purpose -->
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="taxPurpose" name="taxPurpose"
+                                    placeholder="Tax / Non-Tax Purpose" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="taxPurposeCtrl"
+                                            [placeholderLabel]="'Find Tax Purpose...'"
+                                            [noEntriesFoundLabel]="'no matching Tax purpose found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of taxPurpose_list | filterSelectInput : taxPurposeCtrl.value : 'viewValue'"
+                                        [value]="item.value">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.taxPurpose.touched && receiptManegmentForm.controls.taxPurpose.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.taxPurpose.errors.required">
+                                        {{errorMessages.TAX_PURPOSE}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <!--District-->
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="district" placeholder="District" required #dis>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="districtCtrl"
+                                            [placeholderLabel]="'Find District...'"
+                                            [noEntriesFoundLabel]="'No matching District found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of districtList |
+                        filterSelectInput:districtCtrl.value" [value]="item.value">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.district.touched && receiptManegmentForm.controls.district.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.district.errors.required">
+                                        {{errorMessages.DISTRICT}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Treasury Office /Pay & Account Office /Pension Office-->
+                        <div class="col-sm-3" *ngIf="dis.value=='1'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="tresury"
+                                    matTooltip="Treasury Office /Pay & Account Office /Pension Office"
+                                    placeholder="Treasury Office /Pay & Account Office /Pension Office" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="tresuryCtrl"
+                                            [placeholderLabel]="'Find Treasury Office /Pay & Account Office /Pension Office...'"
+                                            [noEntriesFoundLabel]="'No matching Treasury Office /Pay & Account Office /Pension Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of abadTreasury_list |
+                        filterSelectInput:tresuryCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.tresury.touched && receiptManegmentForm.controls.tresury.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.tresury.errors.required">
+                                        {{errorMessages. TREASURY_OFC}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-3" *ngIf="dis.value=='3'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="tresury"
+                                    matTooltip="Treasury Office /Pay & Account Office /Pension Office"
+                                    placeholder="Treasury Office /Pay & Account Office /Pension Office" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="tresuryCtrl"
+                                            [placeholderLabel]="'Find Treasury Office /Pay & Account Office /Pension Office...'"
+                                            [noEntriesFoundLabel]="'No matching Treasury Office /Pay & Account Office /Pension Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of rajkotTreasury_list |
+                        filterSelectInput:tresuryCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.tresury.touched && receiptManegmentForm.controls.tresury.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.tresury.errors.required">
+                                        {{errorMessages. TREASURY_OFC}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-3" *ngIf="dis.value=='2'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="tresury"
+                                    matTooltip="Treasury Office /Pay & Account Office /Pension Office"
+                                    placeholder="Treasury Office /Pay & Account Office /Pension Office" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="tresuryCtrl"
+                                            [placeholderLabel]="'Find Treasury Office /Pay & Account Office /Pension Office...'"
+                                            [noEntriesFoundLabel]="'No matching Treasury Office /Pay & Account Office /Pension Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of suratTreasury_list |
+                        filterSelectInput:tresuryCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.tresury.touched && receiptManegmentForm.controls.tresury.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.tresury.errors.required">
+                                        {{errorMessages. TREASURY_OFC}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Sub Treasury Office-->
+                        <div class="col-sm-3" *ngIf="dis.value=='1'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="subTresury" matTooltip="Sub Treasury Office"
+                                    placeholder="Sub Treasury Office">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="subTresuryCtrl"
+                                            [placeholderLabel]="'Find Sub Treasury Office...'"
+                                            [noEntriesFoundLabel]="'No matching Sub Treasury Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let subTres of subTreasury_ahmedabad |  filterSelectInput:subTresuryCtrl.value"
+                                        [value]="subTres.value" matTooltip="{{subTres.viewValue}}">
+                                        {{subTres.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3" *ngIf="dis.value=='3'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="subTresury" matTooltip="Sub Treasury Office"
+                                    placeholder="Sub Treasury Office">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="subTresuryCtrl"
+                                            [placeholderLabel]="'Find Sub Treasury Office...'"
+                                            [noEntriesFoundLabel]="'No matching Sub Treasury Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let subTres of subTreasury_rajkot |  filterSelectInput:subTresuryCtrl.value"
+                                        [value]="subTres.value" matTooltip="{{subTres.viewValue}}">
+                                        {{subTres.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3" *ngIf="dis.value=='2'">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="subTresury" matTooltip="Sub Treasury Office"
+                                    placeholder="Sub Treasury Office">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="subTresuryCtrl"
+                                            [placeholderLabel]="'Find Sub Treasury Office...'"
+                                            [noEntriesFoundLabel]="'No matching Sub Treasury Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let subTres of subTreasury_surat |  filterSelectInput:subTresuryCtrl.value"
+                                        [value]="subTres.value" matTooltip="{{subTres.viewValue}}">
+                                        {{subTres.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Office Name-->
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="ofc" placeholder="Office Name" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="ofcCTRL"
+                                            [placeholderLabel]="'Find Sub Office...'"
+                                            [noEntriesFoundLabel]="'No matching Sub Office found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let ofc of Officelocation_list |  filterSelectInput:ofcCTRL.value"
+                                        [value]="ofc.value" matTooltip="{{ofc.viewValue}}">
+                                        {{ofc.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.ofc.touched && receiptManegmentForm.controls.ofc.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.ofc.errors.required">
+                                        {{errorMessages.OFFICE_LOCATION}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challan Details-->
+            <div class="box box-primary">
+                <div class="box-header"> Challan Details</div>
+                <div class="box-body">
+                    <div class="row">
+                        <!--From Date-->
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="fromDate" [matDatepicker]="fromDate"
+                                    placeholder="From Date" readonly>
+                                <mat-datepicker-toggle matSuffix [for]="fromDate">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #fromDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <!--To Date-->
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <input matInput formControlName="toDate" [matDatepicker]="toDate" placeholder="To Date"
+                                    readonly>
+                                <mat-datepicker-toggle matSuffix [for]="toDate">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #toDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Challan Type-->
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <mat-select name='cType' formControlName='cType' placeholder='Challan Type'>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]='challanTypeCtrl'
+                                            [placeholderLabel]="'Select Challan Type ...'"
+                                            [noEntriesFoundLabel]="'no matching Challan Type found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of challanType_list | filterSelectInput : challanTypeCtrl.value : 'viewValue'"
+                                        [value]="item.value" (click)="selectChallanType(item.value)">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Deposit Type-->
+                        <div class="col-sm-3" *ngIf="isSelectedDeposite">
+                            <mat-form-field>
+                                <mat-select name='depositType1' formControlName='depositType1'
+                                    placeholder='Deposit Type'>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]='depositType1Ctrl'
+                                            [placeholderLabel]="'Select Deposit Type ...'"
+                                            [noEntriesFoundLabel]="'no matching Deposit Type found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of deposit1Type_list | filterSelectInput : depositType1Ctrl.value : 'viewValue'"
+                                        [value]="item.value" (click)="selectDepositType(item.value)">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3" *ngIf="showSubDeposit && isSelectedDeposite">
+                            <mat-form-field>
+                                <mat-select formControlName='subDepositType' placeholder='Sub Deposit Type'
+                                    (selectionChange)="selectSubDeposit($event.value)">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]='subDepositTypeCtrl'
+                                            [placeholderLabel]="'Select sub Deposit Type ...'"
+                                            [noEntriesFoundLabel]="'no matching sub Deposit Type found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of subDeposit_list | filterSelectInput : subDepositTypeCtrl.value : 'viewValue'"
+                                        [value]="item.value" matTooltip="{{item.viewValue}}">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!--PDPLA No-->
+                        <div class="col-sm-3" *ngIf="isSelectedDeposite">
+                            <mat-form-field class="full-width">
+                                <input matInput type="text" placeholder="PDPLA No." formControlName="pdpla">
+                            </mat-form-field>
+                        </div>
+
+                        <!--Purpose-->
+                        <div class="mat-elevation-z8 table-responsive mt-2">
+                            <table mat-table [dataSource]="dataSourceClhallanPre" width="100%" matSort
+                                aria-describedby="closeaccount">
+                                <ng-container matColumnDef="pCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Purpose
+                                        Description</th>
+                                    <td mat-cell *matCellDef="let item">
+                                        <!-- if challan type receipt is selected -->
+                                        <mat-form-field floatLabel="never"
+                                            *ngIf="isSelectedDeposite && !showSubDeposit">
+                                            <mat-select name="pCodeCtrl" formControlName="pCode">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                        [placeholderLabel]="'Select Purpose  ...'"
+                                                        [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let purp of purposeForDeposit_list | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                    [value]="purp.value" (click)="selectChallan(purp.viewValue)">
+                                                    {{purp.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <!-- if challan type deposit is selected -->
+                                        <mat-form-field floatLabel="never" *ngIf="isSelectedReceipt ">
+                                            <mat-select name="pCodeCtrl" formControlName="pCode">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                        [placeholderLabel]="'Select Purpose  ...'"
+                                                        [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let purp of purpose | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                    [value]="purp.value" (click)="selectChallan(purp.viewValue)">
+                                                    {{purp.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <!-- if challan type deposit and sub deposit type is selected -->
+                                        <mat-form-field floatLabel="never"
+                                            *ngIf="showSubDeposit && !isSelectedReceipt && isSelectedDeposite">
+                                            <mat-select name="pCodeCtrl" formControlName="purposeDescription" disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                        [placeholderLabel]="'Select Purpose  ...'"
+                                                        [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let purp of subDepositDetial_list | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                    [value]="purp.value">
+                                                    {{purp.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                    <td class="text-left" mat-footer-cell *matFooterCellDef>Total Amount
+                                        <br> Total Amount In Words</td>
+
+                                </ng-container>
+
+                                <ng-container matColumnDef="pCode1">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Deposit Type
+                                        Purpose</th>
+
+                                    <td mat-cell *matCellDef="let element">
+                                        <div>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="pCode1">
+                                            </mat-form-field>
+                                        </div>
+                                    </td>
+
+                                    <td mat-footer-cell *matFooterCellDef></td>
+
+                                </ng-container>
+
+                                <ng-container matColumnDef="mjrHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" formControlName="mjrHead">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="subMjrHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub-Major Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" formControlName="subMjrHead">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+
+                                </ng-container>
+
+                                <ng-container matColumnDef="mrHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Minor Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" formControlName="mrHead">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+
+                                </ng-container>
+
+                                <ng-container matColumnDef="subHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" formControlName="subHead">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="amt">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field class="example-full-width" class="rightAlign">
+                                            <input tabindex="0" matInput [(ngModel)]="element.amt" decimalLimitTwoOnly
+                                                decimalPoint2 [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                        {{totalExpeAmount() | number:'1.2-2'}}
+                                        <br>{{totalExpeAmountWords()}}
+                                    </td>
+
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                                        [ngStyle]="{'width':'4%'}">
+                                        Action</th>
+                                    <td mat-cell *matCellDef="let element; let i=index">
+                                        <table class="iconTable" aria-describedby="actionBtn">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30">
+                                                        <i class="material-icons plus add" aria-hidden="true"
+                                                            *ngIf="(i == dataSourceClhallanPre.data.length - 1)"
+                                                            (click)="addLeave(i);">
+                                                            add
+                                                        </i>
+                                                    </td>
+                                                    <td width="30">
+                                                        <i class="material-icons plus delete" aria-hidden="true"
+                                                            *ngIf="(dataSourceClhallanPre.data.length > 1)"
+                                                            (click)="deletExpenditureRow(i)">
+                                                            delete
+                                                        </i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef> </td>
+
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnschallnPreListing"></tr>
+                                <tr mat-row
+                                    *matRowDef="let row; let i = index;columns: displayedColumnschallnPreListing;">
+                                </tr>
+
+                                <tr mat-footer-row *matFooterRowDef="displayedColumnschallnPreListing"></tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--Payment Mode-->
+            <div class="box box-primary">
+                <div class="box-header"> Payment Mode</div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <!--Paymnet Mode-->
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <mat-select name="paymentMode" formControlName="paymentMode" placeholder="Payment Mode"
+                                    required (selectionChange)="selectPaymentMode($event.value)">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="paymentModeCtrl"
+                                            [placeholderLabel]="'Please select Payment Mode...'"
+                                            [noEntriesFoundLabel]="'no matching Payment Mode found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let paymentModeName of paymentMode_list | filterSelectInput : paymentModeCtrl.value : 'viewValue'"
+                                        [value]="paymentModeName.value">
+                                        {{paymentModeName.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.paymentMode.touched && receiptManegmentForm.controls.paymentMode.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.paymentMode.errors.required">
+                                        {{errorMessages.PAYMENT}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <!-- sub modes -->
+                        <div class="col-sm-3" *ngIf="isSelectedOverTheCounter">
+                            <mat-form-field>
+                                <mat-select name="submodes" formControlName="submodes" placeholder="Sub Mode"
+                                    (selectionChange)="selectSubMode($event.value)">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="submodeCtrl"
+                                            [placeholderLabel]="'Please select submode...'"
+                                            [noEntriesFoundLabel]="'no matching submode found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of submode_list | filterSelectInput : submodeCtrl.value : 'viewValue'"
+                                        [value]="item.value">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3" *ngIf="isSelectedOverTheCounter && isSelectedCheque">
+                            <mat-form-field>
+                                <input matInput formControlName="chequeNo" placeholder="Cheque No">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3" *ngIf="isSelectedOverTheCounter && isSelectedDD">
+                            <mat-form-field>
+                                <input matInput formControlName="ddNo" placeholder="Demand Draft No">
+                            </mat-form-field>
+                        </div>
+                        <!--Bank/Cheque-->
+                        <div class="col-sm-3" *ngIf="!isSelectedPaymentGateway">
+                            <mat-form-field>
+                                <mat-select name="Bank" formControlName="bank" placeholder="Bank" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="bankCtrl"
+                                            [placeholderLabel]="'Please select Bank...'"
+                                            [noEntriesFoundLabel]="'no matching Bank found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let paymentModeName of BankName_list | filterSelectInput : bankCtrl.value : 'viewValue'"
+                                        [value]="paymentModeName.value">
+                                        {{paymentModeName.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+
+                                <div class="error-wrapper"
+                                    *ngIf="receiptManegmentForm.controls.bank.touched && receiptManegmentForm.controls.bank.errors">
+                                    <mat-error *ngIf="receiptManegmentForm.controls.bank.errors.required">
+                                        {{errorMessages.BANK}}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Payment Gateway -->
+                        <div class="col-sm-3" *ngIf="isSelectedPaymentGateway">
+                            <mat-form-field>
+                                <mat-select formControlName="paymentGateway" placeholder="Payment Gateway" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="paymentGatewayCtrl"
+                                            [placeholderLabel]="'Please select Payment Gateway...'"
+                                            [noEntriesFoundLabel]="'no matching Payment Gateway found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let item of paymentGateway_list | filterSelectInput : paymentGatewayCtrl.value : 'viewValue'"
+                                        [value]="item.value">
+                                        {{item.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Remarks-->
+            <div class="box box-primary">
+                <div class="box-header"> Remarks</div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <textarea matInput placeholder="Addl. Remarks" formControlName="reMarks"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Buttons-->
+            <div class="form-action-button">
+
+                <button mat-raised-button type="submit" class="green">
+                    <i class="material-icons" aria-hidden="true" title="done">
+                        done
+                    </i> Submit</button>
+
+
+                <button type="button" mat-raised-button color="warn">
+                    <i class="material-icons" aria-hidden="true" title="Listing">
+                        list
+                    </i>
+                    Listing
+                </button>
+
+                <button type="button" mat-raised-button class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="close">
+                        close
+                    </i>
+                    Close
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

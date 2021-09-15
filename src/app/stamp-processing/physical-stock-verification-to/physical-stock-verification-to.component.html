@@ -1,0 +1,221 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div>Physical Stock Verification - Treasury Office</div>
+      <div class="font-heading">
+        <b>Reference No:</b> 19-20/STM/PSVTO/001</div>
+    <div class="font-heading">
+        <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Physical Stock Verification - Treasury Office</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <mat-tab-group mat-stretch-tabs>
+
+        <!-- Physical Stock Verification Entry Section Starts-->
+        <mat-tab label="Physical Stock Verification - Treasury Office" class="full-width">
+          <div #parentGrids>
+            <form [formGroup]="physicalStockToForm" (ngSubmit)="physicalStockToData()">
+              <div class="row">
+                <!-- Toggle for Eng/Guj -->
+                    <div class="text-right col-sm-12 ">
+                      <button mat-raised-button type="button" class="lang-btn"
+                        (click)="toggleLanguage()">{{currentLang.value == 'Eng' ? 'Guj' : 'Eng' }}</button>
+                    </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <input matInput type="text" formControlName="finYear" placeholder="Financial Year" required
+                      readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.finYear.touched && (physicalStockToForm.controls.finYear.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.finYear.errors.required">
+                      {{errorMessages.FIN_YEAR}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Treasury Office</mat-label>
+                    <input matInput formControlName="toffice" #treVal matTooltip="{{treVal.value}}" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.toffice.touched && (physicalStockToForm.controls.toffice.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.toffice.errors.required">
+                      {{errorMessages.TRE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="troffice" placeholder="Sub Treasury Office" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="trofficeCtrl"
+                          [placeholderLabel]="'Find Authorized Challan...'"
+                          [noEntriesFoundLabel]="'no Authorized Challan found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let ch of treasury_List | filterSelectInput:trofficeCtrl.value"
+                      matTooltip="{{ch.viewValue}}" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.troffice.touched && (physicalStockToForm.controls.troffice.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.troffice.errors.required">
+                      {{errorMessages.SUB_TRE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="visitDate" placeholder="Date Of Visit" [matDatepicker]="picker"
+                      required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.visitDate.touched && (physicalStockToForm.controls.visitDate.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.visitDate.errors.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Name Of Verification Officer</mat-label>
+                    <input matInput formControlName="verificationoffice" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.verificationoffice.touched && (physicalStockToForm.controls.verificationoffice.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.verificationoffice.errors.required">
+                      {{errorMessages.NAME}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Designation</mat-label>
+                    <input matInput formControlName="desi" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="physicalStockToForm.controls.desi.touched && (physicalStockToForm.controls.desi.errors)">
+                    <mat-error *ngIf="physicalStockToForm.controls.desi.errors.required">
+                      {{errorMessages.DESIGNATION}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+
+                </div>
+                
+                <div class="col-sm-6">
+                    <mat-form-field class="example-full-width">
+                        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Remarks"
+                            formControlName="remarks" (focus)="setGujaratiDefault()"
+                            (focusout)="hasFocusSet=1;setEnglishOnFocusOut()" [ngClass]="hasFocusSet == 1 ? 'hasfocus' : ''" required></textarea>
+                            <div class="error-wrapper"
+                                *ngIf="physicalStockToForm.controls.remarks.touched && physicalStockToForm.controls.remarks.errors">
+                                <mat-error *ngIf="physicalStockToForm.controls.remarks.errors.required">
+                                    {{errorMessages.REMARK}} 
+                                </mat-error>
+                            </div>
+                    </mat-form-field>
+                </div>
+
+
+
+              </div>
+            </form>
+
+              </div>
+
+          <!-- Action Buttons -->
+          <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary">
+              <i class="material-icons" aria-hidden="true" title="Save">
+                save
+              </i>
+              Save as Draft
+            </button>
+
+            <button mat-raised-button type="submit" (click)="directiveObject.sumbit()" class="green">
+              <i aria-hidden="true" class="material-icons">
+                done
+              </i> Submit
+            </button>
+
+            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+              <i class="material-icons" aria-hidden="true" title="Listing">
+                list
+              </i>
+              Listing
+            </button>
+            <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+        </mat-tab>
+        <!-- Physical Stock Verification Entry Section Ends-->
+
+
+        <!-- Attachments Section Starts-->
+        <mat-tab label="Attachments" class="full-width">
+          <app-common-attachment [attachemntValue]="attachmentType_list"></app-common-attachment>
+
+          <!-- Action Buttons -->
+          <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary">
+              <i class="material-icons" aria-hidden="true" title="Save">
+                  save
+              </i>
+              Upload
+              </button>
+    
+            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+              <i class="material-icons" aria-hidden="true" title="Listing">
+                list
+              </i>
+              Listing
+            </button>
+            <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+        </mat-tab>
+
+        <!-- Attachments Section Ends-->
+      </mat-tab-group>
+    </div>
+
+  </div>
+</div>

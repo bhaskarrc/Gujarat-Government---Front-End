@@ -1,0 +1,452 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- Screen Name -->
+        <div class="heading-section ng-star-inserted">
+            <div>Loan Migration</div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Payroll</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Loan Migration</li>
+            </ol>
+        </nav>
+
+        <!-- Form Starts -->
+        <form [formGroup]="loanMigrationForm" (ngSubmit)="loanMigrationFormData()">
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Loan Migration</div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <!-- Input Field for DDO number -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder="DDO No" formControlName="ddoNo"
+                                        readonly />
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Cardex Number -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder="Cardex No" formControlName="cardexNo"
+                                        readonly />
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Office Name -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder=" Office Name"
+                                        formControlName="ddoOffice" readonly />
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for district -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="District" formControlName="district">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Advance type -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="advanceType" placeholder="Advance Type" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="advanceTypeCtrl"
+                                                [placeholderLabel]="'Find Advance Type...'"
+                                                [noEntriesFoundLabel]="'No matching Advance Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of advanceTypeList |
+                      filterSelectInput:advanceTypeCtrl.value" [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="(loanMigrationForm.controls.advanceType.touched && (loanMigrationForm.controls.advanceType.errors)) || isSubmit">
+                                        <mat-error *ngIf="loanMigrationForm.controls.advanceType.errors?.required">
+                                            {{errorMessages.TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Employee Category -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="employeeCategory" placeholder="Employee Category">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeCategoryCtrl"
+                                                [placeholderLabel]="'Find Employee Category...'"
+                                                [noEntriesFoundLabel]="'No matching Employee Category found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let item of employeeCategoryList |
+                    filterSelectInput:employeeCategoryCtrl.value" [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Employee Class -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="employeeClass" placeholder="Employee Class">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeClassCtrl"
+                                                [placeholderLabel]="'Employee Class...'"
+                                                [noEntriesFoundLabel]="'no matching Employee Class found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let emp of employeeClassList | filterSelectInput: employeeClassCtrl.value "
+                                            [value]="emp.value">
+                                            {{emp.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Employee Designation -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="designation" placeholder="Designation" multiple>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="designationCtrl"
+                                                [placeholderLabel]="'Find Designation...'"
+                                                [noEntriesFoundLabel]="'no matching Designation found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <!-- <mat-option #allSelected (click)="ddAllSelection()" [value]="0">All
+                    </mat-option> -->
+                                        <mat-option
+                                            *ngFor="let item of DesignationList | filterSelectInput :designationCtrl.value"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Employee Number -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput maxlength="11" placeholder="Employee No"
+                                        formControlName="employeeNumber" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Input Field for Employee Name -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput maxlength="50" placeholder="Employee Name"
+                                        formControlName="employeeName" alphabetsSpaceOnly>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <!-- Buttons for Search and Reset Starts -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="search()">
+                                <i class="material-icons" aria-hidden="true" title="Search">search</i> Search </button>
+                        </div>
+                        <!-- Buttons for Search and Reset Ends -->
+
+                    </div>
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-header">Advance Details</div>
+                    <div class="box-body">
+
+                        <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                            <!-- Loan Migration Table Starts -->
+                            <table mat-table #table [dataSource]="dataSource" aria-describedby="loanMigrationTable">
+
+                                <!-- Serial Number Column -->
+                                <ng-container matColumnDef="srNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Sr. No. </th>
+                                    <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign"
+                                        style="width: 3%;">
+                                        {{element.srNo}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Employee Number Column -->
+                                <ng-container matColumnDef="employeeNumber">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Employee No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;">{{element.employeeNumber}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Employee Name Column -->
+                                <ng-container matColumnDef="employeeName">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Employee Name
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;">{{element.employeeName}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Employee Class Column -->
+                                <ng-container matColumnDef="employeeClass">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Employee Class
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;">{{element.employeeClass}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Employee Designation Column -->
+                                <ng-container matColumnDef="employeeDesignation">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Employee
+                                        Designation </th>
+                                    <td mat-cell *matCellDef="let element;">{{element.employeeDesignation}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Sanctioned Amount Column -->
+                                <ng-container matColumnDef="sanctionedAmountPrincipal">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Sanctioned Amount</th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.sanctionedAmountPrincipal" 
+                                                value="{{element.sanctionedAmountPrincipal}}" decimalLimitTwoOnly
+                                                decimalPoint2 [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Total Number of EMI Column -->
+                                <ng-container matColumnDef="totalNumberOfEMIPrincipal">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Total Number Of EMI </th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.totalNumberOfEMIPrincipal"
+                                                value="{{element.totalNumberOfEMIPrincipal}}" numbersOnly
+                                                [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Number of Out Standing EMI Column -->
+                                <ng-container matColumnDef="numberOfOutstandingEMIPrincipal">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Number of Out Standing EMI</th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.numberOfOutstandingEMIPrincipal"
+                                                value="{{element.numberOfOutstandingEMIPrincipal}}" numbersOnly
+                                                [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- EMI Per Month Column -->
+                                <ng-container matColumnDef="emiPerMonthPrincipal">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">EMI Per Month</th>
+                                    <td mat-cell *matCellDef="let element;" class="rightAlign" style="width: 5%;">
+                                        {{ +(element.sanctionedAmountPrincipal) / +element.totalNumberOfEMIPrincipal | number: '1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Interest Amount Column -->
+                                <ng-container matColumnDef="interstAmountInterest">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Interest Amount</th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.interstAmountInterest"
+                                                value="{{element.interstAmountInterest}}" decimalLimitTwoOnly
+                                                decimalPoint2 [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Total Number of EMI Column -->
+                                <ng-container matColumnDef="totalNumberOfEMIInterest">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Total Number Of EMI </th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.totalNumberOfEMIInterest"
+                                                value="{{element.totalNumberOfEMIInterest}}" numbersOnly
+                                                [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Number of Out Standing EMI Column -->
+                                <ng-container matColumnDef="numberOfOutstandingEMIInterest">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Number of Out Standing EMI</th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <mat-form-field class="example-full-width rightAlign">
+                                            <input matInput class="text-right"
+                                                [(ngModel)]="element.numberOfOutstandingEMIInterest"
+                                                value="{{element.numberOfOutstandingEMIInterest}}" numbersOnly
+                                                [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- EMI Per Month Column -->
+                                <ng-container matColumnDef="emiPerMonthInterest">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">EMI Per Month</th>
+                                    <td mat-cell *matCellDef="let element;" class="rightAlign" style="width: 5%;">
+                                        {{ +element.interstAmountInterest / +element.totalNumberOfEMIInterest | number: '1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- EMI Start Date Column -->
+                                <ng-container matColumnDef="emiStartDate">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        EMI Start Date
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <input matInput [(ngModel)]="element.emiStartDate"  [ngModelOptions]="{standalone: true}"
+                                                [matDatepicker]="picker2">
+                                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker2></mat-datepicker>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Request Number Column -->
+                                <ng-container matColumnDef="requestNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        EMI Per Month
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        {{ element.requestNo }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Action View/Edit/Delete Column -->
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">
+                                        Action
+                                    </th>
+                                    <td mat-cell *matCellDef="let element; let i=index">
+
+                                        <table class="iconTable" aria-describedby="actionBtn">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <button type="button" mat-raised-button color="primary"
+                                                            title="Clear" (click)="clearRow(element)">
+                                                            Clear
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="srNo2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sr. No.</th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeNumber2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee Number
+                                    </th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeName2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee Name
+                                    </th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeClass2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee Class
+                                    </th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeDesignation2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee
+                                        Designation</th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="principal">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="4">Principal</th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="interest">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="4">Interest</th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="emiStartDate2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">EMI Start Date
+                                    </th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="requestNo2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Request No.
+                                    </th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action2">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Action</th>
+                                </ng-container>
+
+                                <ng-container matColumnDef="noData">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" scope="row"></th>
+                                    <td mat-cell *matCellDef="let element" colspan="16" class="text-center">No Data
+                                        Available</td>
+                                </ng-container>
+
+                                <!-- Header Section Of table -->
+                                <tr mat-header-row
+                                    *matHeaderRowDef="['srNo2','employeeNumber2', 'employeeName2', 'employeeClass2', 'employeeDesignation2', 'principal', 'interest', 'emiStartDate2', 'requestNo2', 'action2']">
+                                </tr>
+                                <!-- Header Section Of table -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <!-- Data Fetch From .TS File to table -->
+                                <tr mat-row *matRowDef="let row; columns: displayRow;let i= index;"></tr>
+                            </table>
+                            <!-- Loan Migration Table Ends -->
+                        </div>
+
+                        <!-- Paginator -->
+                        <mat-paginator *ngIf="isSearch" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                        </mat-paginator>
+
+                    </div>
+                </div>
+
+                <!-- Action Buttons Starts -->
+                <div style="margin-top: 15px;">
+                    <div class="form-action-button">
+                        <button mat-raised-button type="submit" class="green" (click)="onClickSubmit()">
+                            <i class="material-icons" aria-hidden="true" title="Submit">done</i> Submit</button>
+                        <button type="button" mat-raised-button color="accent" (click)="resetForm()">
+                            <i class="material-icons" aria-hidden="true" title="Reset">restore</i>Reset</button>
+                    </div>
+                </div>
+                <!-- Action Buttons Ends -->
+            </div>
+        </form>
+        <!-- Form Ends -->
+    </div>
+</div>

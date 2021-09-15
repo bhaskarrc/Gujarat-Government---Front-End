@@ -1,0 +1,246 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Purpose Creation</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/Receipt Management/RM/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Receipt Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Purpose Creation</li>
+            </ol>
+        </nav>
+        <div class="panel-group">
+            <div class="box box-primary">
+                <div class="box-header">Purpose Creation</div>
+                <div class="box-body">
+                    <form [formGroup]="purposeCreationForm">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='taxPurpose' formControlName='taxPurpose' placeholder='Tax / Non-Tax Purpose'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='taxPurposeCtrl' [placeholderLabel]="'Select Tax Purpose ...'" [noEntriesFoundLabel]="'no matching Tax Purpose found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let item of taxPurpose_list | filterSelectInput : taxPurposeCtrl.value : 'viewValue'" [value]="item.value" (click)="selectChallan(item.value)">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" formControlName="mHead" numbersOnly maxlength="4" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.mHead.touched || (purposeCreationForm.controls.mHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.mHead.errors?.required">
+                                            {{errorMessages.M_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head" formControlName="subMajorHead" maxlength="2" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.subMajorHead.touched || (purposeCreationForm.controls.subMajorHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.subMajorHead.errors?.required">
+                                            {{errorMessages.SUBM_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head" formControlName="minorHead" maxlength="3" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.minorHead.touched || (purposeCreationForm.controls.minorHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.minorHead.errors?.required">
+                                            {{errorMessages.MIN_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head" formControlName="subHead" maxlength="2" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.subHead.touched || (purposeCreationForm.controls.subHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.subHead.errors?.required">
+                                            {{errorMessages.S_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Purpose description" formControlName="purpose" maxlength="100" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.purpose.touched || (purposeCreationForm.controls.purpose.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.purpose.errors?.required">
+                                            {{errorMessages.DESC}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width" *ngIf="isSelectedLc">
+                                    <input matInput type="text" placeholder="Purpose Code" formControlName="pCode" maxlength="20" required>
+                                    <div class="error-wrapper" *ngIf="purposeCreationForm.controls.pCode.touched || (purposeCreationForm.controls.pCode.errors && isSubmitted)">
+                                        <mat-error *ngIf="purposeCreationForm.controls.pCode.errors?.required">
+                                            {{errorMessages.CODE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                        <!--action buttons for form-->
+                        <div class="form-action-button">
+
+
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+
+                            <button type="submit" mat-raised-button color="primary" (click)="addUser()">
+                <i class="material-icons" aria-hidden="true">add</i> Add </button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--table-->
+        <div class="panel-group" *ngIf="isAdd">
+            <div class="box box-primary">
+                <div class="box-header">Purpose Creation</div>
+                <div class="box-body">
+                    <!-- table starts -->
+                    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="purposeCreation">
+
+                        <ng-container matColumnDef="srNo">
+                            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> SrNo </th>
+                            <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+                                {{i+1}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="checkbox">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                                    [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="centerAlign">
+                                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="pCode">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Tax / Non-Tax Purpose </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.pCode}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="mHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head </th>
+                            <td mat-cell *matCellDef="let element"> {{element.mHead}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subMajorHead">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sub Major Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.subMajorHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="minorHead">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Minor Head</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.minorHead}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subHead">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head </th>
+                            <td mat-cell *matCellDef="let element"> {{element.subHead}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="purpose">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Purpose Description</th>
+                            <td mat-cell *matCellDef="let element">{{element.purpose}} </td>
+
+
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" mat-sort-header scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element; let i=index">
+                                <table class="iconTable" aria-describedby="actionBtn">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30">
+
+                                                <i aria-hidden="true" class="material-icons plus edit-icon" title="Edit" (click)="editDetails()"> edit </i>
+
+                                            </td>
+                                            <td width="30">
+                                                <i class="material-icons plus delete" aria-hidden="true" (click)="deleteEntry(i)">
+                          delete
+                        </i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+
+                                </table>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+                        </tr>
+                    </table>
+                    <!-- table ends -->
+                    <!--action buttons-->
+                    <div class="form-action-button">
+
+                        <button mat-raised-button type="button" class="green" (click)="onSave();">
+              <i class="material-icons" aria-hidden="true">
+                done
+              </i> Submit
+            </button>
+
+                        <button type="button" mat-raised-button class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="close">
+                close
+              </i>
+              Close
+            </button>
+                    </div>
+                    <!--action buttons ends-->
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

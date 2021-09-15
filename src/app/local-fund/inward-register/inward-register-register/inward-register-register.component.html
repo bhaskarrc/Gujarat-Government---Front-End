@@ -1,0 +1,260 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted"> Inward Register </div>
+
+    <!-- navigation  -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inward Register Report</li>
+      </ol>
+    </nav>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Inward Register Report
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="inwardRegisterReport" (ngSubmit)="searchFormData()">
+            <div class="row">
+
+              <!-- date type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="dateType" placeholder="Date Type" numbersAlphabetsOnly>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="dateTypeCtrl" [placeholderLabel]="'Find Date Type...'"
+                        [noEntriesFoundLabel]="'No matching Date Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of dateTypeList |
+                                        filterSelectInput:dateTypeCtrl.value" [value]="item.value"
+                      matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- from date -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="fromDate" placeholder="From Date" formControlName='fromDate'>
+                  <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                  <mat-datepicker #fromDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!--to date  -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="toDate" placeholder="To Date" formControlName='toDate'>
+                  <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                  <mat-datepicker #toDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- branch name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="branchName" placeholder="Branch Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="branchNameCtrl" [placeholderLabel]="'Find Branch Name...'"
+                        [noEntriesFoundLabel]="'no matching Branch Name found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let branch of branchNameList | filterSelectInput: branchNameCtrl.value"
+                      [value]="branch.value">
+                      {{branch.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!--  letter type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="letterType" placeholder="Letter Type" numbersAlphabetsOnly>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="letterTypeCtrl" [placeholderLabel]="'Find Letter Type...'"
+                        [noEntriesFoundLabel]="'No matching Letter Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of letterTypeList |  filterSelectInput:letterTypeCtrl.value"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- letter received from -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Letter Received From" formControlName="letterReceivedFrom">
+                </mat-form-field>
+              </div>
+
+              <!-- status -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="status" placeholder="Status">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Find Status...'"
+                        [noEntriesFoundLabel]="'no matching Status found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let status of statusList | filterSelectInput: statusCtrl.value"
+                      [value]="status.value">
+                      {{status.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- inward no -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Inward No" formControlName="inwardNo">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="submit" mat-raised-button color="primary" title="Search">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" aria-hidden="true"> restore </i>
+                Reset </button>
+
+            </div>
+            <!-- action button end -->
+
+          </form>
+        </div>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+
+
+    <!-- table start -->
+    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="inwardRegisterRegister">
+
+      <!-- position -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef scope="row"> Sr.No. </th>
+        <td mat-cell *matCellDef="let row;let i =index" class="centerAlign"> {{i+1}} </td>
+      </ng-container>
+
+      <!-- letter type -->
+      <ng-container matColumnDef="letterType">
+        <th mat-header-cell *matHeaderCellDef scope="row">Letter Type</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.letterType}} </td>
+      </ng-container>
+
+      <!-- inward date -->
+      <ng-container matColumnDef="inwardDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Inward Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.inwardDate}} </td>
+      </ng-container>
+
+      <!-- inward no -->
+      <ng-container matColumnDef="inwardNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Inward No</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.inwardNo}} </td>
+      </ng-container>
+
+      <!-- branch name -->
+      <ng-container matColumnDef="branchName">
+        <th mat-header-cell *matHeaderCellDef scope="row">Branch Name</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.branchName}} </td>
+      </ng-container>
+
+      <!-- letter received from -->
+      <ng-container matColumnDef="letterReceivedFrom">
+        <th mat-header-cell *matHeaderCellDef scope="row">Letter Received From</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.letterReceivedFrom}} </td>
+      </ng-container>
+
+      <!-- letter no -->
+      <ng-container matColumnDef="letterNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Letter No</th>
+        <td mat-cell *matCellDef="let element;let i= index;" style="width: 150px;word-wrap: break-word;">
+          {{element.letterNo}} </td>
+      </ng-container>
+
+      <!-- letter date -->
+      <ng-container matColumnDef="letterDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Letter Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;" style="width: 100px;"> {{element.letterDate}} </td>
+      </ng-container>
+
+      <!-- status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.status}} </td>
+      </ng-container>
+
+      <!-- branch worksheet no -->
+      <ng-container matColumnDef="branchWorksheetNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Branch Worksheet No</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.branchWorksheetNo}} </td>
+      </ng-container>
+
+      <!-- received date at branch -->
+      <ng-container matColumnDef="receivedDateAtBranch">
+        <th mat-header-cell *matHeaderCellDef scope="row">Received Date At Branch</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.receivedDateAtBranch}} </td>
+      </ng-container>
+
+      <!-- table worksheet no -->
+      <ng-container matColumnDef="tableWorksheetNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Table Worksheet No</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.tableWorksheetNo}} </td>
+      </ng-container>
+
+      <!-- received date at table -->
+      <ng-container matColumnDef="receivedDateAtTable">
+        <th mat-header-cell *matHeaderCellDef scope="row">Received Date at Table</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.receivedDateAtTable}} </td>
+      </ng-container>
+
+      <!-- employee name -->
+      <ng-container matColumnDef="employeeName">
+        <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.employeeName}} </td>
+      </ng-container>
+
+      <!-- remarks -->
+      <ng-container matColumnDef="remarks">
+        <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.remarks}} </td>
+      </ng-container>
+
+      <!-- Header Section Of table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Data Fetch From .TS File to table -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+
+    </table>
+    <!-- table end -->
+    <!-- paginator -->
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+
+  </div>
+</div>

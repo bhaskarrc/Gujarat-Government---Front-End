@@ -1,0 +1,163 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Locking / Unlocking of time limit Listing</div>
+            <!-- <div class="font-heading"><strong>Reference Number:</strong> 19-20/BUD/LUTL/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div> -->
+        </div>
+
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">Budget</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Locking / Unlocking of time limit Listing
+                </li>
+            </ol>
+        </nav>
+        <div>
+            <div class="box box-primary">
+                <div class="box-header">Search</div>
+                <div class="box-body">
+                    <form [formGroup]="createLockUnlickForm" (ngSubmit)="saveLockUnlock()">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="finYear" placeholder="Financial Year">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'" [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let FY of filteredFinYear | filterSelectInput:finYearCtrl.value" [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="GR / Notification No." formControlName="grNotification">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" formControlName="refNO" placeholder="Reference No">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="refDatepicker" formControlName="refDate" placeholder="Reference Date">
+                                    <mat-datepicker-toggle matSuffix [for]="refDatepicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #refDatepicker></mat-datepicker>
+                                </mat-form-field>
+
+                            </div>
+
+                         <div class="form-action-button mgb10">
+
+                                <button type="submit" mat-raised-button color="primary">Search</button>
+
+                                <button type="reset" mat-raised-button color="accent">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mat-elevation-z8 table-responsive mt-2">
+                <table mat-table [dataSource]="dataSource" matSort>
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef>Sr. No. </th>
+                        <td mat-cell *matCellDef="let element" class="centerAlign"> {{element.position}} </td>
+                    </ng-container>
+
+                    <!-- FinYear Column -->
+                    <ng-container matColumnDef="finyear">
+                        <th mat-header-cell *matHeaderCellDef>Financial Year </th>
+                        <td mat-cell *matCellDef="let element"> {{element.finyear}} </td>
+                    </ng-container>
+
+                    <!-- G.R./Notification No.-->
+                    <ng-container matColumnDef="grnNumaber">
+                        <th mat-header-cell *matHeaderCellDef> G.R./Notification No.</th>
+                        <td mat-cell *matCellDef="let element" class="text-left"> {{element.grnNumaber}} </td>
+                    </ng-container>
+
+                    <!--date of G.R./Notification No.-->
+                    <ng-container matColumnDef="dateGrn">
+                        <th mat-header-cell *matHeaderCellDef>Date of G.R./Notification No.</th>
+                        <td mat-cell *matCellDef="let element" class="text-left"> {{element.dateGrn}} </td>
+                    </ng-container>
+
+                    <!--Reference No-->
+                    <ng-container matColumnDef="refNO">
+                        <th mat-header-cell *matHeaderCellDef>Reference No</th>
+                        <td mat-cell *matCellDef="let element" class="text-left"> {{element.refNO}} </td>
+                    </ng-container>
+
+                    <!--Reference Date-->
+                    <ng-container matColumnDef="refDate">
+                        <th mat-header-cell *matHeaderCellDef>Reference date</th>
+                        <td mat-cell *matCellDef="let element" class="text-left"> {{element.refDate}} </td>
+                   </ng-container>
+
+                    <!--attachment file-->
+                    <ng-container matColumnDef="attachFile">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let element" class="text-left"> {{element.attachFile}} </td>
+                    </ng-container>
+
+                    <!--Acrtion-->
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef> Action </th>
+                        <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                            <a [routerLink]="'../lockingunlocking'">
+                                <i class="material-icons plus edit-icon" title="Edit"> edit </i>
+                            </a>
+                            <a [routerLink]="'#'">
+                                <i class="material-icons plus view-icon" title="View">remove_red_eye</i>
+                            </a>
+                            <!-- <a [routerLink]="'#'">
+                                <i class="material-icons plus copy-icon" title="copy">content_copy</i>
+                            </a> -->
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+            <div class="form-action-button">
+                <!-- <button mat-raised-button type="submit" class="green">
+                    <i class="material-icons" aria-hidden="true">
+                        done
+                    </i> Submit
+                    </button> -->
+
+                <button type="button" mat-raised-button class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                        close
+                    </i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,206 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Received Cases from Case Authority</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Receive Cases From Case Authority
+                </li>
+            </ol>
+        </nav>
+
+        <!-- search fields -->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="false">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search Cases
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="ppoForm" (ngSubmit)="searchCases()">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="caseType" placeholder="Type of Case" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="caseTypeCtrl" [placeholderLabel]="'Find Case Types...'" [noEntriesFoundLabel]="'no matching Case Types found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="let caseType of caseType_list | filterSelectInput: caseTypeCtrl.value" [value]="caseType.value">
+                                            {{caseType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="department" placeholder="Department">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="departmentCtrl" [placeholderLabel]="'Find Department...'" [noEntriesFoundLabel]="'no matching Department found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="let department of department_list | filterSelectInput: departmentCtrl.value" [value]="department.value" matTooltip="{{department.viewValue}}">
+                                            {{department.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-action-button">
+                                <button type="submit" mat-raised-button color="primary">
+                                    <i class="material-icons" aria-hidden="true" title="search">search</i>
+                                    Search
+                                </button>
+                                <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                                    <i class="material-icons" aria-hidden="true" title="reset">
+                                        restore
+                                    </i>
+                                    Reset
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <br>
+
+        <!-- filtered data table -->
+        <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="PensionPayment" class="mat-elevation-z8 mt-2" style=" overflow-x: auto;">
+            <ng-container matColumnDef="checkbox">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                        [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="centerAlign">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="srno">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                    Sr. No. </th>
+                <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                    {{ i + 1 }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ppoNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO No.</th>
+                <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.caseType == 'Final' ? 'red' : element.caseType == 'Provisional' ? 'green' : 'black'}">
+                    {{element.ppoNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="pensionerName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pensioner Name</th>
+                <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.caseType == 'Final' ? 'red' : element.caseType == 'Provisional' ? 'green' : 'black'}">
+                    {{element.pensionerFName +" "+ element.pensionerMname +" "+ element.pensionerLname}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="regNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Registration Number</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="full-width">
+                        <input matInput type="text" required>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="regDate">
+                <th mat-header-cell *matHeaderCellDef scope="row">Registration Date</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="headCode">
+                <th mat-header-cell *matHeaderCellDef scope="row">Head Code</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="full-width">
+                        <mat-select #singleSelect1 required>
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="headCodeCtrl" [placeholderLabel]="'Find Head Codes...'" [noEntriesFoundLabel]="'no matching Head Code found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let headCode of headCode_list | filterSelectInput: headCodeCtrl.value" [value]="headCode.value" [matTooltip]="headCode.viewValue">
+                                {{headCode.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row" style="min-width: 100px;"> Action </th>
+                <td mat-cell *matCellDef="let element;let i = index;" class="centerAlign">
+                    <a><i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i></a>
+                    <a (click)="deleteRow(i)" *ngIf="element.caseType == 'Final'">
+                        <i class="material-icons plus delete" title="Delete" aria-hidden="true"> delete </i></a>
+                </td>
+            </ng-container>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Header Section Of table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+            </tr>
+        </table>
+        <!-- table ends -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+        <div class="legend">
+            <span class="text-red">Note : Pension Cases Displayed in Red color are Already Inwarded.
+                Hence they cant be inwarded again.
+            </span> <br>
+            <span class="text-green">Note : Pension Cases Displayed in Green color have Commension Date Greater Than
+                Current
+                Date i.e {{currentDate | date: 'dd-MMM-yyyy'}}.
+                Hence they cant be inwarded.
+            </span>
+        </div>
+        <!-- common buttons -->
+        <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+        <!-- common buttons end -->
+
+    </div>
+</div>

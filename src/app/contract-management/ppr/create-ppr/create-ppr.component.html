@@ -1,0 +1,1627 @@
+<div class="container">
+    
+    <div class="form-wrapper">
+
+        <!-- heading-section -->
+        <div class="heading-section ng-star-inserted">
+            <div>Creat PPR </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/CM/CP/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <!-- navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Contaract Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Creat PPR</li>
+            </ol>
+        </nav>
+
+        <!-- panel -group -->
+        <div class="panel-group">
+
+            <!-- pprForm -->
+            <form [formGroup]="pprForm" (ngSubmit)="cretpprFormData()">
+
+                <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+                    <!-- tab  ppr details step-1 -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                             PPR Detail Step-1
+                        </ng-template>
+
+                        <!-- project details -->
+                        <div class="box box-primary">
+                            <div class="box-header">Project Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="pprid" formControlName="pprid" placeholder="PPR ID" value="857423">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="projectName" formControlName="namePro" placeholder="Name Of Project" autocomplete="off" required>
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.namePro.touched && pprForm.controls.namePro.errors">
+                                                <mat-error *ngIf="pprForm.controls.namePro.errors.required">
+                                                    {{errorMessages.name_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="scrolArea" formControlName="scrolArea" placeholder="Sectorall Area" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="scrollareactrl" [placeholderLabel]="'Find Sectorall Area ...'" [noEntriesFoundLabel]="'no matching Sectorall Area found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let area of scrollare_list | filterSelectInput : scrollareactrl.value : 'viewValue'" [value]="area.value">
+                                                    {{area.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.scrolArea.touched && pprForm.controls.scrolArea.errors">
+                                                <mat-error *ngIf="pprForm.controls.scrolArea.errors.required">
+                                                    {{errorMessages.scroll_area}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="LineMinitsry" formControlName="lineMin" (selectionChange)="lineMinistry($event)" placeholder="Line Minitsry Department" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="linminCTRl" [placeholderLabel]="'Find Line Minitsry Department ...'" [noEntriesFoundLabel]="'no matching Line Minitsry Department found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let linmin of linemin_list | filterSelectInput : linminCTRl.value : 'viewValue'" [value]="linmin.value">
+                                                    {{linmin.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.lineMin.touched && pprForm.controls.lineMin.errors">
+                                                <mat-error *ngIf="pprForm.controls.lineMin.errors.required">
+                                                    {{errorMessages.linemin_eror}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="centeralmin">
+                                        <mat-form-field>
+                                            <mat-select name="centerLinemin" formControlName="cenLineMin" placeholder="Central Line Ministry" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="cenlineCTRl" [placeholderLabel]="'Find Central Line Ministry'" [noEntriesFoundLabel]="'no matching Central Line Ministry'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let cenline of centerline_list | filterSelectInput : cenlineCTRl.value : 'viewValue'" [value]="cenline.value">
+                                                    {{cenline.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.cenLineMin.touched && pprForm.controls.cenLineMin.errors">
+                                                <mat-error *ngIf="pprForm.controls.cenLineMin.errors.required">
+                                                    {{errorMessages.cent_line}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="statemin">
+                                         <mat-form-field>
+
+                                            <input matInput name="StateLine" formControlName="statlinMin" placeholder="State Line Department for Project" autocomplete="off" value="Gujarat">
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.statlinMin.touched && pprForm.controls.statlinMin.errors">
+                                                <mat-error *ngIf="pprForm.controls.statlinMin.errors.required">
+                                                    {{errorMessages.state_line}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="ppiAgency" formControlName="ppiAgency" placeholder="PPR Implimentation Agency" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="ppiCtrl" [placeholderLabel]="'Find PPR Implimentation Agency'" [noEntriesFoundLabel]="'no matching PPR Implimentation Agency'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let ppi of ppi_list | filterSelectInput : ppiCtrl.value : 'viewValue'" [value]="ppi.value">
+                                                    {{ppi.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.ppiAgency.touched && pprForm.controls.ppiAgency.errors">
+                                                <mat-error *ngIf="pprForm.controls.ppiAgency.errors.required">
+                                                    {{errorMessages.ppa_agency}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+
+                                            <input matInput name="InstitutionalStructure" formControlName="insStrucDelivery" placeholder="Institutional Structure for Delivery" autocomplete="off" required>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.insStrucDelivery.touched && pprForm.controls.insStrucDelivery.errors">
+                                                <mat-error *ngIf="pprForm.controls.insStrucDelivery.errors.required">
+                                                    {{errorMessages.isd_error}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <!-- basic design of the project -->
+                        <div class="box box-primary">
+                            <div class="box-header">Basic Design of Project</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput placeholder="Goal Objective" formControlName="goraObj" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.goraObj.touched && pprForm.controls.goraObj.errors">
+                                                <mat-error *ngIf="pprForm.controls.goraObj.errors.required">
+                                                    {{errorMessages.goal_obj}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput placeholder="Activites Involed" formControlName="actInv" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.actInv.touched && pprForm.controls.actInv.errors">
+                                                <mat-error *ngIf="pprForm.controls.actInv.errors.required">
+                                                    {{errorMessages.act_inv}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="outOfPro" placeholder="Outputs of Project" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.outOfPro.touched && pprForm.controls.outOfPro.errors">
+                                                <mat-error *ngIf="pprForm.controls.outOfPro.errors.required">
+                                                    {{errorMessages.out_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="outputPro" placeholder="Outcome of Project" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.outputPro.touched && pprForm.controls.outputPro.errors">
+                                                <mat-error *ngIf="pprForm.controls.outputPro.errors.required">
+                                                    {{errorMessages.output_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- finance element -->
+                        <div class="box box-primary">
+                            <div class="box-header">Finance Element</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput placeholder="System and Transformational Impact" formControlName="sTi" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.sTi.touched && pprForm.controls.sTi.errors">
+                                                <mat-error *ngIf="pprForm.controls.sTi.errors.required">
+                                                    {{errorMessages.sti_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput placeholder="Innovations and Piloting of New Approached" formControlName="ipna" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.ipna.touched && pprForm.controls.ipna.errors">
+                                                <mat-error *ngIf="pprForm.controls.ipna.errors.required">
+                                                    {{errorMessages.ipna_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="ifl" placeholder="Institutional Financing Leveraging" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.ifl.touched && pprForm.controls.ifl.errors">
+                                                <mat-error *ngIf="pprForm.controls.ifl.errors.required">
+                                                    {{errorMessages.ifl_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="ibppa" matTooltip="International Best Practices Proposed to be Adopted" placeholder="International Best Practices Proposed to be Adopted" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.ibppa.touched && pprForm.controls.ibppa.errors">
+                                                <mat-error *ngIf="pprForm.controls.ibppa.errors.required">
+                                                    {{errorMessages.ibppa_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- other element -->
+                        <div class="box box-primary">
+                            <div class="box-header">Other Element</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="prosectoreng" matTooltip="Private Sector Engagement" placeholder="Private Sector Engagement" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.prosectoreng.touched && pprForm.controls.prosectoreng.errors">
+                                                <mat-error *ngIf="pprForm.controls.prosectoreng.errors.required">
+                                                    {{errorMessages.prisector_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="climateMa" matTooltip="Climate Mitigation/Adaptation" placeholder="Climate Mitigation/Adaptation" required> </textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.climateMa.touched && pprForm.controls.climateMa.errors">
+                                                <mat-error *ngIf="pprForm.controls.climateMa.errors.required">
+                                                    {{errorMessages.climatemi_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="beneEngug" matTooltip="Beneficiary Engagement/Community Involvement/Community Monitoring" placeholder="Beneficiary Engagement/Community Involvement/Community Monitoring" required> </textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.beneEngug.touched && pprForm.controls.beneEngug.errors">
+                                                <mat-error *ngIf="pprForm.controls.beneEngug.errors.required">
+                                                    {{errorMessages.beneEngug_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="stateinvolved" matTooltip="Name/Names of the State/States Involved" placeholder="Name/Names of the State/States Involved" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.stateinvolved.touched && pprForm.controls.stateinvolved.errors">
+                                                <mat-error *ngIf="pprForm.controls.stateinvolved.errors.required">
+                                                    {{errorMessages.statinv_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="desinv" matTooltip="Name/Names of the District/Districts Involved" placeholder="Name/Names of the District/Districts Involved" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.desinv.touched && pprForm.controls.desinv.errors">
+                                                <mat-error *ngIf="pprForm.controls.desinv.errors.required">
+                                                    {{errorMessages.disinv_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- tab action button -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                                Save & Proceed
+                                <i class="material-icons" aria-hidden="true" title="Next">
+                                    chevron_right
+                                </i>
+                            </button>
+                        </div>
+                    </mat-tab>
+
+                    <!-- tab  ppr details step-2 -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            PPR Detail Step-2
+                        </ng-template>
+
+                        <!-- proposed project duration -->
+                        <div class="box box-primary">
+                            <div class="box-header">Proposed Project Duration</div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="projectstartdate" placeholder="From date" required>
+                                            <mat-datepicker-toggle matSuffix [for]="projectstartdate"></mat-datepicker-toggle>
+                                            <mat-datepicker #projectstartdate></mat-datepicker>
+                                        </mat-form-field>
+
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="projectenddate" placeholder="To date" required>
+                                            <mat-datepicker-toggle matSuffix [for]="projectenddate"></mat-datepicker-toggle>
+                                            <mat-datepicker #projectenddate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput formControlName="proyear" matTooltip="Private Sector Engagement" placeholder="Years" value="1 Year" required>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput formControlName="promonth" matTooltip="Private Sector Engagement" placeholder="Month" value="2 Months" required>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput formControlName="prodate" matTooltip="Private Sector Engagement" placeholder="Days" value="250 Days" required>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="CategoryState" formControlName="catState" placeholder="Category of State" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="catstateCTRL" [placeholderLabel]="'Find Category of State ...'" [noEntriesFoundLabel]="'no matching Category of State found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let Category of category_list | filterSelectInput : catstateCTRL.value : 'viewValue'" [value]="Category.value">
+                                                    {{Category.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.catState.touched && pprForm.controls.catState.errors">
+                                                <mat-error *ngIf="pprForm.controls.catState.errors.required">
+                                                    {{errorMessages.cat_eror}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="Central Sector" formControlName="cenSect" matTooltip="Central Sector" placeholder="Central Sector" autocomplete="off" required>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.cenSect.touched && pprForm.controls.cenSect.errors">
+                                                <mat-error *ngIf="pprForm.controls.cenSect.errors.required">
+                                                    {{errorMessages.center_sector}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="State Sector" formControlName="statSector" matTooltip="State Sector" placeholder="State Sector" autocomplete="off" required>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.statSector.touched && pprForm.controls.statSector.errors">
+                                                <mat-error *ngIf="pprForm.controls.statSector.errors.required">
+                                                    {{errorMessages.state_sector}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Financial Arrangement -->
+                        <div class="box box-primary">
+                            <div class="box-header">Financial Arrangement</div>
+                            <div class="box-body">
+
+                                <!-- In INR -->
+                                <div class="row">
+                                    <div class="col-md-12 form-datatable-list mgt10">
+                                        <div class="postlisttitle floatleft">
+                                            <div> In INR </div>
+                                        </div>
+                                        <div class="rsClass">
+                                            <div> (₹ in CR) </div>
+                                        </div>
+                                        <table mat-table [dataSource]="datasorcepprtrach" class="mat-elevation-z8"  aria-describedby="creatppr">
+
+                                            <!-- Position Column -->
+                                            <ng-container matColumnDef="trache">
+                                                <th mat-header-cell *matHeaderCellDef scope="row"> Tranche </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.trache}} </td>
+                                                <td class="text-left" mat-footer-cell *matFooterCellDef><b> Total</b></td>
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="totalexternal">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">Total External Assistance Sought</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.totalexternal" [(ngModel)]="item.totalexternal" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef>
+                                                    <span class="float-left">(In ₹)</span> {{totalexternalAssistence() | number : '1.2-2'}}
+                                                    <br>
+                                                    <span class="spacheight">  </span>
+                                                    <span class="float-left">(In Percentage)</span> {{perTotalexternalAssistence() | number : '1.2-2'}}
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Inmplimenting Agency ExternalColumn -->
+                                            <ng-container matColumnDef="impAgency">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">Inmplimenting Agency</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.impAgency" [(ngModel)]="item.impAgency" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totallimentingagency() | number : '1.2-2'}}
+                                                    <br>
+                                                    <span class="spacheight">  </span> {{pertotallimentingagency() | number : '1.2-2'}}
+                                                </td>
+
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="stateGov">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">State Government</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.stateGov" [(ngModel)]="item.stateGov" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalstategov() | number : '1.2-2'}}
+                                                    <br>
+                                                    <span class="spacheight">  </span> {{pertotalstategov() | number : '1.2-2'}}
+                                                </td>
+
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="cenGov">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">Central Government</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.cenGov" [(ngModel)]="item.cenGov" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalcengov() | number : '1.2-2'}}
+                                                    <br>
+                                                    <span class="spacheight">  </span> {{pertotalcengov() | number : '1.2-2'}}
+
+                                                </td>
+
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="other">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">Other</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.other" [(ngModel)]="item.other" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalothers() | number : '1.2-2'}}
+                                                    <br>
+                                                    <span class="spacheight">  </span> {{pertotalothers() | number : '1.2-2'}}
+                                                </td>
+
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="total">
+                                                <th mat-header-cell *matHeaderCellDef scope="row">Total</th>
+                                                <td mat-cell *matCellDef="let item" class="coldisable rightAlign">
+                                                    {{tracheColumnTotal(item)}}
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totloftotal() | number : '1.2-2'}}
+                                                </td>
+
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnspprtrach"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnspprtrach;"></tr>
+                                            <tr mat-footer-row *matFooterRowDef="displayedColumnspprtrach"></tr>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                                <!-- In External Development Agency Currency -->
+                                <div class="row">
+                                    <div class="col-sm-12 postlisttitle mgt10">
+                                        <div> In External Development Agency Currency </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="scrolArea" formControlName="selectCurrency" placeholder="Select Currency" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="scrollareactrl" [placeholderLabel]="'Find Select Currency...'" [noEntriesFoundLabel]="'no matching Select Currency found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let curenct of curency_list | filterSelectInput : selectCurrency.value : 'viewValue'" [value]="curenct.value">
+                                                    {{curenct.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.selectCurrency.touched && pprForm.controls.selectCurrency.errors">
+                                                <mat-error *ngIf="pprForm.controls.selectCurrency.errors.required">
+                                                    {{errorMessages.currency}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="INRM" formControlName="curenctcon" placeholder="INR Cr M" value="">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-md-12 form-datatable-list mgt10">
+
+                                        <div class="rsClass">
+                                            <div> (₹ in CR) </div>
+                                        </div>
+                                        <table mat-table [dataSource]="datasorcepprtrachUsd" class="mat-elevation-z8">
+
+                                            <!-- Position Column -->
+                                            <ng-container matColumnDef="trache">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row"> Tranche </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.trache}} </td>
+                                                <td class="text-left" mat-footer-cell *matFooterCellDef><b>Total</b></td>
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="totalexternal">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row">Total External Assistance Sought</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.totalexternal" [(ngModel)]="item.totalexternal" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalexternalAssistence() | number : '1.2-2'}}
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Inmplimenting Agency ExternalColumn -->
+                                            <ng-container matColumnDef="impAgency">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row">Inmplimenting Agency</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.impAgency" [(ngModel)]="item.impAgency" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totallimentingagency() | number : '1.2-2'}} </td>
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="stateGov">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row">State Government</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.stateGov" [(ngModel)]="item.stateGov" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalstategov() | number : '1.2-2'}} </td>
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="cenGov">
+                                                <th mat-header-cell *matHeaderCellDef   scope="row">Central Government</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.cenGov" [(ngModel)]="item.cenGov" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalcengov() | number : '1.2-2'}} </td>
+                                            </ng-container>
+
+                                            <!-- State Government ExternalColumn -->
+                                            <ng-container matColumnDef="other">
+                                                <th mat-header-cell *matHeaderCellDef   scope="row">Other</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.other" [(ngModel)]="item.other" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totalothers() | number : '1.2-2'}} </td>
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="total">
+                                                <th mat-header-cell *matHeaderCellDef   scope="row">Total</th>
+                                                <td mat-cell *matCellDef="let item" class="coldisable rightAlign">
+                                                    {{tracheColumnTotal(item)}}
+                                                </td>
+                                                <td class="text-right" mat-footer-cell *matFooterCellDef> {{totloftotal() | number : '1.2-2'}} </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnspprtrachUsd"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnspprtrachUsd;"></tr>
+                                            <tr mat-footer-row *matFooterRowDef="displayedColumnspprtrachUsd"></tr>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Year wise Financial projections of fund utilization -->
+                        <div class="box box-primary">
+                            <div class="box-header">Year wise Financial projections of fund utilization</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-12 form-datatable-list mgt10 yearwise">
+                                        <div class="rsClass">
+                                            <div> (₹ in CR) </div>
+                                        </div>
+                                        <table mat-table [dataSource]="datasorcYear" class="mat-elevation-z8">
+
+                                            <!-- Year Column -->
+                                            <ng-container matColumnDef="year">
+                                                <th mat-header-cell *matHeaderCellDef class="yearwidth"> Year </th>
+                                                <td mat-cell *matCellDef="let element" class="bgnlue"> {{element.year}} </td>
+                                            </ng-container>
+
+                                            <!-- 1st Year Column -->
+                                            <ng-container matColumnDef="firYear">
+                                                <th mat-header-cell *matHeaderCellDef scope="row" class="bgnone"> 1st Year </th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.firYear" [(ngModel)]="item.firYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 2nd Year Column -->
+                                            <ng-container matColumnDef="secYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone"> 2nd Year </th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.secYear" [(ngModel)]="item.secYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 3rd Year Column -->
+                                            <ng-container matColumnDef="thirYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">3rd Year </th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.thirYear" [(ngModel)]="item.thirYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 4th Year Column -->
+                                            <ng-container matColumnDef="forthYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">4th Year </th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.forthYear" [(ngModel)]="item.forthYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 5th Year Column -->
+                                            <ng-container matColumnDef="fifthYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">5th Year </th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.fifthYear" [(ngModel)]="item.fifthYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 6th Year Column -->
+                                            <ng-container matColumnDef="sixthYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">6th Year</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.sixthYear" [(ngModel)]="item.sixthYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- 7th Year Column -->
+                                            <ng-container matColumnDef="seventhYear">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">7th Year</th>
+                                                <td mat-cell *matCellDef="let item">
+                                                    <mat-form-field floatLabel="never" class="rightAlign">
+                                                        <input matInput [value]="item.seventhYear" [(ngModel)]="item.seventhYear" [ngModelOptions]="{standalone: true}">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="total">
+                                                <th mat-header-cell *matHeaderCellDef  scope="row" class="bgnone">Total</th>
+                                                <td mat-cell *matCellDef="let item" class="coldisable rightAlign">
+                                                    {{yearWiseCal(item)}}
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnyearwise"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnyearwise;"></tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fields  -->
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="scrolArea" formControlName="ExternalFunding" placeholder="Name of the External Funding Agency" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="extfundigCTRL" [placeholderLabel]="'Find External Funding Agency ...'" [noEntriesFoundLabel]="'no matching External Funding Agency found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let fund of ext_fun_list | filterSelectInput : extfundigCTRL.value : 'viewValue'" [value]="fund.value">
+                                                    {{fund.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.ExternalFunding.touched && pprForm.controls.ExternalFunding.errors">
+                                                <mat-error *ngIf="pprForm.controls.ExternalFunding.errors.required">
+                                                    {{errorMessages.ext_fund}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="PreviuosPhase" formControlName="previusPhase" placeholder="Previuos Phase If any" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="prevphaseCtrl" [placeholderLabel]="'Find Previuos Phase If any ...'" [noEntriesFoundLabel]="'no matching Previuos Phase found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let prephase of prevphase_list| filterSelectInput : prevphaseCtrl.value : 'viewValue'" [value]="prephase.value">
+                                                    {{prephase.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.previusPhase.touched && pprForm.controls.previusPhase.errors">
+                                                <mat-error *ngIf="pprForm.controls.previusPhase.errors.required">
+                                                    {{errorMessages.prev_phase}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="PreviuosPhase" formControlName="wtherFisiblity" placeholder="Whether fisibility study of project is available ?" matTooltip="Whether fisibility study of project is available ?" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="wwtherCTrl" [placeholderLabel]="'Find Whether fisibility study of project is available  ...'" [noEntriesFoundLabel]="'no matching Whether fisibility study of project is available '">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let wther of wether_list| filterSelectInput : wwtherCTrl.value : 'viewValue'" [value]="wther.value">
+                                                    {{wther.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.wtherFisiblity.touched && pprForm.controls.wtherFisiblity.errors">
+                                                <mat-error *ngIf="pprForm.controls.wtherFisiblity.errors.required">
+                                                    {{errorMessages.wther_eror}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="WehterReport" formControlName="wtherReport" placeholder="whether Detail Project report is available ?" matTooltip="whether Detail Project report is available ?" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="wwtherreportCTrl" [placeholderLabel]="'Find Whether fisibility study of project is available  ...'" [noEntriesFoundLabel]="'no matching Whether fisibility study of project is available '">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let repot of wetherrepo_list| filterSelectInput : wwtherreportCTrl.value : 'viewValue'" [value]="repot.value">
+                                                    {{repot.viewValue}}
+                                                </mat-option>
+
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.wtherFisiblity.touched && pprForm.controls.wtherFisiblity.errors">
+                                                <mat-error *ngIf="pprForm.controls.wtherFisiblity.errors.required">
+                                                    {{errorMessages.wther_report}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- tab action button -->
+                        <div class="form-action-button">
+                            <button mat-button (click)="goToBack()" mat-raised-button color="primary" class="back-button">
+                                <mat-icon aria-label="icon-button">
+                                    keyboard_return
+                                </mat-icon>
+                                Back
+                            </button>
+                            <button type="submit" mat-raised-button color="primary" (click)="goTolast()">
+                                Save & Proceed
+                                <i class="material-icons" aria-hidden="true" title="Next" >
+                                        chevron_right
+                                    </i>
+                            </button>
+                        </div>
+                    </mat-tab>
+
+                    <!-- tab ppr detail step submit -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            PPR Detail Step Submit
+                        </ng-template>
+
+                        <!-- Clearances Of the Projects -->
+                        <div class="box box-primary">
+                            <div class="box-header"> Clearances Of the Projects</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="Environment" formControlName="environMent" (selectionChange)="environment($event)" placeholder="Environment" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="environmentCtrl" [placeholderLabel]="'Find Environment'" [noEntriesFoundLabel]="'no matching Environment'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let Environment of environMent_list | filterSelectInput : environmentCtrl.value : 'viewValue'" [value]="Environment.value">
+                                                    {{Environment.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.environMent.touched && pprForm.controls.environMent.errors">
+                                                <mat-error *ngIf="pprForm.controls.environMent.errors.required">
+                                                    {{errorMessages.envirment}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="envyes">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="anyOtherEnv" matTooltip="Please Specific" placeholder="Please Specific(Environment)" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.anyOtherEnv.touched && pprForm.controls.anyOtherEnv.errors">
+                                                <mat-error *ngIf="pprForm.controls.anyOtherEnv.errors.required">
+                                                    {{errorMessages.any_other_env}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="Regulation Zone" formControlName="totalRegisZone" (selectionChange)="CostalRegulation($event)" placeholder="Costal Regulation Zone" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="regiCtrl" [placeholderLabel]="'Find Costal Regulation Zone'" [noEntriesFoundLabel]="'no matching Costal Regulation Zone'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let totalrgistration of registration_list | filterSelectInput : regiCtrl.value : 'viewValue'" [value]="totalrgistration.value">
+                                                    {{totalrgistration.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.totalRegisZone.touched && pprForm.controls.totalRegisZone.errors">
+                                                <mat-error *ngIf="pprForm.controls.totalRegisZone.errors.required">
+                                                    {{errorMessages.envirment}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="Costalyes">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="anyOtherCostal" matTooltip="Please Specific" placeholder="Please Specific (Costal Regulation Zone)" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.anyOtherCostal.touched && pprForm.controls.anyOtherCostal.errors">
+                                                <mat-error *ngIf="pprForm.controls.anyOtherCostal.errors.required">
+                                                    {{errorMessages.any_other_env}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="Forest" formControlName="forest" (selectionChange)="forestevent($event)" placeholder="Forest" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="forestctrl" [placeholderLabel]="'Find Forest'" [noEntriesFoundLabel]="'no matching Forest'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let forest of forest_list | filterSelectInput : forestctrl.value : 'viewValue'" [value]="forest.value">
+                                                    {{forest.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.forest.touched && pprForm.controls.forest.errors">
+                                                <mat-error *ngIf="pprForm.controls.forest.errors.required">
+                                                    {{errorMessages.forest}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="forestyes">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="anyOtherForest" matTooltip="Please Specific" placeholder="Please Specific (Forest)" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.anyOtherForest.touched && pprForm.controls.anyOtherForest.errors">
+                                                <mat-error *ngIf="pprForm.controls.anyOtherForest.errors.required">
+                                                    {{errorMessages.any_other_env}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="Heritage" formControlName="Heritage" (selectionChange)="heritage($event)" placeholder="Heritage" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="heritagetrl" [placeholderLabel]="'Find Height'" [noEntriesFoundLabel]="'no matching Height'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let heritage of height_list | filterSelectInput : heritagetrl.value : 'viewValue'" [value]="heritage.value">
+                                                    {{heritage.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.Heritage.touched && pprForm.controls.Heritage.errors">
+                                                <mat-error *ngIf="pprForm.controls.Heritage.errors.required">
+                                                    {{errorMessages.Heritage}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="Heritageyes">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="anyOtherheritage" matTooltip="Please Specific" placeholder="Please Specific (Heritage)" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.anyOtherheritage.touched && pprForm.controls.anyOtherheritage.errors">
+                                                <mat-error *ngIf="pprForm.controls.anyOtherheritage.errors.required">
+                                                    {{errorMessages.any_other_env}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="anyOther" matTooltip="Any Other" placeholder="Any Other" required></textarea>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.anyOther.touched && pprForm.controls.anyOther.errors">
+                                                <mat-error *ngIf="pprForm.controls.anyOther.errors.required">
+                                                    {{errorMessages.any_other}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Court or Tribunal Proceedings -->
+                        <div class="box box-primary">
+                            <div class="box-header">Court or Tribunal Proceedings </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <mat-form-field>
+                                            <mat-select name="involvedintheproject" formControlName="involvedPro" (selectionChange)="inmpactPro($event)" placeholder="Whether Land pooling/land acquisition/Resettlement and Rehabilitation is involved in the project?" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="invproCTRL" [placeholderLabel]="'Find involved in the project '" [noEntriesFoundLabel]="'no matching involved in the project Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let invpro of invpro_list | filterSelectInput : invproCTRL.value : 'viewValue'" [value]="invpro.value">
+                                                    {{invpro.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.involvedPro.touched && pprForm.controls.involvedPro.errors">
+                                                <mat-error *ngIf="pprForm.controls.involvedPro.errors.required">
+                                                    {{errorMessages.inv_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="allimpactshow">
+                                        <mat-form-field>
+                                            <mat-select name="LandPooling?" formControlName="landPooling" placeholder="Land Pooling" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="landpoolingCTrl" [placeholderLabel]="'Find Land Pooling'" [noEntriesFoundLabel]="'no matching Land Pooling Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let landpool of lanpooli_list | filterSelectInput : landpoolingCTrl.value : 'viewValue'" [value]="landpool.value">
+                                                    {{landpool.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.landPooling.touched && pprForm.controls.landPooling.errors">
+                                                <mat-error *ngIf="pprForm.controls.landPooling.errors.required">
+                                                    {{errorMessages.lanpool_error}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="allimpactshow">
+                                        <mat-form-field>
+                                            <mat-select name="LandPooling?" formControlName="landacquisition" placeholder="Land Acquisition" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="landaquitionCTRL" [placeholderLabel]="'Find Land Acquisition'" [noEntriesFoundLabel]="'no matching Land Acquisition Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let lanaqu of llandauition_list| filterSelectInput : landaquitionCTRL.value : 'viewValue'" [value]="lanaqu.value">
+                                                    {{lanaqu.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.landacquisition.touched && pprForm.controls.landacquisition.errors">
+                                                <mat-error *ngIf="pprForm.controls.landacquisition.errors.required">
+                                                    {{errorMessages.lanaqu_error}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Land pollling / Acquisition / Resetlement and Rehabitation -->
+                        <div class="box box-primary">
+                            <div class="box-header">Land pollling / Acquisition / Resetlement and Rehabitation</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <mat-form-field>
+                                            <mat-select name="Rehabitation" formControlName="rehabtation" (selectionChange)="involvedPro($event)" placeholder="Wether Land pollling acquisition/Resetlement and Rehabitation is involved in the project?" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="rehabitaionCTRL" [placeholderLabel]="'Find Rehabitation is involved in the project'" [noEntriesFoundLabel]="'no matching Rehabitation is involved in the project'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let rehabitation of rehabitaion_list | filterSelectInput : rehabitaionCTRL.value : 'viewValue'" [value]="rehabitation.value">
+                                                    {{rehabitation.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.rehabtation.touched && pprForm.controls.rehabtation.errors">
+                                                <mat-error *ngIf="pprForm.controls.rehabtation.errors.required">
+                                                    {{errorMessages.rehaibtation_error}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allinvproshow">
+                                        <mat-form-field>
+                                            <textarea matInput formControlName="rehabanyother" matTooltip="Any Other" placeholder="Any Other" autocomplete="off"></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- External Assistance Past Assistance -->
+                        <div class="box box-primary">
+                            <div class="box-header">External Assistance Past Assistance </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <mat-form-field>
+                                            <mat-select name="similarproject" formControlName="simiPRo" (selectionChange)="simiPro($event)" placeholder=" Whether External Assistance has been availed in the past for similar project (i.e., earlier phase etc.)?" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="simiproCTRL" [placeholderLabel]="'Find similar project'" [noEntriesFoundLabel]="'no matching similar project Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let simipro of simierpro_list | filterSelectInput : simiproCTRL.value : 'viewValue'" [value]="simipro.value">
+                                                    {{simipro.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.simiPRo.touched && pprForm.controls.simiPRo.errors">
+                                                <mat-error *ngIf="pprForm.controls.simiPRo.errors.required">
+                                                    {{errorMessages.inv_pro}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allshow">
+                                        <mat-form-field>
+                                            <input matInput name="Name of the Project" formControlName="porName" matTooltip="Name of the Project" placeholder="Name of the Project" autocomplete="off">
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allshow">
+                                        <mat-form-field>
+                                            <input matInput name=" Loan/Credit Amount in INR Cr" formControlName="loanAmountdr" matTooltip=" Loan/Credit Amount in INR Cr" placeholder=" Loan/Credit Amount in INR Cr" autocomplete="off">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allshow">
+                                        <mat-form-field>
+                                            <input matInput name=" Loan/Credit Amount in USD Million" formControlName="loanAmountmil" matTooltip=" Loan/Credit Amount in USD Million" placeholder=" Loan/Credit Amount in USD Million" autocomplete="off">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allshow">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="similarprojectstartdate" placeholder="Start date" required>
+                                            <mat-datepicker-toggle matSuffix [for]="similarprojectstartdate"></mat-datepicker-toggle>
+                                            <mat-datepicker #similarprojectstartdate></mat-datepicker>
+                                        </mat-form-field>
+
+                                    </div>
+
+                                    <div class="col-sm-6" *ngIf="allshow">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="similarprojectenddate" placeholder="Completion date" required>
+                                            <mat-datepicker-toggle matSuffix [for]="similarprojectenddate"></mat-datepicker-toggle>
+                                            <mat-datepicker #similarprojectenddate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Complete / Ongoing / Pipeline / Paused / Underestimation / External added Projects -->
+                        <div class="box box-primary">
+                            <div class="box-header">Complete / Ongoing / Pipeline / Paused / Underestimation / External added Projects </div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <mat-select name="externaldevelopment" formControlName="deda" (selectionChange)="externalPro($event)" matTooltip="Details OF externaly aded projects (Completed/ongoing/pipeline/posted/under examination)Since 01/04/2008 undertake by the proposed borrowing Agency (center line Ministry Department Center PSU/ State Government)"
+                                                placeholder="Details OF externaly aded projects (Completed/ongoing/pipeline/posted/under examination)Since 01/04/2008 undertake by the proposed borrowing Agency (center line Ministry Department Center PSU/ State Government)"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="ectdevCtrl" [placeholderLabel]="'Find Detail of external development agencies'" [noEntriesFoundLabel]="'no matching Detail of external development agencies'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let Detail of extdeve_list | filterSelectInput : ectdevCtrl.value : 'viewValue'" [value]="Detail.value">
+                                                    {{Detail.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.deda.touched && pprForm.controls.deda.errors">
+                                                <mat-error *ngIf="pprForm.controls.deda.errors.required">
+                                                    {{errorMessages.ectdev_eror}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <!-- show table if value of dropdown is yes -->
+                                    <div class="col-md-12 form-datatable-list mgt10 externalprotable" *ngIf="exterprojyes">
+
+                                        <div class="rsClass">
+                                            <div> (₹ in CR) </div>
+                                        </div>
+                                        <table mat-table [dataSource]="datasorceExternalPro" class="mat-elevation-z8 ">
+
+                                            <!-- Sector Column -->
+                                            <ng-container matColumnDef="sector">
+                                                <th mat-header-cell *matHeaderCellDef> Sector </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Sector">
+                                                            <mat-option *ngFor="let sector of sector_lists" [value]="sector.value">
+                                                                {{sector.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Total ExternalColumn -->
+                                            <ng-container matColumnDef="exterFunAgency">
+                                                <th mat-header-cell *matHeaderCellDef>External Funding Agency</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Funding Agency">
+                                                            <mat-option *ngFor="let agency of ext_fun_list " [value]="agency.value">
+                                                                {{agency.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- ministry -->
+                                            <ng-container matColumnDef="ministry">
+                                                <th mat-header-cell *matHeaderCellDef>Ministry</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Ministry">
+                                                            <mat-option *ngFor="let min of linemin_list" [value]="min.value">
+                                                                {{min.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Project Name -->
+                                            <ng-container matColumnDef="proName">
+                                                <th mat-header-cell *matHeaderCellDef>Project Name</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput placeholder="Name">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Cost- Original  -->
+                                            <ng-container matColumnDef="costalOri">
+                                                <th mat-header-cell *matHeaderCellDef>Cost- Original</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput placeholder="Cost- Original">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Expenditure (INR Cr) -->
+                                            <ng-container matColumnDef="expInr">
+                                                <th mat-header-cell *matHeaderCellDef>Expenditure (INR Cr)</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput placeholder="Expenditure">
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Currency  -->
+                                            <ng-container matColumnDef="currency">
+                                                <th mat-header-cell *matHeaderCellDef>Currency </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Currency">
+                                                            <mat-option *ngFor="let cur of curency_list" [value]="cur.value">
+                                                                {{cur.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!--Start Date-->
+                                            <ng-container matColumnDef="startDate">
+                                                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput [matDatepicker]="extstartDate" placeholder="Date">
+                                                        <mat-datepicker-toggle matSuffix [for]="extstartDate"></mat-datepicker-toggle>
+                                                        <mat-datepicker #extstartDate></mat-datepicker>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!--Closing Date-->
+                                            <ng-container matColumnDef="closingDate">
+                                                <th mat-header-cell *matHeaderCellDef>Closing Date (Original)</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput [matDatepicker]="extcloseDate" placeholder="Date">
+                                                        <mat-datepicker-toggle matSuffix [for]="extcloseDate"></mat-datepicker-toggle>
+                                                        <mat-datepicker #extcloseDate></mat-datepicker>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!--Closing Date-->
+                                            <ng-container matColumnDef="closingDateRev">
+                                                <th mat-header-cell *matHeaderCellDef> Closing Date (Revieved) </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <mat-form-field>
+                                                        <input matInput [matDatepicker]="extrevDate" placeholder="Date">
+                                                        <mat-datepicker-toggle matSuffix [for]="extrevDate"></mat-datepicker-toggle>
+                                                        <mat-datepicker #extrevDate></mat-datepicker>
+                                                    </mat-form-field>
+                                                </td>
+                                            </ng-container>
+
+                                            <!--action-->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>action</th>
+                                                <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i rightAlign">
+                                                    <a [routerLink]="'#'">
+                                                        <i class="material-icons plus add"  aria-hidden="true"  *ngIf="datasorceExternalPro && datasorceExternalPro.data && (i == datasorceExternalPro.data.length - 1)" (click)="addRow()">
+                                                            add
+                                                        </i>
+                                                    </a>
+
+                                                    <a [routerLink]="'#'">
+                                                        <i class="material-icons plus delete"  aria-hidden="true"  (click)="deleteObjectHeadRow(i)">
+                                                            delete
+                                                        </i>
+                                                    </a>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnExtPro"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnExtPro;"></tr>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- upload -->
+                        <div class="box box-primary">
+                            <div class="box-header">Upload </div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="relevantdocuments" formControlName="fisiblity" matTooltip="Upload relevant documents(including Feasiblity Study,DPR)" placeholder="Upload relevant documents(including Feasiblity Study,DPR)" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="fisiblityCTRL" [placeholderLabel]="'Find Upload relevant documents Found'" [noEntriesFoundLabel]="'no matching Upload relevant documents Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+
+                                                <mat-option *ngFor="let reldoc of reldoc_list | filterSelectInput : fisiblityCTRL.value : 'viewValue'" [value]="reldoc.value">
+                                                    {{reldoc.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="pprForm.controls.fisiblity.touched && pprForm.controls.fisiblity.errors">
+                                                <mat-error *ngIf="pprForm.controls.fisiblity.errors.required">
+                                                    {{errorMessages.diclist_eror}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- tab action button -->
+                        <div class="form-action-button">
+                            <button mat-button (click)="goToBackTwo()" mat-raised-button color="primary" class="back-button">
+                                <mat-icon aria-label="icon-button">
+                                    keyboard_return
+                                </mat-icon>
+                                Back
+                            </button>
+
+                            <button type="submit" mat-raised-button color="primary">
+                                <i class="material-icons" aria-hidden="true" title="Save">
+                                            save
+                                        </i> Save as Draft
+                            </button>
+
+                            <button mat-raised-button type="submit" class="green" >
+                                <i class="material-icons" aria-hidden="true" >
+                                            done
+                                        </i> Submit</button>
+
+                            <button type="reset" mat-raised-button color="accent">
+                                <i class="material-icons" aria-hidden="true">
+                                            restore
+                                        </i> Reset
+                            </button>
+
+                            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                <i class="material-icons" aria-hidden="true" title="Listing">
+                                            list
+                                        </i> Listing
+                            </button>
+
+                        </div>
+                    </mat-tab>
+
+                    <!-- Attachments-->
+                    <mat-tab label="Attachments">
+                        <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                            
+                            <!-- attachment type -->
+                            <ng-container matColumnDef="attachmentType">
+                                <th mat-header-cell *matHeaderCellDef>Attachment Type <span>*</span></th>
+                                <td mat-cell *matCellDef="let item;let i = index;">
+                                    <mat-label>Supporting Document</mat-label>
+                                </td>
+                            </ng-container>
+
+                            <!-- file name -->
+                            <ng-container matColumnDef="fileName">
+                                <th mat-header-cell *matHeaderCellDef>File Name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-form-field floatLabel="never">
+                                        <textarea matInput rows="2" maxlength="200" [value]="item.name" [(ngModel)]="item.name" [ngModelOptions]="{standalone: true}"></textarea>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <!-- browse -->
+                            <ng-container matColumnDef="browse">
+                                <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                                <td mat-cell *matCellDef="let i = index" class="centerAlign">
+                                    <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse Files
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <!-- upload file name -->
+                            <ng-container matColumnDef="uploadedFileName">
+                                <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                        <i class="material-icons closesmall">
+                                            close
+                                        </i>
+                                    </span>
+
+                                </td>
+                            </ng-container>
+
+                            <!-- upload by -->
+                            <ng-container matColumnDef="uploadedBy">
+                                <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-label>Mr. Pratik Shah</mat-label>
+                                </td>
+                            </ng-container>
+                            
+                            <!-- action -->
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef>Action</th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <table class="iconTable">
+                                        <tbody>
+                                            <tr>
+                                                <td class="action-btn-i centerAlign">
+                                                    <a>
+                                                        <i class="material-icons plus add" aria-hidden="true"  *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">add
+                                                        </i>
+                                                    </a>
+                                                    <a>
+                                                        <i class="material-icons plus view-icon" aria-hidden="true"  title="View">remove_red_eye
+                                                        </i>
+                                                    </a>
+                                                    <a>
+                                                        <i class="material-icons plus delete" aria-hidden="true" 
+                                                            *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1"
+                                                            (click)="deleteBrowse(i)">delete
+                                                        </i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                        </table>
+
+                        <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+                        <div class="legend">
+                            1. Total File size should be under 2MB
+                            <br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                        </div>
+
+                        <!-- attachment tab  action button -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary">
+                                <i class="material-icons" aria-hidden="true"  title="Save">cloud_upload</i> Upload
+                            </button>
+                            <button mat-raised-button type="submit" class="green">
+                                <i class="material-icons" aria-hidden="true" >done</i> Submit
+                            </button>
+                            <button type="reset" mat-raised-button color="accent">
+                                <i class="material-icons" aria-hidden="true" > restore</i> Reset
+                            </button>
+                            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                <i class="material-icons"  aria-hidden="true"  title="Listing">list</i> Listing
+                            </button>
+                            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                <i class="material-icons" aria-hidden="true"  title="Budget dashboard">close</i> Close
+                            </button>
+                        </div>
+
+                    </mat-tab>
+
+                </mat-tab-group>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      RTI Appeal Register Lisitng
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">RTI Appeal Register Lisitng</li>
+      </ol>
+    </nav>
+
+
+    <form [formGroup]="rtiAppealRegisterListingForm">
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <!-- year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="year" placeholder="Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Find  Year...'"
+                        [noEntriesFoundLabel]="'No matching Year found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of yearList |
+                        filterSelectInput:yearCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- month  -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="month" placeholder="Month">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                        [noEntriesFoundLabel]="'no matching Month found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let month of monthList | filterSelectInput: monthCtrl.value "
+                      [value]="month.value">
+                      {{month.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- appeal date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="appealDate" [matDatepicker]="appealDate"
+                    placeholder="RTI Appeal Receipt Date" maxlength="50" [max]="maxDate">
+                  <mat-datepicker-toggle matSuffix [for]="appealDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #appealDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- appeallant name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="appellantName" placeholder="Appellant Name" numbersAlphabetsOnly
+                    maxlength="100">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="submit" mat-raised-button color="primary" title="Search">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset()">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- table start -->
+    <div class="mat-elevation-z8  mt-2">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="rtiAppealRegister">
+
+        <!--serial no  -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">Sr.No.</th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">{{i+1}}</td>
+        </ng-container>
+
+        <!-- appeal no -->
+        <ng-container matColumnDef="appealNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">Appeal No</th>
+          <td mat-cell *matCellDef="let element;let i =index" class="centerAlign">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.appealNo" [(ngModel)]="element.appealNo"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- appeal date -->
+        <ng-container matColumnDef="appealDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Appeal Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field>
+              <input matInput [(ngModel)]="element.appealDate" [max]='maxDate' [disabled]='element.edit'
+                [matDatepicker]="appealDate" [ngModelOptions]="{standalone: true}">
+              <mat-datepicker-toggle matSuffix [for]="appealDate">
+              </mat-datepicker-toggle>
+              <mat-datepicker #appealDate></mat-datepicker>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- name of appellant address -->
+        <ng-container matColumnDef="nameOfAppellantAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name of Appellant & Address</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.nameOfAppellantAddress" [(ngModel)]="element.nameOfAppellantAddress"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- date of receipt -->
+        <ng-container matColumnDef="dateOfReceipt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Date of Receipt of Appeal by Appellate
+            Authority</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field>
+              <input matInput [(ngModel)]="element.dateOfReceipt" [max]='maxDate' [disabled]='element.edit'
+                [matDatepicker]="dateOfReceipt" [ngModelOptions]="{standalone: true}">
+              <mat-datepicker-toggle matSuffix [for]="dateOfReceipt">
+              </mat-datepicker-toggle>
+              <mat-datepicker #dateOfReceipt></mat-datepicker>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- name & designation of PIO against whose decision appeal no & date -->
+        <ng-container matColumnDef="nameDesignationOfPio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name & Designation of PIO against whose
+            decision Appeal No. & Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.nameDesignationOfPio" [(ngModel)]="element.nameDesignationOfPio"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- decision by 1st appellate authority -->
+        <ng-container matColumnDef="decisionByFirst">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Decision by 1st Appellate Authority</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.decisionByFirst" [(ngModel)]="element.decisionByFirst"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- whether 2nd appeal made u/s 19 (3) -->
+        <ng-container matColumnDef="whetherSecond">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Whether 2nd Appeal made u/s 19 (3)</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.whetherSecond" [(ngModel)]="element.whetherSecond"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- any other information -->
+        <ng-container matColumnDef="anyOtherInformation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Any other information</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            <mat-form-field floatLabel="never">
+              <input matInput [value]="element.anyOtherInformation" [(ngModel)]="element.anyOtherInformation"
+                [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+
+            <i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+      <!-- paginator -->
+      <mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <!-- table end -->
+  </div>
+</div>

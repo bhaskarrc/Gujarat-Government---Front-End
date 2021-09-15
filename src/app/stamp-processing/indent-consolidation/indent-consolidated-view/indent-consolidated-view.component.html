@@ -1,0 +1,527 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div class="col-md-4 col-sm-12 title">Consolidated Indent</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Consolidated Indent</li>
+            </ol>
+        </nav>
+        <div class="row header-detail">
+            <div class="col-sm-6 colPadding" *ngFor="let item of headerJson">
+                <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+                <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+            </div>
+        </div>
+
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs class="mt-3">
+                <mat-tab label="Consolidated Indent" class="full-width">
+
+                    <div class="heading-section ng-star-inserted">
+                        <div class="col-md-4 col-sm-12 title">Stamp Type</div>
+                    </div>
+
+
+                    <div class="recovertTitle"><b>Agreement</b></div>
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                        aria-describedby="indentConsolidationView">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="denomination">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element"> {{element.denomination}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastIndentStock">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Stock at the time of last indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.lastIndentStock}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>1000</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supplyPreviousIndent">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Supply received against previous indent
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.supplyPreviousIndent}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>250</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="quantitySold">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Sold</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.quantitySold}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>500</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="currentClosingBalance">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Closing balance as on current indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.currentClosingBalance}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>350</td>
+                        </ng-container>
+
+
+
+                        <ng-container matColumnDef="dueQuantity">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity due against previous indent</th>
+                            <td mat-cell *matCellDef="let element"> {{element.dueQuantity}} </td>
+                            <td mat-footer-cell *matFooterCellDef>200</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityRequired">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Required (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element"> {{element.quantityRequired}} </td>
+                            <td mat-footer-cell *matFooterCellDef>230</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qtyApprScr">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity approved by scrutiny officer</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+
+                                <div class="form-action-button">
+                                    <mat-form-field class="full-width" [ngStyle]="{'width': '70%'}">
+                                        <input matInput [(ngModel)]="element.qtyApprScr" [disabled]="isView">
+                                    </mat-form-field>
+                                    <i class="material-icons btn-history" title="View History"
+                                        (click)="openHistory(element)">history</i>
+                                </div>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>{{calcQtyApprScr1()}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{(element.quantityRequired) * (element.denomination )}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">6000</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                    </table>
+
+
+                    <div class="recovertTitle"><b>Hundi</b></div>
+                    <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8"
+                        aria-describedby="indentConsolidation">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="denomination">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element"> {{element.denomination}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="lastIndentStock">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Stock at the time of last indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.lastIndentStock}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>1000</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supplyPreviousIndent">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Supply received against previous indent
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.supplyPreviousIndent}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>250</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="quantitySold">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Sold</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.quantitySold}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>500</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="currentClosingBalance">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Closing balance as on current indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.currentClosingBalance}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>350</td>
+                        </ng-container>
+
+
+
+                        <ng-container matColumnDef="dueQuantity">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity due against previous indent</th>
+                            <td mat-cell *matCellDef="let element"> {{element.dueQuantity}} </td>
+                            <td mat-footer-cell *matFooterCellDef>200</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityRequired">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Required (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element"> {{element.quantityRequired}} </td>
+                            <td mat-footer-cell *matFooterCellDef>230</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qtyApprScr">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity approved by scrutiny officer</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+
+                                <div class="form-action-button">
+                                    <mat-form-field class="full-width" [ngStyle]="{'width': '70%'}">
+                                        <input matInput [(ngModel)]="element.qtyApprScr" [disabled]="isView">
+                                    </mat-form-field>
+                                    <i class="material-icons btn-history" title="View History"
+                                        (click)="openHistory(element)">history</i>
+                                </div>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>{{calcQtyApprScr2()}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{(element.quantityRequired) * (element.denomination )}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">7950</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                    </table>
+
+
+                    <div class="recovertTitle"><b>Notary</b></div>
+                    <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8"
+                        aria-describedby="indentConsolidation">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="denomination">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element"> {{element.denomination}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastIndentStock">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Stock at the time of last indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.lastIndentStock}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>1000</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supplyPreviousIndent">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Supply received against previous indent
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.supplyPreviousIndent}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>250</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="quantitySold">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Sold</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.quantitySold}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>500</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="currentClosingBalance">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Closing balance as on current indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.currentClosingBalance}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>350</td>
+                        </ng-container>
+
+
+
+                        <ng-container matColumnDef="dueQuantity">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity due against previous indent</th>
+                            <td mat-cell *matCellDef="let element"> {{element.dueQuantity}} </td>
+                            <td mat-footer-cell *matFooterCellDef>200</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityRequired">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Required (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element"> {{element.quantityRequired}} </td>
+                            <td mat-footer-cell *matFooterCellDef>230</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qtyApprScr">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity approved by scrutiny officer</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+
+                                <div class="form-action-button">
+                                    <mat-form-field class="full-width" [ngStyle]="{'width': '70%'}">
+                                        <input matInput [(ngModel)]="element.qtyApprScr" [disabled]="isView">
+                                    </mat-form-field>
+                                    <i class="material-icons btn-history" title="View History"
+                                        (click)="openHistory(element)">history</i>
+                                </div>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>{{calcQtyApprScr3()}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{(element.quantityRequired) * (element.denomination )}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                    </table>
+
+
+                    <div class="recovertTitle"><b>Revenue</b></div>
+                    <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8"
+                        aria-describedby="indentConsolidation">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="denomination">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element"> {{element.denomination}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastIndentStock">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Stock at the time of last indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.lastIndentStock}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>1000</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supplyPreviousIndent">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Supply received against previous indent
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.supplyPreviousIndent}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>250</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="quantitySold">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Sold</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.quantitySold}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>500</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="currentClosingBalance">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Closing balance as on current indent</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.currentClosingBalance}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>350</td>
+                        </ng-container>
+
+
+
+                        <ng-container matColumnDef="dueQuantity">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity due against previous indent</th>
+                            <td mat-cell *matCellDef="let element"> {{element.dueQuantity}} </td>
+                            <td mat-footer-cell *matFooterCellDef>200</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityRequired">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity Required (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element"> {{element.quantityRequired}} </td>
+                            <td mat-footer-cell *matFooterCellDef>230</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qtyApprScr">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Quantity approved by scrutiny officer</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+
+                                <div class="form-action-button">
+                                    <mat-form-field class="full-width" [ngStyle]="{'width': '70%'}">
+                                        <input matInput [(ngModel)]="element.qtyApprScr" [disabled]="isView">
+                                    </mat-form-field>
+                                    <i class="material-icons btn-history" title="View History"
+                                        (click)="openHistory(element)">history</i>
+                                </div>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>{{calcQtyApprScr4()}}</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{(element.quantityRequired) * (element.denomination )}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">4005</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                    </table>
+                    <table mat-table class="mat-elevation-z8" aria-describedby="indentConsolidationFinalFooter">
+
+                        <ng-container matColumnDef="position">
+                            <td mat-footer-cell *matFooterCellDef>Gross Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="denomination">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastIndentStock">
+                            <td mat-footer-cell *matFooterCellDef>4000</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supplyPreviousIndent">
+                            <td mat-footer-cell *matFooterCellDef>976</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="quantitySold">
+                            <td mat-footer-cell *matFooterCellDef>6282</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="currentClosingBalance">
+                            <td mat-footer-cell *matFooterCellDef>1400</td>
+                        </ng-container>
+
+
+
+                        <ng-container matColumnDef="dueQuantity">
+                            <td mat-footer-cell *matFooterCellDef>643</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityRequired">
+                            <td mat-footer-cell *matFooterCellDef>869</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="quantityApproved">
+                            <td mat-footer-cell *matFooterCellDef>900</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qtyApprScr">
+                            <td mat-footer-cell *matFooterCellDef>{{calcqtyApprScrNet()}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">18255</td>
+                        </ng-container>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                    </table>
+
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" *ngIf="!isView">
+                            <i class="material-icons" title="Save">
+                                save
+                            </i>
+                            Save as Draft
+                        </button>
+                        <button mat-raised-button type="submit" class="green"
+                            (click)="directiveObject.sumbitConsolidateIndent()">
+                            <i class="material-icons" aria-hidden="true">
+                                done
+                            </i>
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent" *ngIf="!isView">
+                            <i class="material-icons" aria-hidden="true">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button [routerLink]="'../indent-consolidation-list'"
+                            color="warn">
+                            <i class="material-icons" aria-hidden="true" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="print-btn" title="Print" *ngIf="isView">
+                            <i class="material-icons" title="Print" aria-hidden="true">print</i>
+                            Print
+                        </button>
+                        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()"
+                            class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+
+                    </div>
+                </mat-tab>
+                <!-- Attachments Section Starts-->
+                <mat-tab label="Attachments" class="full-width">
+                    <app-common-attachment [attachemntValue]="attachmentType_list"></app-common-attachment>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" *ngIf="!isView">
+                            <i class="material-icons" aria-hidden="true" title="Save">
+                                save
+                            </i>
+                            Upload
+                        </button>
+                        <button type="button" mat-raised-button [routerLink]="'../indent-consolidation-list'"
+                            color="warn">
+                            <i class="material-icons" aria-hidden="true" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()"
+                            class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+
+                <!-- Attachments Section Ends-->
+            </mat-tab-group>
+        </div>
+
+    </div>
+</div>

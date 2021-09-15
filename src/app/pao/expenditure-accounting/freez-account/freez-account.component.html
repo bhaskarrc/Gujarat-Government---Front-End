@@ -1,0 +1,233 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Freeze Account</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="#"> Expenditure Accounting </a></li>
+        <li class="breadcrumb-item active" aria-current="page">Freeze Account</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group mgb15">
+      <!-- Freeze Account -->
+      <form [formGroup]="freexAcForm" (ngSubmit)="freexAcFormData()">
+        <div class="box box-primary">
+          <div class="box-header">Freeze Account</div>
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="Freezetype" (selectionChange)="type($event)" formControlName="FreezeType"
+                    placeholder="Freeze Account Type" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="freezeTypeCtrl"
+                        [placeholderLabel]="'Select Freeze Account Type Type ...'"
+                        [noEntriesFoundLabel]="'no matching Freeze Account Type type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let type of accont_type_list | filterSelectInput : freezeTypeCtrl.value : 'viewValue'"
+                      [value]="type.value" [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="freexAcForm.controls.FreezeType.touched && freexAcForm.controls.FreezeType.errors">
+                    <mat-error *ngIf="freexAcForm.controls.FreezeType.errors.required">
+                      {{errorMessages.FREEZE_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="majorHeadCode" placeholder="Major Head">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCodeCtrl" [placeholderLabel]="'Find Major Head...'"
+                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let majorhead of majorHead_list | filterSelectInput: majorHeadCodeCtrl.value"
+                      [value]="majorhead.value" matTooltip="{{majorhead.viewValue}}">
+                      {{majorhead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="maindate" placeholder="Choose Date" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="maindate"></mat-datepicker-toggle>
+                  <mat-datepicker #maindate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- End Freeze Account -->
+      <!-- Table Major Head List (Payment)  -->
+      <div class="box box-primary" *ngIf="majorHeadPay">
+        <div class="box-header">Major Head List (Payment) </div>
+
+        <div class="box-body">
+          <div class="mat-elevation-z8 mt-2">
+            <table mat-table aria-describedby="Major Head List" matSort [dataSource]="majorHeadPaySource"
+              class="mat-elevation-z8 ">
+
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                  <mat-checkbox (change)="$event ? directiveObject.masterToggle(pay_Data) : null"
+                    [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(pay_Data)"
+                    [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(pay_Data)"
+                    [aria-label]="directiveObject.checkboxLabel(pay_Data)">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="text-center">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? directiveObject.selection.toggle(row) : null"
+                    [checked]="directiveObject.selection.isSelected(row) "
+                    [aria-label]="directiveObject.checkboxLabel(pay_Data, row)">
+                  </mat-checkbox>
+                </td>
+
+              </ng-container>
+
+              <ng-container matColumnDef="mjrHead">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Major Head </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.mjrHead}}
+              </ng-container>
+              <ng-container matColumnDef="descr">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Description </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.descr}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="lockDate">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Lock Date</th>
+                <td mat-cell *matCellDef="let item; let i = index" class="datedis">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="lockDate" [formControl]="lockdate"
+                      [disabled]="!disableSelectpay.value" [readonly]="selection.isSelected(row)">
+                    <mat-datepicker-toggle matSuffix [for]="lockDate"></mat-datepicker-toggle>
+                    <mat-datepicker #lockDate></mat-datepicker>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="majorheadpayColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: majorheadpayColumns;"></tr>
+            </table>
+          </div>
+        </div>
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" title="Save" aria-hidden="true">
+              save
+            </i>
+            Save
+          </button>
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </div>
+      <!-- End Table Major Head List (Payment) -->
+      <!-- Major Head List (Receipt) -->
+      <div class="box box-primary" *ngIf="majorHeadRec">
+        <div class="box-header">Major Head List (Receipt) </div>
+        <div class="box-body">
+          <div class="mat-elevation-z8 mt-2">
+            <table mat-table aria-describedby="Major Head List" matSort [dataSource]="majorHeadRecSource"
+              class="mat-elevation-z8 ">
+
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                  <mat-checkbox (change)="$event ? directiveObject.masterToggle(rec_Data) : null"
+                    [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(rec_Data)"
+                    [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(rec_Data)"
+                    [aria-label]="directiveObject.checkboxLabel(rec_Data)">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="text-center">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? directiveObject.selection.toggle(row) : null"
+                    [checked]="directiveObject.selection.isSelected(row) "
+                    [aria-label]="directiveObject.checkboxLabel(rec_Data, row)">
+                  </mat-checkbox>
+                </td>
+
+              </ng-container>
+
+              <ng-container matColumnDef="mjrHead">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Major Head </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.mjrHead}}
+              </ng-container>
+              <ng-container matColumnDef="descr">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Description </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.descr}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="lockDate">
+                <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Lock Date</th>
+                <td mat-cell *matCellDef="let element" class="datedis">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="lockDate" [formControl]="lockdate"
+                      [disabled]="!disableSelectrec.value" [readonly]="!disableSelectrec.value">
+                    <mat-datepicker-toggle matSuffix [for]="lockDate"></mat-datepicker-toggle>
+                    <mat-datepicker #lockDate></mat-datepicker>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="majorheadrecColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: majorheadrecColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+        <!-- Common Button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" title="Save" aria-hidden="true">
+              save
+            </i>
+            Save
+          </button>
+
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </div>
+      <!-- End Table Major Head List (Receipt) -->
+    </div>
+  </div>
+</div>

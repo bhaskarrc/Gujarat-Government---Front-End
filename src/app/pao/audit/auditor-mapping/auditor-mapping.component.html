@@ -1,0 +1,274 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Auditor Mapping </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Audit</li>
+        <li class="breadcrumb-item active" aria-current="page">Auditor Mapping </li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="mappingAuditorFrom" (ngSubmit)="mappingAuditorFromData()">
+        <div class="box box-primary">
+          <div class="box-header">Audit Configuration</div>
+          <div class="box-body">
+            <!-- Audit Configuration -->
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="autiors" formControlName="autiorctrlk" placeholder="Auditor  Names ">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let autior of autior_list" [value]="autior.value"
+                      [matTooltip]="autior.viewValue">
+                      {{autior.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-action-button">
+                <button mat-raised-button (click)="addBrowse()" color="primary"> + Add Auditor </button>
+              </div>
+            </div>
+            <!-- End Audit Configuration -->
+          </div>
+        </div>
+        <!-- Audit Mapped -->
+        <div class="box box-primary">
+          <div class="box-header">Audit Mapped </div>
+          <div class="box-body">
+            <div class="mat-elevation-z8  mt-2">
+              <!-- Audit Mapped -->
+              <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8 " aria-describedby="auditorMapping">
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? directiveObject.masterToggle(ELEMENT_DATA) : null"
+                      [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(ELEMENT_DATA)"
+                      [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(ELEMENT_DATA)"
+                      [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA)">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="text-center">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? directiveObject.selection.toggle(row) : null"
+                      [checked]="directiveObject.selection.isSelected(row) "
+                      [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA, row)">
+                    </mat-checkbox>
+                  </td>
+
+                </ng-container>
+
+                <ng-container matColumnDef="mhead">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Major Head</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field floatLabel="never" class="">
+                      <input matInput [value]="element.mhead" [(ngModel)]="element.mhead"
+                        [ngModelOptions]="{standalone: true}" required [disabled]='toggleButton'>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    <!-- {{element.cardexNo}} -->
+                    <mat-form-field floatLabel="never" class="">
+                      <input matInput [value]="element.cardexNo" [(ngModel)]="element.cardexNo"
+                        [ngModelOptions]="{standalone: true}" required [disabled]='toggleButton'>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="billType">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Type</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field floatLabel="never" class="">
+                      <input matInput [value]="element.billType" [(ngModel)]="element.billType"
+                        [ngModelOptions]="{standalone: true}" required [disabled]='toggleButton'>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="officers">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Office Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="officercategory" formControlName="officercategory" [disabled]='toggleButton'>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let officer of officercategory_list" [value]="officer.value"
+                          [matTooltip]="officer.viewValue">
+                          {{officer.value}} {{officer.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="section_s">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Section</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="sections" formControlName="sections" [disabled]='toggleButton'>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let section of section_list" [value]="section.value"
+                          [matTooltip]="section.viewValue">
+                          {{section.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                  <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                    <a (click)="gotopage()">
+                      <i aria-hidden="true" class="material-icons plus view-icon" title="View">remove_red_eye
+                      </i>
+                    </a>
+
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+              </table>
+              <!-- End Audit Mapped -->
+            </div>
+            <!-- Audit Mapped Search -->
+            <div class="mat-elevation-z8  mt-2" *ngIf="isSearch">
+              <br>
+              <table mat-table [dataSource]="insertataSource" class="mat-elevation-z8 "
+                aria-describedby="auditorMapped">
+
+                <ng-container matColumnDef="mhead">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Major Head</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="majorhead" formControlName="majorhead" placeholder="Major Head">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="majorheadCtrl"
+                            [placeholderLabel]="'Select Major Headr...'"
+                            [noEntriesFoundLabel]="'no matching Tange type found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option
+                          *ngFor="let major of major_list | filterSelectInput : majorheadCtrl.value : 'viewValue'"
+                          [value]="major.value" [matTooltip]="major.viewValue">
+                          {{major.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    <!-- {{element.cardexNo}} -->
+                    <mat-form-field floatLabel="never" class="">
+                      <input matInput [value]="element.cardexNo" [(ngModel)]="element.cardexNo"
+                        [ngModelOptions]="{standalone: true}" required>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="billType">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Type</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="billType" formControlName="billType" placeholder="Bill Type" multiple>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="billtypeCtrl"
+                            [placeholderLabel]="'Select Bill Type ...'"
+                            [noEntriesFoundLabel]="'no matching Tange type found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+
+                        <mat-option
+                          *ngFor="let billt of billtype_list | filterSelectInput : billtypeCtrl.value : 'viewValue'"
+                          [value]="billt.value" [matTooltip]="billt.viewValue">
+                          {{billt.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="officers">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Office Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="officercategoryn" formControlName="officercategoryn"
+                        placeholder="Officer Category">
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let officer of officercategory_list" [value]="officer.value"
+                          [matTooltip]="officer.viewValue">
+                          {{officer.value}} {{officer.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="section_s">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Section</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="sectionns" formControlName="sectionns" placeholder="Select Section">
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let section of section_list" [value]="section.value"
+                          [matTooltip]="section.viewValue">
+                          {{section.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                  <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                    <a (click)="gotopage()">
+                      <i class="material-icons plus view-icon" aria-hidden="true" title="Save">
+                        save
+                      </i>
+                    </a>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="insertisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: insertisplayedColumns;"></tr>
+              </table>
+            </div>
+            <!-- End Audit Mapped Search -->
+          </div>
+          <!-- Common Button -->
+          <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"><i
+                class="material-icons">
+                done
+              </i> Submit</button>
+
+            <button type="button" mat-raised-button class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+          <!-- End Common Button -->
+        </div>
+        <!-- End Audit Mapped -->
+      </form>
+    </div>
+  </div>
+</div>

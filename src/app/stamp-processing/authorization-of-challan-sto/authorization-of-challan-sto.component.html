@@ -1,0 +1,209 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div>Authorization of Challan - Sub-Treasury Office</div>
+      <div class="font-heading">
+        <b>Reference No:</b> 19-20/STM/ACSTO/001</div>
+      <div class="font-heading">
+        <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Authorization of Challan - Sub-Treasury Office</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <div class="box box-primary">
+        <div class="box-header">Authorization of Challan - Sub-Treasury Office</div>
+        <div class="box-body">
+          <!-- Entry Section -->
+          <div #parentGrids>
+            <form [formGroup]="authSubForm" (ngSubmit)="createForm()">
+              <div class="row">
+                <!-- Financial Year -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <input matInput type="text" formControlName="finYear" placeholder="Financial Year" required
+                      readonly>
+                  </mat-form-field>
+
+                  <div class="error-wrapper"
+                    *ngIf="authSubForm.controls.finYear.touched && (authSubForm.controls.finYear.errors)">
+                    <mat-error *ngIf="authSubForm.controls.finYear.errors.required">
+                      {{errorMessages.FIN_YEAR}}
+                    </mat-error>
+                  </div>
+                </div>
+
+                <!-- Sub-Treasury Office -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Sub-Treasury Office</mat-label>
+                    <input matInput formControlName="dept" [value]="deptVal" readonly>
+                  </mat-form-field>
+                </div>
+
+                <!-- Challan Number   -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="chNo" placeholder="Challan Number" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="chNoCtrl" [placeholderLabel]="'Find Challan Number...'"
+                          [noEntriesFoundLabel]="'no Challan Number found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let req of chNo_List | filterSelectInput:chNoCtrl.value" [value]="req.value">
+                        {{req.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="error-wrapper"
+                    *ngIf="authSubForm.controls.chNo.touched && (authSubForm.controls.chNo.errors)">
+                    <mat-error *ngIf="authSubForm.controls.chNo.errors.required">
+                      {{errorMessages.CHALLAN_NUM}}
+                    </mat-error>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+              <button type="button" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Get Details">
+                  list
+                </i>
+                Get Details
+              </button>
+            </div>
+
+          </div>
+
+          <div class="mat-elevation-z8 table-responsive mt-2">
+            <table mat-table [dataSource]="dataSource" aria-describedby="challanTable" class="mat-elevation-z8">
+
+              <!-- Sr. No.  -->
+              <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+              </ng-container>
+
+              <!-- Challan Number -->
+              <ng-container matColumnDef="chNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Challan Number</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign widthset-data"
+                style="max-width: 200px;"> {{element.chNo}} </td>
+              </ng-container>
+
+              <!-- Date of Challan -->
+              <ng-container matColumnDef="dateCh">
+                <th mat-header-cell *matHeaderCellDef scope="row">Date of Challan</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.dateCh}} </td>
+              </ng-container>
+
+              <!-- Name of Vendor and Code -->
+              <ng-container matColumnDef="venName">
+                <th mat-header-cell *matHeaderCellDef scope="row">Name of Vendor and Code</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.venName}} </td>
+              </ng-container>
+
+              <!-- Challan Amount -->
+              <ng-container matColumnDef="chAmt">
+                <th mat-header-cell *matHeaderCellDef scope="row">Challan Amount</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.chAmt}} </td>
+              </ng-container>
+
+              <!-- Bank Scroll Ref. No. -->
+              <ng-container matColumnDef="refNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Bank Scroll Ref. No.</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.refNo}} </td>
+              </ng-container>
+
+              <!-- Bank Scroll Amount -->
+              <ng-container matColumnDef="srlAmt">
+                <th mat-header-cell *matHeaderCellDef scope="row">Bank Scroll Amount</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.srlAmt}} </td>
+              </ng-container>
+
+              <!-- Status of Challan -->
+              <ng-container matColumnDef="chStatus">
+                <th mat-header-cell *matHeaderCellDef scope="row">Status of Challan</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.chStatus}} </td>
+              </ng-container>
+
+              <!-- Payment Status -->
+              <ng-container matColumnDef="payStatus">
+                <th mat-header-cell *matHeaderCellDef scope="row">Payment Status</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.payStatus}} </td>
+              </ng-container>
+
+              <!-- Remarks -->
+              <ng-container matColumnDef="remark">
+                <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field floatLabel="never">
+                    <textarea matInput></textarea>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-action-button">
+        <button type="submit" mat-raised-button color="primary">
+          <i class="material-icons" aria-hidden="true" title="Save">
+            save
+          </i>
+          Save as Draft
+        </button>
+
+        <button mat-raised-button type="submit" (click)="authorize()" class="green">
+          <i class="material-icons" aria-hidden="true">
+            security
+          </i> Authorize
+        </button>
+
+        <button mat-raised-button type="submit" (click)="directiveObject.sumbit()" class="green">
+          <i class="material-icons" aria-hidden="true">
+            done
+          </i> Submit
+        </button>
+
+        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+          <i class="material-icons" aria-hidden="true" title="Listing">
+            list
+          </i>
+          Listing
+        </button>
+        <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" title="Print" aria-hidden="true">print</i>
+          Print
+        </button>
+        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="Dashboard">
+            close
+          </i>
+          Close
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

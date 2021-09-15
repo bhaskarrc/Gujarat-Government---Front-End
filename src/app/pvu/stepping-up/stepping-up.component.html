@@ -1,0 +1,684 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Stepping Up</div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/PVU/STU/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+    <div class="linkRight"><a [routerLink]="'../stepping-up'"><b>View</b></a></div>
+    <div class="panel-group">
+      <mat-tab-group mat-stretch-tabs>
+        <mat-tab label="Stepping Up">
+          <form [formGroup]="steppingupForm" (ngSubmit)="saveEstimate(steppingupForm.value)">
+            <div class="box box-primary">
+              <div class="box-header">Events</div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput type="text" placeholder="Office Name" value="Auto Populated"
+                        formControlName="officeName" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="promotionFor" [(ngModel)]="payCommision" placeholder="Pay Commission"
+                        #promotionFor required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="promotionForCtrl"
+                            [placeholderLabel]="'Find Pay Commission For...'"
+                            [noEntriesFoundLabel]="'No matching Pay Commission found...'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let promotionFor of promotionFor_list | filterSelectInput: promotionForCtrl.value"
+                          [value]="promotionFor.value">
+                          {{promotionFor.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="steppingupForm.controls.promotionFor.touched && steppingupForm.controls.promotionFor.errors">
+                        <mat-error *ngIf="steppingupForm.controls.promotionFor.errors.required">
+                          {{errorMessages.promotionFor}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput type="text" formControlName="eventOrderNumber" placeholder="Event Order Number"
+                        autocomplete="off" required>
+                      <div class="error-wrapper"
+                        *ngIf="steppingupForm.controls.eventOrderNumber.touched && steppingupForm.controls.eventOrderNumber.errors">
+                        <mat-error *ngIf="steppingupForm.controls.eventOrderNumber.errors.required">
+                          {{errorMessages.EVENT_ORD_NUMBER}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker6" placeholder="Event Order Date"
+                        formControlName="eventOrderDate" required>
+                      <div class="error-wrapper"
+                        *ngIf="steppingupForm.controls.eventOrderDate.touched && steppingupForm.controls.eventOrderDate.errors">
+                        <mat-error *ngIf="steppingupForm.controls.eventOrderDate.errors.required">
+                          {{errorMessages.EVENT_DATE}}
+                        </mat-error>
+                      </div>
+                      <mat-datepicker-toggle matSuffix [for]="picker6">
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #picker6></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker9" placeholder="Event Effective Date"
+                        formControlName="eventEffectiveDate" required
+                        (dateChange)="onEventDateSelect('change', $event)">
+                      <div class="error-wrapper"
+                        *ngIf="steppingupForm.controls.eventEffectiveDate.touched && steppingupForm.controls.eventEffectiveDate.errors">
+                        <mat-error *ngIf="steppingupForm.controls.eventEffectiveDate.errors.required">
+                          {{errorMessages.EVENT_EFFECTIVE_DATE}}
+                        </mat-error>
+                      </div>
+                      <mat-datepicker-toggle matSuffix [for]="picker9">
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #picker9></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-action-button">
+                  <button type="add" mat-raised-button color="primary" (click)="add()">
+                    <i class="material-icons">add_circle_outline</i>Add Employee
+                  </button>
+                </div>
+                <div class="accordionSection">
+                  <div class="box-header">Employee details</div>
+                  <mat-accordion class="colapsedata" *ngFor="let container of containers">
+                    <mat-expansion-panel [expanded]="true" class="nopadding">
+                      <mat-expansion-panel-header (click)="emplyeeeDataList()">
+                        <div *ngIf="emplyeeeDataListShow" class="hideData"><span class="space">Employee
+                            Id</span> <span class="space">Employee Name</span> <span class="space">Employee Type</span>
+                          <span class="space">Designation</span>
+                          <span class="space">Employee Type</span><span class="space">Employee Pay
+                            Type</span></div>
+                        <i class="material-icons plus delete" (click)="deleteRow(i)" (click)="$event.stopPropagation()"
+                          (click)="modalboxPopup()"
+                          style="color: red; margin-left: auto;margin-right: 25px;">delete_forever</i>
+                      </mat-expansion-panel-header>
+                      <div class="col-sm-12">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                              <mat-select formControlName="type" placeholder="Type"
+                                (selectionChange)="showCurrentDetails($event)" required>
+                                <mat-option>
+                                  <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Find Type ...'"
+                                    [noEntriesFoundLabel]="'no matching Type found'">
+                                  </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let type of type_list | filterSelectInput: typeCtrl.value"
+                                  [value]="type.value">
+                                  {{type.viewValue}}
+                                </mat-option>
+                              </mat-select>
+                              <div class="error-wrapper"
+                                *ngIf="steppingupForm.controls.type.touched && steppingupForm.controls.type.errors">
+                                <mat-error *ngIf="steppingupForm.controls.type.errors.required">
+                                  {{errorMessages.type}}</mat-error>
+                              </div>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                              <input matInput name="employeeNumber" formControlName="employeeNumber"
+                                placeholder="Employee Number" required>
+                              <mat-icon matSuffix (click)="openDialogEmployeeNumber()">search
+                              </mat-icon>
+
+                              <div class="error-wrapper"
+                                *ngIf="steppingupForm.controls.employeeNumber.touched && steppingupForm.controls.employeeNumber.errors">
+                                <mat-error *ngIf="steppingupForm.controls.employeeNumber.errors.required">
+                                  {{errorMessages.EMP_NO}}
+                                </mat-error>
+                              </div>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="box box-primary">
+                          <div class="box-header">Current Details of Employee
+                          </div>
+                          <div class="box-body">
+                            <div class="row">
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Employee Name" value="Auto Populated"
+                                    formControlName="employeeName" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Class" value="Auto Populated"
+                                    formControlName="employeeClass" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Designation" value="Auto Populated"
+                                    formControlName="employeeDesignation" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Level" formControlName="employeePayLevel"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Cell Id" formControlName="employeeCellId"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band" formControlName="employeePayBand"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band value"
+                                    formControlName="employeePayBand" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Grade Pay" formControlName="employeeGradePay"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <!-- <div class="col-sm-3" *ngIf="payCommision == 3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Grade" formControlName="empGrade" value="Auto Populated" readonly>
+                                                                </mat-form-field>
+                                                            </div> -->
+                              <div class="col-sm-3" *ngIf="payCommision == 3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Scale" formControlName="empScale"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Basic Pay" formControlName="employeeBasicPay"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput placeholder="Date of Joining" formControlName="doj"
+                                    value="Auto Populate" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput placeholder="Date of Retirement" formControlName="dor"
+                                    value="Auto Populate" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Office Name"
+                                    formControlName="employeeOfficeName" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Date of next Increment"
+                                    formControlName="benefitEffictiveDate" value="Auto Populate" readonly>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="box box-primary">
+                          <div class="box-header" style="margin-bottom: 15px;">Stepping Up Against Junior Employee
+                            details</div>
+                          <div class="box-body">
+                            <div class="row">
+
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput name="juniorEmployeeNumber" formControlName="juniorEmployeeNumber"
+                                    placeholder="Employee Number" required>
+                                  <mat-icon matSuffix (click)="openDialogEmployeeNo()">
+                                    search</mat-icon>
+
+                                  <div class="error-wrapper"
+                                    *ngIf="steppingupForm.controls.juniorEmployeeNumber.touched && steppingupForm.controls.juniorEmployeeNumber.errors">
+                                    <mat-error *ngIf="steppingupForm.controls.juniorEmployeeNumber.errors.required">
+                                      {{errorMessages.JUNIOR_EMP_NO}}
+                                    </mat-error>
+                                  </div>
+                                </mat-form-field>
+
+                              </div>
+
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Employee Name" value="Auto Populated"
+                                    formControlName="juniorEmployeeName" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Class" value="Auto Populated"
+                                    formControlName="juniorEmployeeClass" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Designation" value="Auto Populated"
+                                    formControlName="juniorEmployeeDesignation" readonly>
+                                </mat-form-field>
+                              </div>
+
+
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Level"
+                                    formControlName="juniorEmployeePayLevel" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Cell Id"
+                                    formControlName="juniorEmployeeCellId" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band"
+                                    formControlName="juniorEmployeePayBand" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+
+
+                              </div>
+
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band value"
+                                    formControlName="juniorEmployeePayBandVal" value="Auto Populated">
+                                </mat-form-field>
+
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Grade Pay"
+                                    formControlName="juniorEmployeeGradePay" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+
+                              </div>
+
+
+                              <!-- <div class="col-sm-3" *ngIf="payCommision == 3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Grade" formControlName="juniorEmpGrade" value="Auto Populated" readonly>
+                                                                </mat-form-field>
+                                                            </div> -->
+                              <div class="col-sm-3" *ngIf="payCommision == 3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Scale" formControlName="juniorEmpScale"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Basic Pay"
+                                    formControlName="juniorEmployeeBasicPay" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput placeholder="Date of Joining" value="Auto Populate"
+                                    formControlName="jdoj" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput placeholder="Date of Retirement" formControlName="juniorDor"
+                                    value="Auto Populate" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Office Name"
+                                    formControlName="juniorEmployeeOfficeName" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput formControlName="juniorNextIncrementDate"
+                                    placeholder="Date of Next Increment" value="Auto Populate" readonly>
+
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="box box-primary">
+                          <div class="box-header">Stepping Up Changes-Senior Employee</div>
+                          <div class="box-body">
+                            <div class="row">
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Class" value="Auto Populated"
+                                    formControlName="juniorEmployeeClass" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Designation" value="Auto Populated"
+                                    formControlName="juniorEmployeeDesignation" readonly>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Level"
+                                    formControlName="juniorEmployeePayLevel" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 2">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Cell Id"
+                                    formControlName="juniorEmployeeCellId" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band"
+                                    formControlName="juniorEmployeePayBand" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Pay Band value"
+                                    formControlName="juniorEmployeePayBandVal" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+                              </div>
+                              <div class="col-sm-3" *ngIf="payCommision == 1">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Grade Pay"
+                                    formControlName="juniorEmployeeGradePay" value="Auto Populated" readonly>
+                                </mat-form-field>
+
+
+                              </div>
+
+
+
+                              <!-- <div class="col-sm-3" *ngIf="payCommision == 3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Grade" formControlName="juniorEmpGrade" value="Auto Populated" readonly>
+                                                                </mat-form-field>
+                                                            </div> -->
+                              <div class="col-sm-3" *ngIf="payCommision == 3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Scale" formControlName="juniorEmpScale"
+                                    value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                  <input matInput type="text" placeholder="Basic Pay"
+                                    formControlName="juniorEmployeeBasicPay" value="Auto Populated" readonly>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput formControlName="juniorBenefitEffectiveDate"
+                                    placeholder="Benefit Effective Date" value="Auto Populated" readonly>
+
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-3">
+                                <mat-form-field>
+                                  <input matInput formControlName="juniorNextIncrementDate"
+                                    placeholder="Date of Next Increment" value="Auto Populate" readonly>
+
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-action-button">
+                          <button type="submit" mat-raised-button color="primary" (click)="submitDetails()">
+                            <i class="material-icons" title="Save">
+                              save
+                            </i>
+                            Save as Draft
+                          </button>
+                          <button type="reset" mat-raised-button color="accent" (click)="resetForm()">
+                            <i class="material-icons">
+                              restore
+                            </i>
+                            Reset
+                          </button>
+                        </div>
+                      </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </div>
+                <div class="form-action-button">
+                  <button mat-raised-button type="submit" class="green" (click)="submitDetails()">
+                    <i class="material-icons"> done</i> Submit</button>
+
+                  <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                    <i class="material-icons" title="EDP dashboard">
+                      close
+                    </i>
+                    Close
+                  </button>
+                  <button type="button" mat-raised-button (click)="goToDashboard()" class="print-btn">
+                    <i class="material-icons">
+                      print
+                    </i>
+                    Print
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </mat-tab>
+        <mat-tab label="Attachments">
+          <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable" *ngIf="DDO">
+            <ng-container matColumnDef="sr_no">
+              <th mat-header-cell *matHeaderCellDef>
+                <b>Sr. No.</b>
+              </th>
+              <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="attachmentType">
+              <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+              <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                {{item.attachment}}
+                <span *ngIf="i < 6" class="starSign">*</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="fileName">
+              <th mat-header-cell *matHeaderCellDef>File Name</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-form-field floatLabel="never">
+                  <input matInput [value]="item.name" [(ngModel)]="item.name">
+                </mat-form-field>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="browse">
+              <th mat-header-cell *matHeaderCellDef>Browse File</th>
+              <td mat-cell *matCellDef="let i = index">
+                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                  Browse Files
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="uploadedFileName">
+              <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+              <td mat-cell *matCellDef="let item">
+                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                  <i class="material-icons closesmall">close</i>
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="uploadedBy">
+              <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>Mr. Pratik Shah</mat-label>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let item; let i = index">
+                <table class="iconTable">
+                  <tbody>
+                    <tr>
+                      <td class="action-btn-i centerAlign">
+                        <a>
+                          <i class="material-icons plus add" title="Add"
+                            *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                            (click)="addBrowse()">add
+                          </i>
+                        </a>
+                        <a>
+                          <i class="material-icons plus view-icon" title="View">remove_red_eye
+                          </i>
+                        </a>
+                        <a>
+                          <i class="material-icons plus delete"
+                            *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6" (click)="deleteBrowse(i)">delete
+                          </i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+          </table>
+          <table mat-table [dataSource]="nonDdoDataSourceBrowse" width="100%" id="browseTable" *ngIf="isNonDDO">
+            <ng-container matColumnDef="sr_no">
+              <th mat-header-cell *matHeaderCellDef>
+                <b>Sr. No.</b>
+              </th>
+              <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="attachmentType">
+              <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+              <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                {{item.attachment}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="fileName">
+              <th mat-header-cell *matHeaderCellDef>File Name</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-form-field floatLabel="never">
+                  <input matInput [value]="item.name" [(ngModel)]="item.name">
+                </mat-form-field>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="browse">
+              <th mat-header-cell *matHeaderCellDef>Browse File</th>
+              <td mat-cell *matCellDef="let i = index">
+                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                  Browse Files
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="uploadedFileName">
+              <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+              <td mat-cell *matCellDef="let item">
+                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                  <i class="material-icons closesmall">close</i>
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="uploadedBy">
+              <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>Mr. Pratik Shah</mat-label>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let item; let i = index">
+                <table class="iconTable">
+                  <tbody>
+                    <tr>
+                      <td class="action-btn-i centerAlign">
+                        <a>
+                          <i class="material-icons plus add" title="Add"
+                            *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                            (click)="addBrowse()">add
+                          </i>
+                        </a>
+                        <a>
+                          <i class="material-icons plus view-icon" title="View">remove_red_eye
+                          </i>
+                        </a>
+                        <a>
+                          <i class="material-icons plus delete"
+                            *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6" (click)="deleteBrowse(i)">delete
+                          </i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+          </table>
+
+          <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+
+          <div class="legend">
+            1. Max size of atatchment is 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png',
+            'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+          </div>
+
+          <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                done
+              </i> Submit</button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+              <i class="material-icons" title="EDP dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,463 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Dead Stock Register </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/DOI/AA/DSR/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">DOI / Account Admin</li>
+                <li class="breadcrumb-item active" aria-current="page">Dead Stock Register </li>
+            </ol>
+        </nav>
+        <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedindex">
+            <mat-tab label="Dead Stock Register">
+                <form [formGroup]="deadStockRegisterForm">
+                    <div class="box box-primary">
+                        <div class="box-header">Purchase New Items</div>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name='equipmentName' formControlName='equipmentName'
+                                            placeholder='Equipment Name' (keypress)="decimalKeyPress($event)"
+                                            maxlength="20" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]='equipmentNameCtrl'
+                                                    [placeholderLabel]="'Select Equipment Name ...'"
+                                                    [noEntriesFoundLabel]="'no matching Equipment Name found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let item of equipmentName_list | filterSelectInput : equipmentNameCtrl.value : 'viewValue'"
+                                                [value]="item.value" matTooltip="{{item.viewValue}}">
+                                                {{item.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper"
+                                            *ngIf="deadStockRegisterForm.controls.equipmentName.touched || (deadStockRegisterForm.controls.equipmentName.errors && isSubmitted)">
+                                            <mat-error
+                                                *ngIf="deadStockRegisterForm.controls.equipmentName.errors?.required">
+                                                {{errorMessages.EQUIPMENT_NAME}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="purchaseOrderNo"
+                                            placeholder="Purchase Order Number" required>
+                                        <div class="error-wrapper"
+                                            *ngIf="deadStockRegisterForm.controls.purchaseOrderNo.touched && deadStockRegisterForm.controls.purchaseOrderNo.errors">
+                                            <mat-error
+                                                *ngIf="deadStockRegisterForm.controls.purchaseOrderNo.errors.required">
+                                                {{ errorMessage.PURCHASE_ORDER_NO}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="purchaseOrderDate" [max]="maxDate"
+                                            [matDatepicker]="purchaseOrderDate" placeholder="Purchase Order Date"
+                                            required>
+                                        <mat-datepicker-toggle matSuffix [for]="purchaseOrderDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #purchaseOrderDate></mat-datepicker>
+                                    </mat-form-field>
+                                    <div class="error-wrapper"
+                                        *ngIf="deadStockRegisterForm.controls.purchaseOrderDate.touched && deadStockRegisterForm.controls.purchaseOrderDate.errors">
+                                        <mat-error
+                                            *ngIf="deadStockRegisterForm.controls.purchaseOrderDate.errors.required">
+                                            {{ errorMessage.DATE}}
+                                        </mat-error>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="quantity" placeholder="Quantity" required
+                                            numbersOnly>
+                                        <div class="error-wrapper"
+                                            *ngIf="deadStockRegisterForm.controls.quantity.touched && deadStockRegisterForm.controls.quantity.errors">
+                                            <mat-error *ngIf="deadStockRegisterForm.controls.quantity.errors.required">
+                                                {{ errorMessage.QUANTITY}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="amt" placeholder="Amount" required numbersOnly>
+                                        <div class="error-wrapper"
+                                            *ngIf="deadStockRegisterForm.controls.amt.touched && deadStockRegisterForm.controls.amt.errors">
+                                            <mat-error *ngIf="deadStockRegisterForm.controls.amt.errors.required">
+                                                {{ errorMessage.AMOUNT}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="purchaserName" placeholder="Receiver Name">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="serialNo" placeholder="Serial Number">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="remarks" placeholder="Remarks">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header">Dispose Item</div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="disposaltype" placeholder="Disposal Type">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="orderNo"
+                                            placeholder="Order Number/voucher Number">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="voucherDate" [max]="voucherDate"
+                                            [matDatepicker]="voucherDate" placeholder="Order/Voucher Date">
+                                        <mat-datepicker-toggle matSuffix [for]="voucherDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #voucherDate></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="finalDisposeQuantity"
+                                            placeholder="Final Dispose Qty">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="receiverName" placeholder="Reciever Name">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="receiverAmt" placeholder="Reciever  Amount"
+                                            numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="date" [max]="maxDate" [matDatepicker]="date"
+                                            placeholder="Received Amount Date">
+                                        <mat-datepicker-toggle matSuffix [for]="date">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #date></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="amtDepositToGvot"
+                                            placeholder="Amount Deposit to Govt. Account">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="amtDepositDate" [max]="maxDate"
+                                            [matDatepicker]="amtDepositDate" placeholder="Deposit Amount Date">
+                                        <mat-datepicker-toggle matSuffix [for]="amtDepositDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #amtDepositDate></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="remainingQuantity"
+                                            placeholder="Remaining Qty. Equipment" readonly value="{{remainingEquip}}">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="amtOfRemainingEquip"
+                                            placeholder="Amount of Remaining Equipment" readonly
+                                            value="{{remainingEquipAmt | number : '1.2-2'}}">
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" (click)="addRecord()" title="Add">
+                        <i class="material-icons" aria-hidden="true"> add </i> Add </button>
+                    <button type="reset" mat-raised-button color="accent" title="Reset">
+                        <i class="material-icons" title="Reset" aria-hidden="true">restore</i>
+                        Reset
+                    </button>
+                </div>
+                <!-- table -->
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mt-2 overflow-x-scroll"
+                    style="    display: block;">
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> No. </th>
+                        <td mat-cell *matCellDef="let element let i = index" class="centerAlign"> {{i + 1}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="equipmentName">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Equipment Name </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.equipmentName}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="purchaseOrderNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Purchase Order Number</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.purchaseOrderNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="purchaseOrderDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Purchase Order Date </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.purchaseOrderDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="quantity">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Quantity </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.quantity}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="amt">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Purchase Amount</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.amt}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="finalDisposeQuantity">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Final Dispose Quantity </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.finalDisposeQuantity}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="receiverName">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Receiver Name</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.receiverName}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="disposeItemSerialNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row" style="min-width: 200px;"> Disposal Item
+                            Serial No</th>
+                        <td mat-cell *matCellDef="let element">
+                            <table>
+                                <tr *ngFor="let e of element.disposeItemSerialNo">
+                                    <td style="min-width: 200px;">{{e}}
+                                        <p style=" float: right;margin-bottom: 0;"><a><i
+                                                    class="material-icons plus mr-2" title="Edit"> add </i></a>
+                                            <a><i class="material-icons plus delete mr-2" title="View">delete</i></a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="disposaltype">
+                        <th mat-header-cell *matHeaderCellDef scope="row" style="min-width: 200px;"> Disposal Type</th>
+                        <td mat-cell *matCellDef="let element">
+                            <table>
+                                <tr *ngFor="let e of element.disposaltype">
+                                    <td style="min-width: 200px;">{{e}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Order Number/voucher Number</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.orderNo}}
+                        </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="receiverAmt">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Reciever Amount </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.receiverAmt}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Received Amount Date </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.date}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="remainingQuantity">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Remaining qty of equipemnt </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.remainingQuantity}}
+                        </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="serialNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row" style="min-width: 200px;">Serial Number </th>
+                        <td mat-cell *matCellDef="let element">
+                            <table>
+                                <tr *ngFor="let e of element.serialNo">
+                                    <td style="min-width: 200px;">{{e}}
+                                        <p style=" float: right;margin-bottom: 0;"><a><i
+                                                    class="material-icons plus mr-2" title="Edit"> add </i></a>
+                                            <a><i class="material-icons plus delete mr-2" title="View">delete</i></a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Status</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.status}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="amtDepositToGovt">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Amount Deposit to Govt. Account</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.amtDepositToGovt}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="depositAmtDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Deposit Amount Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.depositAmtDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="amtOfRemainingEquip">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Amount of Remaining Equipment</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.amtOfRemainingEquip}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="voucherDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Order/Voucher Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.voucherDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row" style="min-width:100px;"> Action </th>
+                        <td mat-cell *matCellDef="let element" class="text-center">
+                            <a><i class="material-icons plus edit-icon mr-2" title="Edit"> edit </i></a>
+                            <a><i class="material-icons plus view-icon mr-2" title="View">remove_red_eye</i></a>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary">
+                        <i aria-hidden="true" class="material-icons" title="Save">
+                            save
+                        </i>
+                        Save as Draft
+                    </button>
+                    <button mat-raised-button type="submit" class="green">
+                        <i aria-hidden="true" class="material-icons">
+                            done
+                        </i>
+                        Submit
+                    </button>
+                    <button type="reset" mat-raised-button color="accent">
+                        <i class="material-icons" aria-hidden="true">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                    <button type="button" mat-raised-button color="warn">
+                        <i class="material-icons" aria-hidden="true" title="Listing">
+                            list
+                        </i>
+                        Listing
+                    </button>
+                    <button type="button" mat-raised-button class="btnClose">
+                        <i aria-hidden="true" class="material-icons" title="Close">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Attachments">
+                <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons" aria-hidden="true" title="Save">
+                            save
+                        </i>
+                        Upload
+                    </button>
+                    <button type="button" mat-raised-button budget-list color="warn">
+                        <i class="material-icons" aria-hidden="true" title="Listing">
+                            list
+                        </i>
+                        Listing
+                    </button>
+                    <button type="button" mat-raised-button class="btnClose">
+                        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>

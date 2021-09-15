@@ -1,0 +1,316 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>8658 AG Data</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/AG1/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+        <li class="breadcrumb-item active" aria-current="page">8658 AG Data</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <!-- form -->
+      <form [formGroup]="agForm" (ngSubmit)="agFormData()">
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+
+          <!-- Challan Details -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Challan Details
+            </ng-template>
+
+            <div class="box box-primary">
+              <div class="box-header">Challan Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- ag office name -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="agOfficeName" placeholder="AG Office Name">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="agOfficeNameCtrl"
+                            [placeholderLabel]="'Find AG Office Name...'"
+                            [noEntriesFoundLabel]="'No matching AG Office Name found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of agOfficeNameList | filterSelectInput:agOfficeNameCtrl.value"
+                          [value]="item.value" matTooltip="{{ item.viewValue }}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- ddo no -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO No." formControlName="ddoNo" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- cardex no -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Cardex No." formControlName="cardexNo" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- ddo office name -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO Office Name" formControlName="ddoOfficeName" alphabetsSpaceOnly>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="district" placeholder="District" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find District...'"
+                            [noEntriesFoundLabel]="'No matching District found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of districtList | filterSelectInput:districtCtrl.value"
+                          [value]="item.value" matTooltip="{{ item.viewValue }}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.district.touched && agForm.controls.district.errors">
+                        <mat-error *ngIf="agForm.controls.district.errors.required">
+                          {{errorMessages.DISTRICT}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- employee no -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="employeeNo" placeholder="Employee No." numbersAlphabetsOnly
+                        required>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.employeeNo.touched && agForm.controls.employeeNo.errors">
+                        <mat-error *ngIf="agForm.controls.employeeNo.errors.required">
+                          {{errorMessages.EMPLOYEE_NUMBER}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- employee name -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Employee Name" formControlName="employeeName" alphabetsSpaceOnly
+                        required>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.employeeName.touched && agForm.controls.employeeName.errors">
+                        <mat-error *ngIf="agForm.controls.employeeName.errors.required">
+                          {{errorMessages.EMPLOYEE_NAME}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- designation -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="designation" placeholder="Cadre" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="designationCtrl"
+                            [placeholderLabel]="'Find Designation...'"
+                            [noEntriesFoundLabel]="'No matching Designation found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of designationList | filterSelectInput:designationCtrl.value"
+                          [value]="item.value" matTooltip="{{ item.viewValue }}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.designation.touched && agForm.controls.designation.errors">
+                        <mat-error *ngIf="agForm.controls.designation.errors.required">
+                          {{errorMessages.DESIGNATION}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- department -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="department" placeholder="Department" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="departmentCtrl"
+                            [placeholderLabel]="'Find Department...'"
+                            [noEntriesFoundLabel]="'No matching Department found'" alphabetSpaceCommaOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of departmentList | filterSelectInput:departmentCtrl.value"
+                          [value]="item.value" matTooltip="{{ item.viewValue }}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.department.touched && agForm.controls.department.errors">
+                        <mat-error *ngIf="agForm.controls.department.errors.required">
+                          {{errorMessages.DEPARTMENT}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- month -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="month" placeholder="Month" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                            [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let item of monthList | filterSelectInput:monthCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper" *ngIf="agForm.controls.month.touched && agForm.controls.month.errors">
+                        <mat-error *ngIf="agForm.controls.month.errors.required">
+                          {{errorMessages.MONTH}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- amount of deduction -->
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Amount of Deduction" formControlName="amountOfDeduction" numbersOnly
+                        required>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.amountOfDeduction.touched && agForm.controls.amountOfDeduction.errors">
+                        <mat-error *ngIf="agForm.controls.amountOfDeduction.errors.required">
+                          {{errorMessages.AMOUNT_OF_DEDUCTION}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- date of suspension slip -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="dateOfSuspensionSlip" [matDatepicker]="picker1"
+                        placeholder="Date of Suspension Slip" required>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="agForm.controls.dateOfSuspensionSlip.touched && agForm.controls.dateOfSuspensionSlip.errors">
+                        <mat-error *ngIf="agForm.controls.dateOfSuspensionSlip.errors.required">
+                          {{errorMessages.DATE_OF_SUSPENSION_SLIP}}</mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- form action button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                Save & Proceed
+                <i class="material-icons" aria-hidden="true" title="Next">
+                  chevron_right
+                </i>
+              </button>
+            </div>
+            <!-- form action button end -->
+
+          </mat-tab>
+          <!-- Challan Details end -->
+
+          <!-- Attachment -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Attachment
+            </ng-template>
+
+            <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="button" mat-raised-button color="warn" title="Upload">
+                <i class="material-icons" aria-hidden="true">
+                  publish
+                </i>
+                Upload
+              </button>
+
+              <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" aria-hidden="true">
+                  close
+                </i>
+                Close
+              </button>
+
+            </div>
+            <!-- action button end -->
+
+
+          </mat-tab>
+          <!-- Attachment end -->
+
+        </mat-tab-group>
+
+        <!-- common action button -->
+        <div class="form-action-button">
+
+          <button mat-raised-button color="primary" title="Save as Draft">
+            <i class="material-icons" title="Save as Draft" aria-hidden="true">
+              save
+            </i>
+            Save as Draft
+          </button>
+
+          <button mat-raised-button type="button" class="green" (click)="directiveObject.workflowDetails()"
+            title="Submit">
+            <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+          <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+            <i class="material-icons" title="Listing" aria-hidden="true">
+              list
+            </i>
+            Listing
+          </button>
+
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+
+        </div>
+        <!-- common action button end -->
+
+      </form>
+      <!-- form end -->
+
+    </div>
+  </div>
+</div>

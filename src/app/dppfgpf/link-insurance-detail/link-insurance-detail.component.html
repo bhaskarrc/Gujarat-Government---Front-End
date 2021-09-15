@@ -1,0 +1,186 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Link Insurance </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/GPF/LID/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Link Insurance </li>
+            </ol>
+        </nav>
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Link Insurance Fields
+                    </div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="linkInsuranceDetailForm">
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Employee No" formControlName='employeeNo' decimalLimitTwoOnly (change)="enterEmployeeNo()" required>
+                                    <div class="error-wrapper" *ngIf=" linkInsuranceDetailForm.controls.employeeNo.touched &&linkInsuranceDetailForm.controls.employeeNo.errors">
+                                        <mat-error *ngIf="linkInsuranceDetailForm.controls.employeeNo.errors.required">
+                                            {{ errorMessage.EMPLOYEE_NO }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="GPF No." formControlName='gpfNo' required>
+                                    <mat-icon matSuffix (click)="openGpfDialog()">search</mat-icon>
+                                    <div class="error-wrapper" *ngIf=" linkInsuranceDetailForm.controls.gpfNo.touched &&linkInsuranceDetailForm.controls.gpfNo.errors">
+                                        <mat-error *ngIf="linkInsuranceDetailForm.controls.gpfNo.errors.required">
+                                            {{ errorMessage.GPF_NO }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder=" Name" formControlName='name' alphabetsSpaceOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field>
+                                    <mat-label>Death Date</mat-label>
+                                    <input matInput [matDatepicker]="picker" [max]='maxDate' formControlName="deathDate" datOnly>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="submit" mat-raised-button color="primary" title="Search" (click)="search()">
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <div class="mat-elevation-z8 row table-responsive mt-2" width="100%" *ngIf="isSearchClicked">
+
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="listing">
+
+
+                <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Sr. No. </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                        {{ i+1 }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="month">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Month
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        {{element.month}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="firstYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        1st Year<br>2017-2018
+
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        {{ element.firstYear }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="secondYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        2nd Year<br>2018-2019
+
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.secondYear }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="thirdYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        3rd Year<br>2019-2020
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.thirdYear }}
+                    </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+            </table>
+
+        </div>
+
+        <div class=" form-datatable-list" *ngIf="isSearchClicked">
+            <form class="col-sm-12" [formGroup]="tableForm">
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-3">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Total" formControlName='total'>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Linked Insurance Amount" formControlName='amount'>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Link Authority No." formControlName='authorityNo'>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <mat-form-field>
+                            <input matInput formControlName="reason" placeholder="Remark">
+                        </mat-form-field>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+
+        <div class="form-action-button" *ngIf="isSearchClicked">
+
+            <button mat-raised-button type="submit" color="primary" title="Save">
+                Save
+            </button>
+
+            <button mat-raised-button type="submit" class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+
+    </div>
+</div>

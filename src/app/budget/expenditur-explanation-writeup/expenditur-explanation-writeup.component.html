@@ -1,0 +1,226 @@
+<div class="container">
+  <div class="form-wrapper">
+      <div class="heading-section ng-star-inserted">
+          <div> Explanation pertaining to Expenditure Write-up</div>
+      </div>
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                  <a href="#">Home
+                  </a>
+              </li>
+              <li class="breadcrumb-item">
+                  <a href="#">Budget
+                  </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Explanation pertaining to Expenditure Write-up
+              </li>
+          </ol>
+      </nav>
+
+      <div class="panel-group">
+          <div class="box-top">
+              <div>
+                  <form [formGroup]="expenditureform">
+                      <!-- Employee Details -->
+                      <div class="box box-primary">
+                          <div class="box-header">Expenditure Details</div>
+                          <div class="box-body">
+                              <div class="row">
+
+                                
+                                  <div class="col-sm-3">
+                                      <mat-form-field class="full-width">
+                                          <mat-select formControlName="disclaimerFinYear" placeholder="Financial Year"
+                                              required>
+                                              <mat-option>
+                                                  <ngx-mat-select-search [formControl]="disclaimerFinYearCtrl"
+                                                      [placeholderLabel]="'Find Financial Year...'"
+                                                      [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                                  </ngx-mat-select-search>
+                                              </mat-option>
+                                              <mat-option
+                                                  *ngFor="let FY of filteredDisclaimerFinYear | filterSelectInput:disclaimerFinYearCtrl.value"
+                                                  [value]="FY.value">
+                                                  {{FY.viewValue}}
+                                              </mat-option>
+                                          </mat-select>
+                                          <div class="error-wrapper"
+                                              *ngIf="expenditureform.controls.disclaimerFinYear.touched && expenditureform.controls.disclaimerFinYear.errors">
+                                              <mat-error
+                                                  *ngIf="expenditureform.controls.disclaimerFinYear.errors.required">
+                                                  {{errorMessages.FIN_YEAR}}
+                                              </mat-error>
+                                          </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-3">
+                                      <mat-form-field class="full-width">
+                                          <mat-select formControlName="bpnCode"
+                                              placeholder="BPN Code" required>
+                                              <mat-option>
+                                                  <ngx-mat-select-search
+                                                      [formControl]="bpnCtrl"
+                                                      [placeholderLabel]="'Find BPN Code...'"
+                                                      [noEntriesFoundLabel]="'no matching BPN Code found'">
+                                                  </ngx-mat-select-search>
+                                              </mat-option>
+                                              <mat-option
+                                                  *ngFor="let bpn of bpn_list | filterSelectInput:bpnCtrl.value"
+                                                  [value]="bpn.value" [matTooltip]="bpn.viewValue">
+                                                  {{bpn.viewValue}}
+                                              </mat-option>
+                                          </mat-select>
+                                          <div class="error-wrapper"
+                                              *ngIf="expenditureform.controls.bpnCode.touched && expenditureform.controls.bpnCode.errors">
+                                              <mat-error
+                                                  *ngIf="expenditureform.controls.bpnCode.errors.required">
+                                                  {{errorMessages.BPN}}
+                                              </mat-error>
+                                          </div>
+                                      </mat-form-field>
+                                  </div>
+                                  <div class="col-sm-3" *ngIf="expenditureform.controls.bpnCode.value=='1'">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="majorHead" placeholder="Major Head" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no matching Major Head found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                  *ngFor="let va of majorHead_list | filterSelectInput:majorHeadCtrl.value"
+                                                  [matTooltip]="va.viewValue" [value]="va.value">
+                                                  {{va.viewValue}}
+                                              </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper" *ngIf="expenditureform.controls.majorHead.touched && expenditureform.controls.majorHead.errors">
+                                            <mat-error *ngIf="expenditureform.controls.majorHead.errors.required">
+                                                {{errorMessages.MAJOR_HEAD}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+                                  <div class="col-sm-3" *ngIf="expenditureform.controls.bpnCode.value!=='1'">
+                                    <mat-form-field class="full-width">
+                                        <!--matTooltip="{{createEstimateForm.get('demandCode').value}}"-->
+                                        <mat-select formControlName="demandCode" placeholder="Demand" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="demandCodeCtrl" [placeholderLabel]="'Find Demand Code...'" [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                  *ngFor="let deman of demand_list | filterSelectInput:demandCodeCtrl.value"
+                                                  [matTooltip]="deman.viewValue" [value]="deman.value">
+                                                  {{deman.viewValue}}
+                                              </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper" *ngIf="expenditureform.controls.demandCode.touched && expenditureform.controls.demandCode.errors">
+                                            <mat-error *ngIf="expenditureform.controls.demandCode.errors.required">
+                                                {{errorMessages.DEMAND}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value!=='1'">
+                                      <mat-form-field class="example-full-width">
+                                          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Explanation pertaining to Expenditure Heads (English)"
+                                              formControlName="disclaimerMessage" required></textarea>
+                                              <div class="error-wrapper"
+                                                  *ngIf="expenditureform.controls.disclaimerMessage.touched && expenditureform.controls.disclaimerMessage.errors">
+                                                  <mat-error *ngIf="expenditureform.controls.disclaimerMessage.errors.required">
+                                                      {{errorMessages.WRITE_UP_ENG}} </mat-error>
+                                              </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value!=='1'">
+                                      <mat-form-field>
+                                          <textarea rows="2" matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Explanation pertaining to Expenditure Heads (Gujarati)" #codeGJ
+                                              formControlName="writeUpGuj" (focus)="nomenclatureGJFocus()"
+                                              (focusout)="nomenclatureGJFocusOut()"
+                                              (blur)="checkGujarati(codeGJ.value);" required></textarea>
+                                          <div class="error-wrapper"
+                                              *ngIf="expenditureform.controls.writeUpGuj.touched && expenditureform.controls.writeUpGuj.errors">
+                                              <mat-error *ngIf="expenditureform.controls.writeUpGuj.errors.required">
+                                                  {{errorMessages.WRITE_UP_GUJ}} </mat-error>
+                                          </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value=='1'">
+                                      <mat-form-field class="example-full-width">
+                                          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Preface (in English)"
+                                              formControlName="prefaceEng" required></textarea>
+                                              <div class="error-wrapper"
+                                                  *ngIf="expenditureform.controls.prefaceEng.touched && expenditureform.controls.prefaceEng.errors">
+                                                  <mat-error *ngIf="expenditureform.controls.prefaceEng.errors.required">
+                                                      {{errorMessages.WRITE_UP_ENG}} </mat-error>
+                                              </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value=='1'">
+                                      <mat-form-field>
+                                          <textarea rows="2" matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Preface (in Gujarati)" #codeGJ
+                                              formControlName="prefaceGuj" (focus)="nomenclatureGJFocus()"
+                                              (focusout)="nomenclatureGJFocusOut()"
+                                              (blur)="checkGujarati(codeGJ.value);" required></textarea>
+                                          <div class="error-wrapper"
+                                              *ngIf="expenditureform.controls.prefaceGuj.touched && expenditureform.controls.prefaceGuj.errors">
+                                              <mat-error *ngIf="expenditureform.controls.prefaceGuj.errors.required">
+                                                  {{errorMessages.WRITE_UP_GUJ}} </mat-error>
+                                          </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value=='1'">
+                                      <mat-form-field class="example-full-width">
+                                          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Receipt (in English)"
+                                              formControlName="receiptEng" required></textarea>
+                                              <div class="error-wrapper"
+                                                  *ngIf="expenditureform.controls.receiptEng.touched && expenditureform.controls.receiptEng.errors">
+                                                  <mat-error *ngIf="expenditureform.controls.receiptEng.errors.required">
+                                                      {{errorMessages.WRITE_UP_ENG}} </mat-error>
+                                              </div>
+                                      </mat-form-field>
+                                  </div>
+
+                                  <div class="col-sm-12" *ngIf="expenditureform.controls.bpnCode.value=='1'">
+                                      <mat-form-field>
+                                          <textarea rows="2" matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Receipt (in Gujarati)" #codeGJ
+                                              formControlName="receiptGuj" (focus)="nomenclatureGJFocus()"
+                                              (focusout)="nomenclatureGJFocusOut()"
+                                              (blur)="checkGujarati(codeGJ.value);" required></textarea>
+                                          <div class="error-wrapper"
+                                              *ngIf="expenditureform.controls.receiptGuj.touched && expenditureform.controls.receiptGuj.errors">
+                                              <mat-error *ngIf="expenditureform.controls.receiptGuj.errors.required">
+                                                  {{errorMessages.WRITE_UP_GUJ}} </mat-error>
+                                          </div>
+                                      </mat-form-field>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+                  <div class="form-action-button">
+                      <button mat-raised-button type="submit" class="green" (click)="submitDetails()">
+                          <i aria-hidden="true" class="material-icons">
+                              done </i> Submit
+                      </button>
+                      <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                        <i class="material-icons" aria-hidden="true" title="Listing">
+                            list
+                        </i>
+                        Listing
+                    </button>
+                      <button type="button" mat-raised-button class="btnClose">
+                          <i aria-hidden="true" class="material-icons" title="Close">close</i> Close
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

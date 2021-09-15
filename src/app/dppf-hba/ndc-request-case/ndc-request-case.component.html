@@ -1,0 +1,287 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>NDC Request Cases</div>
+      <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+        <li class="breadcrumb-item active" aria-current="page">No Due Certificate Application </li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="noDueCertificateForm">
+        <div class="box box-primary">
+          <div class="box-header">No Due Certificate Application</div>
+          <!-- No Due Certificate Application -->
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="employeNo" placeholder="Employee Number" formControlName="employeNo">
+                  <mat-icon matSuffix class="searchIcon" (click)="employeeNo()">search</mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf=" noDueCertificateForm.controls.employeNo.touched && noDueCertificateForm.controls.employeNo.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.employeNo.errors.required">
+                      {{ errorMessages.EMPLOYEE_NUMBER }}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="HBA/MCA Account No." formControlName="accountNo" required numbersOnly>
+                  <mat-icon matSuffix class="searchIcon" (click)="hbaMca()">search</mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.accountNo.touched && noDueCertificateForm.controls.accountNo.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.accountNo.errors.required">
+                      {{errorMessages.ACCOUNT_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="hbaMca" placeholder="HBA/MCA" formControlName="hbaMca" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3"></div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="firstName" placeholder="First Name" formControlName="firstName" required>
+                  <div class="error-wrapper"
+                    *ngIf=" noDueCertificateForm.controls.firstName.touched &&noDueCertificateForm.controls.firstName.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.firstName.errors.required">
+                      {{ errorMessages.FIRST_NAME }}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="middleName" placeholder="Middle Name" formControlName="middleName" required>
+                  <div class="error-wrapper"
+                    *ngIf=" noDueCertificateForm.controls.middleName.touched &&noDueCertificateForm.controls.middleName.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.middleName.errors.required">
+                      {{ errorMessages.MIDDLE_NAME }}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="lastName" placeholder="Last Name " formControlName="lastName" required>
+                  <div class="error-wrapper"
+                    *ngIf=" noDueCertificateForm.controls.lastName.touched &&noDueCertificateForm.controls.lastName.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.lastName.errors.required">
+                      {{ errorMessages.LAST_NAME }}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select formControlName="employeeClass" placeholder="Employee Class" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="employeeClassCtrl"
+                        [placeholderLabel]="'Select Employee Class ...'"
+                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of employeeClass_list | filterSelectInput :employeeClassCtrl.value : 'viewValue'"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.employeeClass.touched && noDueCertificateForm.controls.employeeClass.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.employeeClass.errors.required">
+                      {{errorMessages.EMPLOYEECLASS}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="doj" formControlName="doj" placeholder="Date of Joining" required>
+                  <mat-datepicker-toggle matSuffix [for]="doj"></mat-datepicker-toggle>
+                  <mat-datepicker #doj></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.doj.touched && noDueCertificateForm.controls.doj.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.doj.errors.required">
+                      {{errorMessages.DATE_OF_JOINING}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="dod" formControlName="dod" placeholder="Date of Retirement">
+                  <mat-datepicker-toggle matSuffix [for]="dod"></mat-datepicker-toggle>
+                  <mat-datepicker #dod></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.dod.touched && noDueCertificateForm.controls.dod.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.dod.errors.required">
+                      {{errorMessages.DEATHDATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field>
+                  <mat-label>Date of Death
+                  </mat-label>
+                  <input matInput [matDatepicker]="dateofDeath" formControlName="dateofDeath" />
+                  <mat-datepicker-toggle matSuffix [for]="dateofDeath"></mat-datepicker-toggle>
+                  <mat-datepicker #dateofDeath></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Loan Amount" formControlName="loanAmount" required numbersOnly>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.loanAmount.touched && noDueCertificateForm.controls.loanAmount.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.loanAmount.errors.required">
+                      {{errorMessages.LOANAMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="District Name" formControlName="district" required>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.district.touched && noDueCertificateForm.controls.district.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.district.errors.required">
+                      {{errorMessages.DISTRICT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="DDO No." formControlName="ddo" required>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.ddo.touched && noDueCertificateForm.controls.ddo.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.ddo.errors.required">
+                      {{errorMessages.DDO_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Cardex No." formControlName="cardex" numbersOnly>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Office Name" formControlName="officeName" required>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.officeName.touched && noDueCertificateForm.controls.officeName.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.officeName.errors.required">
+                      {{errorMessages.OFFICE_NAME}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Total Principle Amount" formControlName="totalPrincipleAmount"
+                    numbersOnly required>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.totalPrincipleAmount.touched && noDueCertificateForm.controls.totalPrincipleAmount.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.totalPrincipleAmount.errors.required">
+                      {{errorMessages.TOTAL_PRINCIPLE_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Total Interest Amount" formControlName="totalInterestAmount" numbersOnly>
+                  <mat-icon matSuffix (click)="interestAmount()" style="cursor: pointer;">open_in_new</mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.totalInterestAmount.touched && noDueCertificateForm.controls.totalInterestAmount.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.totalInterestAmount.errors.required">
+                      {{errorMessages.TOTAL_INTEREST_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Total Recovery Amount" formControlName="totalRecoveryAmount" numbersOnly>
+                  <mat-icon matSuffix (click)="recoveryAmount()" style="cursor: pointer;">open_in_new</mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="noDueCertificateForm.controls.totalPaidInterestAmount.touched && noDueCertificateForm.controls.totalPaidInterestAmount.errors">
+                    <mat-error *ngIf="noDueCertificateForm.controls.totalPaidInterestAmount.errors.required">
+                      {{errorMessages.TOTAL_PAID_INTEREST_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <!-- common Button -->
+              <div class="form-action-button">
+                <button type="button" mat-raised-button color="primary">
+                  <i class="material-icons" aria-hidden="true">
+                    save as draft
+                  </i>
+                  Save
+                </button>
+                <button mat-raised-button type="submit" class="green" (click)="directiveObject.commentGrantDetails()">
+                  <i class="material-icons" aria-hidden="true">
+                    done
+                  </i> Submit</button>
+
+                <button type="reset" mat-raised-button color="accent"><i class="material-icons" aria-hidden="true"
+                    title="reset">
+                    restore
+                  </i>
+                  Reset
+                </button>
+                <button type="button" mat-raised-button color="warn" (click)="navigate()">
+                  <i class="material-icons" aria-hidden="true" title="Listing">
+                    list
+                  </i>
+                  Listing
+                </button>
+                <button type="button" mat-raised-button class="btnClose">
+                  <i class="material-icons" aria-hidden="true">
+                    close
+                  </i>
+                  Close
+                </button>
+              </div>
+              <!-- End common Button -->
+            </div>
+          </div>
+          <!-- End No Due Certificate Application -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

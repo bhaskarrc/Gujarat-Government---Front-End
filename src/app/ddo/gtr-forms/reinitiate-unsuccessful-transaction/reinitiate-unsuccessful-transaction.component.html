@@ -1,0 +1,223 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>Reinitiate Unsuccessful Transaction</div>
+    </div>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header>
+
+          <!-- search bills -->
+          <div class="heading-section">
+            Search Bills
+          </div>
+        </mat-expansion-panel-header>
+        <!-- search bills  end-->
+
+        <!-- form -->
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="reinitiateUnsuccessfulTransactionrForm" (ngSubmit)="searchBill()">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Token Number" numbersOnly formControlName="tokenNo">
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- form  end-->
+
+        <!-- form action buttton -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="search">search</i>
+            Search
+          </button>
+          <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+            <i class="material-icons" aria-hidden="true" title="reset">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+        <!-- form action buttton end -->
+
+      </mat-expansion-panel>
+    </mat-accordion>
+
+
+    <!-- listing -->
+    <div class="mat-elevation-z8 mt-2 overflow-x-scroll">
+      <table class="overflow-x-scroll" mat-table [dataSource]="dataSource" width="100%" matSort
+        aria-describedby="reinitiateUnsuccessfulTransaction">
+
+        <!-- checkbox -->
+        <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null"
+              [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)"
+              [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource)">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="centerAlign">
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? directiveObj.selection.toggle(row) : null;"
+              [checked]="directiveObj.selection.isSelected(row)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+            </mat-checkbox>
+          </td>
+          <td mat-footer-cell *matFooterCellDef>Total</td>
+        </ng-container>
+
+        <!-- token no -->
+        <ng-container matColumnDef="tokenNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Token no.</th>
+          <td mat-cell *matCellDef="let element"> {{element.tokenNo}} </td>
+        </ng-container>
+
+        <!-- creditor name -->
+        <ng-container matColumnDef="creditorName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Creditor Name</th>
+          <td mat-cell *matCellDef="let element"> <a (click)="opendialog(element)">{{element.creditorName}}</a> </td>
+        </ng-container>
+
+        <!-- creditor ifsc code -->
+        <ng-container matColumnDef="creditorIfscCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Creditor IFSC Code</th>
+          <td mat-cell *matCellDef="let element"> {{element.creditorIfscCode}} </td>
+        </ng-container>
+
+        <!-- creditor account no -->
+        <ng-container matColumnDef="creditorAccountNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Creditor Account No</th>
+          <td mat-cell *matCellDef="let element"> {{element.creditorAccountNo}} </td>
+        </ng-container>
+
+        <!-- beneficiary amount -->
+        <ng-container matColumnDef="beneficiaryAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Beneficiary Amount</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.beneficiaryAmount}} </td>
+        </ng-container>
+
+        <!-- bill net amount -->
+        <ng-container matColumnDef="billNetAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Net Amount</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.billNetAmount}} </td>
+        </ng-container>
+
+        <!-- major head -->
+        <ng-container matColumnDef="majorHead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+          <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+        </ng-container>
+
+        <!-- date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Date</th>
+          <td mat-cell *matCellDef="let element">{{ element.date}}</td>
+        </ng-container>
+
+        <!-- bill trype -->
+        <ng-container matColumnDef="billType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Type</th>
+          <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+        </ng-container>
+
+        <!-- ddo no -->
+        <ng-container matColumnDef="ddoNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DDO No</th>
+          <td mat-cell *matCellDef="let element"> {{element.ddoNo}} </td>
+        </ng-container>
+
+        <!-- cardex no -->
+        <ng-container matColumnDef="cardexNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cardex No</th>
+          <td mat-cell *matCellDef="let element"> {{element.cardexNo}} </td>
+        </ng-container>
+
+        <!-- voucher no -->
+        <ng-container matColumnDef="voucherNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Voucher No</th>
+          <td mat-cell *matCellDef="let element"> {{element.voucherNo}} </td>
+        </ng-container>
+
+        <!-- voucher date -->
+        <ng-container matColumnDef="voucherDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Voucher Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.voucherDate}} </td>
+        </ng-container>
+
+        <!-- type of beneficiary -->
+        <ng-container matColumnDef="typeOfBeneficiary">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Type Of Beneficiary</th>
+          <td mat-cell *matCellDef="let element"> {{element.typeOfBeneficiary}} </td>
+        </ng-container>
+
+        <!-- reason -->
+        <ng-container matColumnDef="reason">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Reason for failure Transaction</th>
+          <td mat-cell *matCellDef="let element"> {{element.reason}} </td>
+        </ng-container>
+
+        <!-- bill id -->
+        <ng-container matColumnDef="billId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Dig Bill Id</th>
+          <td mat-cell *matCellDef="let element"> {{element.billId}} </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <a [routerLink]=""><i class="material-icons plus edit-icon" title="Delete" aria-hidden="true"> delete
+              </i></a>
+            <a [routerLink]=""><i class="material-icons plus view-icon" title="View"
+                aria-hidden="true">remove_red_eye</i></a>
+            <a [routerLink]=""><i class="material-icons plus view-icon" title="Edit" aria-hidden="true">edit</i></a>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+        </tr>
+      </table>
+    </div>
+    <!-- paginator -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    <!-- action buttons -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Create Bill (e-payment)
+      </button>
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Create Bill (Cheque)
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+    </div>
+    <!-- action buttons -->
+    <!-- listing end -->
+  </div>
+</div>

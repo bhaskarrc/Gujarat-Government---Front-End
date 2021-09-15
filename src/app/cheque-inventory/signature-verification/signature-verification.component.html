@@ -1,0 +1,192 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Signature Verificaion</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/CI/SV/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Cheque Inventory</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Signature Verificaion</li>
+            </ol>
+        </nav>
+
+        <!-- search fields -->
+        <div class="panel-group">
+            <form [formGroup]="pdplaAdviceCardexVerificationForm">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Indent No." formControlName="indentNumber" maxlength="4">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="indentDate" [matDatepicker]="picker1" placeholder="Indent Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Account No." formControlName="accNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Cardex No." formControlName="cardexNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-action-button">
+                                        <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                                        <button type="reset" mat-raised-button color="accent">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </form>
+
+            <br>
+
+            <!-- filtered data table -->
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" area-describedby="adviceCardexVerification">
+
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                                [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="centerAlign">
+                            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                            </mat-checkbox>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="srno">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            Sr No.
+                        </th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{ i + 1 }}
+                        </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="accNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Account No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.accNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="indentNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Indent Number</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.indentNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="indentDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Indent Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.indentDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="cardexNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Cardex No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.cardexNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="cardexOfficer">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Cardex Officer</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.cardexOfficer}}
+                        </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="signVerify">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sign Verify</th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-form-field class="full-width">
+                                <mat-select [(ngModel)]="element.signVerify">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="signVerifyCtrl" [placeholderLabel]="'Find Options...'" [noEntriesFoundLabel]="'No matching Options found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let signOption of signVerifyList | filterSelectInput:signVerifyCtrl.value" [value]="signOption.value">
+                                        {{signOption.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="sign">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Sign</th>
+                        <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                            <a class="signaure">
+                                <i class="material-icons plus view-icon" aria-hidden="true" title="Signature">playlist_add_check</i>
+                                <div class="box-body signature-box">
+                                    <div class="img centerAlign">
+                                        <img src="assets/images/sign.png" alt="ifms-logo">
+                                    </div>
+                                </div>
+                            </a>
+                        </td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="column"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: column;"></tr>
+                </table>
+                <!-- table ends -->
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                <!-- Common Button -->
+                <div class="form-action-button">
+                    <button mat-raised-button type="submit" class="green" (click)="ciDirectiveObj.workflowDetails('none')">
+            <i class="material-icons" title="Receive and Forward" aria-hidden="true">done</i> Submit</button>
+                    <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+                </div>
+                <!-- Common Button ends-->
+            </div>
+        </div>
+    </div>
+</div>

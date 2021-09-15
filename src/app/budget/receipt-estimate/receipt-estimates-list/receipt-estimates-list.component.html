@@ -1,0 +1,353 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div>List of Receipt Estimates
+      </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Budget</a></li>
+        <li class="breadcrumb-item active" aria-current="page">List of
+          Receipt Estimates</li>
+      </ol>
+    </nav>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search
+          </div>
+        </mat-expansion-panel-header>
+        <div class="form-datatable-list">
+          <form class="col-sm-12" [formGroup]="searchListForm" (ngSubmit)="saveEstimate()">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="finYear" placeholder="Financial Year" #singleSelect1>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                        [noEntriesFoundLabel]="'no
+                        matching Financial Year found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option *ngFor="let FY of
+                      filteredFinYear | async" [value]="FY.value">
+                      {{FY.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="majorHeadCode" placeholder="Major
+                    Head">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCodeCtrl" [placeholderLabel]="'Find Major Head...'"
+                        [noEntriesFoundLabel]="'no
+                        matching Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let majorHead of
+                      filteredMajorlist |
+                      filterSelectInput:majorHeadCodeCtrl.value" [value]="majorHead.value">
+                      {{majorHead.viewValue}}
+                    </mat-option>
+
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+              <!-- <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="departmentCode" placeholder="Department" #singleSelect1>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="departmentCodeCtrl" [placeholderLabel]="'Find
+                                                Department...'" [noEntriesFoundLabel]="'no
+                                                matching Department found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option *ngFor="let department of
+                                            filteredDepartmentCode | async" [value]="department.value">
+                      {{department.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+              <!-- 
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="estimationFrom" placeholder="Estimation From" #singleSelect1>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="estimationFromCtrl" [placeholderLabel]="'Find
+                                                Estimation From...'" [noEntriesFoundLabel]="'no
+                                                matching Estimation From
+                                                found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let estimation of
+                                            filteredEstimationFrom | async" [value]="estimation.value">
+                      {{estimation.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" formControlName="lyingWithBox" placeholder="Lying With">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" formControlName="refNO" placeholder="Reference No.">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="statusd" placeholder="Status" (selectionChange)="ontoken($event)">
+                    <mat-option *ngFor="let statu of statuslist" [value]="statu.value">
+                      {{statu.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="isTokentable">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" formControlName="approvedBy" placeholder="{{rangeTypeValue}} By">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="isTokentable">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="approveDatepickerfr" formControlName="apporRefDate"
+                    placeholder="{{rangeTypeValue}} On From Date">
+                  <mat-datepicker-toggle matSuffix [for]="approveDatepickerfr"></mat-datepicker-toggle>
+                  <mat-datepicker #approveDatepickerfr></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="isTokentable">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="approvefDatepickerto" formControlName="apporReftDate"
+                    placeholder="{{rangeTypeValue}} On To Date">
+                  <mat-datepicker-toggle matSuffix [for]="approvefDatepickerto"></mat-datepicker-toggle>
+                  <mat-datepicker #approvefDatepickerto></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="recevie" placeholder="Received
+                    From / Sent To" (selectionChange)="onrecevietoken($event)">
+                    <mat-option *ngFor="let recevies of receivelist" [value]="recevies.value">
+                      {{recevies.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="isToken">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" formControlName="receiveddata" placeholder="{{receiveValue}}">
+                </mat-form-field>
+              </div>
+              <!-- <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="receviedDatepickerfr"
+                    formControlName="recRefDate"
+                    placeholder="{{receiveValue}} From Date">
+                  <mat-datepicker-toggle matSuffix [for]="receviedDatepickerfr"></mat-datepicker-toggle>
+                  <mat-datepicker #receviedDatepickerfr></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="receviedDatepickerto"
+                    formControlName="recRetDate"
+                    placeholder="{{receiveValue}} To Date">
+                  <mat-datepicker-toggle matSuffix [for]="receviedDatepickerto"></mat-datepicker-toggle>
+                  <mat-datepicker #receviedDatepickerto></mat-datepicker>
+                </mat-form-field>
+              </div> -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="refDatepickerfr" formControlName="frRefDate"
+                    placeholder="Received On /Sent On From Date">
+                  <mat-datepicker-toggle matSuffix [for]="refDatepickerfr"></mat-datepicker-toggle>
+                  <mat-datepicker #refDatepickerfr></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="refDatepickerto" formControlName="frRefDate"
+                    placeholder="Received On /Sent On To Date">
+                  <mat-datepicker-toggle matSuffix [for]="refDatepickerto"></mat-datepicker-toggle>
+                  <mat-datepicker #refDatepickerto></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="Datepickerfrom" formControlName="datepickerfrom"
+                    placeholder="Reference From Date">
+                  <mat-datepicker-toggle matSuffix [for]="Datepickerfrom"></mat-datepicker-toggle>
+                  <mat-datepicker #Datepickerfrom></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="Datepickerto" formControlName="datepickerfrom"
+                    placeholder="Reference To Date">
+                  <mat-datepicker-toggle matSuffix [for]="Datepickerto"></mat-datepicker-toggle>
+                  <mat-datepicker #Datepickerto></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+            </div>
+          </form>
+        </div>
+        <div class="row displayBlock form-action-button">
+          <div class="centerAlign">
+            <button type="submit" mat-raised-button color="primary">
+              <i class="material-icons" aria-hidden="true">search</i>
+              Search
+            </button>
+            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+              <i class="material-icons" aria-hidden="true">
+                restore
+              </i>
+              Reset
+            </button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+
+    <div class="mat-elevation-z8 mt-2">
+      <table mat-table [dataSource]="dataSource" aria-describedby="receiptEstimateListTable" width="100%" matSort>
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Sr.
+            No.</th>
+          <td mat-cell *matCellDef="let element; let i= index;" class="centerAlign">
+            {{ i + 1 + ((paginator.pageIndex *
+            paginator.pageSize))}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="finYear">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Financial
+            Year</th>
+          <td mat-cell *matCellDef="let element"> {{element.finYear}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="majorHead">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Major
+            Head </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.majorHead}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="receipt">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Receipt
+            Amount</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign">
+            {{element.receipt | number : '1.2-2'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="disbursement">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Disbursement
+            Amount</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign">
+            {{element.disbursement | number : '1.2-2'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="refNo">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Reference
+            No. </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.refNo}} </td>
+        </ng-container>
+        <ng-container matColumnDef="refDate">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Reference
+            Date. </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.refDate}} </td>
+        </ng-container>
+        <ng-container matColumnDef="receivedOnFrom">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Received
+            From
+            Received On
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.receivedOnFrom}} </td>
+        </ng-container>
+        <ng-container matColumnDef="sentToOn">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Sent
+            To
+            Sent On
+
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.sentToOn}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lyingWith">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>
+            Lying With
+
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.lyingWith}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>
+            Status
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <a matTooltip="{{element.tooltip}}"> {{element.status}} </a></td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="action-btn-i centerAlign">
+            <a [routerLink]="'../receipt-estimate-duplicate'"><i class="material-icons
+                plus edit-icon" title="Edit">
+                edit </i></a>
+            <a [routerLink]="'../receipt-estimate-view'"><i class="material-icons plus view-icon" title="Detail View" (click)="consolidateView()">
+                remove_red_eye
+              </i></a>
+            <a (click)="viewComments()"><i class="material-icons plus"
+                title="History Detail">receipt</i></a>
+
+            <a class="delete-icon" *ngIf="element.status !== '100%'" (click)="deleteRow(element)"><i
+                class="material-icons plus delete" title="delete">delete</i></a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; let i= index;columns:
+          displayedColumns;" [ngClass]="{'completed': (row.status ===
+          '100%'),'incomplete': (row.status !== '100%')}">
+        </tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+
+      <!-- <div class="row displayBlock form-action-button">
+        <div class="centerAlign">
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget
+              dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,427 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- Screen Name -->
+        <div class="heading-section ng-star-inserted">
+            <div>Employee Leave Details</div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Payroll</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Employee Leave Details</li>
+            </ol>
+        </nav>
+
+        <form [formGroup]="employeeLeaveDetail">
+            <!-- Employee Leave Details Start -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Employee Leave Details</div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder="DDO No" formControlName="dDoNo"
+                                        readonly />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder="Cardex No" formControlName="cardexNo"
+                                        readonly />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput #input [value]="" placeholder=" Office Name"
+                                        formControlName="dDoOffice" readonly />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="District" formControlName="district">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subOfficeName" placeholder="Sub Office ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subOfficeCtrl"
+                                                [placeholderLabel]="'Find Sub Office...'"
+                                                [noEntriesFoundLabel]="'No matching Sub Office found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let item of subOfficeList |
+                                      filterSelectInput:subOfficeCtrl.value" [value]="item.value"
+                                            matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payrollType" placeholder="Payroll Type"
+                                        (selectionChange)="onPayrollType($event.value)" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payrollCtrl"
+                                                [placeholderLabel]="'Find Payroll Type...'"
+                                                [noEntriesFoundLabel]="'no matching Payroll Type found'"
+                                                alphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let Payroll of PayrollTypeList | filterSelectInput:payrollCtrl.value "
+                                            [value]="Payroll.value">
+                                            {{Payroll.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="employeeLeaveDetail.controls.payrollType.touched && employeeLeaveDetail.controls.payrollType.errors">
+                                        <mat-error *ngIf="employeeLeaveDetail.controls.payrollType.errors.required">
+                                            {{errorMessage.PAYROLL_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="finYear" placeholder="Financial Year" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="finYearCtrl"
+                                                [placeholderLabel]="'Find Financial Year...'"
+                                                [noEntriesFoundLabel]="'no matching Financial Year found'"
+                                                numbersHyphenOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let FY of finYear_list | filterSelectInput: finYearCtrl.value"
+                                            [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payMonth" placeholder="Pay Month" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payMonthCtrl"
+                                                [placeholderLabel]="'Find Pay Month...'"
+                                                [noEntriesFoundLabel]="'no matching Pay Month found'" charactersOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let Month of PayMonthTypeList | filterSelectInput: payMonthCtrl.value"
+                                            [value]="Month.value">
+                                            {{Month.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="employeeLeaveDetail.controls.payMonth.touched && employeeLeaveDetail.controls.payMonth.errors">
+                                        <mat-error *ngIf="employeeLeaveDetail.controls.payMonth.errors.required">
+                                            {{errorMessage.PAY_MONTH}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                        </div>
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary" (click)="onChangeYearType()">Change
+                                Year\Type</button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="leaveType" placeholder="Leave Type" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="leaveCtrl"
+                                                [placeholderLabel]="'Find Leave Type...'"
+                                                [noEntriesFoundLabel]="'no matching Leave Type found'"
+                                                alphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let Leave of LeaveListTypeList| filterSelectInput: leaveCtrl.value"
+                                            [value]="Leave.value">
+                                            {{Leave.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="employeeLeaveDetail.controls.leaveType.touched && employeeLeaveDetail.controls.leaveType.errors">
+                                        <mat-error *ngIf="employeeLeaveDetail.controls.leaveType.errors.required">
+                                            {{errorMessage.LEAVE_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="empType" placeholder="Employee Type">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="empCtrl"
+                                                [placeholderLabel]="'Find Employee Type...'"
+                                                [noEntriesFoundLabel]="'no matching Employee Type found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let emp of EmpTypeList | filterSelectInput: empCtrl.value "
+                                            [value]="emp.value">
+                                            {{emp.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="designation" placeholder="Designation" multiple>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="designationCtrl"
+                                                [placeholderLabel]="'Find Designation...'"
+                                                [noEntriesFoundLabel]="'no matching Designation found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of DesignationList | filterSelectInput :designationCtrl.value"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput maxlength="10" placeholder="Employee No" formControlName="empId"
+                                        prEmpNoOnly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput maxlength="50" placeholder="Employee Name" formControlName="empName"
+                                        alphabetsSpaceOnly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="search()">
+                                <i class="material-icons" aria-hidden="true" title="Search">search</i> Search </button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- Employee Leave Details Ends-->
+        </form>
+
+
+
+        <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+            <!-- table Starts -->
+            <table mat-table #table [dataSource]="dataSource" class="responsive-table"
+                aria-describedby="employeeLeaveDetailsTable">
+                <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Sr. No. </th>
+                    <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+                        {{element.srNo}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Employee No. </th>
+                    <td mat-cell *matCellDef="let element;">
+                        <mat-form-field class="full-width">
+                            <input matInput [(ngModel)]="element.id" maxlength="10"
+                                [ngModelOptions]="{standalone: true}" [disabled]="element.id ? true : false"
+                                numbersOnly>
+                            <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber(element)"
+                                *ngIf="element.id ? false :true">search
+                            </mat-icon>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Employee Name
+                    </th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.name}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="class">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Employee Class
+                    </th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.class}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="designation">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Designation</th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.designation}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="leaveType">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Leave Type</th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.leaveType}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="FromDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row">From Date </th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.PreLeaveDate}}
+
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="TworomDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row">To Date </th>
+                    <td mat-cell *matCellDef="let element;">
+                        {{element.PreLeaveTworomDate}}
+
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="FromDateC">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">From Date</th>
+                    <td mat-cell *matCellDef="let element;">
+                        <mat-form-field>
+                            <input matInput (dateInput)="diff(element);" [(ngModel)]="element.startDate"
+                                [matDatepicker]="startDate" [max]="element.endDate" dateOnly />
+                            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                            <mat-datepicker #startDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="TwoDateC">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">To Date </th>
+                    <td mat-cell *matCellDef="let element;">
+                        <mat-form-field>
+                            <input matInput (dateInput)="diff(element)" [(ngModel)]="element.endDate"
+                                [matDatepicker]="endDate" [min]="element.startDate" dateOnly />
+                            <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                            <mat-datepicker #endDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="todalDay">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Number of days
+                    </th>
+                    <td mat-cell *matCellDef="let element;">
+                        <span> {{element.TodalLeave}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Action</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                        <table class="iconTable" aria-describedby="actionBtn">
+                            <tbody>
+                                <tr>
+                                    <td width="30">
+                                        <div *ngIf="(element.id); then notHidden else isHidden">
+                                        </div>
+                                        <ng-template #isHidden>
+                                            <a> <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                                    *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                                    style="color:lightgray">add</i>
+                                            </a>
+                                        </ng-template>
+                                        <ng-template #notHidden>
+                                            <a>
+                                                <i class="material-icons plus add" aria-hidden="true" title="Add"
+                                                    *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                                    (click)="addLeave(i)">add</i>
+                                            </a>
+                                        </ng-template>
+                                    </td>
+                                    <td width="30">
+                                        <i class="material-icons plus delete" aria-hidden="true" title="Delete"
+                                            *ngIf="(dataSource && dataSource.data && dataSource.data.length > 1)&&!element.isSubmitted"
+                                            (click)="delete(i)">
+                                            delete
+                                        </i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="indexNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sr. No </th>
+                </ng-container>
+                <ng-container matColumnDef="Eid">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee No. </th>
+                </ng-container>
+                <ng-container matColumnDef="Ename">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee Name</th>
+                </ng-container>
+                <ng-container matColumnDef="Eclass">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Employee Class</th>
+                </ng-container>
+                <ng-container matColumnDef="Desig">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Designation</th>
+                </ng-container>
+                <ng-container matColumnDef="leaveType2">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Leave Type </th>
+                </ng-container>
+                <ng-container matColumnDef="2date">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">Previous leave details </th>
+                </ng-container>
+                <ng-container matColumnDef="fromDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">From Date </th>
+                </ng-container>
+                <ng-container matColumnDef="toDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">To Date </th>
+                </ng-container>
+                <ng-container matColumnDef="countDay">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Number of Days </th>
+                </ng-container>
+                <ng-container matColumnDef="action2">
+                    <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Action </th>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <th mat-header-cell *matHeaderCellDef scope="row"></th>
+                    <td mat-cell *matCellDef="let element" colspan="12" class="text-center">No Data Available</td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row
+                    *matHeaderRowDef="['indexNo','Eid','Ename','Eclass','Desig','leaveType2','2date','fromDate','toDate','countDay','action2']">
+                </tr>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: displayRow;let i= index;"></tr>
+            </table>
+            <!-- table Ends -->
+        </div>
+        <mat-paginator *ngIf="isSearch" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+        </mat-paginator>
+
+        <!--action button Starts  -->
+        <div style="margin-top: 15px;">
+            <div class="form-action-button">
+                <button mat-raised-button type="submit" class="green" (click)="onClickSubmit()">
+                    <i class="material-icons" aria-hidden="true" title="Submit">done</i> Submit</button>
+                <button type="button" mat-raised-button color="accent" (click)="clearForm()">
+                    <i class="material-icons" aria-hidden="true" title="Reset">restore</i>Reset</button>
+                <button type="button" mat-raised-button class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="Close">close</i>Close</button>
+            </div>
+        </div>
+        <!-- action button Ends -->
+
+    </div>
+</div>

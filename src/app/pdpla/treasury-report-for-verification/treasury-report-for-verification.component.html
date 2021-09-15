@@ -1,0 +1,209 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>PDPLA - Treasury Report For Verification</div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/PDPLA/TRV/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">PDPLA</li>
+        <li class="breadcrumb-item active" aria-current="page">Treasury Report For Verification </li>
+      </ol>
+    </nav>
+
+    <!-- PDPLA - Treasury Report For Verification -->
+    <div class="box box-primary">
+      <div class="box-header">PDPLA - Treasury Report For Verification</div>
+      <div class="box-body">
+        <form [formGroup]="reportVerificationform">
+          <div class="row">
+
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="code" formControlName="code" placeholder="PDPLA A/C No.">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="codeCtrl" [placeholderLabel]="'Select PDPLA A/c No. Type ...'"
+                      [noEntriesFoundLabel]="'no matching PDPLA A/c No. found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+                  <mat-option *ngFor="let cd of code_list | filterSelectInput : codeCtrl.value : 'viewValue'"
+                    [value]="cd.value" [matTooltip]="cd.viewValue">
+                    {{cd.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
+            <div class="col-sm-6 col-md-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="adviceNo" placeholder="Advice No.">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="approved" formControlName="approved" placeholder="Approved">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="approvedCtrl"
+                      [placeholderLabel]="'Select Approved Code Type ...'"
+                      [noEntriesFoundLabel]="'no matching Approved Code found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+                  <mat-option *ngFor="let cd of approved_list | filterSelectInput : approvedCtrl.value : 'viewValue'"
+                    [value]="cd.value" [matTooltip]="cd.viewValue">
+                    {{cd.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="From Advice Date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker1" placeholder="To Advice Date">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+
+
+
+          </div>
+          <div class="row displayBlock form-action-button">
+            <div class="centerAlign">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true">search</i> Search </button>
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">restore</i> Reset </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <br>
+
+    <!-- table -->
+    <div class="table-responsive ">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="transferEntryList">
+
+        <ng-container matColumnDef="checkBox">
+          <th mat-header-cell *matHeaderCellDef scope="row" scope="row">
+            <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+              [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+              [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+              [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="text-center">
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? directiveObject.selection.toggle(row) : null"
+              [checked]="directiveObject.selection.isSelected(row) "
+              [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+            </mat-checkbox>
+          </td>
+
+        </ng-container>
+
+        <ng-container matColumnDef="srNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">Sr No</th>
+          <td mat-cell *matCellDef="let item;let idx = index;" class="srnumber">
+            {{ idx + 1}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pdplaAc">
+          <th mat-header-cell *matHeaderCellDef scope="row">PDPLA A/C No</th>
+          <td mat-cell *matCellDef="let element"> {{element.pdplaAc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="advice">
+          <th mat-header-cell *matHeaderCellDef scope="row">Advice No</th>
+          <td mat-cell *matCellDef="let element"> {{element.advice}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="entrydt">
+          <th mat-header-cell *matHeaderCellDef scope="row">Entry Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.entrydt}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dept">
+          <th mat-header-cell *matHeaderCellDef scope="row">Department</th>
+          <td mat-cell *matCellDef="let element"> {{element.dept}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bank">
+          <th mat-header-cell *matHeaderCellDef scope="row">Bank</th>
+          <td mat-cell *matCellDef="let element"> {{element.bank}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amt">
+          <th mat-header-cell *matHeaderCellDef scope="row">Total Amount (In Rs.)</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amt}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deduction">
+          <th mat-header-cell *matHeaderCellDef scope="row">Total Deduction (In Rs.)</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.deduction}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="netAmount">
+          <th mat-header-cell *matHeaderCellDef scope="row">Net Amount (In Rs.)</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.netAmount}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="approved">
+          <th mat-header-cell *matHeaderCellDef scope="row">Approved</th>
+          <td mat-cell *matCellDef="let element"> {{element.approved}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="approvedDate">
+          <th mat-header-cell *matHeaderCellDef scope="row">Approved Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.approvedDate}} </td>
+        </ng-container>
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumnssplitisting"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumnssplitisting;">
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    </div>
+
+    <!-- Common Action Button -->
+    <div class="form-action-button">
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" title="Print" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+
+      <button type="button" mat-raised-button class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="close">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>

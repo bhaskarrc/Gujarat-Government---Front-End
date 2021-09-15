@@ -1,0 +1,313 @@
+<div class="container">
+    <div class="form-wrapper">
+        <!-- heading-section  -->
+        <div class="heading-section ng-star-inserted">
+            <div>{{gtrEightyFive}}</div>
+            <div class="font-heading"><strong>{{refNuber}}</strong> 19-20/DDO/BP/001</div>
+            <div class="font-heading"><strong>{{refNuberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <!-- breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">{{home}}</a></li>
+                <li class="breadcrumb-item"><a href="#">{{ddo}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{createBill}}
+                </li>
+            </ol>
+        </nav>
+
+        <!-- view bill -->
+        <span class="viewBill">
+            <a (click)="goToReport()" title="View Bill">View Bill</a>
+        </span>
+        <div class="panel-group">
+            <!-- mat group -->
+            <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+                <!-- bill preparation form -->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        {{billPreForm}}
+                    </ng-template>
+
+                    <!-- selector for the bill preparation tab -->
+                    <app-bill-preparation-eighty-five-eighty-five-other>
+                    </app-bill-preparation-eighty-five-eighty-five-other>
+
+                    <!-- action button -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                            Save & Proceed
+                            <i class="material-icons" aria-hidden="true" title="Next">
+                                chevron_right
+                            </i>
+                        </button>
+                    </div>
+                    <!-- action button end -->
+                </mat-tab>
+                <!-- bill preparation form  end-->
+
+                <!-- gtr-85-other-details -->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        GTR-85 Others Details
+                    </ng-template>
+                    <div class="box box-primary">
+                        <div class="box-header"> {{detailHeaderLable2}}</div>
+                    </div>
+
+                    <!-- listing -->
+                    <div class="mat-elevation-z8" style="overflow-x: auto;">
+                        <table mat-table [dataSource]="gtrDetailDataSource" matSort
+                            aria-describedby="advanceBillDetails" class="">
+
+                            <ng-container matColumnDef="establishment">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Section of
+                                    Establishment* </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Incumbent">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Name of Incumbent* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="designation">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Designation* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="sorderNo">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Sanction Order No.* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="sDate">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Sanction Order Date* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="sanctionDate" [max]="maxDate">
+                                        <mat-datepicker-toggle matSuffix [for]="sanctionDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #sanctionDate></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Status* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="full-width">
+                                        <mat-select [(ngModel)]="status">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="statusCtrl"
+                                                    [placeholderLabel]="'Find Status...'"
+                                                    [noEntriesFoundLabel]="'no matching Status. found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let CurrentStatus of statuList | filterSelectInput:statusCtrl.value"
+                                                [value]="CurrentStatus.value">
+                                                {{CurrentStatus.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="basicPay">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Basic Pay* </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width" class="rightAlign">
+                                        <input matInput [(ngModel)]="item.basicPay" decimalLimitTwoOnly
+                                            value="item.basicPay | number:'1.2-2'" decimalPoint2
+                                            [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="AdvanceAmount">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Advance Amount*</th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width" class="rightAlign">
+                                        <input matInput [(ngModel)]="item.AdvanceAmount" decimalLimitTwoOnly
+                                            value="item.AdvanceAmount | number:'1.2-2'" decimalPoint2
+                                            [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                    {{totalAdvanceAmount() | number:'1.2-2'}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="remarks">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Remarks </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text">
+                                    </mat-form-field>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Action </th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <table class="iconTable" aria-describedby="actionBtn">
+                                        <tbody>
+                                            <tr>
+                                                <td width="30">
+                                                    <i class="material-icons plus add" aria-hidden="true"
+                                                        *ngIf="(i == gtrDetailDataSource.data.length - 1)"
+                                                        (click)="addNewRowDetail()">
+                                                        add
+                                                    </i>
+                                                </td>
+                                                <td width="30">
+                                                    <i class="material-icons plus delete" aria-hidden="true"
+                                                        *ngIf="gtrDetailDataSource.data.length > 1"
+                                                        (click)="deleteDetialDataRow(i)">
+                                                        delete
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+
+                            <!-- Header Section Of table -->
+                            <tr mat-header-row *matHeaderRowDef="gtrTbableColumn"></tr>
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-row *matRowDef="let row; let i = index;columns:gtrTbableColumn"></tr>
+                            <!-- Footer Section Of table -->
+                            <tr mat-footer-row *matFooterRowDef="gtrTbableColumn"></tr>
+                        </table>
+                    </div>
+                    <!-- listing end -->
+
+                    <!-- table -->
+                    <table class="detailCheckTable mb-2">
+                        <tbody>
+                            <tr>
+                                <td class="w-15">
+                                    <label>Bill Passed Date </label>
+                                </td>
+                                <td class="w-10">
+                                    <mat-form-field>
+                                        <input class="text-right" matInput [matDatepicker]="picker1"
+                                            [formControl]="date" readonly [max]="maxDate">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1></mat-datepicker>
+
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-15">
+                                    <label>Bill Passed Amount </label>
+                                </td>
+                                <td class="w-10">
+                                    <input class="BUnderLine text-right"
+                                        onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                                        matInput class="BUnderLine text-right" [(ngModel)]="amount" value="0.00"
+                                        numbersOnly matInput>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-15">
+                                    <label>Passed For Rs.(In Words) </label>
+                                </td>
+                                <td class="w-10">
+                                    <input class="BUnderLine text-right" matInput value="{{amount | numberToWords}}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-15">
+                                    <label>Bill Sent Date </label>
+                                </td>
+                                <td class="w-10">
+                                    <input class="BUnderLine text-right" matInput>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <!-- table end -->
+
+                </mat-tab>
+                <!-- gtr-85-other-details end -->
+
+                <!-- attachments -->
+                <mat-tab label="Attachments">
+                    <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+                </mat-tab>
+                <!-- attachment end -->
+
+            </mat-tab-group>
+
+            <!-- action-button -->
+            <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                    <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                        save
+                    </i>
+                    Save as Draft
+                </button>
+                <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"
+                    title="Submit">
+                    <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                    <i class="material-icons" title="Reset" aria-hidden="true">
+                        restore
+                    </i>
+                    Reset
+                </button>
+                <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['']"
+                    routerLinkActive="router-link-active">
+                    <i class="material-icons" title="Listing" aria-hidden="true">
+                        list
+                    </i>
+                    Listing
+                </button>
+                <button type="button" mat-raised-button class="print-btn" title="Print">
+                    <i class="material-icons" title="Print" aria-hidden="true">
+                        print
+                    </i>
+                    Print
+                </button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+                    <i class="material-icons" title="Close" aria-hidden="true">
+                        close
+                    </i>
+                    Close
+                </button>
+            </div>
+            <!-- action-button end -->
+        </div>
+    </div>
+</div>

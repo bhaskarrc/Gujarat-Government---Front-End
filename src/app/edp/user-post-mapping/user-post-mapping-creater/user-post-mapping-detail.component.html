@@ -1,0 +1,548 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div> Post Transfer </div>
+            <div class="font-heading"><b>Reference Number:</b> 19-20/EDP/PT/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ today_date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page"> User Post Mapping </li>
+            </ol>
+        </nav>
+        <div #parentGrids>
+            <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+                        Post Mapping Request
+                    </ng-template>
+                    <div class="box box-primary">
+                        <div class="box-header">Search</div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="Employee No" value="">
+                                        <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form [formGroup]="userpost">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="box box-primary">
+
+                                    <!-- >Office Detail part-->
+                                    <div class="box-header">Office Detail</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="District" disabled value="Ahmedabad">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="DDO No" disabled value="416">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="Cardex No " disabled value="78">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="DDO Office " disabled
+                                                        value="Collector Office, Ahmedabad">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Transfer Frome part    -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="box box-primary">
+                                    <div class="box-header">Post Transfer from:</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <mat-form-field class="full-width">
+                                                    <mat-select formControlName="post"
+                                                        (selectionChange)="postselectfrom($event)"
+                                                        placeholder="Post Transfer from" required>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="postCtrl"
+                                                                [placeholderLabel]="'Find post Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Post found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option
+                                                            *ngFor="let post of Post_list | filterSelectInput: postCtrl.value"
+                                                            [value]="post.value">
+                                                            {{post.viewValue}}
+                                                        </mat-option>
+
+                                                    </mat-select>
+
+                                                    <div class="error-wrapper"
+                                                        *ngIf="userpost.controls.post.touched && userpost.controls.post.errors">
+                                                        <mat-error *ngIf="userpost.controls.post.errors.required">
+                                                            {{errorMessages.postfrom}}</mat-error>
+                                                    </div>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6 mgt15" *ngIf="userIdNamepf">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Number" (keyup)="textValueChange()">
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6" *ngIf="userNamefrom">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Name" value="Mr. S R Shukla" readonly>
+                                                </mat-form-field>
+                                            </div>
+                                                <div class="col-sm-12 user-post-table" *ngIf="userPostfrom">
+                                                <div  class=" postlisttitle">Mapped Post</div>
+                                                <table mat-table class="user-post-table mat-elevation-z8"
+                                                    [dataSource]="dataSourceBrowseForPost" class="mat-elevation-z8">
+                                                    <!-- Checkbox Column -->
+                                                    <ng-container matColumnDef="select">
+                                                        <th mat-header-cell *matHeaderCellDef>
+                                                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                                [checked]="selection.hasValue() && isAllSelected()"
+                                                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                                [aria-label]="checkboxLabel()">
+                                                            </mat-checkbox>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let row">
+                                                            <mat-checkbox (click)="$event.stopPropagation()"
+                                                                (change)="$event ? selection.toggle(row) : null"
+                                                                [checked]="selection.isSelected(row)"
+                                                                [aria-label]="checkboxLabel(row)">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="sr_no">
+                                                        <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+                                                        <td mat-cell *matCellDef="let item; let i = index"
+                                                            class="rightAllign">
+                                                            {{ i + 1 }}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!--  Post Name Column -->
+                                                    <ng-container matColumnDef="post_name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_name}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Type </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_type}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Office NameColumn -->
+                                                    <ng-container matColumnDef="office_type">
+                                                        <th mat-header-cell *matHeaderCellDef>Office Name</th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.office_type}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Office NameColumn -->
+                                                    <ng-container matColumnDef="action">
+                                                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                                                        <td mat-cell *matCellDef="let element" class="text-center">
+                                                            <button type="submit" class="changebutton" mat-raised-button
+                                                                color="primary" *ngIf="element.post_type =='Secondary'"
+                                                                (click)="showConfirmationPopup()">
+                                                                Change
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedBrowseColumnsForPost">
+                                                    </tr>
+                                                    <tr mat-row
+                                                        *matRowDef="let row; columns: displayedBrowseColumnsForPost;">
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-sm-12 user-post-table" *ngIf="userPostfrom">
+                                                <div class=" postlisttitle">Post to be Transferred </div>
+                                                <table mat-table class="user-post-table mat-elevation-z8"
+                                                    [dataSource]="dataSourceBrowseForPost" class="mat-elevation-z8">
+
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="sr_no">
+                                                        <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+                                                        <td mat-cell *matCellDef="let item; let i = index"
+                                                            class="rightAllign">
+                                                            {{ i + 1 }}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!--  Post Name Column -->
+                                                    <ng-container matColumnDef="post_name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_name}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Transfer As </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            <mat-form-field>
+                                                                <mat-select name="post_type" placeholder="Post Type">
+                                                                    <mat-option value="Primary"> Primary </mat-option>
+                                                                    <mat-option value="Secondary"> Secondary
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row *matHeaderRowDef="disPostTransfer"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: disPostTransfer;"></tr>
+                                                </table>
+                                            </div>
+
+                                            <!-- vacant post -->
+
+                                            <div class="col-sm-12 user-post-table" *ngIf="vacntfromfrom">
+                                                <div class=" postlisttitle">Vacant Post</div>
+                                                <table mat-table class="user-post-table mat-elevation-z8"
+                                                    [dataSource]="dataSourceVacantPost" class="mat-elevation-z8">
+
+                                                    <ng-container matColumnDef="select">
+                                                        <th mat-header-cell *matHeaderCellDef class="text-left">
+                                                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                                [checked]="selection.hasValue() && isAllSelected()"
+                                                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                                [aria-label]="checkboxLabel()">
+                                                            </mat-checkbox>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let row">
+                                                            <mat-checkbox (click)="$event.stopPropagation()"
+                                                                (change)="$event ? selection.toggle(row) : null"
+                                                                [checked]="selection.isSelected(row)"
+                                                                [aria-label]="checkboxLabel(row)">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="sr_no">
+                                                        <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+                                                        <td mat-cell *matCellDef="let item; let i = index"
+                                                            class="rightAllign">
+                                                            {{ i + 1 }}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!--  Post Name Column -->
+                                                    <ng-container matColumnDef="post_name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_name}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Last Mapped with</th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_type}} </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedvacantPost"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displayedvacantPost;">
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-sm-12 user-post-table" *ngIf="vacntfromfrom">
+                                                <div class=" postlisttitle">Post to be Transferred </div>
+                                                <table mat-table class="user-post-table mat-elevation-z8"
+                                                    [dataSource]="dataSourceBrowseForPost" class="mat-elevation-z8">
+
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="sr_no">
+                                                        <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+                                                        <td mat-cell *matCellDef="let item; let i = index"
+                                                            class="rightAllign">
+                                                            {{ i + 1 }}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!--  Post Name Column -->
+                                                    <ng-container matColumnDef="post_name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_name}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Transfer As </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            <mat-form-field>
+                                                                <mat-select name="post_type" placeholder="Post Type">
+                                                                    <mat-option value="Primary"> Primary </mat-option>
+                                                                    <mat-option value="Secondary"> Secondary
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row *matHeaderRowDef="disPostTransfer"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: disPostTransfer;"></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Post Transfer To part  -->
+
+                            <div class="col-sm-6">
+                                <div class="box box-primary">
+                                    <div class="box-header">Post Transfer To:</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <mat-form-field>
+                                                    <mat-select formControlName="postto"
+                                                        (selectionChange)="postselectfto($event)"
+                                                        placeholder="Post Transfer To" required>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="Postnamecodectrl"
+                                                                [placeholderLabel]="'Find post Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Post found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option
+                                                            *ngFor="let post of Post_list | filterSelectInput: Postnamecodectrl.value"
+                                                            [value]="post.value">
+                                                            {{post.viewValue}}
+                                                        </mat-option>
+
+                                                    </mat-select>
+
+                                                    <div class="error-wrapper"
+                                                        *ngIf="userpost.controls.postto.touched && userpost.controls.postto.errors">
+                                                        <mat-error *ngIf="userpost.controls.postto.errors.required">
+                                                            {{errorMessages.postto}}</mat-error>
+                                                    </div>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="userIdNamept">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Number" (keyup)="textValueChangeto()">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="userNameto">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Name" value="Mr. S R Shukla" readonly>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-12 user-post-table" *ngIf="userNameto">
+                                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="position">
+                                                        <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+                                                        <td mat-cell *matCellDef="let element"> {{element.position}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!--  Post Name Column -->
+                                                    <ng-container matColumnDef="pname">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.pname}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Typ Column -->
+                                                    <ng-container matColumnDef="name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Type </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.name}} </td>
+                                                    </ng-container>
+
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                            <i class="material-icons" title="Save">save</i>
+                            Save as Draft
+                        </button>
+                        <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                                done
+                            </i> Submit</button>
+
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+
+                        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                            <i class="material-icons" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+
+                        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Attachment">
+                    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef>
+                                Sr. No.
+                            </th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td mat-cell *matCellDef="let item;let i = index;">
+                                {{item.attachment}}
+                                <span *ngIf="i < 3" class="star">*</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                                    Files</button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                        (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1"
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedPostBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedPostBrowseColumns;"></tr>
+                    </table>
+                    <input type="file" id="fileBrowse" class="fileBrowse" (change)="onFileSelection($event)" />
+                    <div class="legend">
+                        1. Total File size should be under 2MB<br>
+                        2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                    </div>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" title="Save">cloud_upload</i>
+                            Upload
+                        </button>
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons">done</i>
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons">restore</i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                            <i class="material-icons" title="Listing">list</i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">close</i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

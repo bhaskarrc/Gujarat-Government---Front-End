@@ -1,0 +1,339 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>Vendor / Party Details</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">DDO</li>
+        <li class="breadcrumb-item active" aria-current="page">Vendor / Party Details</li>
+      </ol>
+    </nav>
+
+    <!-- vendor details form -->
+    <div class="panel-group">
+
+      <form [formGroup]="vendorDetailsForm">
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">
+                Add Vendor / Party Details
+              </div>
+            </mat-expansion-panel-header>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput placeholder="Cardex No." value='10' disabled required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="vendorPartyName" formControlName="vendorPartyName"
+                      placeholder="Vendor / Party Name" onlyAlphabetSpaceDot required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <textarea name="partyAddress" matInput formControlName="partyAddress" placeholder="Party Address"
+                      class="myalign"></textarea>
+                  </mat-form-field>
+
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="ddono" numbersOnly placeholder="Bank Account No."
+                      formControlName="bankAccountNo" maxlength="20" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput placeholder="IFSC Code" maxlength="11" formControlName="ifscCode" required>
+                    <mat-error *ngIf="vendorDetailsForm.controls.ifscCode.errors?.pattern">
+                      {{ errorMessageIfsc }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <textarea readonly name="bankBranchName" matInput formControlName="bankBranchName"
+                      placeholder="Bank Branch Name" class="myalign"></textarea>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="panNumber" placeholder="PAN No." maxlength="10" formControlName="panNumber"
+                      required>
+                  </mat-form-field>
+                  <mat-error *ngIf="vendorDetailsForm.controls.panNumber.errors?.pattern">
+                    {{ errorMessagePan }}
+                  </mat-error>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="tanNumber" placeholder="TAN No." formControlName="tanNumber" required>
+                  </mat-form-field>
+                  <mat-error *ngIf="vendorDetailsForm.controls.tanNumber.errors?.pattern">
+                    {{ errorMessageTan }}
+                  </mat-error>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput placeholder="Rate of Income Tax (%)" formControlName="rateOfIncomeTax"
+                      class="text-disabled" twoDigitTwoDecimalOnly>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="mobileNumber" numbersOnly placeholder="Mobile No."
+                      formControlName="mobileNumber" maxlength="10" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="emailId" placeholder="Email Id" formControlName="emailId" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="majorhead" (selectionChange)="onSelectionChange($event)"
+                      formControlName="bankVerificationFlag" placeholder="Bank Verification Flag" required>
+
+                      <mat-option *ngFor="let flagBank of bankFlagList " [value]="flagBank.value">
+                        {{flagBank.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3" *ngIf="vendorDetailsForm.controls.bankVerificationFlag.value==='1'">
+                  <mat-form-field>
+                    <input matInput placeholder="Bank Verification Date " formControlName="bankVerificationDate"
+                      [matDatepicker]="letterdatePicker" required [max]="maxDate">
+                    <mat-datepicker-toggle matSuffix [for]="letterdatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #letterdatePicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="billcategory" formControlName="chequeType" placeholder="Cheque Type" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="billCategoryCtrl"
+                          [placeholderLabel]="'Select Bill Category ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let ct of chequeTypeList | filterSelectInput : billCategoryCtrl.value : 'viewValue'"
+                        [value]="ct.value">
+                        {{ct.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- action button -->
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Add" (click)="search()">
+                      <i class="material-icons" aria-hidden="true">add</i> Add
+                    </button>
+                    <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+                <!-- action button end -->
+
+              </div>
+
+            </div>
+
+            <!-- note -->
+            <div class="col-sm-12">
+              <div class="legend">
+                NOTE: Either PAN or TAN Number is required.
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+
+    </div>
+    <!-- vendor details end -->
+
+    <br>
+
+    <!-- Listing Table -->
+    <div class="mat-elevation-z8 mt-2" style="overflow-x: auto;">
+
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null"
+              [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)"
+              [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource)">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="centerAlign">
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? directiveObj.selection.toggle(row) : null;"
+              [checked]="directiveObj.selection.isSelected(row)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="vender">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Vendor / Party Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.vender}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="partyAddress">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Party Address</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.partyAddress}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountNo">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Bank Account No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.accountNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ifscCode">
+          <th mat-header-cell *matHeaderCellDef scope="row"> IFSC Code </th>
+          <td mat-cell *matCellDef="let element"> {{element.ifscCode}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="bankBranchName">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Bank Branch Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.bankBranchName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="panNo">
+          <th mat-header-cell *matHeaderCellDef scope="row"> PAN No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.panNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tanNo">
+          <th mat-header-cell *matHeaderCellDef scope="row"> TAN No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.tanNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="rateOfIncomeTax">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Rate <br>of Income<br> Tax (%) </th>
+          <td mat-cell *matCellDef="let element"> {{element.rateOfIncomeTax}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="mobileNo">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Mobile No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.mobileNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="emailId">
+          <th mat-header-cell *matHeaderCellDef scope="row">E-mail ID</th>
+          <td mat-cell *matCellDef="let element" style="word-wrap: break-word;">
+            {{element.emailId}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankFlag">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Bank<br>Verification <br>Flag</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.bankFlag}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankVerificationDate">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Bank Verification<br>Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.bankVerificationDate}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="chequeType">
+          <th mat-header-cell *matHeaderCellDef scope="row">Cheque Type</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.chequeType}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+          <td mat-cell *matCellDef="let item; let i= index">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tbody>
+                <tr>
+                  <td width="30">
+                    <i class="material-icons plus edit-icon" title="Edit" (click)="editDetail(i)" aria-hidden="true">
+                      edit </i>
+                  </td>
+                  <td width="30">
+                    <i class="material-icons plus
+                    delete" aria-hidden="true" (click)="deleteDetail(i)" title="Delete">delete </i>
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </ng-container>
+
+        <!-- vendor/ party details header -->
+        <ng-container matColumnDef="vendorPartyDetails">
+          <th [attr.colspan]="15" mat-header-cell *matHeaderCellDef scope="row">Vendor / Party Details</th>
+        </ng-container>
+
+        <!-- Custom Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="['vendorPartyDetails']"></tr>
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Footer Section Of table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+        </tr>
+      </table>
+    </div>
+    <!-- paginator -->
+    <mat-paginator [length]="100" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <!-- Listing Table  end-->
+
+    <!-- action button -->
+    <div class="form-action-button">
+      <button mat-raised-button type="submit" class="green"><i class="material-icons" aria-hidden="true">
+          done
+        </i> Submit</button>
+      <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+    <!-- action button end -->
+
+  </div>
+</div>

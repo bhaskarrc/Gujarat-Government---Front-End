@@ -1,0 +1,363 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      District Audit Planning Listing
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> District Audit Planning Listing</li>
+      </ol>
+    </nav>
+
+
+    <!-- Search Criteria -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search Criteria
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="searchForm" (ngSubmit)="searchFormData()">
+            <div class="row">
+
+              <!-- institiute type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteType" placeholder="Institute Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                        [placeholderLabel]="'Find Institute Type...'"
+                        [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- institute name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteName" placeholder="Institute Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                        [placeholderLabel]="'Find Institute Name...'"
+                        [noEntriesFoundLabel]="'No matching Institute Name found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- audit year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="auditYear" placeholder="Audit Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                        [noEntriesFoundLabel]="'No matching Audit Year found'" numberHypenOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of auditYearList |
+                      filterSelectInput:auditYearCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- sanction mandays -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="sanctionedMandays" placeholder="Sanctioned Mandays"
+                    numbersOnlyKeypress>
+                </mat-form-field>
+              </div>
+
+              <!-- audit start date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="auditStartDate" [matDatepicker]="auditStartDate"
+                    placeholder="Audit Start Date">
+                  <mat-datepicker-toggle matSuffix [for]="auditStartDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #auditStartDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- audit end date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="auditEndDate" [matDatepicker]="auditEndDate"
+                    placeholder="Audit End Date">
+                  <mat-datepicker-toggle matSuffix [for]="auditEndDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #auditEndDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- month -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="month" placeholder="Month">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                        [noEntriesFoundLabel]="'no matching Month found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let month of monthList | filterSelectInput: monthCtrl.value "
+                      [value]="month.value" matTooltip="{{month.viewValue}}">
+                      {{month.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" title="Search" (click)="onSearch();">
+            <i class="material-icons" aria-hidden="true">search</i>
+            Search
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="clearForm();">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Listing-->
+    <div class="mat-elevation-z8 mt-3 overflow-y-auto">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="establishmentReportListingData">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="centerAlign">
+            <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null"
+              [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)"
+              [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource)">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="centerAlign">
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? directiveObj.selection.toggle(row) : null;"
+              [checked]="directiveObj.selection.isSelected(row)"
+              [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- serial no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- month -->
+        <ng-container matColumnDef="month">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Month</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.month}}
+          </td>
+        </ng-container>
+
+        <!-- audit year -->
+        <ng-container matColumnDef="auditYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditYear}}
+          </td>
+        </ng-container>
+
+        <!-- institute type -->
+        <ng-container matColumnDef="instituteType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Type</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteType}}
+          </td>
+        </ng-container>
+
+        <!-- institute name -->
+        <ng-container matColumnDef="instituteName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteName}}
+          </td>
+        </ng-container>
+
+        <!-- village panchayat unit -->
+        <ng-container matColumnDef="villagePanchayatUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">No. of Village Panchayat Unit</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.villagePanchayatUnit}}
+          </td>
+        </ng-container>
+
+        <!-- sanction mandasy -->
+        <ng-container matColumnDef="sanctionedMandays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sanctioned Man-days</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.sanctionedMandays}}
+          </td>
+        </ng-container>
+
+        <!-- audit start date -->
+        <ng-container matColumnDef="auditStartDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Start Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditStartDate  | date: 'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- audit end date -->
+        <ng-container matColumnDef="auditEndDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit End Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditEndDate  | date: 'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- working days -->
+        <ng-container matColumnDef="workingDays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Working Days</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.workingDays}}
+          </td>
+        </ng-container>
+
+        <!-- allocated no of auditor -->
+        <ng-container matColumnDef="allocatedNoAuditor">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> No. of Auditor</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.allocatedNoAuditor}}
+          </td>
+        </ng-container>
+
+        <!-- total mandays -->
+        <ng-container matColumnDef="totalMandays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Total Mandays</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{calculatetotalMandaysTable(i)}}
+          </td>
+        </ng-container>
+
+        <!-- status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Status</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.status}}
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tbody>
+                <tr>
+                  <td>
+                    <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                        title="View">remove_red_eye</i></a>
+                  </td>
+                  <td width="30">
+                    <a [routerLink]="['../district-audit-planning']"><i class="material-icons plus add"
+                        aria-hidden="true" title="Edit">
+                        edit
+                      </i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+
+    <!-- Action Buttons -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+        <i class="material-icons" aria-hidden="true">done</i> Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset()">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['']"
+        routerLinkActive="router-link-active">
+        <i class="material-icons" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+
+    </div>
+  </div>
+</div>

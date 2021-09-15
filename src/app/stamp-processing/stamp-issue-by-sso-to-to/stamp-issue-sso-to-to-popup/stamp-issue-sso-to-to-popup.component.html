@@ -1,0 +1,163 @@
+
+        <div class="tableSelectFix">
+          <!-- Table Section -->
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" aria-describedby="stampIssueBy">
+
+            <!-- Type Of Stamp -->
+            <ng-container matColumnDef="typeOfStamp">
+              <th mat-header-cell *matHeaderCellDef width="8%" scope="row">Type Of Stamp</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field>
+                    <mat-select [(value)]="element.typeOfStamp" name="typeOfStamp">
+                      <mat-option *ngFor="let item of stamp_List" [value]="item.viewValue" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Denomination -->
+            <ng-container matColumnDef="denominationvalue">
+              <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field>
+                    <mat-select [(value)]="element.denominationvalue" name="denominationvalue">
+                      <mat-option *ngFor="let item of denoVal_list" [value]="item.viewValue">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Denomination Code -->
+            <ng-container matColumnDef="denominationCode">
+              <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                <div *ngIf="element.show && element.denominationvalue">
+                  <span>5</span>
+                </div>
+                <div *ngIf="!element.show">
+                  {{element.denominationCode}}
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Label / Stamp In Each Sheet -->
+            <ng-container matColumnDef="stampSheet">
+              <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                <div *ngIf="element.show && element.denominationvalue">
+                  <span>6</span>
+                </div>
+                <div *ngIf="!element.show">
+                  {{element.stampSheet}}
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Stock provided against previous indent -->
+            <ng-container matColumnDef="availQty">
+              <th mat-header-cell *matHeaderCellDef scope="row">Stock provided against previous indent</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field floatLabel="never">
+                    <input matInput [value]="element.availQty" [(ngModel)]="element.availQty"
+                      [ngModelOptions]="{standalone: true}">
+                  </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Quantity due against previous indent -->
+            <ng-container matColumnDef="authQty">
+              <th mat-header-cell *matHeaderCellDef scope="row">Quantity due against previous indent</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field floatLabel="never">
+                    <input matInput [value]="element.authQty" [(ngModel)]="element.authQty"
+                      [ngModelOptions]="{standalone: true}">
+                  </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Reuested Quantity by Treasury Office -->
+            <ng-container matColumnDef="requestedQuantity">
+              <th mat-header-cell *matHeaderCellDef scope="row">Requested Quantity by Treasury Office</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field floatLabel="never">
+                    <input matInput [value]="element.requestedQuantity" [(ngModel)]="element.requestedQuantity"
+                      [ngModelOptions]="{standalone: true}">
+                  </mat-form-field>
+              </td>
+            </ng-container>
+            <!-- Quantity to be issued (Label / Stamp) to Treasury Office -->
+            <ng-container matColumnDef="qtyapproved">
+              <th mat-header-cell *matHeaderCellDef scope="row">Quantity to be issued (Label / Stamp) to
+                Treasury Office</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                <mat-form-field class="full-width leftAlign">
+                  <input matInput type="text" [(ngModel)]="element.qtyapproved" numbersOnly required>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- From Series -->
+            <ng-container matColumnDef="from">
+              <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+                <mat-form-field class="full-width leftAlign">
+                  <input matInput type="text" [value]="element.from" [(ngModel)]="element.from"
+                    [ngModelOptions]="{standalone: true}" [disabled]="element.isDisable" required>
+                </mat-form-field>
+              </td>
+            </ng-container>
+            <!-- To Series -->
+            <ng-container matColumnDef="to">
+              <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+              <td mat-cell *matCellDef="let element" class="centerAlign">
+                <mat-form-field class="full-width leftAlign">
+                  <input matInput type="text" [value]="element.to" [(ngModel)]="element.to"
+                    [ngModelOptions]="{standalone: true}" [disabled]="element.isDisable" required>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Quantity approved by scrutiny officer -->
+            <ng-container matColumnDef="qtyApprScr">
+              <th mat-header-cell *matHeaderCellDef scope="row">Quantity approved by scrutiny officer</th>
+              <td mat-cell *matCellDef="let element" class="rightAlign">
+                <div class="form-action-button">
+                  <mat-form-field class="full-width" [ngStyle]="{'width': '70%'}">
+                    <input matInput [(ngModel)]="element.qtyApprScr" numbersOnly>
+                  </mat-form-field>
+                  <i class="material-icons btn-history" title="View History" (click)="openHistory()">history</i>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Amount -->
+            <ng-container matColumnDef="amt">
+              <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+              <td mat-cell *matCellDef="let element" class="rightAlign">
+                {{element.qtyapproved * element.denominationvalue}} </td>
+            </ng-container>
+            <!-- Remarks -->
+            <ng-container matColumnDef="remarks">
+              <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign">
+                <mat-form-field class="full-width leftAlign">
+                  <input matInput type="text" required>
+                </mat-form-field>
+              </td>
+            </ng-container>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table> 
+        </div>
+          <!-- Action Buttons -->
+          <div class="form-action-button">
+                  <button type="button" mat-raised-button (click)="onCancel()" class="btnClose"><i class="material-icons" aria-hidden="true" title="Budget dashboard">close</i>Close</button>
+                 <button type="submit" mat-raised-button color="primary" (click)="onSubmit()" cdkFocusInitial><i class="material-icons" aria-hidden="true" title="save">add</i>Add</button>
+          </div> 
+          

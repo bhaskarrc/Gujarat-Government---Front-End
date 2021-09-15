@@ -1,0 +1,256 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Bank RBD Entry</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="#"> Receipt Accounting </a></li>
+        <li class="breadcrumb-item active" aria-current="page">Bank RBD Entry</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group mgb15">
+      <!-- Insert Bank RBD Details -->
+      <form [formGroup]="paymentRceiptForm" (ngSubmit)="paymentRceiptFormData()">
+        <div class="box box-primary">
+          <div class="box-header">Insert Bank RBD Details</div>
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [max]="today" [matDatepicker]="rbdDate" formControlName="rbdDate" placeholder="Date"
+                    readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="rbdDate"></mat-datepicker-toggle>
+                  <mat-datepicker #rbdDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="paymentRceiptForm.controls.rbdDate.touched && paymentRceiptForm.controls.rbdDate.errors">
+                    <mat-error *ngIf="paymentRceiptForm.controls.rbdDate.errors.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="Bank" placeholder="Bank Name" formControlName="bankName" required>
+                  <div class="error-wrapper"
+                    *ngIf="paymentRceiptForm.controls.bankName.touched && paymentRceiptForm.controls.bankName.errors">
+                    <mat-error *ngIf="paymentRceiptForm.controls.bankName.errors.required">
+                      {{errorMessages.BANK_NAME}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="Payment" placeholder="Payment" formControlName="payment" type="number"
+                    onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                    [(ngModel)]="model.payment" required>
+                  <div class="error-wrapper"
+                    *ngIf="paymentRceiptForm.controls.payment.touched && paymentRceiptForm.controls.payment.errors">
+                    <mat-error *ngIf="paymentRceiptForm.controls.payment.errors.required">
+                      {{errorMessages.PAYMENT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="Receipt" placeholder="Receipt" formControlName="receipt" type="number"
+                    onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                    [(ngModel)]="model.receipt" required>
+                  <div class="error-wrapper"
+                    *ngIf="paymentRceiptForm.controls.receipt.touched && paymentRceiptForm.controls.receipt.errors">
+                    <mat-error *ngIf="paymentRceiptForm.controls.receipt.errors.required">
+                      {{errorMessages.RECEIPT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="Receipt" placeholder="RBD" formControlName="rbd"
+                    onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" [value]="diff()">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="Description" placeholder="Description [ Taluka Date ]" formControlName="desc"
+                    required>
+
+                  <div class="error-wrapper"
+                    *ngIf="paymentRceiptForm.controls.desc.touched && paymentRceiptForm.controls.desc.errors">
+                    <mat-error *ngIf="paymentRceiptForm.controls.desc.errors.required">
+                      {{errorMessages.DESCRIPTION}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- Common Button -->
+            <div class="col-sm-12">
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary">
+                  <i class="material-icons" title="Save" aria-hidden="true">
+                    save
+                  </i>
+                  Save as Draft
+                </button>
+              </div>
+            </div>
+            <!-- End Common Button -->
+          </div>
+        </div>
+
+        <mat-accordion class="search-accordian">
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <div class="heading-section">
+                Search Listing
+              </div>
+            </mat-expansion-panel-header>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="Bank" placeholder="Bank Name">
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput [max]="today" [matDatepicker]="sDate" formControlName="sDate" placeholder="Date"
+                      readonly>
+                    <mat-datepicker-toggle matSuffix [for]="sDate"></mat-datepicker-toggle>
+                    <mat-datepicker #sDate></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="amount" placeholder="Amount" formControlName="amount" type="text">
+
+                  </mat-form-field>
+                </div>
+
+
+
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" (click)="search()">
+                  <i class="material-icons" aria-hidden="true">search</i>
+                  Search
+                </button>
+
+                <button type="reset" mat-raised-button color="accent" (click)="clearForm()">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+      <!-- End Insert Bank RBD Details -->
+    </div>
+    <!-- Table Insert Bank RBD Details -->
+    <div class="mat-elevation-z8 mt-2">
+      <table mat-table aria-describedby="Bank RBD" [dataSource]="bankDetailsDataSource" matSort
+        class="mat-elevation-z8 ">
+        <!-- Sr. No. -->
+        <ng-container matColumnDef="srno">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef class="srnowidth">
+            Sr. No.
+          </th>
+          <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+        <!-- Bank Name/Taluka  -->
+        <ng-container matColumnDef="bankName">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Bank Name/Taluka </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.bankName}}
+          </td>
+        </ng-container>
+        <!-- Receipt -->
+        <ng-container matColumnDef="receipt">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Receipt</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.receipt}}
+          </td>
+        </ng-container>
+        <!-- Payment  -->
+        <ng-container matColumnDef="payment">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Payment </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.payment}}
+          </td>
+        </ng-container>
+        <!-- RBD  -->
+        <ng-container matColumnDef="rdb">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>RBD </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.rdb}}
+          </td>
+        </ng-container>
+        <!-- Description  -->
+        <ng-container matColumnDef="desc">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef class="smallNo">Description </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.desc}}
+          </td>
+        </ng-container>
+
+        <!-- Action  -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef class="actionwidthtwo"> Action </th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <a [routerLink]="'/new-sub-head'">
+              <i class="material-icons plus edit-icon" aria-hidden="true" title="Edit"> edit </i>
+            </a>
+            <a class="delete-icon" *ngIf="element.status !== '100%'" (click)="delete(element)">
+              <i class="material-icons plus delete" aria-hidden="true" title="delete">delete_forever</i>
+            </a>
+          </td>
+        </ng-container>
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="bankDetailsColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: bankDetailsColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+    <!-- End Table Insert Bank RBD Details -->
+    <!-- Common Button -->
+    <div class="form-action-button">
+      <button type="button" mat-raised-button class="btnClose">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+    <!-- End Common Button -->
+
+  </div>
+</div>

@@ -1,0 +1,243 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Revert Issued Cheque Book</div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/CI/RICB/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Cheque Inventory</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Revert Issued Cheque Book</li>
+            </ol>
+        </nav>
+
+
+        <form [formGroup]="revertIssuedChequeBook">
+            <!-- Revert Issued Cheque Book Panel -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Revert Issued Cheque Book</div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <!-- From Date -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="fromDate" [matDatepicker]="fromDate" placeholder="From Date" readonly required>
+                                    <mat-datepicker-toggle matSuffix [for]="fromDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #fromDate></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="revertIssuedChequeBook.controls.fromDate.touched && revertIssuedChequeBook.controls.fromDate.errors">
+                                        <mat-error *ngIf="revertIssuedChequeBook.controls.fromDate.errors.required">
+                                            {{errorMessages.FROM_DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- To Date -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="toDate" [matDatepicker]="toDate" placeholder="To Date" readonly required>
+                                    <mat-datepicker-toggle matSuffix [for]="toDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #toDate></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="revertIssuedChequeBook.controls.toDate.touched && revertIssuedChequeBook.controls.toDate.errors">
+                                        <mat-error *ngIf="revertIssuedChequeBook.controls.toDate.errors.required">
+                                            {{errorMessages.TO_DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Cheque Book Type -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="chequeType" placeholder="Cheque Book Type" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="chequeTypeCtrl" [placeholderLabel]="'Find Cheque Type...'" [noEntriesFoundLabel]="'no matching Cheque Type'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let chequeTypeOption of chequeType_list | filterSelectInput: chequeTypeCtrl.value" value="chequeTypeOption.value">
+                                            {{chequeTypeOption.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Branch Type -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="branch" placeholder="Branch Type" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="branchCtrl" [placeholderLabel]="'Find Branch Type...'" [noEntriesFoundLabel]="'no matching Branch Type'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let branch of branch_list | filterSelectInput: branchCtrl.value" value="branch.value">
+                                            {{branch.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Account No. -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="accountNo" placeholder="Account No.">
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="onSearch();">
+                <i class="material-icons" title="search" aria-hidden="true">
+                  search
+                </i>Search</button>
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- revert issued cheque book table -->
+            <div class="panel-group" *ngIf="showTable">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="revertIssuedChequeBook">
+
+                            <!-- select -->
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                    <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                                        [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row" class="centerAlign">
+                                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <!-- Sr. No. -->
+                            <ng-container matColumnDef="position">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+                                <td mat-cell *matCellDef="let element; let i = index;" class="centerAlign">
+                                    {{ i + 1 }} </td>
+                            </ng-container>
+
+                            <!-- CTS Account No -->
+                            <ng-container matColumnDef="revisionNo">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">CTS Account No</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.revisionNo}}</td>
+                            </ng-container>
+
+                            <!-- From Series -->
+                            <ng-container matColumnDef="fromSeries">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">From Series</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.fromSeries}}</td>
+                            </ng-container>
+
+                            <!-- To Series -->
+                            <ng-container matColumnDef="toSeries">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">To Series</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.toSeries}}</td>
+                            </ng-container>
+
+                            <!-- Issue Date -->
+                            <ng-container matColumnDef="issueDate">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Issue Date</th>
+                                <td mat-cell *matCellDef="let element" style="width:210px;">
+                                    {{element.issueDate | date:'dd-MMM-yyyy'}}
+                                </td>
+                            </ng-container>
+
+                            <!-- Cheque Book Type -->
+                            <ng-container matColumnDef="chequeType">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque Book Type</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.chequeType}}</td>
+                            </ng-container>
+
+                            <!-- Account No -->
+                            <ng-container matColumnDef="accountNo">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Account No</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.accountNo}}
+                                </td>
+                            </ng-container>
+
+                            <!-- Account Name -->
+                            <ng-container matColumnDef="accountName">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Account Name</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.accountName}}</td>
+                            </ng-container>
+
+                            <!-- Action -->
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef style="width: 10%;"> Action </th>
+                                <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                                    <a class="delete-icon">
+                                        <i class="material-icons plus delete" title="delete">delete_forever</i></a>
+                                </td>
+                            </ng-container>
+
+                            <!-- Header column of Table -->
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                            <!-- Data fetch from .TS File  -->
+                            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;"></tr>
+                        </table>
+                        <!-- table ends -->
+                        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- action buttons -->
+        <div class="form-action-button">
+            <button type="button" mat-raised-button color="primary" (click)="revert()">
+        Revert
+      </button>
+            <button type="button" mat-raised-button color="primary">
+        <i class="material-icons" aria-hidden="true">
+          save as draft
+        </i>
+        Save
+      </button>
+            <button type="submit" mat-raised-button color="primary"><i class="material-icons" title="save">save</i>
+        Print
+      </button>
+            <button type="button" mat-raised-button color="warn" (click)="goToListing();">
+        <i class="material-icons" aria-hidden="true" title="Listing">
+          list
+        </i>
+        Listing
+      </button>
+            <button type="button" mat-raised-button color="secoundry" class="btnClose">
+        <i class="material-icons" aria-hidden="true">close
+        </i>
+        Cancel
+      </button>
+
+        </div>
+        <!-- action buttons ends-->
+
+    </div>
+</div>

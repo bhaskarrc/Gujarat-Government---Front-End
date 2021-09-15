@@ -1,0 +1,384 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Dispatch from Counter-Cancel And New Cheque</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Outward Counter</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dispatch from Counter-Cancel And New Cheque</li>
+      </ol>
+    </nav>
+    <form [formGroup]="dispatchFromCont" (ngSubmit)="dispatchFromContData()">
+      <div class="panel-group">
+
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">
+                Search
+              </div>
+            </mat-expansion-panel-header>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="Billrefernum" maxlength="6" placeholder="Reference Number"
+                      formControlName="Billrefernum">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="ddono" numbersOnly maxlength="4" placeholder="DDO No."
+                      formControlName="ddono">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="cardexno" maxlength="4" numbersOnly placeholder="Cardex No."
+                      formControlName="cardexno">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="ddoname" formControlName="ddoname" placeholder=" Office Name">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="ddonameCtrl"
+                          [placeholderLabel]="'Select  Office Name ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option
+                        *ngFor="let ddonames of ddoname_list | filterSelectInput : ddonameCtrl.value : 'viewValue'"
+                        [value]="ddonames.value" [matTooltip]="ddonames.viewValue">
+                        {{ddonames.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="tokenno" maxlength="6" numbersOnly placeholder="Token No."
+                      formControlName="tokenno">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="billtypes" formControlName="billtypes" placeholder="Bill Type" multiple>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="billtypeCtrl" [placeholderLabel]="'Select Bill Type ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let billt of billtype_list | filterSelectInput : billtypeCtrl.value : 'viewValue'"
+                        [value]="billt.value" [matTooltip]="billt.viewValue">
+                        {{billt.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                    <button type="reset" mat-raised-button color="accent">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+      </div>
+
+      <br>
+
+      <div class="panel-group">
+        <form>
+          <div class="box box-primary">
+            <div class="box-header">Dispatch List</div>
+            <div class="box-body">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" placeholder="Advice Date" [formControl]="serializedDate">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-12">
+                <mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="cancelAndNewCheque">
+
+                  <ng-container matColumnDef="checkBox">
+                    <th mat-header-cell *matHeaderCellDef [attr.rowspan]='2' class="vertical-align-center" scope="row">
+                      <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                      </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="vertical-align-center">
+
+                      <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                      </mat-checkbox>
+
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeForDispatch">
+                    <th mat-header-cell *matHeaderCellDef [attr.colspan]='6' scope="row">Cheques For Dispatch</th>
+                  </ng-container>
+
+                  <ng-container matColumnDef="token">
+                    <th mat-header-cell *matHeaderCellDef [attr.rowspan]='2' class="vertical-align-center" scope="row">
+                      <div class="vertical-align-center">
+                        Token
+                      </div>
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="vertical-align-center">
+                      <div class="vertical-align-center">
+                        {{element.token}}
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeInward">
+                    <th mat-header-cell *matHeaderCellDef [attr.colspan]='5' scope="row">Cheques Inwarded</th>
+                  </ng-container>
+
+                  <ng-container matColumnDef="adviceNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Advice Number </th>
+                    <td mat-cell *matCellDef="let element" class="action-btn-i">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <span> {{element.adviceNo1}}</span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.adviceNo2}} </span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.adviceNo3}}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="chequeOrEPayment">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Cheque/ePayment</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <span> {{element.chequeOrEPayment11}}</span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.chequeOrEPayment12}} </span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.chequeOrEPayment13}}</span>
+                        </div>
+                      </div>
+
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <span> {{element.amount11}}</span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.amount12}} </span>
+                        </div>
+                        <div class="col-sm-12">
+                          <span> {{element.amount13}}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="party">
+                    <th mat-header-cell *matHeaderCellDef width='9%' scope="row">Party</th>
+                    <td mat-cell *matCellDef="let element">
+
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.party11}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.party12}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.party13}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fromDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row">From Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.fromDate11}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.fromDate12}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.fromDate13}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="toDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row">To Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.toDate11}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.toDate12}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.toDate13}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="chequeOrEPayment2">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Cheque/ePayment</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.chequeOrEPayment21}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.chequeOrEPayment22}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.chequeOrEPayment23}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="amount2">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.amount21}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.amount22}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.amount23}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="party2">
+                    <th mat-header-cell *matHeaderCellDef width='18%' scope="row">Party</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.party21}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.party22}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.party23}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fromDate2">
+                    <th mat-header-cell *matHeaderCellDef scope="row">From Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.fromDate21}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.fromDate22}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.fromDate23}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="toDate2">
+                    <th mat-header-cell *matHeaderCellDef scope="row">To Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          {{element.toDate21}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.toDate22}}
+                        </div>
+                        <div class="col-sm-12">
+                          {{element.toDate23}}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                  <tr mat-row *matRowDef="let row;columns: displayedColumns2;">
+                  </tr>
+                </mat-table>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-action-button">
+
+        <button mat-raised-button type="submit" class="green">
+          <i class="material-icons" aria-hidden="true">
+            done
+          </i> Submit</button>
+
+        <button type="button" mat-raised-button class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

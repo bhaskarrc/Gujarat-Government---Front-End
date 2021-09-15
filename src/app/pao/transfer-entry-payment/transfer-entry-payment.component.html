@@ -1,0 +1,595 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Transfer Entry Payment</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Transfer Entry Payment</li>
+      </ol>
+    </nav>
+
+    <form [formGroup]="transferEntryPaymentForm">
+      <!-- Transfer Entry -->
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Transfer Entry</div>
+          <div class="box-body">
+
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field>
+                  <input matInput formControlName="challanDate" [matDatepicker]="challanDate" placeholder="Challan Date"
+                    readonly>
+                  <mat-datepicker-toggle matSuffix [for]="challanDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #challanDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Last Challan No. Used" numbersOnly
+                    formControlName="lastChallanNoUsed" required value="122123">
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.lastChallanNoUsed.touched || (transferEntryPaymentForm.controls.lastChallanNoUsed.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.lastChallanNoUsed.errors?.required">
+                      {{errorMessages.LAST_CHALLAN_NO_USED}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Transfer Entry -->
+      <!-- From -->
+      <div class="panel-group">
+        <div class="box box-primary">
+
+          <div class="box-header">From</div>
+
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Challan Amount" numbersOnly formControlName="challanAmount"
+                    required maxlength="16">
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.challanAmount.touched || (transferEntryPaymentForm.controls.challanAmount.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.challanAmount.errors?.required">
+                      {{errorMessages.CHALLAN_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromPayOrRec" formControlName="fromPayOrRec" placeholder="Pay / Rec" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromPayOrRecCtrl" [placeholderLabel]="'Select Pay/Rec ...'"
+                        [noEntriesFoundLabel]="'no matching Pay/Rec found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let pay of payOrRec_List | filterSelectInput : fromPayOrRecCtrl.value : 'viewValue'"
+                      [value]="pay.value" matTooltip="{{pay.viewValue}}">
+                      {{pay.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromPayOrRec.touched || (transferEntryPaymentForm.controls.fromPayOrRec.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromPayOrRec.errors?.required">
+                      {{errorMessages.PAY_OR_REC}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromClass" formControlName="fromClass" placeholder="Class" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromClassCtrl" [placeholderLabel]="'Select class ...'"
+                        [noEntriesFoundLabel]="'no matching class type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let class of class_List | filterSelectInput : fromClassCtrl.value : 'viewValue'"
+                      [value]="class.value" matTooltip="{{class.viewValue}}">
+                      {{class.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromClass.touched || (transferEntryPaymentForm.controls.fromClass.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromClass.errors?.required">
+                      {{errorMessages.CLASS}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromFund" formControlName="fromFund" placeholder="Fund" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromFundCtrl" [placeholderLabel]="'Select fund type ...'"
+                        [noEntriesFoundLabel]="'no matching fund type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of fundType_List | filterSelectInput : fromFundCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromFund.touched || (transferEntryPaymentForm.controls.fromFund.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromFund.errors?.required">
+                      {{errorMessages.FUND_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromBudType" formControlName="fromBudType" placeholder="Budget Type" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromBudTypeCtrl" [placeholderLabel]="'Select fund type ...'"
+                        [noEntriesFoundLabel]="'no matching fund type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of budType_List | filterSelectInput : fromBudTypeCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromBudType.touched || (transferEntryPaymentForm.controls.fromBudType.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromBudType.errors?.required">
+                      {{errorMessages.BUD_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromTypeOfExpenditure" formControlName="fromTypeOfExpenditure"
+                    placeholder="Type Of Expenditure" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromTypeOfExpenditureCtrl"
+                        [placeholderLabel]="'Select Type Of Expenditure ...'"
+                        [noEntriesFoundLabel]="'no matching type of Expenditure found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of typeOfExpenditure_List | filterSelectInput : fromTypeOfExpenditureCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromTypeOfExpenditure.touched || (transferEntryPaymentForm.controls.fromTypeOfExpenditure.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromTypeOfExpenditure.errors?.required">
+                      {{errorMessages.TYPE_OF_ESTIMATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Scheme No." maxlength="6" numbersOnly
+                    formControlName="fromSchemeNo" required>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromSchemeNo.touched || (transferEntryPaymentForm.controls.fromSchemeNo.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromSchemeNo.errors?.required">
+                      {{errorMessages.SCHEME_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Cardex No." numbersOnly formControlName="fromCardexNo"
+                    required>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromCardexNo.touched || (transferEntryPaymentForm.controls.fromCardexNo.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromCardexNo.errors?.required">
+                      {{errorMessages.CARDEX_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromDdo" formControlName="fromDdo" placeholder="Select DDO" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromDdoCtrl" [placeholderLabel]="'Select Ddo ...'"
+                        [noEntriesFoundLabel]="'no matching DDO found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of ddo_List | filterSelectInput : fromDdoCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromDdo.touched || (transferEntryPaymentForm.controls.fromDdo.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromDdo.errors?.required">
+                      {{errorMessages.DDO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Demand No." numbersOnly formControlName="fromDemandNo"
+                    required>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromDemandNo.touched || (transferEntryPaymentForm.controls.fromDemandNo.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromDemandNo.errors?.required">
+                      {{errorMessages.DEMAND_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromMajorHead" formControlName="fromMajorHead" placeholder="Major Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromMajorHeadCtrl"
+                        [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of majorHead_list | filterSelectInput : fromMajorHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromMajorHead.touched || (transferEntryPaymentForm.controls.fromMajorHead.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromMajorHead.errors?.required">
+                      {{errorMessages.MAJOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromSubMajorHead" formControlName="fromSubMajorHead" placeholder=" Sub Major Head"
+                    required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromSubMajorHeadCtrl"
+                        [placeholderLabel]="'Select Sub Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching Sub Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of subMajorHead_list | filterSelectInput : fromSubMajorHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromSubMajorHead.touched || (transferEntryPaymentForm.controls.fromSubMajorHead.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromSubMajorHead.errors?.required">
+                      {{errorMessages.SUB_MAJOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromMinorHead" formControlName="fromMinorHead" placeholder="Minor Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromMinorHeadCtrl"
+                        [placeholderLabel]="'Select Minor Head ...'"
+                        [noEntriesFoundLabel]="'no matching Minor Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of minorHead_list | filterSelectInput : fromMinorHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromMinorHead.touched || (transferEntryPaymentForm.controls.fromMinorHead.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromMinorHead.errors?.required">
+                      {{errorMessages.MINOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromSubHead" formControlName="fromSubHead" placeholder="Sub Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromSubHeadCtrl" [placeholderLabel]="'Select Sub Head ...'"
+                        [noEntriesFoundLabel]="'no matching Sub Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of subHead_list | filterSelectInput : fromSubHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromSubHead.touched || (transferEntryPaymentForm.controls.fromSubHead.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromSubHead.errors?.required">
+                      {{errorMessages.SUB_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromDetailHead" formControlName="fromDetailHead" placeholder="Detail Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromDetailHeadCtrl"
+                        [placeholderLabel]="'Select Detail Head ...'"
+                        [noEntriesFoundLabel]="'no matching Detail Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of detailHead_list | filterSelectInput : fromDetailHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromDetailHead.touched || (transferEntryPaymentForm.controls.fromDetailHead.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromDetailHead.errors?.required">
+                      {{errorMessages.DETAIL_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="fromObjectClass" formControlName="fromObjectClass" placeholder="Object Class"
+                    required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fromObjectClassCtrl"
+                        [placeholderLabel]="'Select Object class ...'"
+                        [noEntriesFoundLabel]="'no matching Object Class found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of objectClass_list | filterSelectInput : fromObjectClassCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="transferEntryPaymentForm.controls.fromObjectClass.touched || (transferEntryPaymentForm.controls.fromObjectClass.errors && isSubmitted)">
+                    <mat-error *ngIf="transferEntryPaymentForm.controls.fromObjectClass.errors?.required">
+                      {{errorMessages.CLASS_OBJECT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Particulars" formControlName="particulars">
+
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- End From -->
+      <!-- Expenditure Details -->
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Expenditure Details</div>
+          <div class="box-body">
+
+            <div class="mat-elevation-z8 table-responsive mt-2">
+
+              <table mat-table [dataSource]="fromExpenditureDetailsDataSource" class="mat-elevation-z8"
+                aria-describedby="fromExpenditureDetails">
+                <ng-container matColumnDef="srNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                    {{i + 1}}
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef>Total
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="edpCode">
+                  <th mat-header-cell *matHeaderCellDef scope="row">EDP Code</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <mat-form-field floatLabel="never" class="centerAlign">
+                      <input matInput [(ngModel)]="element.edpCode" [ngModelOptions]="{standalone: true}" numbersOnly
+                        type="text" maxlength="4">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Amount (Rs)</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <mat-form-field floatLabel="never" class="centerAlign">
+                      <input matInput [(ngModel)]="element.amount" [ngModelOptions]="{standalone: true}" type="text"
+                        numbersOnly class="rightAlign" maxlength="16">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" scope="row">
+                    Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tbody>
+                        <tr>
+                          <td width="30" (click)="fromAddExpenditurRow();">
+                            <i class="material-icons plus add" aria-hidden="true"
+                              *ngIf="(i==fromExpenditureDetailsDataSource.data.length-1)">
+                              add
+                            </i>
+                          </td>
+                          <td width="30">
+                            <i class="material-icons plus delete" aria-hidden="true"
+                              (click)="fromDeletExpenditureRow(i)" *ngIf="(i>=1)">
+                              delete
+                            </i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="fromExpenditureDetailsDisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: fromExpenditureDetailsDisplayedColumns;">
+                </tr>
+                <!-- Footer Section Of table -->
+                <tr mat-footer-row *matFooterRowDef="fromExpenditureDetailsDisplayedColumns"></tr>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- End Expenditure Details -->
+      <!-- Recovery Details -->
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Recovery Details</div>
+          <div class="box-body">
+
+            <div class="mat-elevation-z8 table-responsive mt-2">
+
+
+              <table mat-table [dataSource]="fromRecoveryDetailsDataSource" class="mat-elevation-z8"
+                aria-describedby="fromRecoveryDetails">
+                <ng-container matColumnDef="srNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                    {{i + 1}}
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef>Total
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="edpCode">
+                  <th mat-header-cell *matHeaderCellDef scope="row">EDP Code</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <mat-form-field floatLabel="never" class="centerAlign">
+                      <input matInput [(ngModel)]="element.edpCode" numbersOnly [ngModelOptions]="{standalone: true}"
+                        type="text" maxlength="4">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Amount (Rs)</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <mat-form-field floatLabel="never" class="centerAlign">
+                      <input matInput [(ngModel)]="element.amount" [ngModelOptions]="{standalone: true}" numbersOnly
+                        type="text" class="rightAlign" maxlength="16">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" scope="row">
+                    Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tbody>
+                        <tr>
+                          <td width="30" (click)="fromAddRecoveryRow();">
+                            <i class="material-icons plus add" aria-hidden="true"
+                              *ngIf="(i==fromRecoveryDetailsDataSource.data.length-1)">
+                              add
+                            </i>
+                          </td>
+                          <td width="30">
+                            <i class="material-icons plus delete" aria-hidden="true" (click)="fromDeletRecoveryRow(i)"
+                              *ngIf="(i>=1)">
+                              delete
+                            </i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="fromRecoveryDetailsDisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: fromRecoveryDetailsDisplayedColumns;">
+                </tr>
+                <!-- Footer Section Of table -->
+                <tr mat-footer-row *matFooterRowDef="fromRecoveryDetailsDisplayedColumns"></tr>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Recovery Details -->
+      <!-- Common Button -->
+      <div class="form-action-button">
+
+        <button type="submit" mat-raised-button color="primary" (click)=onSave()>
+          <i class="material-icons" aria-hidden="true" title="Save">
+            save
+          </i>
+          Save
+        </button>
+
+        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+          <i class="material-icons" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+      <!-- End Common Button -->
+
+    </form>
+  </div>
+</div>

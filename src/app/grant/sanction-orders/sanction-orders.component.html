@@ -1,0 +1,1304 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div> Sanction Orders
+      </div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/Grant/SO/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <div class="panel-group">
+      <div class="form-datatable-list">
+        <form class="col-sm-12" [formGroup]="createGrantOrder" (ngSubmit)="formSubmit()" required>
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="finYear" placeholder="Financial Year" [disabled]='toggleButton'>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                      [noEntriesFoundLabel]="'no matching Financial Year found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let FY of finYear| filterSelectInput: finYearCtrl.value " [value]="FY.value">
+                    {{FY.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="departmentName" placeholder="Department Name">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="departmentNameCtrl"
+                      [placeholderLabel]="'Find Department Name ...'"
+                      [noEntriesFoundLabel]="'no matching Department Name'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let departmentName of departmentName_list| filterSelectInput: departmentNameCtrl.value"
+                    [value]="departmentName.value">
+                    {{departmentName.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+          </div>
+          <!-- <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" title="Add" (click)="view()">
+              Create</button>
+          </div> -->
+
+        </form>
+      </div>
+      <mat-tab-group mat-stretch-tabs *ngIf="addincrease">
+        <mat-tab label="Checklist of Surrender/Re-appropriation">
+          <mat-accordion class="colapsedata">
+            <mat-expansion-panel [expanded]="true" class="nopadding">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Surrender Orders
+                </div>
+              </mat-expansion-panel-header>
+              <div class="rsClass"> (₹ in Lakhs) </div>
+              <table mat-table [dataSource]="sanctionOrderDataSource" matSort>
+                <ng-container matColumnDef="SrNo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                  <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                  <td mat-footer-cell *matFooterCellDef>Total </td>
+                </ng-container>
+                <ng-container matColumnDef="noOfSurrenderOrder">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Surrender order No.</th>
+                  <td mat-cell *matCellDef="let element"> {{element.noOfSurrenderOrder}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <ng-container matColumnDef="dateOfSurendar">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Surrender </th>
+                  <td mat-cell *matCellDef="let element"> {{element.dateOfSurendar}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <ng-container matColumnDef="grantRopiration">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Grant /Appropriation</th>
+                  <td mat-cell *matCellDef="let element"> {{element.grantRopiration}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                </ng-container>
+                <ng-container matColumnDef="majorHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span matTooltip="{{element.toolTipDataMH}}">
+                      {{element.majorHead}}
+                    </span>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="votedOrCharged">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted or Charged</th>
+                  <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="revenue">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                  <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{getAmount()}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="grantOrderDisplayColumn"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns:grantOrderDisplayColumn"></tr>
+                <tr mat-footer-row *matFooterRowDef="grantOrderDisplayColumn"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <mat-accordion class="colapsedata mt-2">
+            <mat-expansion-panel [expanded]="true" class="nopadding mt-2">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Re-Appropriation Orders
+                </div>
+              </mat-expansion-panel-header>
+              <div class="rsClass"> (₹ in Lakhs) </div>
+              <table mat-table [dataSource]="reApprpriationOrderDataSource" matSort>
+                <ng-container matColumnDef="SrNo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                  <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                  <td mat-footer-cell *matFooterCellDef>Total </td>
+                </ng-container>
+                <ng-container matColumnDef="noOfSurrenderOrder">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Re-Appropration Order No</th>
+                  <td mat-cell *matCellDef="let element"> {{element.noOfSurrenderOrder}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <ng-container matColumnDef="dateOfSurendar">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Reappropriation</th>
+                  <td mat-cell *matCellDef="let element"> {{element.dateOfSurendar}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <ng-container matColumnDef="grantRopiration">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Grant/Appropriation</th>
+                  <td mat-cell *matCellDef="let element"> {{element.grantRopiration}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                </ng-container>
+                <ng-container matColumnDef="majorHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span matTooltip="{{element.toolTipDataMH}}">
+                      {{element.majorHead}}
+                    </span>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="votedOrCharged">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted or Charged</th>
+                  <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="revenue">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                  <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{getAmountApproation()}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="reApproationDisplayColumn"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns:grantOrderDisplayColumn"></tr>
+                <tr mat-footer-row *matFooterRowDef="reApproationDisplayColumn"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+        <mat-tab label="Performa of Checklist - Demand Wise">
+          <div class="form-datatable-list">
+            <form class="col-sm-12" [formGroup]="createSanction">
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field>
+                    <input matInput name="demandNo" placeholder="Demand Number" formControlName="demandNo">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-action-button mb-2">
+                <button type="submit" mat-raised-button color="primary" title="Search">
+                  <i class="material-icons" title="Search" aria-hidden="true">search</i>Search</button>
+                <button type="reset" mat-raised-button color="accent" title="Reset">
+                  <i class="material-icons" aria-hidden="true" title=" Reset">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
+          <mat-accordion class="colapsedata">
+            <mat-expansion-panel [expanded]="true" class="nopadding">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Demand Number : 047:Industries and Mines Department
+                </div>
+              </mat-expansion-panel-header>
+              <div class="">
+                <div class="box box-primary search-grid">
+                  <div class="box-header">Surrender Order</div>
+                  <div class="box-body">
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="surrenderOrderDataSourceDemandWise" matSort>
+                      <ng-container matColumnDef="SrNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                        <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Order No</th>
+                        <td mat-cell *matCellDef="let element"> {{element.orderNo}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="dateOfOrder">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Order</th>
+                        <td mat-cell *matCellDef="let element"> {{element.dateOfOrder}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="majorHead">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                        <td mat-cell *matCellDef="let element">
+                          <span matTooltip="{{element.toolTipDataMH}}">
+                            {{element.majorHead}}
+                          </span>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedOrCharged">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted / Charged</th>
+                        <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                        <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">68,00,000</td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="surrenderOrderDisplayColoumns"></tr>
+                      <tr mat-row *matRowDef="let row; let i = index;columns:surrenderOrderDisplayColoumns"></tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderOrderDisplayColoumns"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+                    <br>
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="totalAmountSurrenderSource" class="responsive-table">
+                      <ng-container matColumnDef="totalAmountSurrender" scope="row">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Total Amount Surrendered from the Grant
+                        </th>
+                      </ng-container>
+                      <ng-container matColumnDef="voted">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.voted}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">6,24,829</td>
+                      </ng-container>
+                      <ng-container matColumnDef="charged">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.charged}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">66,64,146</td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.revenue}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"> 1,07,49,187</td>
+                      </ng-container>
+                      <ng-container matColumnDef="captial">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.captial}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">18,62,041</td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedCharged">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Revenue</th>
+                      </ng-container>
+                      <ng-container matColumnDef="revenueCaptial">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Capital</th>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['totalAmountSurrender']"></tr>
+                      <tr mat-header-row *matHeaderRowDef="['votedCharged', 'revenueCaptial']">
+                      </tr>
+                      <tr mat-header-row *matHeaderRowDef="surrenderDisplayColumns">
+                      </tr>
+                      <tr mat-row *matRowDef="let row; columns: surrenderDisplayColumns;let i= index;">
+                      </tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderDisplayColumns"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <div class="box box-primary search-grid">
+                  <div class="box-header">Re-Appropriation Order</div>
+                  <div class="box-body">
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="reAppropriationDataSourceDemandWise" matSort>
+                      <ng-container matColumnDef="SrNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                        <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Order No</th>
+                        <td mat-cell *matCellDef="let element"> {{element.orderNo}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="dateOfOrder">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Order</th>
+                        <td mat-cell *matCellDef="let element"> {{element.dateOfOrder}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="majorHead">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                        <td mat-cell *matCellDef="let element">
+                          <span matTooltip="{{element.toolTipDataMH}}">
+                            {{element.majorHead}}
+                          </span>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedOrCharged">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted / Charged</th>
+                        <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}}</td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                        <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">68,00,000</td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="reAppropriationDisplayColoumns"></tr>
+                      <tr mat-row *matRowDef="let row; let i = index;columns:reAppropriationDisplayColoumns"></tr>
+                      <tr mat-footer-row *matFooterRowDef="reAppropriationDisplayColoumns"></tr>
+
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+                    <br>
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="totalAmountSurrenderSource" class="responsive-table">
+                      <ng-container matColumnDef="totalAmountSurrender" scope="row">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Total Amount Surrendered from the Grant
+                        </th>
+                      </ng-container>
+                      <ng-container matColumnDef="voted">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.voted}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">6,24,829</td>
+                      </ng-container>
+                      <ng-container matColumnDef="charged">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.charged}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">66,64,146</td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.revenue}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">1,07,49,187</td>
+                      </ng-container>
+                      <ng-container matColumnDef="captial">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.captial}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">18,62,041</td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedCharged">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Revenue</th>
+                      </ng-container>
+                      <ng-container matColumnDef="revenueCaptial">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Capital</th>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['totalAmountSurrender']"></tr>
+                      <tr mat-header-row *matHeaderRowDef="['votedCharged', 'revenueCaptial']">
+                      </tr>
+                      <tr mat-header-row *matHeaderRowDef="surrenderDisplayColumns">
+                      </tr>
+                      <tr mat-row *matRowDef="let row; columns: surrenderDisplayColumns;let i= index;">
+                      </tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderDisplayColumns"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <mat-accordion class="colapsedata">
+            <mat-expansion-panel [expanded]="true" class="nopadding">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Demand Number : 001:Agriculture and Co-operation Department
+                </div>
+              </mat-expansion-panel-header>
+              <div class="">
+                <div class="box box-primary search-grid">
+                  <div class="box-header">Surrender Order</div>
+                  <div class="box-body">
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="surrenderOrderDataSourceDemandWise" matSort>
+                      <ng-container matColumnDef="SrNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                        <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Order No</th>
+                        <td mat-cell *matCellDef="let element"> {{element.orderNo}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="dateOfOrder">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Order</th>
+                        <td mat-cell *matCellDef="let element"> {{element.dateOfOrder}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="majorHead">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                        <td mat-cell *matCellDef="let element">
+                          <span matTooltip="{{element.toolTipDataMH}}">
+                            {{element.majorHead}}
+                          </span>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedOrCharged">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted / Charged</th>
+                        <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                        <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">68,00,000</td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="surrenderOrderDisplayColoumns"></tr>
+                      <tr mat-row *matRowDef="let row; let i = index;columns:surrenderOrderDisplayColoumns"></tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderOrderDisplayColoumns"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+                    <br>
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="totalAmountSurrenderSource" class="responsive-table">
+                      <ng-container matColumnDef="totalAmountSurrender" scope="row">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Total Amount Surrendered from the Grant
+                        </th>
+                      </ng-container>
+                      <ng-container matColumnDef="voted">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.voted}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">6,24,829</td>
+                      </ng-container>
+                      <ng-container matColumnDef="charged">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.charged}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">66,64,146</td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.revenue}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">1,07,49,187</td>
+                      </ng-container>
+                      <ng-container matColumnDef="captial">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.captial}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">18,62,041</td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedCharged">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Revenue</th>
+                      </ng-container>
+                      <ng-container matColumnDef="revenueCaptial">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Capital</th>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['totalAmountSurrender']"></tr>
+                      <tr mat-header-row *matHeaderRowDef="['votedCharged', 'revenueCaptial']">
+                      </tr>
+                      <tr mat-header-row *matHeaderRowDef="surrenderDisplayColumns">
+                      </tr>
+                      <tr mat-row *matRowDef="let row; columns: surrenderDisplayColumns;let i= index;">
+                      </tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderDisplayColumns"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <div class="box box-primary search-grid">
+                  <div class="box-header">Re-Appropriation Order</div>
+                  <div class="box-body">
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="reAppropriationDataSourceDemandWise" matSort>
+                      <ng-container matColumnDef="SrNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                        <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                        <td mat-footer-cell *matFooterCellDef>Total</td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Order No</th>
+                        <td mat-cell *matCellDef="let element"> {{element.orderNo}} </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                      </ng-container>
+                      <ng-container matColumnDef="dateOfOrder">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Order</th>
+                        <td mat-cell *matCellDef="let element"> {{element.dateOfOrder}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="majorHead">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Major Head</th>
+                        <td mat-cell *matCellDef="let element">
+                          <span matTooltip="{{element.toolTipDataMH}}">
+                            {{element.majorHead}}
+                          </span>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedOrCharged">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Voted / Charged</th>
+                        <td mat-cell *matCellDef="let element"> {{element.votedOrCharged}}</td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Revenue or Capital </th>
+                        <td mat-cell *matCellDef="let element"> {{element.revenue}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                      </ng-container>
+                      <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount</th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amount}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">68,00,000</td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="reAppropriationDisplayColoumns"></tr>
+                      <tr mat-row *matRowDef="let row; let i = index;columns:reAppropriationDisplayColoumns"></tr>
+                      <tr mat-footer-row *matFooterRowDef="reAppropriationDisplayColoumns"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+                    <br>
+                    <div class="rsClass"> (₹ in Lakhs) </div>
+                    <table mat-table [dataSource]="totalAmountSurrenderSource" class="responsive-table">
+                      <ng-container matColumnDef="totalAmountSurrender" scope="row">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Total Amount Surrendered from the Grant
+                        </th>
+                      </ng-container>
+                      <ng-container matColumnDef="voted">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.voted}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">6,24,829</td>
+                      </ng-container>
+                      <ng-container matColumnDef="charged">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.charged}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">66,64,146</td>
+                      </ng-container>
+                      <ng-container matColumnDef="revenue">
+                        <th mat-header-cell *matHeaderCellDef>Voted</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.revenue}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">1,07,49,187</td>
+                      </ng-container>
+                      <ng-container matColumnDef="captial">
+                        <th mat-header-cell *matHeaderCellDef>Charged</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                          {{element.captial}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef class="rightAlign">18,62,041</td>
+                      </ng-container>
+                      <ng-container matColumnDef="votedCharged">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Revenue</th>
+                      </ng-container>
+                      <ng-container matColumnDef="revenueCaptial">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Capital</th>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['totalAmountSurrender']"></tr>
+                      <tr mat-header-row *matHeaderRowDef="['votedCharged', 'revenueCaptial']">
+                      </tr>
+                      <tr mat-header-row *matHeaderRowDef="surrenderDisplayColumns">
+                      </tr>
+                      <tr mat-row *matRowDef="let row; columns: surrenderDisplayColumns;let i= index;">
+
+                      </tr>
+                      <tr mat-footer-row *matFooterRowDef="surrenderDisplayColumns"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+        <mat-tab label="Forwarding Letter for Surrender">
+          <div class="page">
+            <div class="letter">
+              <p class="font-weight-bold text-center letterLable"> Forwarding letter for the Surrender Order – scheme
+                wise. </p>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td colspan="3" valign=top><strong> Order No: </strong>GR/001/05GR</td>
+                    <td colspan="3" rowspan="2" class="text-left float-right">
+                      Government of Gujarat <br>Finance Department <br>Sachivalaya, Gandhinagar <br> Date:
+                      <strong>15-Jan-2020</strong>
+                    </td>
+                  </tr><br><br>
+                  <tr rowspan="2">
+
+                  </tr>
+                  <tr class="mb-4">
+                    <td colspan="6"> <strong> <strong> Subject: </strong></strong> Surrender of Saving for the Year
+                      <strong> 2019 - 2020 </strong> of Surrender under Grant No.<strong> 040.</strong>,
+                      ‘Revenue/Capital’ Voted/Charged </td>
+                  </tr><br><br>
+                  <tr>
+                    <td colspan="6"> <strong> MEMORANDUM: </strong></td>
+                  </tr>
+                  <tr>
+                    <td colspan="6" class="letterDescription">
+                      The undersigned present complements to the Account General, Gujarat, Rajkot and is directed to
+                      convey sanction of the Government to surrender of Rs. <strong>500000 /- </strong> <strong> five
+                        lakhs </strong> under Grant No. <strong>0040</strong>, Major Head <strong> 0020 : Corporation
+                        Tax </strong>” as per details shown in accompanying statement. The amount of surrender should be
+                      taken to the Minor Head <strong>Revenue Voted</strong> under the Major Head <strong>0020 :
+                        Corporation Tax</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" class="text-left float-right mt-3 font-weight-bold">
+                      Shri Nitinbhai Patel <br> Deputy Chief Minister <br> Finance, Roads and Building, <br> Health and
+                      Family Welfare,<br> Medical Education, Narmada
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Statement of Surrender">
+          <div class="form-datatable-list">
+            <form class="col-sm-12" [formGroup]="createSanction">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="departmentName" placeholder="Department Name"
+                      [disabled]='toggleButton'>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="departmentNameCtrl"
+                          [placeholderLabel]="'Find Department Name ...'"
+                          [noEntriesFoundLabel]="'no matching Department Name'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let departmentName of departmentName_list| filterSelectInput: departmentNameCtrl.value"
+                        [value]="departmentName.value">
+                        {{departmentName.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select formControlName="grantNumber" placeholder="Grant No">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="grantNoCtrl" [placeholderLabel]="'Find Grant No ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let grant of Grant_list| filterSelectInput: grantNoCtrl.value"
+                        [value]="grant.value">
+                        {{grant.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="majorHead" placeholder="Major Head">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let majorHead of majorHead_list| filterSelectInput: majorHeadCtrl.value"
+                        [value]="majorHead.value">
+                        {{majorHead.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="amountOfSurrender" placeholder="Amount of Surrender"
+                      formControlName="amountOfSurrender">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="revenueCapital" placeholder="Revenue Capital">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="revenueCapitalCtrl"
+                          [placeholderLabel]="'Find Revenue Capital ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let revenueCapital of revenueCapital_list| filterSelectInput: revenueCapitalCtrl.value"
+                        [value]="revenueCapital.value">
+                        {{revenueCapital.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="votedCharged" placeholder="Voted/Charged">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="votedChargedCtrl"
+                          [placeholderLabel]="'Find Voted/Charged ...'"
+                          [noEntriesFoundLabel]="'no matching Voted/Charged'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let votedCharged of votedCharged_list| filterSelectInput: votedChargedCtrl.value"
+                        [value]="votedCharged.value">
+                        {{votedCharged.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-action-button mb-2">
+                <button type="submit" mat-raised-button color="primary" title="Search">
+                  <i class="material-icons" title="Search" aria-hidden="true">search</i>Search</button>
+                <button type="reset" mat-raised-button color="accent" title="Reset">
+                  <i class="material-icons" aria-hidden="true" title="Reset">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </form>
+            <div class="row header-detail col-sm-12">
+              <div class="col-sm-4 colPadding" *ngFor="let item of headerJso">
+                <div class="labelCSS">{{item.label}}<span class="floatRight"></span></div>
+                <div class="paddingUnset">{{item.value}}</div>
+              </div>
+            </div>
+            <br>
+          </div>
+          <mat-accordion class="colapsedata">
+            <mat-expansion-panel [expanded]="true" class="nopadding">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Surrender Orders
+                </div>
+              </mat-expansion-panel-header>
+              <div class="rsClass"> (₹ in Lakhs) </div>
+              <table mat-table [dataSource]="sanctionOrderDataSourceSaving" matSort>
+                <ng-container matColumnDef="SrNo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                  <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                  <td mat-footer-cell *matFooterCellDef>Total </td>
+                </ng-container>
+                <ng-container matColumnDef="headOfAccount">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 22%;">Head of Account</th>
+                  <td mat-cell *matCellDef="let element"> {{element.headOfAccount}} <br> {{element.itemName}}</td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <ng-container matColumnDef="nomenclature">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%;">Nomenclature</th>
+                  <td mat-cell *matCellDef="let element"> {{element.nomenclature}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+                </ng-container>
+                <ng-container matColumnDef="sanctionedGrant">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sanctioned Grant</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.sanctionedGrant}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{getsanctionedGrant()}}</td>
+                </ng-container>
+                <ng-container matColumnDef="amountOfSurrender">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount of Surrender</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountOfSurrender}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{getamountOfSurrender()}}</td>
+                </ng-container>
+                <ng-container matColumnDef="finalGrantAfterSurrenderOfSavings">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Final Grant After Surrender of Savings</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.finalGrantAfterSurrenderOfSavings}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{getfinalGrantAfterSurrenderOfSavings()}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="reasonOfSavings">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Reason of Savings</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.reasonOfSavings}} </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="grantOrderDisplaySavingColumn"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns:grantOrderDisplaySavingColumn"></tr>
+                <tr mat-footer-row *matFooterRowDef="grantOrderDisplaySavingColumn"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+        <mat-tab label="Forwarding Letter for Re-appropriation">
+          <div class="page">
+            <div class="letter">
+              <p class="font-weight-bold text-center letterLable"> Forwarding Letter for Re-appropriation </p>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" width="30%" class="text-left float-right"> Re-appropriation of Grant under the <br>
+                      Appropriation No. 20 for the year<br> <strong>2019</strong> <br> ‘Revenue/Capital’ Voted/Charged
+                      <br>Government of Gujarat,</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" width="30%" class="text-left float-right mt-2">
+                      Finance Department,<br> Resolution No.<strong> 200 </strong><br> Sachivalaya, Gandhinagar. <br>
+                      Dated : <strong>15-Jan-2020 </strong>
+                    </td>
+                  </tr>
+                  <tr class="resolution">
+                    <td colspan="6" class="text-center"><strong> RESOLUTION </strong> </td>
+                  </tr>
+                  <tr>
+                    <td colspan="6" class="letterDescription">
+                      Government is pleased to sanction re-appropriation of grant of Rs. <strong>500000/-
+                      </strong><strong>Five Lakhs</strong> as indicated in the accompanying statement in respect of
+                      Appropriation No. 20 for the
+                      Budget Head <strong>2049</strong> for the <strong> 2020 </strong> These issues in pursuance of the
+                      power delegated vide Government Resolution, Finance Department No. File No. <strong>1120.</strong>
+                      By order
+                      and in the name of the Governor of Gujarat.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" rowspan="2" class="text-left float-right mt-5 font-weight-bold">
+                      Shri Nitinbhai Patel <br> Deputy Chief Minister <br> Finance, Roads and Building, <br> Health and
+                      Family Welfare,<br> Medical Education, Narmada
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Re-appropriation Statement">
+          <div class="form-datatable-list">
+            <form class="col-sm-12" [formGroup]="createSanction">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select formControlName="grantNumber" placeholder="Grant No">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="grantNoCtrl" [placeholderLabel]="'Find Grant No ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let grant of Grant_list| filterSelectInput: grantNoCtrl.value"
+                        [value]="grant.value">
+                        {{grant.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="majorHead" placeholder="Major Head">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let majorHead of majorHead_list| filterSelectInput: majorHeadCtrl.value"
+                        [value]="majorHead.value">
+                        {{majorHead.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="revenueCapital" placeholder="Revenue Capital">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="revenueCapitalCtrl"
+                          [placeholderLabel]="'Find Revenue Capital ...'"
+                          [noEntriesFoundLabel]="'no matching Major Head'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let revenueCapital of revenueCapital_list| filterSelectInput: revenueCapitalCtrl.value"
+                        [value]="revenueCapital.value">
+                        {{revenueCapital.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="votedCharged" placeholder="Voted/Charged">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="votedChargedCtrl"
+                          [placeholderLabel]="'Find Voted/Charged ...'"
+                          [noEntriesFoundLabel]="'no matching Voted/Charged'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let votedCharged of votedCharged_list| filterSelectInput: votedChargedCtrl.value"
+                        [value]="votedCharged.value">
+                        {{votedCharged.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="reApproationAmount" placeholder="Re-appropriation Amount"
+                      formControlName="reApproationAmount">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-action-button mb-2">
+                <button type="submit" mat-raised-button color="primary" title="Search">
+                  <i class="material-icons" title="Search">search</i>Search</button>
+                <button type="reset" mat-raised-button color="accent" title=" Reset">
+                  <i class="material-icons" aria-hidden="true" title="Reset">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+            </form>
+            <div class="row header-detail col-sm-12">
+              <div class="col-sm-4 colPadding" *ngFor="let item of headerJsoAppro">
+                <div class="labelCSS">{{item.label}}<span class="floatRight"></span></div>
+                <div class="paddingUnset">{{item.value}}</div>
+              </div>
+            </div>
+            <br>
+          </div>
+          <mat-accordion class="colapsedata">
+            <mat-expansion-panel [expanded]="true" class="nopadding">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Heads Under which it is Proposed to Increase the Grant
+                </div>
+              </mat-expansion-panel-header>
+              <div class="rsClass"> (₹ in Lakhs) </div>
+              <table mat-table [dataSource]="headsUnderProposedIncreaseDataSource" matSort>
+                <ng-container matColumnDef="SrNo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                  <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                  <td mat-footer-cell *matFooterCellDef [attr.colspan]="4" [ngStyle]="{'display': 'none'}">Total Amount
+                    Surrendered from the Grant </td>
+                </ng-container>
+                <ng-container matColumnDef="headOfAccount">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 22%;"> Head of Account</th>
+                  <td mat-cell *matCellDef="let element"> {{element.headOfAccount}} <br> {{element.itemName}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="nomenClature">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Nomen Clature</th>
+                  <td mat-cell *matCellDef="let element"> {{element.nomenClature}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="actualExpKnownPriation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Exp. Known Upto the Date of Reappro
+                    Priation</th>
+                  <td mat-cell *matCellDef="let element"> {{element.actualExpKnownPriation}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="reApproation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sanctioned Grant as on the date of
+                    Re-appropriation(B.E + S.D)</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.reApproation}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="amountOfReappropriation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount of Reappropriation (+) to Increase/(-)to
+                    reduce</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountOfReappropriation}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="amountWillStantReapproation">
+                  <th mat-header-cell *matHeaderCellDef> Amount of as it will Stand after Reappropriation</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountWillStantReapproation}}
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="explationReductionGrant">
+                  <th mat-header-cell *matHeaderCellDef> Detailed Explanation for Increase or Reduction in the Grant
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.explationReductionGrant}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="SrNo1">
+                  <td mat-footer-cell *matFooterCellDef [attr.colspan]="4" class="centerAlign">Total</td>
+                </ng-container>
+                <ng-container matColumnDef="reApproation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getreApproation() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="amountOfReappropriation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getamountOfReappropriation() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="amountWillStantReapproation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getamountWillStantReapproation() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="explationReductionGrant1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    <!-- {{ getexplationReductionGrant() }} -->
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="headsUnderProposedIncreaseColoumns"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns:headsUnderProposedIncreaseColoumns"></tr>
+                <tr mat-footer-row
+                  *matFooterRowDef="['SrNo1','reApproation1','amountOfReappropriation1', 'amountWillStantReapproation1', 'explationReductionGrant1']">
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <mat-accordion class="colapsedata mt-2">
+            <mat-expansion-panel [expanded]="true" class="nopadding mt-2">
+              <mat-expansion-panel-header>
+                <div class="heading-section">
+                  Heads under which it is Proposed to Reduce the Grant
+                </div>
+              </mat-expansion-panel-header>
+              <div class="rsClass"> (₹ in Lakhs) </div>
+              <table mat-table [dataSource]="headsUnderProposedReduceDataSource" matSort>
+                <ng-container matColumnDef="SrNo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr No.</th>
+                  <td mat-cell *matCellDef="let element;let i=index"> {{i+1}}</td>
+                  <td mat-footer-cell *matFooterCellDef [attr.colspan]="4" [ngStyle]="{'display': 'none'}">Total Amount
+                    Surrendered from the Grant </td>
+                </ng-container>
+                <ng-container matColumnDef="headOfAccount">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 22%;"> Head of Account</th>
+                  <td mat-cell *matCellDef="let element"> {{element.headOfAccount}} <br> {{element.itemName}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="nomenClature">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Nomen Clature</th>
+                  <td mat-cell *matCellDef="let element"> {{element.nomenClature}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="actualExpKnownPriation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Exp. Known Upto the Date of Reappro
+                    Priation</th>
+                  <td mat-cell *matCellDef="let element"> {{element.actualExpKnownPriation}} </td>
+                  <td mat-footer-cell *matFooterCellDef [ngStyle]="{'display': 'none'}"> </td>
+                </ng-container>
+                <ng-container matColumnDef="reApproation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Sanctioned Grant as on the date of
+                    Re-appropriation(B.E + S.D)</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.reApproation}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="amountOfReappropriation">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount of Reappropriation (+) to Increase/(-)to
+                    reduce</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountOfReappropriation}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amountWillStantReapproation">
+                  <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Amount of as it will Stand after
+                    Reappropriation</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountWillStantReapproation}}
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="explationReductionGrant">
+                  <th mat-header-cell *matHeaderCellDef style="width: 15%;"> Detailed Explanation for Increase or
+                    Reduction in the Grant</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.explationReductionGrant}} </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="SrNo1">
+                  <td mat-footer-cell *matFooterCellDef [attr.colspan]="4" class="centerAlign">Total</td>
+                </ng-container>
+                <ng-container matColumnDef="reApproation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getreApproation2() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="amountOfReappropriation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getamountOfReappropriation2() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="amountWillStantReapproation1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ getamountWillStantReapproation2() }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="explationReductionGrant1">
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    <!-- {{ getexplationReductionGrant2() }} -->
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="headsUnderProposedReduceColoumns"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns:headsUnderProposedReduceColoumns"></tr>
+                <tr mat-footer-row
+                  *matFooterRowDef="['SrNo1','reApproation1','amountOfReappropriation1', 'amountWillStantReapproation1', 'explationReductionGrant1']">
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+        <!-- <mat-tab label="Attachments">
+                    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td mat-cell *matCellDef="let item;let i = index;">
+                                <mat-select placeholder="Attachment Type" #singleSelect1 required [(ngModel)]="item.attachmentType">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="attachmentTypeCodeCtrl" [placeholderLabel]="'Find Attachment Type...'" [noEntriesFoundLabel]="'no matching Attachment Type found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let AT of attachmentTypeCode" [value]="AT.value">
+                                        {{AT.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <textarea matInput [value]="item.name" [(ngModel)]="item.name"></textarea>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                            <td mat-cell *matCellDef="let i = index" class="centerAlign">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                                    Files</button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded file name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                {{item.uploadedBy}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30">
+                                                <i class="material-icons plus delete" *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1" (click)="deleteBrowse(i)">
+                                                    delete
+                                                </i>
+                                            </td>
+                                            <td width="30">
+                                                <i class="material-icons plus add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">
+                                                    add
+                                                </i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+                    <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+                    <div class="legend">
+                        1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                    </div>
+                </mat-tab> -->
+      </mat-tab-group>
+      <div class="form-action-button" *ngIf="addincrease">
+        <!-- <button type="submit" mat-raised-button color="primary">
+                  <i class="material-icons" title="Save" aria-hidden="true">
+                      save
+                  </i>
+                  Save as Draft
+              </button> -->
+        <!-- <button mat-raised-button type="submit" class="green"><i class="material-icons" title="Submit"
+            aria-hidden="true">
+            done
+          </i> Submit</button> -->
+        <button type="button" mat-raised-button title="Listing" color="warn" [routerLink]="['./sanction-orders-list']"
+          routerLinkActive="router-link-active">
+          <i class="material-icons" title="Listing" aria-hidden="true">
+            list
+          </i>
+          Listing
+        </button>
+        <!-- <button type="reset" mat-raised-button color="accent">
+                  <i class="material-icons" title="Reset" aria-hidden="true">
+                      restore
+                  </i>
+                  Reset
+              </button> -->
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+        <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" title="Print" aria-hidden="true">
+            print
+          </i>
+          Print
+        </button>
+
+        <!-- <button type="view" mat-raised-button color="accent">
+          <i class="material-icons " title="View">remove_red_eye</i>
+          View Comments
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>

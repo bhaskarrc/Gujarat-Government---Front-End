@@ -1,0 +1,500 @@
+<div class="container">
+    <div class="form-wrapper">
+        <!-- Screen Name -->
+        <div class="heading-section ng-star-inserted">
+            <div>Budget head mapping</div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0);">Payroll</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Budget head mapping</li>
+            </ol>
+        </nav>
+
+
+        <form [formGroup]="budgetHeadMappingForm">
+
+            <!--Starts Budget head mapping List -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Budget head mapping</div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="ddoNo" placeholder="DDO No.">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="cardexNo" placeholder="Cardex No.">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="officeName" placeholder=" Office Name">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="district" placeholder="District">
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payrollType" placeholder="Payroll Type"
+                                        (selectionChange)="onPayrollType($event.value)" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payrollTypeCtrl"
+                                                [placeholderLabel]="'Find Payroll Type...'"
+                                                [noEntriesFoundLabel]="'no matching Payroll Type found'"
+                                                alphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let payrollName  of payrollTypelist | filterSelectInput:payrollTypeCtrl.value"
+                                            [value]="payrollName.value">
+                                            {{payrollName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetHeadMappingForm.controls.payrollType.touched && (budgetHeadMappingForm.controls.payrollType.errors)">
+                                        <mat-error *ngIf="budgetHeadMappingForm.controls.payrollType.errors?.required">
+                                            {{errorMessages.PAYROLL_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="financialYear" placeholder="Financial Year">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="financialYearCtrl"
+                                                [placeholderLabel]="'Find Financial Year...'"
+                                                [noEntriesFoundLabel]="'no matching Financial Year found'"
+                                                numbersHyphenOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let financialYearName  of finYearList | filterSelectInput:financialYearCtrl.value"
+                                            [value]="financialYearName.value">
+                                            {{financialYearName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Pay Month -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payMonth" placeholder="Pay Month" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payMonthCtrl"
+                                                [placeholderLabel]="'Find Pay Month...'"
+                                                [noEntriesFoundLabel]="'no matching Pay Month found'" charactersOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let payMonthName  of payMonthList | filterSelectInput:payMonthCtrl.value"
+                                            [value]="payMonthName.value">
+                                            {{payMonthName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetHeadMappingForm.controls.payMonth.touched && (budgetHeadMappingForm.controls.payMonth.errors)">
+                                        <mat-error *ngIf="budgetHeadMappingForm.controls.payMonth.errors?.required">
+                                            {{errorMessages.PAY_MONTH}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                        </div>
+                        <!-- Action Button Starts -->
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary" (click)="onChangeYearType()">Change
+                                Year\Type</button>
+                        </div>
+                        <!-- Action Button Ends -->
+                    </div>
+
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="employeeCategory" placeholder="Employee Category">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeCategoryCtrl"
+                                                [placeholderLabel]="'Find Employee category...'"
+                                                [noEntriesFoundLabel]="'no matching Employee category found'"
+                                                charactersOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let item of employeeCategory_list | filterSelectInput : employeeCategoryCtrl.value"
+                                            [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="employeeClass" placeholder="Employee Class">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeClassCtrl"
+                                                [placeholderLabel]="'Find Employee Class...'"
+                                                [noEntriesFoundLabel]="'no matching Employee Class found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let item of employeeClassList | filterSelectInput : employeeClassCtrl.value"
+                                            [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="designation" placeholder="Designation" multiple>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="designationCtrl"
+                                                [placeholderLabel]="'Find Designation...'"
+                                                [noEntriesFoundLabel]="'no matching Designation found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of designationList | filterSelectInput :designationCtrl.value"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="employeeNo" placeholder="Employee No." prEmpNoOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="employeeName" placeholder="Employee Name"
+                                        maxlength="100" alphabetsSpaceOnly>
+                                </mat-form-field>
+                            </div>
+
+
+                        </div>
+                        <!--action button Starts  -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="search()" title="Search">
+                                <i class="material-icons" aria-hidden="true" title="Search">search</i>
+                                Search</button>
+                        </div>
+                        <!-- action button Ends -->
+                    </div>
+
+
+                </div>
+            </div>
+            <!--Ends Budget head mapping List -->
+
+            <!-- Budget head mapping - List view Starts -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Budget head mapping - List view</div>
+                    <div class="box-body">
+
+                        <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                            <table mat-table [dataSource]="dataSource" aria-describedby="budgetHeadMappingTable">
+
+                                <ng-container matColumnDef="srNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                                    <td mat-cell *matCellDef="let element" class="centerAlign"
+                                        [ngClass]="element.class">
+                                        {{element.srNo}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Employee No.</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="element.class">
+                                        <mat-form-field>
+                                            <input matInput [(ngModel)]="element.employeeNo" maxlength="10"
+                                                [ngModelOptions]="{standalone: true}"
+                                                [disabled]="element.employeeNo ? true : false" numbersOnly>
+                                            <mat-icon matSuffix class="searchIcon"
+                                                (click)="openDialogEmployeeNumber(element)"
+                                                *ngIf="element.employeeNo ? false : true">search
+                                            </mat-icon>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeName">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="element.class">
+                                        {{element.employeeName}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="designation">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Designation</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="element.class">
+                                        {{element.designation}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeClass">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Employee Class</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="element.class">
+                                        {{element.employeeClass}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="employeeCat">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Employee Category</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="element.class">
+                                        {{element.employeeCat}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="demand">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Demand</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.demand" name="demand"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of demandList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="majorHead">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Major Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.majorHead" name="majorHead"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of majorHeadList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="subMajorHead">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Sub Major Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.subMajorHead" name="subMajorHead"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of subMajorHeadList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="minorHead">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Minor Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.minorHead" name="minorHead"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of minorHeadList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="subHead">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Sub Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.subHead" name="subHead"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of subHeadList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="detailHead">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Detail Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.detailHead" name="detailHead"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of detailHeadList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="objectClass">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Object Class
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.objectClass" name="objectClass"
+                                                [disabled]="element.isSubmitted">
+                                                <mat-option *ngFor="let item of objectClassList" [value]="item.value">
+                                                    {{item.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                                    <td mat-cell *matCellDef="let element;let i=index">
+
+                                        <table class="iconTable" aria-describedby="actionBtn">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div
+                                                            *ngIf="(element.employeeNo && element.employeeName &&
+                                                            element.designation && element.employeeClass &&
+                                                            element.employeeCat && element.demand &&element.majorHead && element.subMajorHead && element.minorHead && element.subHead && element.detailHead &&
+                                                                    element.objectClass); then notHidden else isHidden">
+                                                        </div>
+                                                        <ng-template #isHidden>
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                title="Add"
+                                                                *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                                                style="color:lightgray;cursor:default;">add</i>
+                                                        </ng-template>
+                                                        <ng-template #notHidden>
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                title="Add"
+                                                                *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                                                (click)="add()">add</i>
+                                                        </ng-template>
+                                                        <div
+                                                            *ngIf="!(dataSource && dataSource.data && (i == dataSource.data.length - 1))">
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                title="Add" style="visibility: hidden;">&nbsp;</i>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div
+                                                            *ngIf="(element.employeeNo && element.employeeName &&
+                                                            element.designation && element.employeeClass &&
+                                                            element.employeeCat && element.demand &&element.majorHead && element.subMajorHead && element.minorHead && element.subHead && element.detailHead &&
+                                                                    element.objectClass); then notHiddenCopy else isHiddenCopy">
+                                                        </div>
+                                                        <ng-template #isHiddenCopy>
+                                                            <i class="material-icons plus copy-icon" aria-hidden="true"
+                                                                title="Copy"
+                                                                style="color:lightgray;cursor:default;">content_copy</i>
+                                                        </ng-template>
+                                                        <ng-template #notHiddenCopy>
+                                                            <i class="material-icons plus copy-icon" aria-hidden="true"
+                                                                title="Copy"
+                                                                (click)="smartCopy(element)">content_copy</i>
+                                                        </ng-template>
+                                                    </td>
+
+                                                    <td>
+                                                        <i class="material-icons plus delete" aria-hidden="true"
+                                                            title="Delete"
+                                                            *ngIf="!element.isSubmitted && dataSource && dataSource.data && dataSource.data.length > 1"
+                                                            (click)="directiveObj.deleteRow(dataSource,i)">
+                                                            delete
+                                                        </i>
+                                                        <div
+                                                            *ngIf="!(!element.isSubmitted && (dataSource.data.length > 1))">
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                title="Delete" style="visibility: hidden;">&nbsp;</i>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="noData">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"></th>
+                                    <td mat-cell *matCellDef="let element;" [attr.colspan]="colCount"
+                                        class="centerAlign">
+                                        {{element.noData}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Header Section Of table -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <!-- Data Fetch From .TS File to table -->
+                                <tr mat-row *matRowDef="let row; let i = index;columns:displayedRows"></tr>
+
+                            </table>
+                            <mat-paginator #datasourcePaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                            </mat-paginator>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Budget head mapping - List view Ends -->
+
+            <!-- Action buttons Start -->
+            <div class="form-action-button">
+                <button mat-raised-button type="submit" class="green" (click)="onSubmit()" title="Submit">
+                    <i class="material-icons" title="Submit" aria-hidden="true">
+                        done
+                    </i> Submit
+                </button>
+
+                <button type="button" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                    <i class="material-icons" title="Reset" aria-hidden="true">
+                        restore
+                    </i>
+                    Reset
+                </button>
+            </div>
+            <!-- Action buttons End -->
+
+        </form>
+
+    </div>
+</div>

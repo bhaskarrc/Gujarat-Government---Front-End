@@ -1,0 +1,298 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Cheques Recieved From IAS/IPS/IFS </div>
+      <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+        <li class="breadcrumb-item active" aria-current="page">Cheques Recieved From IAS/IPS/IFS</li>
+      </ol>
+    </nav>
+
+
+    <div class="panel-group">
+      <form [formGroup]="cashBookForm" (ngSubmit)="cashBookData()">
+        <div class="box box-primary">
+          <div class="box-header">Cheques Recieved From IAS/IPS/IFS </div>
+          <div class="box-body">
+            <!-- Cash Book entry -->
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="inwardNo" placeholder="Inward No. " formControlName="inwardNo" required>
+
+                  <mat-icon matSuffix class="searchIcon" (click)="inwardNo()">search
+                  </mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="cashBookForm.controls.inwardNo.touched || (cashBookForm.controls.inwardNo.errors && isSubmitted)">
+                    <mat-error *ngIf="cashBookForm.controls.inwardNo.errors?.required">
+                      {{errorMessages.INWARDNO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" formControlName="inwardDate" placeholder="Inward Date ">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Cheque/Demand Draft No. " formControlName="chequeNo">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Cheque/Demand Draft Amount" formControlName="demandNo">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="DDO" formControlName="ddo">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="clearanceDate" formControlName="clearanceDate"
+                    placeholder="Clearance Date  ">
+                  <mat-datepicker-toggle matSuffix [for]="clearanceDate"></mat-datepicker-toggle>
+                  <mat-datepicker #clearanceDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Challan  No. " formControlName="challanNo" required>
+                  <div class="error-wrapper"
+                    *ngIf="cashBookForm.controls.challanNo.touched || (cashBookForm.controls.challanNo.errors && isSubmitted)">
+                    <mat-error *ngIf="cashBookForm.controls.challanNo.errors?.required">
+                      {{errorMessages.CHALLANNO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="challanDate" formControlName="challanDate"
+                    placeholder="Challan Date ">
+                  <mat-datepicker-toggle matSuffix [for]="challanDate"></mat-datepicker-toggle>
+                  <mat-datepicker #challanDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <textarea matInput rows="1" maxlength="200" placeholder="Remarks " formControlName="remarks"
+                    required></textarea>
+                  <div class="error-wrapper"
+                    *ngIf="cashBookForm.controls.remarks.touched || (cashBookForm.controls.remarks.errors && isSubmitted)">
+                    <mat-error *ngIf="cashBookForm.controls.remarks.errors?.required">
+                      {{errorMessages.REMARKS}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+            <!--  End Cash Book entry -->
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                  <!-- cash book entry Table -->
+                  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                    aria-describedby="cashBookEntryTable">
+
+                    <ng-container matColumnDef="hbaMca">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> HBA/MCA/UP No.</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field>
+                          <input matInput>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Name </th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field>
+                          <input matInput>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="recoveryType">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Recovery Type*</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field class="full-width">
+                          <mat-select required>
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="recoCtrl"
+                                [placeholderLabel]="'Select Recovery Type ...'"
+                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="
+                                let rt of recoveryType_list  | filterSelectInput: recoCtrl.value" [value]="rt.value ">
+                              {{ rt.viewValue }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="interstrecoveryAmount">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Amount*</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field>
+                          <input matInput>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="forMonth">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Recovery Month*</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field class="full-width">
+                          <mat-select required>
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Select Year ...'"
+                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="
+                                let year of month_list  | filterSelectInput: yearCtrl.value" [value]="year.value">
+                              {{ year.viewValue }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="forYear">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Recovery Year*</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field class="full-width">
+
+                          <mat-select required>
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Select Year ...'"
+                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="
+                                let year of year_list  | filterSelectInput: monthCtrl.value" [value]="year.value">
+                              {{ year.viewValue }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="installNo">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Installment No.</th>
+                      <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field class="full-width">
+                          <mat-select required>
+                            <mat-option>
+                              <ngx-mat-select-search [formControl]="installCtrl"
+                                [placeholderLabel]="'Select Installment No ...'"
+                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="
+                                let up of upNo_List  | filterSelectInput: installCtrl.value" [value]="up.value">
+                              {{ up.viewValue }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                      <td mat-cell *matCellDef="let element;let i = index;" class="centerAlign">
+
+                        <table class="iconTable" aria-describedby="actionBtn">
+                          <tbody>
+                            <tr>
+                              <td width="30">
+                                <i aria-hidden="true" class="material-icons plus add" title="Add"
+                                  *ngIf="dataSource && dataSource.data && (i == dataSource.data.length - 1)"
+                                  (click)="addRow()">
+                                  add
+                                </i>
+                              </td>
+                              <td width="30">
+                                <i aria-hidden="true" class="material-icons plus delete" title="delete"
+                                  (click)=" directiveObj.deleteRow(dataSource,i)"
+                                  *ngIf="dataSource && dataSource.data && dataSource.data.length > 1">delete</i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table>
+                  <!-- End cash book entry Table -->
+                </div>
+                <br>
+                <!-- Total -->
+                <div class="row">
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Total" formControlName="total">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!-- End Total -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="Save">
+              save
+            </i>
+            Save
+          </button>
+          <button mat-raised-button type="submit" class="green" (click)="directiveObject.commentGrantDetails()"><i
+              class="material-icons" aria-hidden="true" title="Submit">
+              done
+            </i> Submit
+          </button>
+
+          <button type="reset" mat-raised-button color="accent">
+            <i class="material-icons" aria-hidden="true" title="Reset">
+              restore
+            </i>
+            Reset
+          </button>
+
+          <button type="button" mat-raised-button color="warn" (click)="navigate()">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+              list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Close">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+    </div>
+  </div>
+</div>

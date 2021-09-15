@@ -1,0 +1,197 @@
+<div class="container">
+  <div class="form-wrapper">
+
+      <div class="heading-section ng-star-inserted">
+          <div>FD Group Mapping</div>
+      </div>
+
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Budget</a></li>
+              <li class="breadcrumb-item active" aria-current="page">FD Group Mapping</li>
+          </ol>
+      </nav>
+
+      <div class="panel-group">
+        <form [formGroup]="mapForm">
+          <!-- FD Group Mapping Entry Section Starts-->
+          <div class="box box-primary">
+            <div class="box-header">FD Group Mapping</div>
+              <div class="box-body">
+                  <div #parentGrids>
+                    
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <mat-form-field class="full-width">
+                            <mat-select formControlName="finYear" placeholder="Financial Year" required>
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'" [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let FY of finYear_list | filterSelectInput:finYearCtrl.value" [value]="FY.value">
+                                    {{FY.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        <div class="error-wrapper" *ngIf="mapForm.controls.finYear.touched && (mapForm.controls.finYear.errors)">
+                          <mat-error *ngIf="mapForm.controls.finYear.errors.required">
+                              {{errorMessages.FIN_YEAR}}
+                          </mat-error>
+                      </div>
+                        </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                          <div >
+                            <mat-form-field class="full-width">
+                              <input matInput type="text" formControlName="groupName" placeholder="Group Name" required>
+                            <div class="error-wrapper" *ngIf="mapForm.controls.groupName.touched && (mapForm.controls.groupName.errors)">
+                              <mat-error *ngIf="mapForm.controls.groupName.errors.required">
+                                  {{errorMessages.NAME}}
+                              </mat-error>
+                          </div>
+                            </mat-form-field>
+                          </div>
+                        </div> 
+
+                        <div class="col-sm-3">
+                          <mat-form-field class="full-width">
+                            <mat-select formControlName="bpn" placeholder="BPN Code" required>
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="bpnCtrl" [placeholderLabel]="'Find BPN Code...'" [noEntriesFoundLabel]="'no matching BPN Code found'">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let va of bpn_list | filterSelectInput:bpnCtrl.value" matTooltip="{{va.viewValue}}" [value]="va.value">
+                                    {{va.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                            <div class="error-wrapper" *ngIf="mapForm.controls.bpn.touched && (mapForm.controls.bpn.errors)">
+                              <mat-error *ngIf="mapForm.controls.bpn.errors.required">
+                                  {{errorMessages.BPN}}
+                              </mat-error>
+                          </div>
+                        </mat-form-field>
+                        </div> 
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="demandCode" placeholder="Demand" required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="demandCodeCtrl" [placeholderLabel]="'Find Demand Code...'" [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option matTooltip="{{demand.viewValue}}" *ngFor="let demand of demand_list | filterSelectInput: demandCodeCtrl.value" [value]="demand.value">
+                                        {{demand.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <div class="error-wrapper" *ngIf="mapForm.controls.demandCode.touched && (mapForm.controls.demandCode.errors)">
+                                  <mat-error *ngIf="mapForm.controls.demandCode.errors.required">
+                                      {{errorMessages.DEMAND}}
+                                  </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                          <mat-form-field class="full-width">
+                            <mat-select formControlName="majorHead" placeholder="Major Head" required>
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no matching Major Head found'">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let va of majorHead_list | filterSelectInput:majorHeadCtrl.value" matTooltip="{{va.viewValue}}" [value]="va.value">
+                                    {{va.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                            <div class="error-wrapper" *ngIf="mapForm.controls.majorHead.touched && (mapForm.controls.majorHead.errors)">
+                              <mat-error *ngIf="mapForm.controls.majorHead.errors.required">
+                                  {{errorMessages.MAJOR_HEAD}}
+                              </mat-error>
+                          </div>
+                        </mat-form-field>
+                        </div>
+
+                      </div>                     
+                    
+                      <!-- Action Buttons -->
+                    <div class="form-action-button">                      
+                      <button type="submit" mat-raised-button color="primary" (click)="onGoClick()">
+                        <i class="material-icons" aria-hidden="true" title="search">add</i>
+                        Create Group
+                      </button>
+                    </div>
+
+
+                  </div>
+              </div>
+          </div>
+          <!-- FD Group Mapping Entry Section Ends-->
+
+          <div class="mat-elevation-z8 table-responsive mt-2" *ngIf="onGo">
+            <!-- Table Section Starts -->
+            <table mat-table [dataSource]="dataSource" aria-describedby="categoryList" class="mat-elevation-z8">
+  
+              <!-- Sr. No.  -->
+              <ng-container matColumnDef="position">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                  <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+              </ng-container>
+  
+              <!-- User Name -->
+              <ng-container matColumnDef="userName">
+                <th mat-header-cell *matHeaderCellDef scope="row">User Name</th>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.userName}} </td>
+            </ng-container>
+  
+            <!-- Post Name -->
+              <ng-container matColumnDef="postName">
+                <th mat-header-cell *matHeaderCellDef scope="row">Post Name</th>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.postName}} </td>
+            </ng-container>
+            
+            <!-- Action -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let element;let i=index" class="text-left"> 
+                  <div class="action-btn-i centerAlign">
+                    <i aria-hidden="true" class="material-icons plus" (click)="addDetails()" title="Add">add</i>&nbsp;
+                    <i aria-hidden="true" class="material-icons plus delete" *ngIf="(dataSource.data.length>1)"
+                      (click)="deleteConfirmationPopup(i)" title="Delete">delete</i>
+                </div>
+                </td>
+            </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <!-- Table Section Ends -->
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </form>
+
+        <!-- Action Buttons -->
+        <div class="form-action-button">
+          <button mat-raised-button type="submit" (click)="directiveObject.submit()" class="green">
+            <i aria-hidden="true" class="material-icons">
+                  done
+              </i> Submit
+          </button>
+          <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+                list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Dashboard">
+                close
+            </i>
+            Close
+          </button>
+        </div>
+
+      </div>
+
+  </div>
+</div>

@@ -1,0 +1,388 @@
+<div class="container">
+  <div class="form-wrapper">
+
+      <div class="heading-section ng-star-inserted">
+          <div class="col-md-4 col-sm-12 title">Request for Deposit of Articles - List</div>
+      </div>
+
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Request for Deposit of Articles - List</li>
+          </ol>
+      </nav>
+
+      <div class="panel-group">
+
+        <!-- Search Section Starts-->
+        <mat-accordion class="search-accordian">
+          <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                  <div class="heading-section">
+                      Search
+                  </div>
+              </mat-expansion-panel-header>
+                    <div #parentGrids>
+                      <form class="col-sm-12" [formGroup]="onlineForm">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width disabled">
+                              <input matInput type="text" formControlName="finYear" placeholder="Financial Year" readonly>
+                            </mat-form-field>
+                          </div>
+  
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width disabled">
+                              <mat-label>Name of Office / Department</mat-label>                            
+                              <input matInput formControlName="dept" [value]="deptVal" readonly>
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="refNo" placeholder="Reference No.">
+                            </mat-form-field>
+                          </div>
+            
+                          <div class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="fromDateRef" placeholder="Reference From Date"
+                                [matDatepicker]="pickerRef">
+                              <mat-datepicker-toggle matSuffix [for]="pickerRef"></mat-datepicker-toggle>
+                              <mat-datepicker #pickerRef></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+            
+                          <div class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="toDateRef" placeholder="Reference To Date"
+                                [matDatepicker]="picker1Ref">
+                              <mat-datepicker-toggle matSuffix [for]="picker1Ref"></mat-datepicker-toggle>
+                              <mat-datepicker #picker1Ref></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                              <mat-select formControlName="receive" #receiveVal placeholder="Received From / Sent To">
+                                <mat-option>
+                                  <ngx-mat-select-search [formControl]="receiveCtrl"
+                                    [placeholderLabel]="'Find Received From / Sent To...'"
+                                    [noEntriesFoundLabel]="'no matching Received From / Sent To found'">
+                                  </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option>-- None --</mat-option>
+                                <mat-option *ngFor="let stm of receive_List | filterSelectInput:receiveCtrl.value"
+                                  [value]="stm.value">
+                                  {{stm.viewValue}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+            
+                          <div *ngIf="receiveVal.value=='1'" class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="recFrom" placeholder="Received From">
+                            </mat-form-field>
+                          </div>
+            
+                          <div *ngIf="receiveVal.value=='2'" class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="sentTo" placeholder="Sent To">
+                            </mat-form-field>
+                          </div>
+            
+
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="treSubTre" placeholder="Articles Submitted To Treasury / Sub Treasury">
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="treSubTreCtrl"
+                                              [placeholderLabel]="'Find Articles Submitted To Treasury / Sub Treasury...'"
+                                              [noEntriesFoundLabel]="'no matching Articles Submitted To Treasury / Sub Treasury found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option>-- None --</mat-option>
+                                      <mat-option
+                                          *ngFor="let tre of treSubTre_List | filterSelectInput:treSubTreCtrl.value"
+                                          [value]="tre.value">
+                                          {{tre.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </div>
+          
+                          <div class="col-sm-3" *ngIf="onlineForm.controls.treSubTre.value=='1'">
+                            <mat-form-field class="full-width">
+                              <input matInput formControlName="troffice"  placeholder="Treasury Office" readonly>
+          
+                            <div class="error-wrapper"
+                              *ngIf="onlineForm.controls.troffice.touched && (onlineForm.controls.troffice.errors)">
+                              <mat-error *ngIf="onlineForm.controls.troffice.errors.required">
+                                {{errorMessages.TRE}}
+                              </mat-error>
+                            </div>
+                            </mat-form-field>
+                          </div>
+          
+                          <div class="col-sm-3" *ngIf="onlineForm.controls.treSubTre.value=='2'">
+                            <mat-form-field class="full-width">
+                              <input matInput formControlName="trofficeForSub"  placeholder="Treasury Office" readonly>
+          
+                            <div class="error-wrapper"
+                              *ngIf="onlineForm.controls.trofficeForSub.touched && (onlineForm.controls.trofficeForSub.errors)">
+                              <mat-error *ngIf="onlineForm.controls.trofficeForSub.errors.required">
+                                {{errorMessages.TRE}}
+                              </mat-error>
+                            </div>
+                            </mat-form-field>
+                          </div>
+          
+                          <div class="col-sm-3" *ngIf="onlineForm.controls.treSubTre.value=='2' &&
+                              onlineForm.controls.trofficeForSub.valid">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="subTreOff" placeholder="Sub Treasury Office">
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="subTreOffCtrl"
+                                              [placeholderLabel]="'Find Sub Treasury Office...'"
+                                              [noEntriesFoundLabel]="'no matching Sub Treasury Office found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option>-- None --</mat-option>
+                                      <mat-option
+                                          *ngFor="let subTre of subTre_List | filterSelectInput:subTreOffCtrl.value"
+                                          matTooltip="{{subTre.viewValue}}" [value]="subTre.value">
+                                          {{subTre.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+          
+                          </div>
+
+                         
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                              <input matInput type="text" formControlName="valSubBy" placeholder="Articles Submitted By">
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="fromDate" placeholder="Articles Submitted From Date" [matDatepicker]="picker">
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                              <input matInput formControlName="toDate" placeholder="Articles Submitted To Date" [matDatepicker]="picker1">
+                              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                              <mat-datepicker #picker1></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="valName" placeholder="Articles Name / Category">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="valNameCtrl" [placeholderLabel]="'Find Valuables Name / Category...'" [noEntriesFoundLabel]="'no Valuables Name / Category found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let req of valName_List | filterSelectInput:valNameCtrl.value" [value]="req.value">
+                                        {{req.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3" *ngIf="onlineForm.controls.valName.value==3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="valSubName" placeholder="Articles Sub Category">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="valSubNameCtrl" [placeholderLabel]="'Find Articles Sub Category...'" [noEntriesFoundLabel]="'no Articles Sub Category found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let req of valSubName_List | filterSelectInput:valSubNameCtrl.value" [value]="req.value">
+                                        {{req.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="wStatus" placeholder="Workflow Status">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="wStatusCtrl" [placeholderLabel]="'Find Workflow Status...'"
+                                        [noEntriesFoundLabel]="'no Workflow Status found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let req of wStatus_List | filterSelectInput:statusCtrl.value" [value]="req.value">
+                                        {{req.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="status" placeholder="Status">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Find Status...'" [noEntriesFoundLabel]="'no Status found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let req of status_List | filterSelectInput:statusCtrl.value" [value]="req.value">
+                                        {{req.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+  
+                        </div>                     
+                      </form>
+
+                      <!-- Action Buttons -->
+                      <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                          <i class="material-icons" aria-hidden="true" title="search">search</i>
+                          Search
+                        </button>
+                        
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm()"><i class="material-icons" aria-hidden="true" title="reset">
+                            restore
+                          </i>
+                          Reset
+                        </button>
+                      </div>
+
+                    </div>
+                  </mat-expansion-panel>
+              </mat-accordion>
+          <!-- Search Section Ends-->
+
+          
+
+          <!-- Table Section -->
+          <div class="mat-elevation-z8 mt-2">
+            <table mat-table [dataSource]="dataSource" aria-describedby="depositList" class="mat-elevation-z8">
+  
+              <!-- Sr. No.  -->
+              <ng-container matColumnDef="position">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                  <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+              </ng-container>
+  
+              <!-- Financial Year -->
+              <ng-container matColumnDef="fYear">
+                <th mat-header-cell *matHeaderCellDef scope="row">Financial Year</th>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.fYear}} </td>
+            </ng-container>
+  
+            <!-- Name of Office / Department -->
+              <ng-container matColumnDef="dept">
+                <th mat-header-cell *matHeaderCellDef scope="row">Name of Office / Department</th>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.dept}} </td>
+            </ng-container>
+  
+            <!-- Articles Submitted To Treasury / Sub Treasury -->
+            <ng-container matColumnDef="subTo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Articles Submitted To <br> Treasury / Sub Treasury</th>
+              <td mat-cell *matCellDef="let element" class="text-left"> {{element.subTo}} </td>
+            </ng-container>
+            
+            <!-- Date of Deposit -->
+            <ng-container matColumnDef="depDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Date of Deposit</th>
+              <td mat-cell *matCellDef="let element" class="text-left"> {{element.depDate}} </td>
+            </ng-container>
+            
+            <!-- Articles Category -->
+            <ng-container matColumnDef="valCat">
+              <th mat-header-cell *matHeaderCellDef scope="row">Articles Category</th>
+              <td mat-cell *matCellDef="let element" class="text-left"> {{element.valCat}} </td>
+            </ng-container>
+            
+            <!-- Articles Sub Category -->
+            <ng-container matColumnDef="subCat">
+              <th mat-header-cell *matHeaderCellDef scope="row">Articles Sub Category</th>
+              <td mat-cell *matCellDef="let element" class="text-left"> {{element.subCat}} </td>
+            </ng-container>
+
+            <!-- Reference No. -->
+            <ng-container matColumnDef="refNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Reference No.</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.refNo}} </td>
+            </ng-container>
+  
+            <!-- Received From Received On -->
+            <ng-container matColumnDef="recFromOn">
+              <th mat-header-cell *matHeaderCellDef scope="row">Received From Received On</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.recFromOn}} </td>
+            </ng-container>
+  
+            <!-- Sent To Sent On -->
+            <ng-container matColumnDef="sentToON">
+              <th mat-header-cell *matHeaderCellDef scope="row">Sent To Sent On</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.sentToON}} </td>
+            </ng-container>
+  
+            <!-- Lying With -->
+            <ng-container matColumnDef="lyingWith">
+              <th mat-header-cell *matHeaderCellDef scope="row">Lying With</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.lyingWith}} </td>
+            </ng-container>
+  
+            <!-- Worfklow Status -->
+            <ng-container matColumnDef="wStatus">
+              <th mat-header-cell *matHeaderCellDef scope="row">Worfklow Status</th>
+              <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.wStatus}} </td>
+            </ng-container>
+            
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+              <td mat-cell *matCellDef="let element" class="text-left"> {{element.status}} </td>
+            </ng-container>
+            
+            <!-- Action -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let element;let i=index" class="text-left"> 
+                  <div class="action-btn-i centerAlign">      
+                    <a *ngIf="element.status!='Approved'" [routerLink]="'../request-for-deposit-of-articles'"><i class="material-icons plus edit-icon" title="Edit">
+                      edit
+                    </i></a>
+                    <a *ngIf="element.status!='Draft'" [routerLink]="'../request-for-deposit-of-articles-view'"><i class="material-icons plus view-icon" title="View">
+                      remove_red_eye
+                    </i></a>
+                    <i *ngIf="element.status=='Draft'" class="material-icons plus delete" (click)="deleteConfirmPopup(i)">delete</i>               
+                </div>  
+                </td>
+            </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-action-button">
+            <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Dashboard">
+                    close
+                </i>
+                Close
+            </button>
+          </div>
+      </div>
+
+  </div>
+</div>

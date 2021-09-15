@@ -1,0 +1,599 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading-section -->
+    <div class="heading-section ng-star-inserted">
+      District LF Creator
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/DLFC/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">District LF Creator</li>
+      </ol>
+    </nav>
+
+    <!-- online diary submissionform -->
+    <form [formGroup]="onlineDairySubmission">
+      <div class="box box-primary">
+        <div class="box-header">Online Diary Submission</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- auditor name -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="auditorName" formControlName="auditorName" placeholder="Auditor Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditorNameCtrl"
+                      [placeholderLabel]="'Select Auditor Name ...'"
+                      [noEntriesFoundLabel]="'no matching Tange type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let auditor of auditorNameList | filterSelectInput : auditorNameCtrl.value : 'viewValue'"
+                    matTooltip="{{auditor.viewValue}}" [value]="auditor.value">
+                    {{auditor.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.auditorName.touched || (onlineDairySubmission.controls.auditorName.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.auditorName.errors?.required">
+                    {{errorMessages.AUDITOR_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="date" [matDatepicker]="date" placeholder="Date" required>
+                <mat-datepicker-toggle matSuffix [for]="date">
+                </mat-datepicker-toggle>
+                <mat-datepicker #date></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.date.touched || (onlineDairySubmission.controls.date.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.date.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- activity -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="activity" formControlName="activity" placeholder="Activity" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="activityCtrl" [placeholderLabel]="'Select Activity ...'"
+                      [noEntriesFoundLabel]="'no matching Activity found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let auditor of activityList | filterSelectInput : activityCtrl.value : 'viewValue'"
+                    matTooltip="{{auditor.viewValue}}" [value]="auditor.value">
+                    {{auditor.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.activity.touched || (onlineDairySubmission.controls.activity.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.activity.errors?.required">
+                    {{errorMessages.ACTIVITY}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- other -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="other" formControlName="other" placeholder="Other" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="otherCtrl" [placeholderLabel]="'Select Other ...'"
+                      [noEntriesFoundLabel]="'no matching Other found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let auditor of otherList | filterSelectInput : otherCtrl.value : 'viewValue'"
+                    matTooltip="{{auditor.viewValue}}" [value]="auditor.value">
+                    {{auditor.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.other.touched || (onlineDairySubmission.controls.other.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.other.errors?.required">
+                    {{errorMessages.OTHER}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.instituteType.touched || (onlineDairySubmission.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteName" placeholder="Institute name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                      [placeholderLabel]="'Find Institute Name...'"
+                      [noEntriesFoundLabel]="'No matching Institute Name found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.instituteName.touched || (onlineDairySubmission.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.instituteName.errors?.required">
+                    {{errorMessages.INSTITUTE_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditYear" placeholder="Audit Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                      [noEntriesFoundLabel]="'No matching Audit Year found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditYearList |
+                      filterSelectInput:auditYearCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.auditYear.touched || (onlineDairySubmission.controls.auditYear.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.auditYear.errors?.required">
+                    {{errorMessages.AUDIT_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- detail of work -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="detailOfWork" [max]="2000" numbersAlphabetsOnly
+                  placeholder="Detail of Work" required>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.detailOfWork.touched || (onlineDairySubmission.controls.detailOfWork.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.detailOfWork.errors?.required">
+                    {{errorMessages.DETAILS_OF_WORK}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- district -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="district" placeholder="District" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find District ...'"
+                      [noEntriesFoundLabel]="'No matching District found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of districtList |
+                      filterSelectInput:districtCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.district.touched || (onlineDairySubmission.controls.district.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.district.errors?.required">
+                    {{errorMessages.DISTRICT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- dairy submission date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="dairySubmissionDate" [matDatepicker]="dairySubmissionDate"
+                  placeholder="Dairy Submission Date" required>
+                <mat-datepicker-toggle matSuffix [for]="dairySubmissionDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #dairySubmissionDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="onlineDairySubmission.controls.dairySubmissionDate.touched || (onlineDairySubmission.controls.dairySubmissionDate.errors && isSubmitted)">
+                  <mat-error *ngIf="onlineDairySubmission.controls.dairySubmissionDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary" (click)="add();" title="Add">
+            <i class="material-icons" aria-hidden="true">add</i>
+            Add
+          </button>
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset()">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- diary calculation -->
+    <form [formGroup]="dairyCalculation" (ngSubmit)="submit()">
+      <div class="box box-primary">
+        <div class="box-header">Diary Calculation</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- auditor progress -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select name="auditorProgress" formControlName="auditorProgress" placeholder="Auditor Progress"
+                  required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditorProgressCtrl"
+                      [placeholderLabel]="'Select Auditor Progress ...'"
+                      [noEntriesFoundLabel]="'no matching Auditor Progress found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let auditor of auditorProgressList | filterSelectInput : auditorProgressCtrl.value : 'viewValue'"
+                    matTooltip="{{auditor.viewValue}}" [value]="auditor.value">
+                    {{auditor.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.auditorProgress.touched || (dairyCalculation.controls.auditorProgress.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.auditorProgress.errors?.required">
+                    {{errorMessages.AUDIT_PROGRESS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.instituteType.touched || (dairyCalculation.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteName" placeholder="Institute name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                      [placeholderLabel]="'Find Institute Name...'"
+                      [noEntriesFoundLabel]="'No matching Institute Name found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.instituteName.touched || (dairyCalculation.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.instituteName.errors?.required">
+                    {{errorMessages.INSTITUTE_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditYear" placeholder="Audit Year" numbersAlphabetsOnly required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                      [noEntriesFoundLabel]="'No matching Audit Year found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditYearList |
+                      filterSelectInput:auditYearCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.auditYear.touched || (dairyCalculation.controls.auditYear.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.auditYear.errors?.required">
+                    {{errorMessages.AUDIT_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit start date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="auditStartDate" [matDatepicker]="auditStartDate"
+                  placeholder="Audit Start Date" required>
+                <mat-datepicker-toggle matSuffix [for]="auditStartDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #auditStartDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.auditStartDate.touched || (dairyCalculation.controls.auditStartDate.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.auditStartDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit end date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="auditEndDate" [matDatepicker]="auditEndDate"
+                  placeholder="Audit end date / Probable end date" required>
+                <mat-datepicker-toggle matSuffix [for]="auditEndDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #auditEndDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.auditEndDate.touched || (dairyCalculation.controls.auditEndDate.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.auditEndDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- sanctioned mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="sanctionedMandays" placeholder="Sanctioned Mandays" numbersOnlyKeypress
+                  required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.sanctionedMandays.touched || (dairyCalculation.controls.sanctionedMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.sanctionedMandays.errors?.required">
+                    {{errorMessages.DAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- additional mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="additionalMandays" placeholder="Additional Mandays"
+                  numbersOnlyKeypress>
+              </mat-form-field>
+            </div>
+
+            <!-- total mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="totalMandays" placeholder="Total Mandays"
+                  [value]="calculateTotalMandays()" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- used mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="usedMandays" placeholder="Used man-days" numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.usedMandays.touched || (dairyCalculation.controls.usedMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.usedMandays.errors?.required">
+                    {{errorMessages.DAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- remarks -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="remarks" placeholder="Remarks (Pending man-days)" numbersOnlyKeypress>
+              </mat-form-field>
+            </div>
+
+            <!-- half margin issued -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="halfMarginIssued"
+                  placeholder="Number of Half Margins issued during the week" numbersOnlyKeypress>
+              </mat-form-field>
+            </div>
+
+            <!-- answers received no  -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="answersReceived"
+                  placeholder="Number of answers received of Half Margins during the week" numbersOnlyKeypress>
+              </mat-form-field>
+            </div>
+
+            <!-- received amount -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="receivedAmount" placeholder="Received Amount during Audit"
+                  numbersOnlyKeypress>
+              </mat-form-field>
+            </div>
+
+            <!-- no of working auditor -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="workingAuditorNumber" placeholder="No of working auditors in circle "
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.workingAuditorNumber.touched || (dairyCalculation.controls.workingAuditorNumber.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.workingAuditorNumber.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- weekly working days no -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="weeklyWorkingDaysNumber" placeholder="No of Weekly working days"
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.weeklyWorkingDaysNumber.touched || (dairyCalculation.controls.weeklyWorkingDaysNumber.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.weeklyWorkingDaysNumber.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- actual working days -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="actualWorkingDays" placeholder="Number of actual working days in week"
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.actualWorkingDays.touched || (dairyCalculation.controls.actualWorkingDays.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.actualWorkingDays.errors?.required">
+                    {{errorMessages.DAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- lost day with reason -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="lostDaysWithReason"
+                  placeholder="Number of lost days with reasons in week." numbersAlphabetsOnly required>
+                <div class="error-wrapper"
+                  *ngIf="dairyCalculation.controls.lostDaysWithReason.touched || (dairyCalculation.controls.lostDaysWithReason.errors && isSubmitted)">
+                  <mat-error *ngIf="dairyCalculation.controls.lostDaysWithReason.errors?.required">
+                    {{errorMessages.DAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" (click)="addCalculation();" title="Add">
+            <i class="material-icons" aria-hidden="true">add</i>
+            Add
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetCalculationForm()">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- common action button -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+        <i class="material-icons" aria-hidden="true">done</i>
+        Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../online-diary-submission-listing']" routerLinkActive="router-link-active">
+        <i class="material-icons" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+
+    </div>
+
+  </div>
+</div>

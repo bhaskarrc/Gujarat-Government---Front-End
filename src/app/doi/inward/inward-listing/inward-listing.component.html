@@ -1,0 +1,346 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Inward Listing </div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/DOI/INW/IL/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">DOI / INWARD</li>
+        <li class="breadcrumb-item active" aria-current="page">Inward Listing</li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <!-- Inward Listing Form-->
+      <form [formGroup]="inwardListing" >
+        <!-- Details of Deceased/Disabled -->
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+            <div class="row">
+
+
+              <!-- Date Type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="dateType" placeholder="Date Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="dateTypeCtrl" [placeholderLabel]="'Find Date Type...'"
+                        [noEntriesFoundLabel]="'No matching Date Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of dateTypeList |
+                          filterSelectInput:dateTypeCtrl.value" [value]="item.viewValue">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- from date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="fromDate" formControlName="fromDate" placeholder="From Date ">
+                  <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                  <mat-datepicker #fromDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- end date   -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="endDate" formControlName="endDate" placeholder="End Date ">
+                  <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                  <mat-datepicker #endDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+            <!-- Inward type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="inwardType" placeholder="Inward Type" #inwardType>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="letterTypeCtrl" [placeholderLabel]="'Find Inward Type ...'"
+                      [noEntriesFoundLabel]="'no matching Inward Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option>-- None --</mat-option>
+                  <mat-option value="Letter">Letter</mat-option>
+                  <mat-option value="Cheque">Cheque</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+              <!-- Cheque no -->
+              <div class="col-sm-3"  *ngIf="inwardListing.value.inwardType == 'Cheque'">
+                <mat-form-field>
+                  <input matInput formControlName="chequeNo" placeholder="Cheque Number">
+                </mat-form-field>
+              </div>
+
+              <!-- letter type -->
+              <div class="col-sm-3" *ngIf="inwardListing.value.inwardType == 'Letter'">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="letterType" placeholder="Letter Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="letterTypeCtrl" [placeholderLabel]="'Find Letter Type ...'"
+                        [noEntriesFoundLabel]="'no matching Letter Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of letterType_list | filterSelectInput: letterTypeCtrl.value"
+                      [value]="item.viewValue">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+              <!-- branch name -->
+              <div class="col-sm-3" *ngIf="inwardListing.value.inwardType == 'Letter'">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="branchName" placeholder="Branch Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="branchNameCtrl" [placeholderLabel]="'Find Branch Name ...'"
+                        [noEntriesFoundLabel]="'no matching Branch Name found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of branchName_list | filterSelectInput: branchNameCtrl.value"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+              <!-- received from -->
+              <div class="col-md-3">
+                <mat-form-field>
+                  <input matInput formControlName="receivedFrom" placeholder="Received From">
+                </mat-form-field>
+              </div>
+
+              <!-- Status -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select formControlName="status" placeholder="Active Status">
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let status of activeStatus" [value]="status.value">
+                      {{status.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- common button -->
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" (click)="onSubmit()">
+                  <i class="material-icons" aria-hidden="true">search</i>
+                  Search
+                </button>
+
+                <button type="reset" mat-raised-button color="accent" (click)="reset()">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- listing -->
+      <div class="mat-elevation-z8 mt-2">
+        <table mat-table [dataSource]="dataSource" matSort aria-describedby="masterClaimTable">
+
+          <!-- serial No -->
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+            <td mat-cell *matCellDef="let element;let i= index" class="centerAlign">
+              {{i+1}}
+            </td>
+          </ng-container>
+
+          <!-- inward No -->
+          <ng-container matColumnDef="inward_no">
+            <th mat-header-cell *matHeaderCellDef scope="row">Inward No.</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.inward_no }}
+            </td>
+          </ng-container>
+
+          <!-- inward date -->
+          <ng-container matColumnDef="inward_dt">
+            <th mat-header-cell *matHeaderCellDef scope="row">Inward Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.inward_dt | date:'dd-MMM-yyyy'}}
+            </td>
+          </ng-container>
+
+          <!-- inward type -->
+          <ng-container matColumnDef="inward_type">
+            <th mat-header-cell *matHeaderCellDef scope="row">Inward Type</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.inward_type }}
+            </td>
+          </ng-container>
+
+          <!-- letter/ cheque type -->
+          <ng-container matColumnDef="letter_type">
+            <th mat-header-cell *matHeaderCellDef scope="row">Letter/Cheque Type</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.inward_type == 'Letter'">
+              {{ element.letter_type }}
+              </div>
+              <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.cheque_type }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- letter no/ cheque no -->
+          <ng-container matColumnDef="letter_no">
+            <th mat-header-cell *matHeaderCellDef scope="row">Letter/Cheque No.</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.inward_type == 'Letter'">
+              {{ element.letter_no }}
+              </div>
+              <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.cheque_no }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- letter/ cheque date -->
+          <ng-container matColumnDef="letter_dt">
+            <th mat-header-cell *matHeaderCellDef scope="row">Letter/Cheque Date</th>
+            <td mat-cell *matCellDef="let element" class="rightAlign">
+            <div *ngIf="element.inward_type == 'Letter'">
+              {{ element.letter_dt | date:'dd-MMM-yyyy'}}
+            </div>
+              <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.cheque_dt | date:'dd-MMM-yyyy'}}
+            </div>
+            </td>
+          </ng-container>
+
+          <!-- from which place / person -->
+          <ng-container matColumnDef="from_where_details">
+            <th mat-header-cell *matHeaderCellDef scope="row">From Which Person/Place</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.from_where_details }}
+            </td>
+          </ng-container>
+
+          <!-- branch name -->
+          <ng-container matColumnDef="branch_name">
+            <th mat-header-cell *matHeaderCellDef scope="row">Branch Name</th>
+            <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.inward_type == 'Letter'">
+              {{ element.branch_name }}
+            </div>
+            <div *ngIf="element.inward_type == 'Cheque'" class="centerAlign">
+              -
+            </div>
+            </td>
+          </ng-container>
+
+
+          <!-- Employee name -->
+          <ng-container matColumnDef="doi_employee_name">
+            <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.doi_employee_name }}
+            </td>
+          </ng-container>
+
+          <!-- bank name -->
+          <ng-container matColumnDef="bank_name">
+            <th mat-header-cell *matHeaderCellDef scope="row">Bank Name</th>
+            <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.inward_type == 'Letter'" class="centerAlign">
+              -
+            </div>
+            <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.bank_name }}
+            </div>
+            </td>
+          </ng-container>
+
+          <!-- bank branch name -->
+          <ng-container matColumnDef="bank_branch_name">
+            <th mat-header-cell *matHeaderCellDef scope="row">Bank Branch Name</th>
+            <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.inward_type == 'Letter'" class="centerAlign">
+              -
+            </div>
+            <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.bank_branch_name }}
+            </div>
+            </td>
+          </ng-container>
+
+          <!-- amount -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+            <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.inward_type == 'Letter'" class="centerAlign">
+              -
+            </div>
+            <div *ngIf="element.inward_type == 'Cheque'">
+              {{ element.amount }}
+            </div>
+            </td>
+          </ng-container>
+
+
+          <!-- status -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.active_status == 0">
+                Pending
+              </div>
+              <div *ngIf="element.active_status == 1">
+                Received
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+
+              <a><i class="material-icons plus view-icon mr-2" title="View">remove_red_eye</i></a>
+              <a><i class="material-icons plus edit-icon mr-2" aria-hidden="true" title="Edit" (click)="goToInwardEntry(element)">
+                  edit </i></a>
+
+            </td>
+          </ng-container>
+
+          <!-- display header row -->
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+
+          <!-- display data rows in table -->
+          <tr mat-row *matRowDef="let row; let i = index;columns:columns">
+          </tr>
+
+        </table>
+
+        <!-- paginator -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

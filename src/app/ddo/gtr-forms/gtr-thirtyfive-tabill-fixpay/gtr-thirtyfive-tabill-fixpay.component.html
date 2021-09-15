@@ -1,0 +1,734 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!--heading section  -->
+    <div class="heading-section ng-star-inserted">
+      <div>Form GTR 35 - T.A Bill For Fix Pay</div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/DDO/TA/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">DDO</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> GTR 35</li>
+      </ol>
+    </nav>
+
+    <!-- view bill -->
+    <span class="viewBill">
+      <a (click)="goToReport()" title="View Bill">View Bill</a>
+    </span>
+
+
+    <div class="panel-group">
+      <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+
+        <!--bill preparation -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            Bill Preparation
+          </ng-template>
+
+          <!-- selector for the bill preparation tab -->
+          <app-bill-preparation-thirty-five></app-bill-preparation-thirty-five>
+
+          <!-- form action button -->
+          <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+              Save & Proceed
+              <i class="material-icons" aria-hidden="true" title="Next">
+                chevron_right
+              </i>
+            </button>
+          </div>
+          <!-- form action button end  -->
+
+        </mat-tab>
+        <!--bill preparation end -->
+
+        <!-- gtr-35 details -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            GTR-35-Details
+          </ng-template>
+
+          <!-- form -->
+          <form [formGroup]="thirtyFive" (ngSubmit)="thirtyFiveformData()">
+            <p class="box-note">T A Bill </p>
+
+            <!-- employee pay details -->
+            <div class="box box-primary">
+              <div class="box-header">Employee Pay Detail</div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-6 col-md-3">
+                    <mat-form-field>
+                      <input matInput name="Pay" formControlName="payBasic" placeholder="Pay (Basic)" autocomplete="off"
+                        value='35000.00' readonly>
+                      <div class="error-wrapper"
+                        *ngIf="thirtyFive.controls.payBasic.touched && thirtyFive.controls.payBasic.errors">
+                        <mat-error *ngIf="thirtyFive.controls.payBasic.errors.required">
+                          {{errormsg.pay_basic}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-6 col-md-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="P.T.A. (If applicable)" value="" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-6 col-md-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="C.A" value="" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-6 col-md-3">
+                    <mat-form-field>
+                      <input matInput name="HeadQuater" formControlName="headQut" placeholder="Head Quarter"
+                        autocomplete="off" value='Ahmedabad' readonly>
+                      <div class="error-wrapper"
+                        *ngIf="thirtyFive.controls.headQut.touched && thirtyFive.controls.headQut.errors">
+                        <mat-error *ngIf="thirtyFive.controls.headQut.errors.required">
+                          {{errormsg.head_quater}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- employee pay details end -->
+
+            <!-- travel details -->
+            <div class="box box-primary">
+
+              <div class="box-header">Travel Details</div>
+              <div class="box-body">
+
+                <div class="row">
+
+                  <div class="col-md-12 mat-elevation-z8 mt-2 overflow-x-scroll">
+
+                    <table class="overflow-x-scroll" mat-table [dataSource]="travelDetailsDatasource" matSort
+                      aria-describedby="travelDetails">
+
+                      <ng-container matColumnDef="station">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Station </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput [value]="item.station" alphabetOnly [(ngModel)]="item.station"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="depaDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Date </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="deDate" readonly [max]="maxDate">
+                            <mat-datepicker-toggle matSuffix [for]="deDate"></mat-datepicker-toggle>
+                            <mat-datepicker #deDate></mat-datepicker>
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="hour">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Hour (HH:MM)</th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput [value]="item.hour" [maxLength]='5' (blur)="onHour($event,item)" hourFormat
+                              [(ngModel)]="item.hour" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="departure">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="3" scope="row">Departure <span> * </span>
+                        </th>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="stationArrival">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Station </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput [value]="item.stationArrival" alphabetOnly [(ngModel)]="item.stationArrival"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="ariaDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Date </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="aDate" readonly [max]="maxDate">
+                            <mat-datepicker-toggle matSuffix [for]="aDate"></mat-datepicker-toggle>
+                            <mat-datepicker #aDate></mat-datepicker>
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="hourTwo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Hour(HH :MM) </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput [value]="item.hourTwo" [maxLength]='5' (blur)="onHour1($event,item)"
+                              hourFormat [(ngModel)]="item.hourTwo" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="arrival">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="3" scope="row">Arrival <span> * </span>
+                        </th>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="tyJorn">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Type of Journey </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput [value]="item.tyJorn" alphabetOnly [(ngModel)]="item.tyJorn"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="fareCls">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Fare Class </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput alphabetsSpaceOnly [value]="item.fareCls" [(ngModel)]="item.fareCls"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="noFares">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> No. Of Fares </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput decimalLimitTwoOnly [maxLength]='3' [value]="item.noFares"
+                              [(ngModel)]="item.noFares" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="specification">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="3" scope="row">Specification <span> *
+                          </span>
+                        </th>
+                      </ng-container>
+
+                      <ng-container matColumnDef="ordFares">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}"> Ordinary Fares </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never" class="rightAlign">
+                            <input matInput decimalLimitTwoOnly decimalPoint2 [value]="item.ordFares"
+                              [(ngModel)]="item.ordFares" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="ordFares1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Ordinary Fares</th>
+                      </ng-container>
+
+                      <ng-container matColumnDef="fareAmount1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Fare Amount</th>
+                      </ng-container>
+
+                      <ng-container matColumnDef="fareAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}"> Fare Amount </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never" class="rightAlign">
+                            <input matInput decimalLimitTwoOnly decimalPoint2 [value]="item.fareAmount"
+                              [(ngModel)]="item.fareAmount" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="otherFare">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}"> Other Fares </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never" class="rightAlign">
+                            <input matInput decimalLimitTwoOnly decimalPoint2 [value]="item.otherFare"
+                              [(ngModel)]="item.otherFare" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="otherFare1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Other Fares</th>
+                      </ng-container>
+
+                      <ng-container matColumnDef="dailAllwn">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}"> Daily Allowance <span> *
+                          </span> </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never" class="rightAlign">
+                            <input matInput decimalLimitTwoOnly decimalPoint2 [value]="item.dailAllwn"
+                              [(ngModel)]="item.dailAllwn" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="dailAllwn1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Daily Allowance <span> *
+                          </span></th>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="noDays">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}">No of Days </th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput decimalLimitTwoOnly [value]="item.noDays" [(ngModel)]="item.noDays"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="noDays1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">No of Days</th>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="pur">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}">Purpose of Journey</th>
+                        <td mat-cell *matCellDef="let item">
+                          <mat-form-field floatLabel="never">
+                            <input matInput alphabetOnly [value]="item.noDays" [(ngModel)]="item.noDays"
+                              [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="pur1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Purpose of Journey</th>
+                      </ng-container>
+
+                      <ng-container matColumnDef="travelTptal">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}">Total</th>
+                        <td mat-cell *matCellDef="let item;let i= index">
+                          {{calculateTotalAmount(item,i)| number:'1.2-2'}}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="travelTptal1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Total</th>
+                      </ng-container>
+
+
+                      <ng-container matColumnDef="remarks">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Remarks</th>
+                        <td mat-cell *matCellDef="let element">
+                          <mat-form-field floatLabel="never">
+                            <textarea matInput alphabetOnly [value]="element.remarks"
+                              [ngModelOptions]="{standalone: true}" [(ngModel)]="element.remarks"></textarea>
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="remarks1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Remarks</th>
+                        <td mat-cell *matCellDef="let element">
+                          <mat-form-field floatLabel="never">
+                            <textarea matInput alphabetOnly [value]="element.remarks"
+                              [ngModelOptions]="{standalone: true}" [(ngModel)]="element.remarks"></textarea>
+                          </mat-form-field>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                          [ngStyle]="{'display': 'none'}">Action
+                        </th>
+                        <td mat-cell *matCellDef="let element;let i=index">
+                          <table class="iconTable" aria-describedby="actionBtn" class="action-btn-i centerAlign">
+                            <tbody>
+                              <tr>
+                                <td width="30">
+                                  <i class="material-icons plus add searchIcon" aria-hidden="true"
+                                    (click)="addTravelDetails()">
+                                    add
+                                  </i>
+                                </td>
+
+
+                                <td width="30">
+                                  <i class="material-icons plus delete searchIcon" aria-hidden="true"
+                                    *ngIf="travelDetailsDatasource.data.length > 1" (click)="deleteTravelsDetails(i)">
+                                    delete
+                                  </i>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="action1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row" class="actionwidthtwo">
+                          Action</th>
+                        <td mat-cell *matCellDef="let element;let i=index">
+                          <table class="iconTable" aria-describedby="actionBtn" class="action-btn-i centerAlign">
+                            <tbody>
+                              <tr>
+                                <td width="30">
+                                  <i class="material-icons plus add searchIcon" aria-hidden="true"
+                                    (click)="addTravelDetails()">
+                                    add
+                                  </i>
+                                </td>
+
+
+                                <td width="30">
+                                  <i class="material-icons plus delete searchIcon" aria-hidden="true"
+                                    *ngIf="travelDetailsDatasource.data.length > 1" (click)="deleteTravelsDetails(i)">
+                                    delete
+                                  </i>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </ng-container>
+
+                      <!-- Custom Header Section Of table -->
+                      <tr mat-header-row *matHeaderRowDef="['departure', 'arrival' , 'specification' ,'fareAmount1',
+                     'ordFares1' , 'otherFare1' , 'dailAllwn1', 'noDays1', 'pur1', 'travelTptal1' , 'remarks1' , 
+                      'action1']">
+                      </tr>
+                      <!-- Header Section Of table -->
+                      <tr mat-header-row *matHeaderRowDef="travelDisplayColumn"></tr>
+                      <!-- Data Fetch From .TS File to table -->
+                      <tr mat-row *matRowDef="let row; let i = index;columns:travelDisplayColumn"></tr>
+                    </table>
+
+                  </div>
+
+                  <div class="col-md-12 mgt15">
+
+                    <table class="detailCheckTable">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <label>TA</label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" matInput value="0.00" readonly [value]="calculateTA()">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label> DA </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" matInput value="0.00" readonly [value]="calculateDA()">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label> <strong> Gross Total </strong> </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" matInput value="0.00" readonly
+                              [value]="calculateGrossTotal()">
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- travel details end -->
+
+            <!-- travel expense summary -->
+            <div class="box box-primary">
+
+              <div class="box-header">Travel Expense Summary</div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <table class="detailCheckTable">
+                      <h4 class="postlisttitle coloblack"> Expense </h4>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <label>Railway and Steamer Fare </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Road Mileage kmts by road at <input class="inlineinput" matInput value="0"> paise per
+                              <input class="inlineinput" readonly matInput value="0"> KM </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Days for which daily Allowance is "Claimed" <input readonly class="inlineinput"
+                                matInput value="0"> Day(s) </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Incidental expenses </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" decimalLimitTwoOnly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label> <strong> Gross Total </strong> </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class="col-md-12">
+                    <table class="detailCheckTable">
+                      <h4 class="postlisttitle coloblack"> Deductions </h4>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <label>1. Amount of T.A.advance on transfer/tour:</label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" decimalLimitTwoOnly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>2. Single/Double P.T.A.for <input class="inlineinput" readonly matInput value="0">
+                              days
+                              G.C.S.R.20,21,22,24. </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label> <strong> Total Deduction </strong> </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label> <strong> Net Claimed </strong> </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class="col-md-12">
+
+                    <table class="detailCheckTable">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <label>Bill Passed Amount </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="0.00">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Bill Passed Amount(In Words) </label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput value="Zero Only" readonly>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Bill Passed Date</label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" readonly matInput [matDatepicker]="picker1"
+                              [formControl]="date" [max]="maxDate">
+                            <mat-datepicker #picker1></mat-datepicker>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <label>Bill Sent Date</label>
+                          </td>
+                          <td>
+                            <input class="BUnderLine text-right" matInput>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="col-md-12 rightAlign">
+                    Head of office <br>
+                    (Controlling Officer)
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- travel expense summary end -->
+
+            <!-- employee declaration -->
+            <div class="box box-primary">
+              <div class="box-header">Employee Declaration </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="checkllist col-md-12 no-padding">
+                    <p>
+                      <mat-checkbox>The Amount of the bill does not Claimed or Reimbursed Previously</mat-checkbox>
+                    </p>
+
+                    <p>
+                      <mat-checkbox>had traveled by short and straight route </mat-checkbox>
+                    </p>
+
+                    <p>
+                      <mat-checkbox>had traveled alone in rickshaw </mat-checkbox>
+                    </p>
+
+                    <p>
+                      <mat-checkbox>The sum of columns and rows of the bill are verified by me and are found to be
+                        correct. </mat-checkbox>
+                    </p>
+                  </div>
+
+                  <div class="checkllist mt-4 col-md-12 no-padding">
+                    <p class="mb-0"> <span>Please issue Cheque in favour of &nbsp;&nbsp;</span>:<u
+                        class="font-weight-bold">ABC Employee
+                      </u> &nbsp; of Amount Rs. <b>15000.00 </b></p>
+                    <p class="mb-0 printLink">
+                      <span (click)="gotoCheckList()" class="searchIcon "> Print Cheque List</span>
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- employee declaration end -->
+
+          </form>
+          <!-- form end -->
+
+        </mat-tab>
+        <!-- gtr-35 details end -->
+
+        <!-- Attachments-->
+        <mat-tab label="Attachments">
+          <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+        </mat-tab>
+        <!-- Attachments end -->
+
+      </mat-tab-group>
+
+      <!-- action buttons -->
+      <div class="form-action-button">
+
+        <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+          <i class="material-icons" title="Save As Draft" aria-hidden="true">
+            save
+          </i>
+          Save as Draft
+        </button>
+
+        <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"
+          title="Submit">
+          <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+
+        <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+          <i class="material-icons" title="Reset" aria-hidden="true">
+            restore
+          </i>
+          Reset
+        </button>
+
+        <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['']"
+          routerLinkActive="router-link-active">
+          <i class="material-icons" title="Listing" aria-hidden="true">
+            list
+          </i>
+          Listing
+        </button>
+
+        <button type="button" mat-raised-button class="print-btn" title="Print">
+          <i class="material-icons" title="Print" aria-hidden="true">
+            print
+          </i>
+          Print
+        </button>
+
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+
+      </div>
+      <!-- action buttons end -->
+
+    </div>
+  </div>
+</div>

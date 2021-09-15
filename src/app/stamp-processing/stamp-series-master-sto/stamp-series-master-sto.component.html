@@ -1,0 +1,215 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div>Stamp Series Master - Sub Treasury Office</div>
+      <div class="font-heading">
+        <b>Reference No:</b> 19-20/STM/SSSTO/001</div>
+    <div class="font-heading">
+        <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Stamp Series Master - Sub Treasury Office</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Stamp Series Master - Sub Treasury Office Entry Section Starts-->
+      <div class="box box-primary">
+        <div class="box-header">Stamp Series Master - Sub Treasury Office</div>
+        <div class="box-body">
+          <div #parentGrids>
+            <form [formGroup]="stampMasterStoForm">
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="finYear" placeholder="Financial Year" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                          [noEntriesFoundLabel]="'no matching Financial Year found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let FY of finYear_list | filterSelectInput:finYearCtrl.value"
+                        [value]="FY.value">
+                        {{FY.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="stampMasterStoForm.controls.finYear.touched && (stampMasterStoForm.controls.finYear.errors)">
+                    <mat-error *ngIf="stampMasterStoForm.controls.finYear.errors.required">
+                      {{errorMessages.FIN_YEAR}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Sub Treasury Office</mat-label>
+                    <input matInput formControlName="toffice" [value]="tofficeVal" 
+                    [matTooltip]="SubTrVal.value" #SubTrVal required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="stampMasterStoForm.controls.toffice.touched && (stampMasterStoForm.controls.toffice.errors)">
+                    <mat-error *ngIf="stampMasterStoForm.controls.toffice.errors.required">
+                      {{errorMessages.SUB_TRE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="stamp" placeholder="Type of Stamp" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="stampCtrl" [placeholderLabel]="'Find Type of Stamp...'"
+                          [noEntriesFoundLabel]="'no Type of Stamp found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let ch of stamp_List | filterSelectInput:stampCtrl.value" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="stampMasterStoForm.controls.stamp.touched && (stampMasterStoForm.controls.stamp.errors)">
+                    <mat-error *ngIf="stampMasterStoForm.controls.stamp.errors.required">
+                      {{errorMessages.STAMP_TYPE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+
+
+
+              </div>
+            </form>
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="whenAddClick()" title="Add">
+                <i class="material-icons" aria-hidden="true">
+                  add
+                </i>
+                Add
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- Stamp Series Master - Sub Treasury Office Entry Section Ends-->
+
+      <div class="heading-section ng-star-inserted" *ngIf="tables.length">
+        <div class="col-md-4 col-sm-12 title">Stamp Type</div>
+      </div>
+<!-- Entry Table Section Starts-->
+      <mat-accordion class="search-accordian">
+        <div *ngFor="let table of tables">
+        <mat-expansion-panel class="mt-2">
+          <mat-expansion-panel-header>
+          <!-- Type of Stamp -->
+            <div class="heading-section">
+              {{table.stamptype}}
+            </div>
+          </mat-expansion-panel-header>
+          <div>
+            <div class="box-body">
+            <table mat-table [dataSource]="table.dataSource" class="mat-elevation-z8" aria-describedby="stampSeriesmaster">
+
+            <!-- Sr. No.  -->
+              <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+              </ng-container>
+
+              <!-- Denomination -->
+              <ng-container matColumnDef="denomination">
+                <th mat-header-cell *matHeaderCellDef scope="row">Denomination</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.denomination}} </td>
+              </ng-container>
+
+              <!-- Unit Value (In Rs.) -->
+              <ng-container matColumnDef="unitValue">
+                <th mat-header-cell *matHeaderCellDef scope="row">Unit Value (In Rs.)</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field class="full-width leftAlign">
+                    <input matInput type="text" numbersOnly required>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Stamp In each Sheet -->
+              <ng-container matColumnDef="stampSheet">
+                <th mat-header-cell *matHeaderCellDef scope="row">Stamp In each Sheet</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field class="full-width leftAlign">
+                    <input matInput type="text" numbersOnly required>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+
+              <!-- From Series -->
+              <ng-container matColumnDef="from">
+                <th mat-header-cell *matHeaderCellDef scope="row">From Series</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field class="full-width leftAlign">
+                    <input matInput type="text" numbersOnly required>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- To Series -->
+              <ng-container matColumnDef="to">
+                <th mat-header-cell *matHeaderCellDef scope="row">To Series</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign">
+                  <mat-form-field class="full-width leftAlign">
+                    <input matInput type="text" numbersOnly required>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table></div>
+          </div>
+        </mat-expansion-panel>
+        </div>
+
+      </mat-accordion>
+<!-- Entry Table Section Ends-->
+      <div class="form-action-button">
+      <!-- Action Buttons -->
+        <button mat-raised-button type="submit" (click)="directiveObject.sumbit()" class="green">
+          <i aria-hidden="true" class="material-icons">
+            done
+          </i> Submit
+        </button>
+
+        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+          <i class="material-icons" aria-hidden="true" title="Listing">
+            list
+          </i>
+          Listing
+        </button>
+        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="Dashboard">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

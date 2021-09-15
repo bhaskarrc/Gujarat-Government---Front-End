@@ -1,0 +1,443 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Create New PD/PLA Receipt</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/PDPLA/CNPR/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigation starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">PD/PLA</li>
+                <li class="breadcrumb-item active" aria-current="page">Create New PD/PLA Receipt </li>
+            </ol>
+        </nav>
+        <!-- Navigation ends -->
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+                <!-- PD/PLA Receipt Detail Tab -->
+                <mat-tab>
+                    <form [formGroup]="pdplaform">
+                        <ng-template mat-tab-label>
+                            PD/PLA Receipt Detail
+                        </ng-template>
+
+                        <!-- Receipt Summary -->
+                        <div class="box box-primary">
+                            <div class="box-header">Receipt Summary</div>
+                            <div class="box-body">
+                                <div class="row">
+
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Total Challan for the Account" value="3"
+                                                readonly formControlName="totalChallanForAccount">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Total Amount for the Account" value="3500"
+                                                readonly formControlName="totalAmountForAccount">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Total Challan for the day" value="2" readonly
+                                                formControlName="totalChallanForDay">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Total Amount for the day " value="2500"
+                                                readonly formControlName="totalAmountForDay">
+                                        </mat-form-field>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Challan Detail Posting -->
+                        <div class="box box-primary">
+                            <div class="box-header">Challan Detail Posting</div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Challan No" maxlength="20" numbersOnly
+                                                formControlName="challanNo">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="challanDate" formControlName="challanDate"
+                                                placeholder="Challan Date" readonly formControlName="challanDate">
+                                            <mat-datepicker-toggle matSuffix [for]="challanDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #challanDate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="dateOfRec" formControlName="dOr"
+                                                placeholder="Date of Receipt" required readonly
+                                                formControlName="dateOfReceipt">
+                                            <mat-datepicker-toggle matSuffix [for]="dateOfRec"></mat-datepicker-toggle>
+                                            <mat-datepicker #dateOfRec></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="transiton-type" formControlName="transType"
+                                                placeholder="Transaction Type" required
+                                                (selectionChange)="changeTransactionType($event.value)">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="trandCtrl"
+                                                        [placeholderLabel]="'Select Transaction Type ...'"
+                                                        [noEntriesFoundLabel]="'no matching Transaction Type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let trans of transition_list | filterSelectInput : trandCtrl.value : 'viewValue'"
+                                                    [value]="trans.value" [matTooltip]="trans.viewValue">
+                                                    {{trans.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.transType.touched && pdplaform.controls.transType.errors">
+                                                <mat-error *ngIf="pdplaform.controls.transType.errors.required">
+                                                    {{errorMessages.TRANSITION_TYPE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="transiton-type" formControlName="InternalTc"
+                                                placeholder="Internal Tc"
+                                                [disabled]="isSelectedCash || isSelectedAdjustment"
+                                                (selectionChange)="changeInternalTc($event.value)">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="inteTcCtrl"
+                                                        [placeholderLabel]="'Select Internal Tc ...'"
+                                                        [noEntriesFoundLabel]="'no matching Internal Tc found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let TC of inttc_list | filterSelectInput : inteTcCtrl.value : 'viewValue'"
+                                                    [value]="TC.value" [matTooltip]="TC.viewValue">
+                                                    {{TC.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3" *ngIf="isInternalTcYes">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Payment From Account No"
+                                                formControlName="paymentFromAccNo">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select placeholder="PD/PLA A/c No" formControlName="pdplaScNO"
+                                                name="PD/PLA" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]='pdplaCtrl'
+                                                        [placeholderLabel]="'Select By user  ...'"
+                                                        [noEntriesFoundLabel]="'no matching code  found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let PDPLAC of pdpla_list" [value]="PDPLAC.value"
+                                                    (click)="selectBill(PDPLAC.value)" [matTooltip]="PDPLAC.viewValue">
+                                                    {{PDPLAC.viewValue}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isSelectedblankmajor">
+                                        <mat-form-field>
+                                            <mat-select name="Major-Head" formControlName="majorHead"
+                                                placeholder="Major Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="majorCtrl"
+                                                        [placeholderLabel]="'Select Major Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let major of majorHead_list | filterSelectInput : majorCtrl.value : 'viewValue'"
+                                                    [value]="major.value" [matTooltip]="major.viewValue">
+                                                    {{major.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.majorHead.touched && pdplaform.controls.majorHead.errors">
+                                                <mat-error *ngIf="pdplaform.controls.majorHead.errors.required">
+                                                    {{errorMessages.MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="isSelectedpdlaAc">
+                                        <mat-form-field>
+                                            <mat-select name="Major-Head" formControlName="majorHead1"
+                                                placeholder="Major Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="majorCtrl1"
+                                                        [placeholderLabel]="'Select Major Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let major of majorHead1_list | filterSelectInput : majorCtrl1.value : 'viewValue'"
+                                                    [value]="major.value" [matTooltip]="major.viewValue">
+                                                    {{major.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.majorHead.touched && pdplaform.controls.majorHead.errors">
+                                                <mat-error *ngIf="pdplaform.controls.majorHead.errors.required">
+                                                    {{errorMessages.MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+                                    <div class="col-sm-3" *ngIf="isSelectedblankminor">
+                                        <mat-form-field>
+                                            <mat-select name="Minor-head" formControlName="minorHead"
+                                                placeholder="Minor Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="minorHeadCtrl"
+                                                        [placeholderLabel]="'Select Minor Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Minor Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let minor of minorHead_list | filterSelectInput : minorHeadCtrl.value : 'viewValue'"
+                                                    [value]="minor.value" [matTooltip]="minor.viewValue">
+                                                    {{minor.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.minorHead.touched && pdplaform.controls.minorHead.errors">
+                                                <mat-error *ngIf="pdplaform.controls.minorHead.errors.required">
+                                                    {{errorMessages.MINOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+                                    <div class="col-sm-3" *ngIf="isSelectedpdlaAc">
+                                        <mat-form-field>
+                                            <mat-select name="Minor-head" formControlName="minorHead1"
+                                                placeholder="Minor Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="minorHeadCtrl"
+                                                        [placeholderLabel]="'Select Minor Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Minor Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let minor of minorHead1_list | filterSelectInput : minorHeadCtrl1.value : 'viewValue'"
+                                                    [value]="minor.value" [matTooltip]="minor.viewValue">
+                                                    {{minor.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.minorHead.touched && pdplaform.controls.minorHead.errors">
+                                                <mat-error *ngIf="pdplaform.controls.minorHead.errors.required">
+                                                    {{errorMessages.MINOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+                                    <div class="col-sm-3" *ngIf="isSelectedblankdetail">
+                                        <mat-form-field>
+                                            <mat-select name="detailHead" formControlName="detailHead"
+                                                placeholder="Detail Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="detailHeadCtrl"
+                                                        [placeholderLabel]="'Select Detail Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Detail Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let TC of detailHead_list | filterSelectInput : detailHeadCtrl.value : 'viewValue'"
+                                                    [value]="TC.value" [matTooltip]="TC.viewValue">
+                                                    {{TC.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isSelectedpdlaAc">
+                                        <mat-form-field>
+                                            <mat-select name="detailHead" formControlName="detailHead1"
+                                                placeholder="Detail Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="detailHeadCtrl1"
+                                                        [placeholderLabel]="'Select Detail Head ...'"
+                                                        [noEntriesFoundLabel]="'no matching Detail Head found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let TC of detailHead1_list | filterSelectInput : detailHeadCtrl1.value : 'viewValue'"
+                                                    [value]="TC.value" [matTooltip]="TC.viewValue">
+                                                    {{TC.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3" *ngIf="!isSelectedCash">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Authority Letter No " maxlength="20"
+                                                numbersOnly formControlName="authhorityLetterNo"
+                                                [readonly]="isSelectedCash || isSelectedAdjustment">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="!isSelectedCash">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="authoDate" formControlName="autDate"
+                                                placeholder="Authority Letter Date " [required]="isSelectedAdjustment"
+                                                [readonly]="!isSelectedAdjustment">
+                                            <mat-datepicker-toggle matSuffix [for]="authoDate"></mat-datepicker-toggle>
+                                            <mat-datepicker #authoDate [disabled]="!isSelectedAdjustment">
+                                            </mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Department Name" value="XZXZ"
+                                                formControlName="department">
+                                        </mat-form-field>
+                                    </div>
+
+
+
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput type="number" formControlName="amt1" placeholder="Amount"
+                                                maxlength="20" value="2000" required formControlName="amt1">
+
+                                            <div class="error-wrapper"
+                                                *ngIf="pdplaform.controls.amt.touched && pdplaform.controls.amt.errors">
+                                                <mat-error *ngIf="pdplaform.controls.amt.errors.required">
+                                                    {{errorMessages.AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput formControlName="amtInWords" placeholder="Amount (in words)"
+                                                value="Two Thousands Only" maxlength="20">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Narration" formControlName="narration">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- form-action-button -->
+                        <div class="form-action-button">
+
+                            <button mat-raised-button type="submit" class="green"
+                                (click)="directiveObject.workflowDetails()">
+                                <i class="material-icons" aria-hidden="true" title="done">
+                                    done
+                                </i> Submit</button>
+
+
+                            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                <i class="material-icons" aria-hidden="true" title="Listing">
+                                    list
+                                </i>
+                                Listing
+                            </button>
+
+                            <button type="button" mat-raised-button class="btnClose">
+                                <i class="material-icons" aria-hidden="true" title="close">
+                                    close
+                                </i>
+                                Close
+                            </button>
+                        </div>
+
+                    </form>
+                </mat-tab>
+
+                <!-- Attachments Tab -->
+                <mat-tab label="Attachments">
+
+                    <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+
+                    <!-- Common Button -->
+                    <div class="form-action-button">
+
+                        <button mat-raised-button type="submit" class="green"
+                            (click)="directiveObject.workflowDetails()">
+                            <i class="material-icons" aria-hidden="true" title="done">
+                                done
+                            </i> Submit</button>
+
+
+                        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                            <i class="material-icons" aria-hidden="true" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="close">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+        </div>
+
+    </div>
+</div>

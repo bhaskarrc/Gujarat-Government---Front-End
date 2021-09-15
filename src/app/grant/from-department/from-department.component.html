@@ -1,0 +1,445 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Grant Distribution From Department</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/Grant/GDF/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Grant</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Grant Distribution From Department</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-md-12">
+                <table id="schmeDetail">
+                    <tr>
+                        <th style="width: 10%;">Financial Year : <br><br> <span style="font-weight: normal;"> 2019-2020 </span></th>
+                        <th style="width: 10%;">Revenue/Capital : <br><br> <span style="font-weight: normal;"> Revenue </span></th>
+                        <th style="width: 10%;">From Month <span style="color: red;">*</span> <br>
+                            <mat-form-field floatLabel="never">
+                                <mat-select>
+                                    <mat-option *ngFor="let mn of monthName" [value]="mn.value">
+                                        {{mn.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </th>
+                        <th style="width: 10%;">To Month <span style="color: red;">*</span>
+                            <mat-form-field floatLabel="never">
+                                <mat-select>
+                                    <mat-option *ngFor="let mn of monthName" [value]="mn.value">
+                                        {{mn.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </th>
+                        <th style="width: 10%;">Order No. <span style="color: red;">*</span>
+                            <mat-form-field floatLabel="never">
+                                <input matInput autocomplete="off">
+                            </mat-form-field>
+                        </th>
+                        <th style="width: 10%;">Normal Grant / LC <span style="color: red;">*</span>
+                            <mat-form-field floatLabel="never">
+                                <mat-select>
+                                    <mat-option *ngFor="let nglc of normalLC" [value]="nglc.value">
+                                        {{nglc.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </th>
+                        <th style="width: 10%;">Fund Type <span style="color: red;">*</span>
+                            <mat-form-field floatLabel="never">
+                                <mat-select>
+                                    <mat-option *ngFor="let mn of fundType" [value]="mn.value">
+                                        {{mn.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </th>
+                    </tr>
+                </table>
+
+                <div class="rsClass"> (₹ in Lakhs) </div>
+                <table mat-table #table [dataSource]="grantSummaryDataSource" class="responsive-table">
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element;let i= index;">{{element.type}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="FDAuthorizedGrant">
+                        <th mat-header-cell *matHeaderCellDef>FD Authorized Grant</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.FDAuthorizedGrant}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="grantAvailable">
+                        <th mat-header-cell *matHeaderCellDef>Grant Available</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.grantAvailable}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalGrantToDept">
+                        <th mat-header-cell *matHeaderCellDef>Total Grant To Department</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.totalGrantToDept}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalGrantToCO">
+                        <th mat-header-cell *matHeaderCellDef>Total Grant To CO</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.totalGrantToCO}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalGrantToDDO">
+                        <th mat-header-cell *matHeaderCellDef>Total Grant To DDO</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.totalGrantToDDO}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="remainingGrant">
+                        <th mat-header-cell *matHeaderCellDef>Remaining Grant</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+                            {{element.remainingGrant}}
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="grantSummaryColumns;"></tr>
+                    <tr mat-row *matRowDef="let row;let i= index;columns:grantSummaryColumns;"></tr>
+                </table>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <mat-form-field floatLabel="never">
+                            <mat-select placeholder="Grant Release To" (selectionChange)="grantReleaseToChange($event.value)" [(ngModel)]="grantReleaseDrp">
+                                <mat-option *ngFor="let grtRelease of grantReleaseTo" [value]="grtRelease.value">
+                                    {{grtRelease.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <table mat-table [dataSource]="schemeDataSource" multiTemplateDataRows class="responsive-table">
+                    <ng-container matColumnDef="subHead1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sub Head</th>
+                    </ng-container>
+
+                    <ng-container matColumnDef="subHead">
+                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display':'none'}">Sub Head</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" (click)="$event.stopPropagation();">
+                            <a href="javascript:void(0)" (click)="OpenSchemeDialog()">Add Scheme</a>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="budgetEstimate">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Budget Estimate</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="BEState">
+                        <th mat-header-cell *matHeaderCellDef>State</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="BECSS">
+                        <th mat-header-cell *matHeaderCellDef>CSS</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="revisedEstimate">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Revised Estimate</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="revisedState">
+                        <th mat-header-cell *matHeaderCellDef>State</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="revisedCSS">
+                        <th mat-header-cell *matHeaderCellDef>CSS</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantApproved">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Grant Approved / Release Till Date</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantApprovedState">
+                        <th mat-header-cell *matHeaderCellDef>State</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantApprovedCSS">
+                        <th mat-header-cell *matHeaderCellDef>CSS</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="officeName1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Department<br>CO<br>DDO</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="officeName">
+                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display':'none'}"></th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantReleased">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Grant Released</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantReleasedState">
+                        <th mat-header-cell *matHeaderCellDef>State</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantReleasedCSS">
+                        <th mat-header-cell *matHeaderCellDef>CSS</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantToBeRelease">
+                        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Grant To Be Release</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantToBeReleaseState">
+                        <th mat-header-cell *matHeaderCellDef>State</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" (click)="$event.stopPropagation();">
+                            <mat-form-field floatLabel="never" class="rightAlign">
+                                <input matInput [value]="element.grantToBeReleaseState" [(ngModel)]="element.grantToBeReleaseState" (blur)="decimalPoint(element,'grantToBeReleaseState')" (keypress)="decimalKeyPress($event)">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grantToBeReleaseCSS">
+                        <th mat-header-cell *matHeaderCellDef>CSS</th>
+                        <td mat-cell *matCellDef="let element;let i= index;" (click)="$event.stopPropagation();">
+                            <mat-form-field floatLabel="never" class="rightAlign">
+                                <input matInput [value]="element.grantToBeReleaseCSS" [(ngModel)]="element.grantToBeReleaseCSS" (blur)="decimalPoint(element,'grantToBeReleaseCSS')" (keypress)="decimalKeyPress($event)">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="remarks1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks</th>
+                    </ng-container>
+
+                    <ng-container matColumnDef="remarks">
+                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display':'none'}">Remarks</th>
+                        <td mat-cell *matCellDef="let element;let i= index;"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action1">
+                        <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Action</th>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display':'none'}">Action</th>
+                        <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                            <a><i class="material-icons plus edit-icon"
+                                  title="Edit" aria-hidden="true"> edit </i></a>
+                            <a><i class="material-icons plus view-icon"
+                                  title="View" aria-hidden="true">remove_red_eye</i></a>
+                            <!-- <a><i
+                                  class="material-icons plus send-icon" title="` verifier">send</i></a> -->
+                            <a><i
+                                  class="material-icons plus delete" title="delete" aria-hidden="true">delete_forever</i></a>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="1">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">A</th>
+                    </ng-container>
+                    <ng-container matColumnDef="2">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">B</th>
+                    </ng-container>
+                    <ng-container matColumnDef="3">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">C</th>
+                    </ng-container>
+                    <ng-container matColumnDef="4">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">D</th>
+                    </ng-container>
+                    <ng-container matColumnDef="5">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">E</th>
+                    </ng-container>
+                    <ng-container matColumnDef="6">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">F</th>
+                    </ng-container>
+                    <ng-container matColumnDef="7">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">G</th>
+                    </ng-container>
+                    <ng-container matColumnDef="8">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">H</th>
+                    </ng-container>
+                    <ng-container matColumnDef="9">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">I</th>
+                    </ng-container>
+                    <ng-container matColumnDef="10">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">J</th>
+                    </ng-container>
+                    <ng-container matColumnDef="11">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">K</th>
+                    </ng-container>
+                    <ng-container matColumnDef="12">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">L</th>
+                    </ng-container>
+                    <ng-container matColumnDef="13">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">M</th>
+                    </ng-container>
+                    <ng-container matColumnDef="14">
+                        <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">N</th>
+                    </ng-container>
+                    <tr mat-header-row class="unsetHeight" *matHeaderRowDef="['1','2','3','4','5','6','7','8','9','10','11','12','13', '14']"></tr>
+                    <ng-container matColumnDef="noData">
+                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display':'none'}"></th>
+                        <td mat-cell *matCellDef="let element;let i= index;" [attr.colspan]="14">No Data Available</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expandedDetail" expandedElement=null>
+                        <td mat-cell *matCellDef="let element" [attr.colspan]="10">
+                            <div class="element-detail col-sm-12" [@expandRow]="element === expandedElement ? 'expanded' : 'collapsed'" [style.height]="element.expanded ? 'unset' : '0 !important'">
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C1:Personnel Services And Benefits">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C2:Administrative Expenses">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C3:Contractual Service And Supplies">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C4:Grants Etc.">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C5:Other Expenditure">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C6:Acquisition Of Capital Assets And Other Capital Expenditure">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="00:C7:Accounting Adjustment">
+                                </mat-form-field><br>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign" value="Total">
+                                </mat-form-field>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="expandedDetail1" expandedElement=null>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="element-detail col-sm-12" [@expandRow]="element === expandedElement ? 'expanded' : 'collapsed'" [style.height]="element.expanded ? 'unset' : '0 !important'">
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="expandedDetail2" expandedElement=null>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="element-detail col-sm-12" [@expandRow]="element === expandedElement ? 'expanded' : 'collapsed'" [style.height]="element.expanded ? 'unset' : '0 !important'">
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                                <mat-form-field class="full-width">
+                                    <input autocomplete="off" matInput class="rightAlign">
+                                </mat-form-field>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="expandedDetail3" expandedElement=null>
+                        <td mat-cell *matCellDef="let element" [attr.colspan]="2">
+                            <div class="element-detail col-sm-12" [@expandRow]="element === expandedElement ? 'expanded' : 'collapsed'" [style.height]="element.expanded ? 'unset' : '0 !important'">
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label><br>
+                                <label>&nbsp;</label>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['subHead1','budgetEstimate','revisedEstimate','grantApproved','officeName1','grantReleased','grantToBeRelease','remarks1','action1'];"></tr>
+                    <tr mat-header-row *matHeaderRowDef="schemeColumns;"></tr>
+                    <tr mat-row *matRowDef="let element;columns: schemeColumns;" (click)="expandedElement = (expandedElement === element) ? null : element">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail','expandedDetail1','expandedDetail2','expandedDetail3']" class="example-detail-row"></tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                    save
+                </i>
+                Save as Draft
+            </button>
+            <button mat-raised-button type="submit" title="Submit" class="green" (click)="workflowDetails()"><i
+                class="material-icons" title="Submit" aria-hidden="true">
+                done
+            </i> Submit</button>
+
+            <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button title="Listing" color="warn" [routerLink]="['../grant-release-fd-to-administrative-department/fd-to-administrative-department-list']" routerLinkActive="router-link-active">
+                <i class="material-icons" title="Listing" aria-hidden="true">
+                    list
+                </i>
+                Listing
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+    </div>
+</div>

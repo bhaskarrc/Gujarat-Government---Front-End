@@ -1,0 +1,828 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            CVP-Bill
+
+        </div>
+        <span class="viewBill">
+            <a title="View Bill">View Bill</a>
+        </span>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Pension Bill</a></li>
+                <li class="breadcrumb-item active" aria-current="page">CVP-Bill</li>
+            </ol>
+        </nav>
+
+
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+                <!--budget details-->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Budget Details
+                    </ng-template>
+                    <form [formGroup]="budgetDetails" (ngSubmit)="budgetDetailsformData()">
+                        <!--employee details-->
+                        <div class="box box-primary">
+                            <div class="box-header">Employee Details</div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee Name" value="{{employeeName}}"
+                                                readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Designation" value="{{designation}}" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="For the Establishment of the "
+                                                value="{{officeName}}" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="month" placeholder="For the Month of" disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="monthsCtrl"
+                                                        [placeholderLabel]="'Find Months..'"
+                                                        [noEntriesFoundLabel]="'no matching Months Found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let month of Months_list |
+                                            filterSelectInput: monthsCtrl.value" [value]="month.value">
+                                                    {{month.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--budget details-->
+                        <div class="box box-primary">
+                            <div class="box-header">Budget Details</div>
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="classExp" placeholder="Class of Expenditure"
+                                                disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="classCtrl"
+                                                        [placeholderLabel]="'Find Voted...'"
+                                                        [noEntriesFoundLabel]="'no matching Voted found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let class of classType | filterSelectInput:
+                                                                  classCtrl.value" [value]="class.value">
+                                                    {{class.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="budgetTypes" placeholder="Budget Type"
+                                                disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="budgetTypeCtrl"
+                                                        [placeholderLabel]="'Find Budget Type...'"
+                                                        [noEntriesFoundLabel]="'no matching budget found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let budget of budgetType | filterSelectInput:
+                                                                          budgetTypeCtrl.value" [value]="budget.value">
+                                                    {{budget.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="billCategory" placeholder="Bill Category"
+                                                (selectionChange)="billCategoryChange($event)" disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billCatCtrl"
+                                                        [placeholderLabel]="'Select Bill Category...'"
+                                                        [noEntriesFoundLabel]="'no matching Bill                                                                    Category'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let BC of billCategoryList |
+                                                                  filterSelectInput: billCatCtrl.value"
+                                                    [value]="BC.value">
+                                                    {{BC.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Scheme No" formControlName="schemeNo" required
+                                                readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.schemeNo.touched && budgetDetails.controls.schemeNo.errors">
+                                                <mat-error *ngIf="budgetDetails.controls.schemeNo.errors.required">
+                                                    {{errorMessages.SCHEME_NO}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Major Head" formControlName="majorHead"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.majorHead.touched && budgetDetails.controls.majorHead.errors">
+                                                <mat-error *ngIf="budgetDetails.controls.majorHead.errors.required">
+                                                    {{errorMessages.MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Minor Head" formControlName="minorHead"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.minorHead.touched && budgetDetails.controls.minorHead.errors">
+                                                <mat-error *ngIf="budgetDetails.controls.minorHead.errors.required">
+                                                    {{errorMessages.MINOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Detailed Head" formControlName="detailedHead"
+                                                readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Head Chargable" formControlName="headChargable"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.headChargable.touched && budgetDetails.controls.headChargable.errors">
+                                                <mat-error *ngIf="budgetDetails.controls.headChargable.errors.required">
+                                                    {{errorMessages.HEAD_CHARGEABLE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="funds" placeholder="Fund" disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="fundTypeCtrl"
+                                                        [placeholderLabel]="'Find Fund...'"
+                                                        [noEntriesFoundLabel]="'no matching Fund found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let fund of fundType | filterSelectInput:
+                                                                    fundTypeCtrl.value" [value]="fund.value">
+                                                    {{fund.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="expenditureTypes"
+                                                placeholder=" Type of Expenditure" disabled>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="expenditureTypeCtrl"
+                                                        [placeholderLabel]="'Find Expenditure Type...'"
+                                                        [noEntriesFoundLabel]="'no matching Expenditure found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let expenditure of expenditureType | filterSelectInput:
+                                                                          expenditureTypeCtrl.value"
+                                                    [value]="expenditure.value">
+                                                    {{expenditure.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Demand" formControlName="demand" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Sub Major Head" formControlName="subMajorHead"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.subMajorHead.touched && budgetDetails.controls.subMajorHead.errors">
+                                                <mat-error *ngIf="budgetDetails.controls.subMajorHead.errors.required">
+                                                    {{errorMessages.SUB_MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Sub Head" formControlName="subHead" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Object Head Class"
+                                                formControlName="objectHeadClass" required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="budgetDetails.controls.objectHeadClass.touched && budgetDetails.controls.objectHeadClass.errors">
+                                                <mat-error
+                                                    *ngIf="budgetDetails.controls.objectHeadClass.errors.required">
+                                                    {{errorMessages.OBJECT_HEAD_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--edp details-->
+                        <div class="box box-primary">
+                            <div class="box-header">EDP Details</div>
+                            <div class="box-body">
+                                <div class="mat-elevation-z8 mt-2 ">
+                                    <!-- table starts -->
+                                    <table mat-table [dataSource]="expenditureDataSource" matSort
+                                        aria-describedby="edpDetails">
+                                        <ng-container matColumnDef="parent1">
+                                            <th mat-header-cell *matHeaderCellDef colspan="5" class="centerAlign"
+                                                scope="row">
+                                                Expenditure Details </th>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="budgetCode">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Budget
+                                                Code
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i=index"
+                                                style="text-align: center;">
+                                                {{element.budgetCode}}
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="description">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                                                Description</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.description}}</td>
+                                            <td mat-footer-cell *matFooterCellDef> </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="edpCode">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP Code
+                                            </th>
+                                            <td mat-cell *matCellDef="let element" style="text-align: center;">
+                                                <span *ngIf="element.edpCode">{{element.edpCode}}</span>
+                                                <mat-form-field class="example-full-width" *ngIf="!element.edpCode">
+                                                    <input tabindex="1" matInput value="{{element.edpCode}}"
+                                                        decimalLimitTwoOnly decimalPoint2 (keydown.enter)="fillData()"
+                                                        maxlength="4" tabindex="1" [datoAutoFocus]="true" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef> </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="amount">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount
+                                                (Rs.)
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.amount"
+                                                        decimalLimitTwoOnly value="{{element.amount}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{amount | number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <!-- Header Section Of table -->
+                                        <tr mat-header-row *matHeaderRowDef="['parent1']"
+                                            class="example-second-header-row">
+                                        </tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-header-row *matHeaderRowDef="expenditureColumn"></tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-row *matRowDef="let row; let i = index;columns:expenditureColumn"></tr>
+                                        <tr mat-footer-row *matFooterRowDef="expenditureColumn"></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--receipt details-->
+                        <div class="box box-primary">
+                            <div class="box-header"> Receipt Details </div>
+                            <div class="box-body">
+                                <div class="mat-elevation-z8 mt-2">
+                                    <!-- table starts -->
+                                    <table mat-table [dataSource]="receiptDataSource" matSort
+                                        aria-describedby="receiptDetails" class="mt-3">
+                                        <ng-container matColumnDef="parent1">
+                                            <th mat-header-cell *matHeaderCellDef colspan="9" class="centerAlign">
+                                                Receipt Details </th>
+                                        </ng-container>
+                                        <ng-container matColumnDef="edpCode">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP Code
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <span *ngIf="element.edpCode">{{element.edpCode}}</span>
+                                                <mat-form-field class="example-full-width" *ngIf="!element.edpCode">
+                                                    <input matInput value="{{element.edpCode}}" maxlength="4"
+                                                        numbersOnly (keydown.enter)="fillEdpDSescription()"
+                                                        [datoAutoFocus]="true" required>
+                                                </mat-form-field>
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="dedType">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DED Type
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i=index">
+                                                {{element.dedType}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="majorHead">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i=index">
+                                                {{element.majorHead}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="subMajorHead">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Sub Major
+                                                Head
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i=index">
+                                                {{element.subMajorHead}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="minerHead">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Minor
+                                                Head</th>
+                                            <td mat-cell *matCellDef="let element;let i=index">
+                                                {{element.minerHead}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="subHead">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Sub Head
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i=index">
+                                                {{element.subHead}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="amount">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount
+                                                (Rs.)</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input matInput decimalLimitTwoOnly value="{{element.amount}}"
+                                                        decimalPoint2 [(ngModel)]="element.amount"
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Header Section Of table -->
+                                        <tr mat-header-row *matHeaderRowDef="['parent1']"
+                                            class="example-second-header-row">
+                                        </tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-header-row *matHeaderRowDef="receiptColumn"></tr>
+                                        <tr mat-row *matRowDef="let row; let i = index; columns:receiptColumn"></tr>
+                                    </table>
+                                    <!-- first table ends -->
+                                    <!--second table-->
+
+                                    <table mat-table [dataSource]="receiptSecondTableDataSource" matSort
+                                        aria-describedby="receiptSecondTable" class="mt-3">
+                                        <ng-container matColumnDef="deductionA">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                                                Deduction-A</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.deductionA"
+                                                        decimalLimitTwoOnly value="{{element.deductionA}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{deductionA| number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="deductionB">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                                                Deduction-B</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.deductionB"
+                                                        decimalLimitTwoOnly value="{{element.deductionB}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{deductionB | number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="expenditure">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                                                Expenditure</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.expenditure"
+                                                        decimalLimitTwoOnly value="{{element.expenditure}}"
+                                                        decimalPoint2 [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{expenditure | number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="netAmount">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Net Amount
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.amount"
+                                                        decimalLimitTwoOnly value="{{element.amount}}"
+                                                        decimalPoint2[ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{amount | number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <!-- Header Section Of table -->
+                                        <tr mat-header-row *matHeaderRowDef="receiptSecondTableColumn"></tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-row
+                                            *matRowDef="let row; let i = index;columns:receiptSecondTableColumn"></tr>
+                                        <tr mat-footer-row *matFooterRowDef="receiptSecondTableColumn"></tr>
+                                    </table>
+                                    <!-- table ends -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--list of cheque-->
+                        <div class="box box-primary">
+                            <div class="box-header"> List of Cheque/E-Payment</div>
+                            <div class="box-body">
+                                <div class="mat-elevation-z8 mt-2">
+                                    <!-- table starts -->
+                                    <table mat-table [dataSource]="listOfChequeDataSource" matSort
+                                        aria-describedby="listOfCheque" class="mt-3">
+
+                                        <ng-container matColumnDef="paymentType">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Payment
+                                                Type</th>
+                                            <td mat-cell *matCellDef="let element">
+
+                                                <mat-form-field class="full-width">
+                                                    <mat-select formControlName="paymentType" placeholder=""
+                                                        (selectionChange)="payment($event)" disabled>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="paymentTypeCtrl"
+                                                                [placeholderLabel]="'Select Payment Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Payment                                                      Type'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option *ngFor="let PT of PaymentType_list |
+                                                    filterSelectInput: paymentTypeCtrl.value" [value]="PT.value">
+                                                            {{PT.viewValue}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{paymentType}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="partyName">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Party Name
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.partyName"
+                                                        decimalLimitTwoOnly value="{{element.partyName}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" disabled>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{partyName}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="address">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Address
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.address"
+                                                        decimalLimitTwoOnly value="{{element.address}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" disabled>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{address}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="accountNo">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Account No
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.accountNo"
+                                                        decimalLimitTwoOnly value="{{element.accountNo}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{accountNo}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="micrCode">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> IFSC Code
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.micrCode"
+                                                        decimalLimitTwoOnly value="{{element.micrCode}}" decimalPoint2
+                                                        [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{micrCode}}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="chequeAmount">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque
+                                                Amount/E-Payment (in Rs.)</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <mat-form-field class="example-full-width" class="rightAlign">
+                                                    <input tabindex="0" matInput [(ngModel)]="element.chequeAmount"
+                                                        decimalLimitTwoOnly value="{{element.chequeAmount}}"
+                                                        decimalPoint2 [ngModelOptions]="{standalone: true}" readonly>
+                                                </mat-form-field>
+                                            </td>
+                                            <td mat-footer-cell *matFooterCellDef class="rightAlign"
+                                                style="text-align: center;">
+                                                {{chequeAmount | number:'1.2-2'}}</td>
+                                        </ng-container>
+                                        <!-- Header Section Of table -->
+                                        <tr mat-header-row *matHeaderRowDef="chequeListColumn"></tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-row *matRowDef="let row; let i = index;columns:chequeListColumn"></tr>
+
+                                    </table>
+                                    <!-- table ends -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary">
+                                Save & Proceed
+                                <i class="material-icons" aria-hidden="true" title="Next">
+                                    chevron_right
+                                </i>
+                            </button>
+                        </div>
+
+                    </form>
+                </mat-tab>
+
+                <!--bill details-->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Bill Details
+                    </ng-template>
+                    <form [formGroup]="billDetails" (ngSubmit)="cvpBillDetailsFormData()">
+
+                        <!--pension bill detail-->
+                        <!--pensioner details-->
+                        <div class="box box-primary">
+                            <div class="box-header">Pensioner Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="PPO No." formControlName="ppoNo" required
+                                                readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.ppoNo.touched && billDetails.controls.ppoNo.errors">
+                                                <mat-error *ngIf="billDetails.controls.ppoNo.errors.required">
+                                                    {{errorMessages.PPO_NUM}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Token No." formControlName="tokenNo" required
+                                                readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.tokenNo.touched && billDetails.controls.tokenNo.errors">
+                                                <mat-error *ngIf="billDetails.controls.tokenNo.errors.required">
+                                                    {{errorMessages.TOKEN_NO}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Name of Pensioner"
+                                                formControlName="pensionerName" required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.pensionerName.touched && billDetails.controls.pensionerName.errors">
+                                                <mat-error *ngIf="billDetails.controls.pensionerName.errors.required">
+                                                    {{errorMessages.PENSIONER_NAME}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Date" formControlName="date" required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.date.touched && billDetails.controls.date.errors">
+                                                <mat-error *ngIf="billDetails.controls.date.errors.required">
+                                                    {{errorMessages.DATE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Pension Bill for the Month"
+                                                formControlName="pensionBillMonth" required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.pensionBillMonth.touched && billDetails.controls.pensionBillMonth.errors">
+                                                <mat-error
+                                                    *ngIf="billDetails.controls.pensionBillMonth.errors.required">
+                                                    {{errorMessages.PENSION_BILL_MONTH}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName="address" required
+                                                readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.address.touched && billDetails.controls.address.errors">
+                                                <mat-error *ngIf="billDetails.controls.address.errors.required">
+                                                    {{errorMessages.ADDRESS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Designation" formControlName="billDesignation"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.billDesignation.touched && billDetails.controls.billDesignation.errors">
+                                                <mat-error *ngIf="billDetails.controls.billDesignation.errors.required">
+                                                    {{errorMessages.BILL_DESIGNATION}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--CVP bill details-->
+                        <div class="box box-primary">
+                            <div class="box-header">Pension Details</div>
+                            <div class="box-body">
+
+                                <div class="row">
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="CVP Amount" formControlName="cvpAmount"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.cvpAmount.touched && billDetails.controls.cvpAmount.errors">
+                                                <mat-error *ngIf="billDetails.controls.cvpAmount.errors.required">
+                                                    {{errorMessages.CVP_AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Recovery Amount" formControlName="deduction"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.deduction.touched && billDetails.controls.deduction.errors">
+                                                <mat-error *ngIf="billDetails.controls.deduction.errors.required">
+                                                    {{errorMessages.DEDUCTION}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder=" Net Amount" formControlName="billNetAmount"
+                                                required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.billNetAmount.touched && billDetails.controls.billNetAmount.errors">
+                                                <mat-error *ngIf="billDetails.controls.billNetAmount.errors.required">
+                                                    {{errorMessages.BILL_NET_AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder=" Net Amount in Words"
+                                                formControlName="netAmountInWords" required readonly>
+                                            <div class="error-wrapper"
+                                                *ngIf="billDetails.controls.netAmountInWords.touched && billDetails.controls.netAmountInWords.errors">
+                                                <mat-error
+                                                    *ngIf="billDetails.controls.netAmountInWords.errors.required">
+                                                    {{errorMessages.NET_AMOUNT_IN_WORDS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary">
+                                Save
+                                <i class="material-icons" aria-hidden="true" title="Next">
+                                    chevron_right
+                                </i>
+                            </button>
+                        </div>
+                    </form>
+
+                </mat-tab>
+                <!-- Attachments-->
+                <mat-tab label="Attachments">
+
+                    <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+                    <!-- Common Button -->
+
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" aria-hidden="true" title="Save">cloud_upload</i>
+                            Upload
+                        </button>
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons" aria-hidden="true">done</i> Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons" aria-hidden="true"> restore</i> Reset
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Budget
+                        dashboard">close</i> Close
+                        </button>
+                    </div>
+                    <!-- Common Button ends-->
+
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

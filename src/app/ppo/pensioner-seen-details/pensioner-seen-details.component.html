@@ -1,0 +1,511 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Pensioner Seen Details</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Pensioner Seen Details
+                </li>
+            </ol>
+        </nav>
+
+        <!-- search fields -->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search Pensioner Seen Details
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="searchForm" (ngSubmit)="onSearch()">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}"
+                                        placeholder="PPO No" [matAutocomplete]="auto"
+                                        (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="headCode" placeholder="Head Code ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="headCodeCtrl"
+                                                [placeholderLabel]="'Find Head Code ...'"
+                                                [noEntriesFoundLabel]="'No matching Head Code '">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option
+                                            *ngFor="let HC of headCodeType | filterSelectInput:headCodeCtrl.value"
+                                            [value]="HC.value" matTooltip="{{HC.viewValue}}">
+                                            {{HC.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="bank" placeholder="Bank" #singleSelect1 required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="bankCtrl"
+                                                [placeholderLabel]="'Find bank...'"
+                                                [noEntriesFoundLabel]="'no matching bank found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let bank of bank_list | filterSelectInput: bankCtrl.value"
+                                            [value]="bank.value">
+                                            {{bank.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="searchForm.controls.bank.touched && searchForm.controls.bank.errors">
+                                        <mat-error *ngIf="searchForm.controls.bank.errors.required">
+                                            {{errMsg.BANK}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="branch" placeholder="Branch" #singleSelect1 required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="branchCtrl"
+                                                [placeholderLabel]="'Find branch Types...'"
+                                                [noEntriesFoundLabel]="'no matching branch found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let branch of branch_list | filterSelectInput: branchCtrl.value"
+                                            [value]="branch.value">
+                                            {{branch.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="searchForm.controls.branch.touched && searchForm.controls.branch.errors">
+                                        <mat-error *ngIf="searchForm.controls.branch.errors.required">
+                                            {{errMsg.BRANCH}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Bank Branch Code"
+                                        formControlName="bankCode" numbersOnly [maxlength]="6"
+                                        (blur)="patchFormFields($event)">
+
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="paidAfterDate" [matDatepicker]="paidAfterDate"
+                                        placeholder="Paid After Date">
+                                    <mat-datepicker-toggle matSuffix [for]="paidAfterDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #paidAfterDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="auditor" placeholder="Auditor" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="auditorCtrl"
+                                                [placeholderLabel]="'Find Auditor...'"
+                                                [noEntriesFoundLabel]="'no matching Auditor found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option
+                                            *ngFor="let auditor of auditor_list | filterSelectInput: auditorCtrl.value"
+                                            [value]="auditor.value">
+                                            {{auditor.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="seen" placeholder="Seen" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="seenCtrl"
+                                                [placeholderLabel]="'Find Seen...'"
+                                                [noEntriesFoundLabel]="'no matching Seen found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let seen of boolean_list | filterSelectInput: seenCtrl.value"
+                                            [value]="seen.value"> {{seen.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="searchForm.controls.seen.touched && searchForm.controls.seen.errors">
+                                        <mat-error *ngIf="searchForm.controls.seen.errors.required">
+                                            {{errMsg.SEEN}}</mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-action-button">
+                                <button type="submit" mat-raised-button color="primary">
+                                    <i class="material-icons" aria-hidden="true" title="search">search</i>
+                                    Search
+                                </button>
+                                <button type="reset" mat-raised-button color="accent" (click)="clearForm()">
+                                    <i class="material-icons" aria-hidden="true" title="reset">
+                                        restore
+                                    </i>
+                                    Reset
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <br>
+        <!-- filtered data table -->
+        <div class="mat-elevation-z8 mt-2 vertical-scroll-pagination">
+            <table mat-table [dataSource]="dataSource" matSort aria-describedby="SeenPensioner">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null"
+                            [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)"
+                            [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                            [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="centerAlign">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? directiveObj.selection.toggle(row) : null"
+                            [checked]="directiveObj.selection.isSelected(row)"
+                            [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                        </mat-checkbox>
+                    </td>
+
+                </ng-container>
+
+                <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        Sr. No. </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                        {{ i + 1 }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="branchCode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bank Branch Code</th>
+                    <td mat-cell *matCellDef="let element;let i = index;">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.branchCode" [(ngModel)]="element.branchCode"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="ppoNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PPO No.</th>
+                    <td mat-cell *matCellDef="let element">
+
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput [value]="element.ppoNo" [(ngModel)]="element.ppoNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="AccountNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Account No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.AccountNo" [(ngModel)]="element.AccountNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="seenDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Seen Date</th>
+
+                    <!-- element.seenDate | date : 'dd-MMM-yyyy' -->
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="element.seenDate " [max]='maxDate' [disabled]='isEdit(element)'
+                                [matDatepicker]="seenDate">
+                            <mat-datepicker-toggle matSuffix [for]="seenDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #seenDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="wayOfSeen">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Way of Seen</th>
+                    <td mat-cell *matCellDef="let element" class="pensionar-seen-details">
+                        <mat-form-field>
+                            <mat-select [(value)]="element.wayOfSeen" name="wayOfSeen" [disabled]='isEdit(element)'>
+                                <mat-option *ngFor="let item of wayOfSeenType_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="seenFlag">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Seen Flag</th>
+                    <td mat-cell *matCellDef="let element" class="pensionar-seen-details">
+
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput [value]="element.seenFlag" [(ngModel)]="element.seenFlag"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let element">
+
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput [value]="element.name" [(ngModel)]="element.name"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="namePhotoandSignature">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Photo and Signature</th>
+                    <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                        <a class="signaure">
+                            <i class="material-icons plus view-icon" aria-hidden="true"
+                                title="Signature">playlist_add_check</i>
+                            <div class="box-body signature-box">
+                                <div class="img centerAlign">
+                                    <img src="assets/images/sign.png" alt="ifms-logo">
+                                </div>
+                            </div>
+                        </a>
+                        <a class="signaure">
+                            <i class="material-icons plus view-icon" aria-hidden="true"
+                                title="Signature">playlist_add_check</i>
+                            <div class="box-body signature-box">
+                                <div class="img centerAlign">
+                                    <img src="assets/images/user.png" alt="ifms-logo">
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="aadhaar">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Aadhaar No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.aadhaar" [(ngModel)]="element.aadhaar"
+                                [ngModelOptions]="{standalone: true}" [disabled]='isEdit(element)'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="panNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>PAN No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput [value]="element.panNo" [(ngModel)]="element.panNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='isEdit(element)'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="mobNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Mobile No.</th>
+                    <td mat-cell *matCellDef="let element;let i=index;">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.mobNo" [(ngModel)]="element.mobNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='isEdit(element)'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="reEmployeement">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Re-Employeement ?</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select [(value)]="element.reEmployeement" [disabled]='isEdit(element)'>
+                                <mat-option *ngFor="let item of boolean_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!-- <ng-container matColumnDef="reEmployeementRange">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Re-Employeement From-To Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Enter a date range</mat-label>
+                            <mat-date-range-input [rangePicker]="reEmployeementRange">
+                                <input matStartDate placeholder="Start date">
+                                <input matEndDate placeholder="End date">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #reEmployeementRange></mat-date-range-picker>
+                        </mat-form-field>
+                    </td>
+                </ng-container> -->
+
+                <ng-container matColumnDef="reEmploymentFrom">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Re-Employment From Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="element.reEmploymentFrom " [max]='maxDate'
+                                [disabled]="isEdit(element) || element.reEmployeement=='2'"
+                                [matDatepicker]="reEmploymentFrom">
+                            <mat-datepicker-toggle matSuffix [for]="reEmploymentFrom">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #reEmploymentFrom></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="reEmployeementTo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Re-Employeement To Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="element.reEmployeementTo " [max]='maxDate'
+                                [disabled]="isEdit(element) || element.reEmployeement=='2'"
+                                [matDatepicker]="reEmployeementTo">
+                            <mat-datepicker-toggle matSuffix [for]="reEmployeementTo">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #reEmployeementTo></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="reMarriage">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Remarriage ?</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select [(value)]="element.reMarriage" [disabled]='isEdit(element)'>
+                                <mat-option *ngFor="let item of boolean_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="reMarriageDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Remarriage Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="element.reMarriageDate " [max]='maxDate'
+                                [disabled]="isEdit(element) || element.reMarriage=='2'"
+                                [matDatepicker]="reMarriageDate">
+                            <mat-datepicker-toggle matSuffix [for]="reMarriageDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #reMarriageDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="maritalCertificateDate">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Marital Certificate Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="element.maritalCertificateDate " [max]='maxDate'
+                                [disabled]="isEdit(element) || element.reMarriage=='2'"
+                                [matDatepicker]="maritalCertificateDate">
+                            <mat-datepicker-toggle matSuffix [for]="maritalCertificateDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #maritalCertificateDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="ledgerNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Ledger No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.ledgerNo" [(ngModel)]="element.ledgerNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pageNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Page No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field floatLabel="never" class="centerAlign">
+                            <input matInput numbersOnly [value]="element.pageNo" [(ngModel)]="element.pageNo"
+                                [ngModelOptions]="{standalone: true}" [disabled]='true'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                        <a (click)="openEditDialog(element , i)"><i class="material-icons plus view-icon" title="Edit"
+                                aria-hidden="true">edit</i></a>
+                    </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky : true; "></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+                </tr>
+            </table>
+        </div>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+        <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button class="print-btn" title="Print">
+                <i class="material-icons" title="Print" aria-hidden="true">
+                    print
+                </i>
+                Print
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+
+        </div>
+
+    </div>
+</div>

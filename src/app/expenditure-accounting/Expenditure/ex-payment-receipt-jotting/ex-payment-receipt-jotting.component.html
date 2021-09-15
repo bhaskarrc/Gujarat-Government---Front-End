@@ -1,0 +1,353 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Payment / Receipt Jotting </div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EA/PRJ/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href=""> EA </a></li>
+                <li class="breadcrumb-item active" aria-current="page">Payment/Receipt Jotting </li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <div class="panel-group mgb15">
+            <form [formGroup]="paymentRceiptForm" (ngSubmit)="paymentRceiptFormData()">
+                <!-- Payment/Receipt jotting Starts -->
+                <div class="box box-primary">
+                    <div class="box-header">Payment/Receipt jotting</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="Jottingtype" formControlName="jottingType" placeholder="Jotting Type" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="jottingCtrl" [placeholderLabel]="'Select jottingType Type ...'" [noEntriesFoundLabel]="'no matching jottingType type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let jotting of jottingType_list | filterSelectInput : jottingCtrl.value : 'viewValue'" [value]="jotting.value">
+                                            {{jotting.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.jottingType.touched || (paymentRceiptForm.controls.jottingType.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.jottingType.errors?.required">
+                                            {{errorMessages.JOTTING_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="subTreasury" formControlName="subTreasury" placeholder="Sub-Treasury(Y/N)" required (selectionChange)="subTreasuryValue()">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subTreasuryCtrl" [placeholderLabel]="'Select Sub-Treasury(Y/N) Type ...'" [noEntriesFoundLabel]="'no matching Sub-Treasury(Y/N) found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let subTreasury of subTreasury_list | filterSelectInput : subTreasuryCtrl.value : 'viewValue'" [value]="subTreasury.value">
+                                            {{subTreasury.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.subTreasury.touched || (paymentRceiptForm.controls.subTreasury.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.subTreasury.errors?.required">
+                                            {{errorMessages.SUB_TREASURY_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [max]="today" [matDatepicker]="scrollDate" formControlName="scrollDate" placeholder="Scroll Date" readonly required>
+                                    <mat-datepicker-toggle matSuffix [for]="scrollDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #scrollDate></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.scrollDate.touched ||(paymentRceiptForm.controls.scrollDate.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.scrollDate.errors?.required">
+                                            {{errorMessages.DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="Branchcode" placeholder="Branch Code" formControlName="branchCode" maxlength="8" numbersOnly required>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.branchCode.touched ||(paymentRceiptForm.controls.branchCode.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.branchCode.errors?.required">
+                                            {{errorMessages.BRANCH_CODE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="NameofBank" formControlName="baneName" placeholder="Name of Bank" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="banckCTRL" [placeholderLabel]="'Select banktype Type ...'" [noEntriesFoundLabel]="'no matching banktype type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let bank of bank_list | filterSelectInput : banckCTRL.value : 'viewValue'" [value]="bank.value">
+                                            {{bank.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.baneName.touched || (paymentRceiptForm.controls.baneName.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.baneName.errors?.required">
+                                            {{errorMessages.BANK_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="bankbranch" placeholder="Bank Branch" formControlName="banvkBranch" required>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="pageno" placeholder="Page No" formControlName="pageNo" maxlength="8" numbersOnly required>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.pageNo.touched || (paymentRceiptForm.controls.pageNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.pageNo.errors?.required">
+                                            {{errorMessages.PAGE_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="subTreasuryName" formControlName="subTreasuryName" placeholder="Sub-Treasury Name" [disabled]="isYes">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subTreasuryNameCtrl" [placeholderLabel]="'Select Sub-Treasury(Y/N) Type ...'" [noEntriesFoundLabel]="'no matching Sub-Treasury(Y/N) found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let subTreasuryName of subTreasuryName_list | filterSelectInput : subTreasuryNameCtrl.value : 'viewValue'" [value]="subTreasuryName.value">
+                                            {{subTreasuryName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="majorhead" placeholder="Major Head /STO" formControlName="majorHead" maxlength="4" numbersOnly required>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.majorHead.touched || (paymentRceiptForm.controls.majorHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.majorHead.errors?.required">
+                                            {{errorMessages.MAJOR_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="amount" placeholder="Amount" formControlName="amunt" maxlength="16" numbersOnly required>
+                                    <div class="error-wrapper" *ngIf="paymentRceiptForm.controls.amunt.touched || (paymentRceiptForm.controls.amunt.errors && isSubmitted)">
+                                        <mat-error *ngIf="paymentRceiptForm.controls.amunt.errors?.required">
+                                            {{errorMessages.AMOUNT}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="tc" placeholder="TC" formControlName="tc" maxlength="10" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="documents" placeholder="No. Of Documents" formControlName="noDoc" maxlength="3" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-action-button">
+                        <button type="button" mat-raised-button color="primary" (click)="onSave();">
+              <i class="material-icons" title="Save" aria-hidden="true">
+                save
+              </i>
+              Save
+            </button>
+                    </div>
+
+                </div>
+                <!-- Payment/Receipt jotting Ends -->
+                <!-- Search Starts -->
+                <mat-accordion class="search-accordian">
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">
+                                Search Listing
+                            </div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="Jottingtype" formControlName="jottingTypeSearch" placeholder="Jotting Type">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="jottingCtrl" [placeholderLabel]="'Select jottingType Type ...'" [noEntriesFoundLabel]="'no matching jottingType type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let jotting of jottingType_list | filterSelectInput : jottingCtrl.value : 'viewValue'" [value]="jotting.value">
+                                                {{jotting.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput [max]="today" formControlName="scrollDateSearch" [matDatepicker]="scrollDateSearch" placeholder="Scroll Date" readonly>
+                                        <mat-datepicker-toggle matSuffix [for]="scrollDateSearch"></mat-datepicker-toggle>
+                                        <mat-datepicker #scrollDateSearch></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="Branchcode" formControlName="branchCodeSearch" placeholder="Branch Code" maxlength="8" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="NameofBank" formControlName="branchName" placeholder="Name of Bank">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="banckCTRL" [placeholderLabel]="'Select banktype Type ...'" [noEntriesFoundLabel]="'no matching banktype type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let bank of bank_list | filterSelectInput : banckCTRL.value : 'viewValue'" [value]="bank.value">
+                                                {{bank.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="button" mat-raised-button color="primary" (click)="search()">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+
+                                    <button type="reset" mat-raised-button color="accent" (click)="clearForm()">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+                <!-- Search Ends -->
+
+            </form>
+
+
+
+        </div>
+        <!-- On click Search Table List Starts-->
+        <div *ngIf="isSearchJotting">
+
+
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table aria-describedby="Jotting Details" matSort [dataSource]="jottingDataSource" class="mat-elevation-z8 ">
+
+                    <ng-container matColumnDef="srNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{i + 1}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="scrollDate">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Scroll Date </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.scrollDate}}
+                    </ng-container>
+                    <ng-container matColumnDef="mjrHead">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Major Head </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.mjrHead}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="amt">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Amount (Rs) </th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign">
+                            {{element.amt}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="tcAmt">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>TC Amount </th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign">
+                            {{element.tcAmt}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="pageNo">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Page No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.pageNo}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="noDoc">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef class="smallNo">No. Of Documents </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.noDoc}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef class="actionwidthtwo"> Action </th>
+                        <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                            <a [routerLink]="'/new-sub-head'"><i class="material-icons plus edit-icon" title="Edit"> edit </i></a>
+                            <a class="delete-icon" *ngIf="element.status !== '100%'" (click)="delete(element)"><i
+                  class="material-icons plus delete" title="delete">delete_forever</i></a>
+                        </td>
+                    </ng-container>
+                    <!-- Display Table Columns -->
+                    <tr mat-header-row *matHeaderRowDef="jottongColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: jottongColumns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+
+            </div>
+            <!-- Common Action Button Starts -->
+            <div class="form-action-button">
+                <button type="button" mat-raised-button class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="close">
+            close
+          </i>
+          Close
+        </button>
+            </div>
+            <!-- Common Action Button Ends-->
+
+        </div>
+        <!-- On click Search Table List Ends-->
+    </div>
+</div>

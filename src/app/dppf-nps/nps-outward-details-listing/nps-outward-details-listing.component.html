@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="form-wrapper">
+    <!-- Header Part -->
+    <div class="heading-section ng-star-inserted">
+      <div>Outward Details</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF-NPS/OUT/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF - NPS</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Outward Details</li>
+      </ol>
+    </nav>
+    <!-- Search Outward Details -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search
+          </div>
+        </mat-expansion-panel-header>
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="outwardDetailsListingForm">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="inwardNo" placeholder="Inward No." numbersAlphabetsSpaceOnly>
+                  <mat-icon matSuffix class="searchIcon" (click)="openDialogInwardNumber()">
+                    search</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field>
+                  <mat-label>Inward Date</mat-label>
+                  <input matInput [matDatepicker]="picker" formControlName="dateInward" [max]='maxDate' dateOnly />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Letter  No." formControlName='letterNumber' decimalLimitTwoOnly>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 col-md-3">
+                <mat-form-field>
+                  <mat-label>Letter Date</mat-label>
+                  <input matInput [matDatepicker]="letterDatePicker" formControlName="letterDate" [max]='maxDate'
+                    dateOnly />
+                  <mat-datepicker-toggle matSuffix [for]="letterDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #letterDatePicker></mat-datepicker>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="deliveryMode" placeholder="Delivery Mode">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfDeliveryModeCtrl"
+                        [placeholderLabel]="'Find Delivery Mode...'"
+                        [noEntriesFoundLabel]="'no matching Delivery Mode found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                    let CE of classTypeOfDeliveryMode
+                      | filterSelectInput: typeOfDeliveryModeCtrl.value
+                  " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="outwardTo" placeholder="Outward To">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfOutwardToCtrl"
+                        [placeholderLabel]="'Find Outward To...'"
+                        [noEntriesFoundLabel]="'no matching Outward To found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                    let CE of classTypeOfOutwardTo
+                      | filterSelectInput: typeOfOutwardToCtrl.value
+                  " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="state" placeholder="State">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfStateCtrl" [placeholderLabel]="'Find State...'"
+                        [noEntriesFoundLabel]="'no matching State found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                    let CE of classTypeOfState
+                      | filterSelectInput: typeOfStateCtrl.value
+                  " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="search">search</i>
+            Search</button>&nbsp;&nbsp;&nbsp;
+          <button type="reset" mat-raised-button color="accent"
+            (click)="directiveObj.resetForm(outwardDetailsListingForm)">
+            <i class="material-icons" aria-hidden="true" title="reset">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!-- End Search Outward Details -->
+    <!-- Table Outward Details -->
+    <div class="overflow-x-auto">
+      <div class="mat-elevation-z8 table-responsive mt-2">
+        <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="listinginwardscreen">
+          <!-- Serial No. -->
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Serial No.
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{ element.srno }}
+            </td>
+          </ng-container>
+          <!-- Inward Number -->
+          <ng-container matColumnDef="inwardNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Inward Number
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ element.inwardNo }}
+            </td>
+          </ng-container>
+          <!-- Inward Date -->
+          <ng-container matColumnDef="inwardDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Inward Date
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.inwardDate }}
+            </td>
+          </ng-container>
+          <!-- Letter Number -->
+          <ng-container matColumnDef="letterNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Letter Number
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.letterNo }}
+            </td>
+          </ng-container>
+          <!-- Letter Date -->
+          <ng-container matColumnDef="letterDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Letter Date
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.letterDate }}
+            </td>
+          </ng-container>
+          <!-- Delivery Mode -->
+          <ng-container matColumnDef="deliveryMode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Delivery Mode
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.deliveryMode }}
+            </td>
+          </ng-container>
+          <!-- Outward To -->
+          <ng-container matColumnDef="outwardTo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              Outward To
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.outwardTo }}
+            </td>
+          </ng-container>
+          <!-- State -->
+          <ng-container matColumnDef="state">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+              State
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.state }}
+            </td>
+          </ng-container>
+          <!-- Action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+            <td mat-cell *matCellDef="let element; let i = index" class="action-btn-i centerAlign">
+
+              <a><i class="material-icons plus view-icon" title="Edit" aria-hidden="true">edit</i></a>
+              <a><i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i></a>
+              <a (click)="directiveObj.deleteRow(dataSource,i)"><i class="material-icons plus edit-icon" title="Delete"
+                  aria-hidden="true">
+                  delete
+                </i></a>
+            </td>
+          </ng-container>
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+      </div>
+    </div>
+    <!-- End Table Outward Details -->
+  </div>
+</div>

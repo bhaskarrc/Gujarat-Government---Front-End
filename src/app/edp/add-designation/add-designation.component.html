@@ -1,0 +1,174 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Add Designation (હોદ્દો ઉમેરો)</div>
+        </div>
+
+        <div #parentGrids>
+            <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+                        Add Designation
+                    </ng-template>
+                    <form [formGroup]="addUpdade" (ngSubmit)="saveDegination()">
+                        <div class="box box-primary">
+                            <div class="box-header">Office Detail (કચેરીની વિગત)</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput formControlName="district" placeholder="District (જીલ્લો)" value="Ahmedabad" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput formControlName="dDONo" placeholder="DDO No (ઉપાડ અધિકારીની કચેરી નો નં.)" value="416" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput formControlName="cardexNo" placeholder="Cardex No (કાર્ડેક્સ નં.) " value="78" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput formControlName="dDOOffice" placeholder="DDO Office (ઉપાડ અધિકારી ની કચેરી)" value="Collector Office, Ahmedabad" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Designation Detail (હોદ્દાની વિગત)</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Designation Name (હોદ્દા નું નામ)" formControlName="designation" required>
+                                            <div class="error-wrapper"
+                                            *ngIf="addUpdade.controls.designation.touched && addUpdade.controls.designation.errors">
+                                            <mat-error *ngIf="addUpdade.controls.designation.errors.required">
+                                                {{errorMessages.Designation_Name}}
+                                            </mat-error>
+                                        </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Designation Short Name (હોદ્દા નું ટૂંકું નામ)" formControlName="designationShortName">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary">
+                                <i class="material-icons" title="Save"> save</i>Save as Draft </button>
+                            <button mat-raised-button type="submit" class="green" (click)="saveDegination()">
+                                <i class="material-icons">done</i>Submit</button>
+                            <button type="button" mat-raised-button color="accent">
+                                <i class="material-icons">restore</i>Reset</button>
+                            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                 <i class="material-icons" title="Listing">list </i>Listing </button>
+                            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                 <i class="material-icons" title="Budget dashboard"> close </i>Close </button>
+                        </div>
+                    </form>
+                </mat-tab>
+                <mat-tab label="Attachments">
+                    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td mat-cell *matCellDef="let item;let i = index;">
+                                Supporting Document
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef> Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse Files</button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}<i class="material-icons closesmall">
+                                        close
+                                    </i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadby">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                Mr. Rakesh jain
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" title="Add"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                        (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete"
+                                                    *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 0"
+                                                    (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+    
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+                    <input type="file" id="fileBrowse" (change)="onFileSelection($event)" />
+                    <div class="legend">
+                        1. Total File size should be under 2MB<br>
+                        2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’,  ‘JPEG’, ‘PNG’,  ‘PDF’.    
+                    </div>
+                    <div class="form-action-button">
+                        <button type="button" mat-raised-button color="primary">
+                            <i class="material-icons" title="Save"> save</i>Upload </button>
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons">done</i>Submit</button>
+                        <button type="button" mat-raised-button color="accent">
+                            <i class="material-icons">restore</i>Reset</button>
+                        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                            <i class="material-icons" title="Listing">list </i>Listing
+                          </button>
+                        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                           <i class="material-icons" title="Budget dashboard"> close </i>Close </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+        <!--parentGrids-->
+    </div>
+</div>

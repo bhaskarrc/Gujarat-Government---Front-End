@@ -1,0 +1,228 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Cheque Reconciliation </div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EA/CR/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="#"> EA </a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cheque Reconciliation </li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <div class="panel-group mgb15">
+            <form [formGroup]="expanditureForm" (ngSubmit)="expanditureFormData()">
+                <!-- Cheque Reconciliation Starts -->
+                <div class="box box-primary">
+                    <div class="box-header">Cheque Reconciliation</div>
+                    <div class="box-body">
+                        <div class="row">
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="ChequeType" placeholder="Cheque Type" required (selectionChange)="selectChequeType()">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="ChequeTypeCtrl" [placeholderLabel]="'Select Cheque Type ...'" [noEntriesFoundLabel]="'no matching Cheque Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let head of ChequeType_list | filterSelectInput : ChequeTypeCtrl.value : 'viewValue'" [value]="head.value">
+                                            {{head.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="expanditureForm.controls.ChequeType.touched ||(expanditureForm.controls.ChequeType.errors && isSubmitted)">
+                                        <mat-error *ngIf="expanditureForm.controls.ChequeType.errors?.required">
+                                            {{errorMessages.CHECK_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="chequeTypeValue">
+                                <mat-form-field>
+                                    <input matInput name="Chequetype" placeholder="Account Short Name" formControlName="accountName" value="PAOGNR">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="Chequeno" placeholder="Cheque No" formControlName="ChequeNo" (keypress)="checkNo()" maxlength="10">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="numberShow">
+                                <mat-form-field>
+                                    <input matInput name="Adviceno" placeholder="Advice No" formControlName="AdviceNo" value="458787465" maxlength="10">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="numberShow">
+                                <mat-form-field>
+                                    <input matInput name="ChequeAmount" placeholder="Cheque Amount" formControlName="chkaMT" maxlength="16">
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [max]="today" [min]="threemonths" [matDatepicker]="paidDate" placeholder="Paid Date" readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="paidDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #paidDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Common Action Button Starts -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="onSave();">
+              <i class="material-icons" title="Save" aria-hidden="true">
+                save
+              </i>
+              Save
+            </button>
+
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+              <i class="material-icons" aria-hidden="true">
+                restore
+              </i>
+              Reset
+            </button>
+                    </div>
+                    <!-- Common Action Button Ends -->
+                </div>
+                <!-- Cheque Reconciliation Ends -->
+                <!-- Search Starts -->
+                <mat-accordion class="search-accordian">
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">
+                                Search Listing
+                            </div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="Chequeno" placeholder="Cheque No" formControlName="cNo" maxlength="10" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="Chequeno" placeholder="Cheque Amount" formControlName="cAmount">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput [max]="today" [min]="threemonths" [matDatepicker]="paidDateSearch" placeholder="Paid Date" readonly>
+                                        <mat-datepicker-toggle matSuffix [for]="paidDateSearch"></mat-datepicker-toggle>
+                                        <mat-datepicker #paidDateSearch></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <!-- Common Action Button Starts -->
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary" (click)="search()">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+                        </div>
+                        <!-- Common Action Button Ends-->
+                    </mat-expansion-panel>
+                </mat-accordion>
+                <!-- Search Ends -->
+            </form>
+
+
+        </div>
+        <!-- Table List on clock search-->
+        <div *ngIf="isSearchJotting">
+
+
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table aria-describedby="Cheque" matSort [dataSource]="chequeReconcilationDataSource" class="mat-elevation-z8">
+
+                    <ng-container matColumnDef="srNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{i + 1}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="adviceNo">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Advice No</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.adviceNo}}
+                    </ng-container>
+                    <ng-container matColumnDef="chkNo">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Cheque No </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.chkNo}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="paidDate">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Paid Date </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-form-field>
+                                <input matInput [max]="today" [(ngModel)]="element.paidDate" [min]="threemonths" [disabled]='!element.edit' [matDatepicker]="paidDatetable" [ngModelOptions]="{standalone: true}" readonly>
+                                <mat-datepicker-toggle matSuffix [for]="paidDatetable"></mat-datepicker-toggle>
+                                <mat-datepicker #paidDatetable></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="chkAmount">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef>Cheque Amount </th>
+                        <td mat-cell *matCellDef="let element" class="rightAlign">
+                            {{element.chkAmount}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Action </th>
+                        <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                            <a> <i class="material-icons plus edit-icon" title="Edit" (click)="onEdit(element)"> edit </i></a>
+
+                        </td>
+                    </ng-container>
+                    <!-- Display Table Columns -->
+                    <tr mat-header-row *matHeaderRowDef="chequeReconcilationColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: chequeReconcilationColumns;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                <!-- Common Action Button Starts -->
+                <div class="form-action-button">
+
+                    <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+                </div>
+                <!-- Common Action Button Ends-->
+            </div>
+
+
+        </div>
+        <!-- Table List Ends -->
+    </div>

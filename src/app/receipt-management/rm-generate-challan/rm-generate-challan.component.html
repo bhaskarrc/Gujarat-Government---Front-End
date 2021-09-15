@@ -1,0 +1,375 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Generate Challan</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/Receipt Management/RM/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Receipt Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Generate Challan</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="generateChallanForm" (ngSubmit)="generateChallanFormData()">
+                <!-- Basic Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Basic Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Office" formControlName="office" value="{{officeValue1}}" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="date" [matDatepicker]="picker1" placeholder="Date" readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 [disabled]="true"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Location Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Department" formControlName="department" value="{{departmentValue}}" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Head of Department" formControlName="headOfdepartment" value="{{headOfDepartmentValue}}" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="district" placeholder="District" #dis>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="districtCTRL" [placeholderLabel]="'Find Distritct...'" [noEntriesFoundLabel]="'No matching Distritct found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let districtName of district_list | filterSelectInput:districtCTRL.value" [value]="districtName.value">
+                                            {{districtName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="taluka" placeholder="Taluka">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="talukaCTRL" [placeholderLabel]="'Find Taluka...'" [noEntriesFoundLabel]="'No matching Taluka found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '1'">
+                                            <mat-option *ngFor="let talukaName of taluka_list_ahmedabad | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '2'">
+                                            <mat-option *ngFor="let talukaName of taluka_list_surat | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '3'">
+                                            <mat-option *ngFor="let talukaName of taluka_list_rajkot | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="dis.value=='1'">
+                                <mat-form-field>
+                                    <mat-select formControlName="treasury" placeholder="Treasury">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="treasuryCtrl" [placeholderLabel]="'Find Treasury...'" [noEntriesFoundLabel]="'No matching Treasury found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of abadTreasury_list | filterSelectInput:treasuryCtrl.value" [value]="item.viewValue">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="dis.value=='2'">
+                                <mat-form-field>
+                                    <mat-select formControlName="treasury" placeholder="Treasury">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="treasuryCtrl" [placeholderLabel]="'Find Treasury...'" [noEntriesFoundLabel]="'No matching Treasury found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of suratTreasury_list | filterSelectInput:treasuryCtrl.value" [value]="item.viewValue">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="dis.value=='3'">
+                                <mat-form-field>
+                                    <mat-select formControlName="treasury" placeholder="Treasury">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="treasuryCtrl" [placeholderLabel]="'Find Treasury...'" [noEntriesFoundLabel]="'No matching Treasury found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of rajkotTreasury_list | filterSelectInput:treasuryCtrl.value" [value]="item.viewValue">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subTreasury" placeholder="Sub Treasury">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subTreasuryCTRL" [placeholderLabel]="'Find Sub Treasury...'" [noEntriesFoundLabel]="'No matching Sub Treasury found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '1'">
+                                            <mat-option *ngFor="let talukaName of subTreasury_ahmedabad | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '2'">
+                                            <mat-option *ngFor="let talukaName of subTreasury_surat | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '3'">
+                                            <mat-option *ngFor="let talukaName of subTreasury_rajkot | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subOffice" placeholder="Office">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subOfficeCTRL" [placeholderLabel]="'Find Office...'" [noEntriesFoundLabel]="'No matching Office found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '1'">
+                                            <mat-option *ngFor="let talukaName of subOffice_ahmedabad | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '2'">
+                                            <mat-option *ngFor="let talukaName of subOffice_surat | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="generateChallanForm.controls.district.value == '3'">
+                                            <mat-option *ngFor="let talukaName of subOffice_rajkot | filterSelectInput:talukaCTRL.value" [value]="talukaName.value">
+                                                {{talukaName.viewValue}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- payment/Receipt Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Payment/Receipt Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="depositeType" placeholder="Deposite Type">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="depositeCTRL" [placeholderLabel]="'Find Deposite Type...'" [noEntriesFoundLabel]="'No matching Deposite Type found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let depositeName of deposite_list | filterSelectInput:depositeCTRL.value" [value]="depositeName.value">
+                                            {{depositeName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="pdpla" placeholder="PD/PLA No." (selectionChange)="generatePDPLAColumn()" multiple>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="pdplaCTRL" [placeholderLabel]="'Find PD/PLA No. Type...'" [noEntriesFoundLabel]="'No matching PD/PLA No. Type found'" alphabetOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let pdplaName of pdpla_list | filterSelectInput:pdplaCTRL.value" [value]="pdplaName.value">
+                                            {{pdplaName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <div class="mat-elevation-z8 mt-2">
+                            <!-- table starts -->
+                            <table mat-table [dataSource]="pdplaDataSource" width="100%" aria-describedby="pdplaDetails" matSort>
+
+                                <ng-container matColumnDef="srno">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">
+                                        Sr. No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign" style="width: 5%;">
+                                        {{ i + 1 }}
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef>Total</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="pdplaNo">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">PD/PLA No.</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.pdplaNo}}
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount</th>
+                                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                                        <mat-form-field class="example-full-width" class="rightAlign">
+                                            <input matInput decimalLimitTwoOnly value="{{element.amount}}" decimalPoint2 [(ngModel)]="element.amount" [ngModelOptions]="{standalone: true}">
+                                        </mat-form-field>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalAmount() | number: '1.2-2'}}</td>
+                                </ng-container>
+                                <!-- Header Section Of table -->
+                                <tr mat-header-row *matHeaderRowDef="pdplaDataColumn"></tr>
+                                <!-- Data Fetch From .TS File to table -->
+                                <tr mat-row *matRowDef="let row; columns: pdplaDataColumn;"></tr>
+                                <tr mat-footer-row *matFooterRowDef="pdplaDataColumn"></tr>
+                            </table>
+                            <!-- table ends -->
+                        </div>
+
+                        <!-- table starts -->
+                        <div class="mat-elevation-z8 mt-2">
+                            <table mat-table [dataSource]="detailsDataSource" width="100%" aria-describedby="pdplaDetails" matSort>
+
+                                <ng-container matColumnDef="srno">
+                                    <th mat-header-cell *matHeaderCellDef scope="row">
+                                        Sr. No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign" style="width: 5%;">
+                                        {{ i + 1 }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="majorHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.majorHead}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="subMajorHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Major Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.subMajorHead}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="minorHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Minor Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.minorHead}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="subHead">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.subHead}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="description">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Description</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.description}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount</th>
+                                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                                        {{ totalAmount() | number: '1.2-2' }}
+                                    </td>
+                                </ng-container>
+
+
+                                <!-- Header Section Of table -->
+                                <tr mat-header-row *matHeaderRowDef="detailsDataColumn"></tr>
+                                <!-- Data Fetch From .TS File to table -->
+                                <tr mat-row *matRowDef="let row; columns: detailsDataColumn;"></tr>
+                            </table>
+                            <!-- table ends -->
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- form action buttons -->
+            <div class="form-action-button">
+                <button mat-raised-button type="button" class="green" (click)="workflow()" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+      </button>
+                <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+                <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+            </div>
+            <!-- form action buttons ends-->
+
+        </div>
+    </div>
+</div>

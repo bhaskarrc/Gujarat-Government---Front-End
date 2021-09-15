@@ -1,0 +1,852 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Liason Office Voucher Entry </div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Liason Office Voucher Entry </li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <form [formGroup]="liasonVoucherOfficeForm" (ngSubmit)="liasonVoucherOfficeData()">
+        <!-- Liason Office Voucher Entry -->
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="voucherNo" numbersOnly maxlength="5" placeholder="Voucher No">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="voucherDate" [max]="maxDate" readonly placeholder="Voucher Date"
+                    [matDatepicker]="picker">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="majorHead" formControlName="majorHead" placeholder="Major Head">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let mjhead of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="mjhead.value" [matTooltip]="mjhead.viewValue">
+                      {{mjhead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Liason Office Voucher Entry -->
+        <!-- Voucher Information -->
+        <div class="box box-primary">
+          <div class="box-header">Voucher Information</div>
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="cardexNo" numbersOnly required maxlength="4"
+                    placeholder="Cardex No.">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.cardexNo.touched && liasonVoucherOfficeForm.controls.cardexNo.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.cardexNo.errors.required">
+                      {{errorMessages.CARDEX_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="ddoname" formControlName="ddoname" placeholder="Office Name" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="ddonameCtrl" [placeholderLabel]="'Select Office Name ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let ddonames of ddoname_list | filterSelectInput : ddonameCtrl.value : 'viewValue'"
+                      [value]="ddonames.value" [matTooltip]="ddonames.viewValue">
+                      {{ddonames.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.ddoname.touched && liasonVoucherOfficeForm.controls.ddoname.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.ddoname.errors.required">
+                      {{errorMessages.DDO_NAME}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="billtype" formControlName="billtype" placeholder="Bill Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="billtypeCtrl" [placeholderLabel]="'Select Bill Type ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let billt of billtype_list | filterSelectInput : billtypeCtrl.value : 'viewValue'"
+                      [value]="billt.value" [matTooltip]="billt.viewValue">
+                      {{billt.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.billtype.touched && liasonVoucherOfficeForm.controls.billtype.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.billtype.errors.required">
+                      {{errorMessages.BILL_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="billCategory" placeholder="Bill Category">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="billCatCtrl" [placeholderLabel]="'Select Bill Category...'"
+                        [noEntriesFoundLabel]="'no matching Bill Category'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let BC  of billCategoryList | filterSelectInput: billCatCtrl.value"
+                      [value]="BC.value" [matTooltip]="BC.viewValue">
+                      {{BC.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.billCategory.touched && liasonVoucherOfficeForm.controls.billCategory.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.billCategory.errors.required">
+                      {{errorMessages.BILL_CATEGORY}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="billGorssAmount" maxlength="16" numbersOnly required
+                    placeholder="Bill Gorss Amount">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.billGorssAmount.touched && liasonVoucherOfficeForm.controls.billGorssAmount.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.billGorssAmount.errors.required">
+                      {{errorMessages.BILL_GROSS_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="billNetAmount" numbersOnly maxlength="16" required
+                    placeholder="Bill Net Amount">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.billNetAmount.touched && liasonVoucherOfficeForm.controls.billNetAmount.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.billNetAmount.errors.required">
+                      {{errorMessages.BILL_NET_AMOUNT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+
+                  <input matInput formControlName="partyName" required placeholder="Party Name">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.partyName.touched && liasonVoucherOfficeForm.controls.partyName.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.partyName.errors.required">
+                      {{errorMessages.PARTY_NAME}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Voucher Information -->
+        <!-- Head Details -->
+        <div class="box box-primary">
+          <div class="box-header">Head Details</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <a (click)="dddoGrant()" class="form-link">
+                  <span class="form-link-border" style="display: flex;">
+                    DDO Grant Head <span class="ml-12"></span>
+                    <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                  </span>
+                </a>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="classOfExpenditure" placeholder="Class of Expenditure" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="classOfExpenditureCtrl" [placeholderLabel]="'Find Class...'"
+                        [noEntriesFoundLabel]="'no matching Classfound'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let classtyp of classType | filterSelectInput:classOfExpenditureCtrl.value"
+                      [value]="classtyp.value" matTooltip="{{classtyp.viewValue}}">
+                      {{classtyp.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.classOfExpenditure.touched && liasonVoucherOfficeForm.controls.billNetAmount.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.classOfExpenditure.errors.required">
+                      {{errorMessages.BILL_NET_AMOUNT}}
+                    </mat-error>
+                  </div>
+
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width" readonly>
+                  <mat-select formControlName="fundType" placeholder="Fund" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="fundTypeCtrl" [placeholderLabel]="'Find Fund...'"
+                        [noEntriesFoundLabel]="'no matching Fund'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let fundtype of fundType| filterSelectInput: fundTypeCtrl.value"
+                      [value]="fundtype.value" matTooltip="{{fundtype.viewValue}}">
+                      {{fundtype.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.fundType.touched && liasonVoucherOfficeForm.controls.fundType.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.fundType.errors.required">
+                      {{errorMessages.FUND_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3 ">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="type" placeholder="Budget Type" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Find Budget Type...'"
+                        [noEntriesFoundLabel]="'no matching Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let type of type_list | filterSelectInput: typeCtrl.value" [value]="type.value"
+                      [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.type.touched && liasonVoucherOfficeForm.controls.type.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.type.errors.required">
+                      {{errorMessages.BUDGET_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="schemeCode" maxlength="6" numbersOnly required
+                    placeholder="Scheme No.">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.schemeCode.touched && liasonVoucherOfficeForm.controls.schemeCode.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.schemeCode.errors.required">
+                      {{errorMessages.SCHEME_CODE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="demand" maxlength="5" numbersOnly required placeholder="Demand No.">
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.demand.touched && liasonVoucherOfficeForm.controls.demand.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.demand.errors.required">
+                      {{errorMessages.DEMAND}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="majorHead" placeholder="Major Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'"
+                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let majorHead of majorHead_list | filterSelectInput: majorHeadCtrl.value"
+                      [value]="majorHead.value" matTooltip="{{majorHead.viewValue}}">
+                      {{majorHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.majorHead.touched && liasonVoucherOfficeForm.controls.majorHead.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.majorHead.errors.required">
+                      {{errorMessages.MAJOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="subMajorHead" placeholder="Sub Major Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="subMajorHeadCtrl"
+                        [placeholderLabel]="'Find Sub Major Head...'"
+                        [noEntriesFoundLabel]="'no matching Sub Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let subMajorHead of subMajorHead_list | filterSelectInput: subMajorHeadCtrl.value"
+                      [value]="subMajorHead.value" matTooltip="{{subMajorHead.viewValue}}">
+                      {{subMajorHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.subMajorHead.touched && liasonVoucherOfficeForm.controls.subMajorHead.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.subMajorHead.errors.required">
+                      {{errorMessages.SUB_MAJOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="minorHead" placeholder="Minor Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="minorHeadCtrl" [placeholderLabel]="'Find Minor Head...'"
+                        [noEntriesFoundLabel]="'no matching Minor Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let minorHead of minorHead_list | filterSelectInput: minorHeadCtrl.value"
+                      [value]="minorHead.value" matTooltip="{{minorHead.viewValue}}">
+                      {{minorHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.minorHead.touched && liasonVoucherOfficeForm.controls.minorHead.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.minorHead.errors.required">
+                      {{errorMessages.MINOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="subHead" placeholder="Sub Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="subHeadCtrl" [placeholderLabel]="'Find Sub Head...'"
+                        [noEntriesFoundLabel]="'no matching Sub Head'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let subHead of subHead_list| filterSelectInput: subHeadCtrl.value"
+                      [value]="subHead.value" matTooltip="{{subHead.viewValue}}">
+                      {{subHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.subHead.touched && liasonVoucherOfficeForm.controls.subHead.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.subHead.errors.required">
+                      {{errorMessages.SUB_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="detailHead" placeholder="Detailed Head" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="detailHeadCtrl" [placeholderLabel]="'Find Detail Head...'"
+                        [noEntriesFoundLabel]="'no matching Detail Head'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let detailHead of detailHead_list| filterSelectInput: detailHeadCtrl.value"
+                      [value]="detailHead.value" matTooltip="{{detailHead.viewValue}}">
+                      {{detailHead.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.detailHead.touched && liasonVoucherOfficeForm.controls.detailHead.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.detailHead.errors.required">
+                      {{errorMessages.DETAIL_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="objectClass" placeholder="Object Class" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="objClassCtrl" [placeholderLabel]="'Find Object Class...'"
+                        [noEntriesFoundLabel]="'no matching Object Class'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let Obj of objectClass_list| filterSelectInput: objClassCtrl.value"
+                      [value]="Obj.value" matTooltip="{{Obj.viewValue}}">
+                      {{Obj.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.objectClass.touched && liasonVoucherOfficeForm.controls.objectClass.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.objectClass.errors.required">
+                      {{errorMessages.CLASS_OBJECT}}
+                    </mat-error>
+                  </div>
+
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Head Chargeable" formControlName="headChargable" required>
+                  <div class="error-wrapper"
+                    *ngIf="liasonVoucherOfficeForm.controls.headChargable.touched && liasonVoucherOfficeForm.controls.headChargable.errors">
+                    <mat-error *ngIf="liasonVoucherOfficeForm.controls.headChargable.errors.required">
+                      {{errorMessages.HEAD_CHARGEABLE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Head Details -->
+        <!-- Expenditure Details -->
+        <div class="box box-primary">
+          <div class="box-header">Expenditure Details</div>
+          <div class="box-body">
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="expenditureDataSource" matSort aria-describedby="recovery">
+                <ng-container matColumnDef="budgetCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Budget
+                    Code
+                  </th>
+                  <td mat-cell *matCellDef="let
+                              element;let i=index">
+                    {{element.budgetCode}}</td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Description</th>
+                  <td mat-cell *matCellDef="let
+                              element">
+                    {{element.description}}</td>
+
+                </ng-container>
+                <ng-container matColumnDef="edpCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP
+                    Code
+                  </th>
+                  <td mat-cell *matCellDef="let
+                              element">
+                    <span *ngIf="element.edpCode">{{element.edpCode}}</span>
+                    <mat-form-field class="example-full-width" *ngIf="!element.edpCode">
+                      <input matInput value="{{element.edpCode}}" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,edpCode)" (keydown.enter)="fillData()" maxlength="4" tabindex="1"
+                        [datoAutoFocus]="true">
+                    </mat-form-field>
+                  </td>
+
+                </ng-container>
+                <ng-container matColumnDef="amountExp">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount
+                    (Rs.)
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="example-full-width" class="rightAlign">
+                      <input matInput [(ngModel)]="element.amountExp" (keypress)="decimalKeyPress($event)"
+                        value="{{element.amountExp}}" (blur)="decimalPoint(element,'amountExp')" [ngModelOptions]="{standalone:
+                                    true}">
+
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" [ngStyle]="{'width':'4%'}">Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tr>
+                        <td>
+                          <a class="delete-icon" (click)="expenditure()">
+                            <i class="material-icons plus   add" aria-hidden="true">
+                              add
+                            </i>
+                          </a>
+                          <a class="delete-icon" (click)="exdeleteRow()">
+                            <i class="material-icons plus delete" aria-hidden="true" title="delete">delete_forever</i>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="expenditureColumn"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i= index;columns:expenditureColumn"></tr>
+                <!--(click)="selection.toggle(row)"-->
+                <!-- <tr mat-footer-row *matFooterRowDef="expenditureColumn"></tr> -->
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- End Expenditure Details -->
+        <!-- Recovery Details -->
+        <div class="box box-primary">
+          <div class="box-header">Recovery Details</div>
+          <div class="box-body">
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="recoveryDataSource" matSort aria-describedby="recovery">
+                <ng-container matColumnDef="budgetCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Budget
+                    Code
+                  </th>
+                  <td mat-cell *matCellDef="let
+                              element;let i=index">
+                    {{element.budgetCode}}</td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Description</th>
+                  <td mat-cell *matCellDef="let
+                              element">
+                    {{element.description}}</td>
+
+                </ng-container>
+                <ng-container matColumnDef="edpCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP
+                    Code
+                  </th>
+                  <td mat-cell *matCellDef="let
+                              element">
+                    <span *ngIf="element.edpCode">{{element.edpCode}}</span>
+                    <mat-form-field class="example-full-width" *ngIf="!element.edpCode">
+                      <input matInput value="{{element.edpCode}}" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,edpCode)" (keydown.enter)="fillData()" maxlength="4" tabindex="1"
+                        [datoAutoFocus]="true">
+                    </mat-form-field>
+                  </td>
+
+                </ng-container>
+                <ng-container matColumnDef="amountExp">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount
+                    (Rs.)
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field class="example-full-width" class="rightAlign">
+                      <input matInput [(ngModel)]="element.amountExp" (keypress)="decimalKeyPress($event)"
+                        value="{{element.amountExp}}" (blur)="decimalPoint(element,'amountExp')" [ngModelOptions]="{standalone:
+                                    true}">
+
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" [ngStyle]="{'width':'4%'}">Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tr>
+                        <td>
+                          <a class="delete-icon" (click)="recoveryadd()">
+                            <i class="material-icons plus   add" aria-hidden="true">
+                              add
+                            </i>
+                          </a>
+                          <a class="delete-icon" (click)="recoverydeleteRow()">
+                            <i class="material-icons plus delete" aria-hidden="true" title="delete">delete_forever</i>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="recoveryColumn"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i= index;columns:recoveryColumn"></tr>
+
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- End Recovery Details -->
+        <!-- Receipt Details -->
+        <div class="box box-primary">
+          <div class="box-header">Receipt Details</div>
+          <div class="box-body">
+            <div class="mat-elevation-z8">
+              <!-- Table -->
+              <table mat-table [dataSource]="receiptDataSource" matSort aria-describedby="recovery">
+                <ng-container matColumnDef="edpCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">EDP
+                    Code
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element">
+                    <span *ngIf="element.edpCode">{{element.edpCode}}</span>
+                    <mat-form-field class="example-full-width" *ngIf="!element.edpCode">
+                      <input matInput value="{{element.edpCode}}" maxlength="4" numbersOnly
+                        (keydown.enter)="fillEdpDSescription()" [datoAutoFocus]="true">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> Total</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dedType">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Deduction Type
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element;let i=index">
+                    {{element.dedType}}
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="majorHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major
+                    Head
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element;let i=index">
+                    {{element.majorHead}}</td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="subMajorHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Sub
+                    Major Head
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element;let i=index">
+                    {{element.subMajorHead}}</td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="minerHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Minor
+                    Head
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element;let i=index">
+                    {{element.minerHead}}</td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="subHead">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Sub
+                    Head
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element;let i=index">
+                    {{element.subHead}}</td>
+                  <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount
+                    (Rs.)
+                  </th>
+                  <td mat-cell *matCellDef="let
+                                    element">
+                    <mat-form-field class="example-full-width" class="rightAlign">
+                      <input matInput (keypress)="decimalKeyPress($event)" value="{{element.amount}}"
+                        (blur)="decimalPoint(element,'amount')" [(ngModel)]="element.amount" [ngModelOptions]="{standalone:
+                                            true}">
+                    </mat-form-field>
+                  </td>
+                  <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                    {{ reciptTotal() | number:'1.2-2' }} </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" [ngStyle]="{'width':'4%'}">Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a class="delete-icon" (click)="receiptadd()">
+                              <i class="material-icons plus   add" aria-hidden="true">
+                                add
+                              </i>
+                            </a>
+                            <a class="delete-icon" (click)="recdeleteRow()">
+                              <i class="material-icons plus delete" aria-hidden="true" title="delete">delete_forever</i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="receiptColumn"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row;
+                                let i=
+                                index;columns:receiptColumn"></tr>
+
+              </table>
+              <!-- End Table -->
+            </div>
+
+          </div>
+        </div>
+        <!-- End Receipt Details -->
+        <!-- Amount -->
+        <div class="box box-primary">
+          <div class="box-header">Amount</div>
+          <div class="box-body">
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="deductionDataSource" matSort aria-describedby="recovery">
+                <ng-container matColumnDef="expenditure">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Expenditure</th>
+                  <td mat-cell *matCellDef="let
+                          element;let i=index">
+                    <!-- {{element.party}} -->
+                    <mat-form-field class="example-full-width
+                              rightAlign">
+                      <input matInput [(ngModel)]="element.expenditure" value="{{element.expenditure}}"
+                        [ngModelOptions]="{standalone:
+                                  true}" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,'expenditure')">
+                    </mat-form-field>
+                  </td>
+                  <!-- <td mat-footer-cell *matFooterCellDef class="rightAlign">{{totalexpenditure() | number:'1.2-2'}} </td> -->
+                </ng-container>
+                <ng-container matColumnDef="recovery">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Recovery</th>
+                  <td mat-cell *matCellDef="let
+                          element">
+                    <mat-form-field class="example-full-width
+                              rightAlign">
+                      <input matInput (keypress)="decimalKeyPress($event)" value="{{element.recovery}}"
+                        (blur)="decimalPoint(element,'recovery')" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,'recovery')">
+                    </mat-form-field>
+                  </td>
+                  <!-- <td mat-footer-cell *matFooterCellDef class="rightAlign">{{totalrecovery() | number:'1.2-2'}} </td> -->
+                </ng-container>
+
+                <ng-container matColumnDef="decuctionA">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Deduction -A
+                  </th>
+                  <td mat-cell *matCellDef="let
+                          element">
+                    <mat-form-field class="example-full-width
+                              rightAlign">
+                      <input matInput [(ngModel)]="element.decuctionA" value="{{element.decuctionA}}" [ngModelOptions]="{standalone:
+                                  true}" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,'decuctionA')">
+                    </mat-form-field>
+                  </td>
+                  <!-- <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{totaldecuctionA() | number:'1.2-2'}} </td> -->
+                </ng-container>
+
+
+                <ng-container matColumnDef="decuctionB">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                    Deduction -B
+                  </th>
+                  <td mat-cell *matCellDef="let
+                          element;let i=index">
+                    <mat-form-field class="example-full-width
+                              rightAlign">
+                      <input matInput [(ngModel)]="element.decuctionB" value="{{element.decuctionB}}" [ngModelOptions]="{standalone:
+                                  true}" (keypress)="decimalKeyPress($event)"
+                        (blur)="decimalPoint(element,'decuctionB')">
+                    </mat-form-field>
+                  </td>
+                  <!-- <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{totaldecuctionB() | number:'1.2-2'}} </td> -->
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" [ngStyle]="{'width':'4%'}">Action
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i=index">
+                    <table class="iconTable" aria-describedby="actionBtn">
+                      <tr>
+                        <td>
+                          <a class="delete-icon" (click)="deductionadd()">
+                            <i class="material-icons plus   add" aria-hidden="true">
+                              add
+                            </i>
+                          </a>
+                          <a class="delete-icon" (click)="deleteRow()">
+                            <i class="material-icons plus delete" title="delete" aria-hidden="true">delete_forever</i>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="deductionCol"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row;  let i= index;columns:deductionCol"></tr>
+              </table>
+            </div>
+            <!-- Common Button -->
+            <div class="form-action-button">
+
+              <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['']"
+                routerLinkActive="router-link-active">
+                <i class="material-icons" title="Listing" aria-hidden="true">
+                  list
+                </i>
+                Listing
+              </button>
+              <button mat-raised-button type="submit" class="green"><i class="material-icons" aria-hidden="true">
+                  done
+                </i> Submit
+              </button>
+
+              <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                  close
+                </i>
+                Close
+              </button>
+
+            </div>
+            <!-- End Common Button -->
+          </div>
+        </div>
+        <!-- End Amount -->
+
+      </form>
+    </div>
+  </div>
+</div>

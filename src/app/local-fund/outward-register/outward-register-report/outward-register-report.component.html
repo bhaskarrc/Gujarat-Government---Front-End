@@ -1,0 +1,181 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted"> Outward Register </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Outward Register Report</li>
+      </ol>
+    </nav>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Outward Register Report
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="outwardRegisterReport" (ngSubmit)="search()">
+            <div class="row">
+
+              <!-- outward from date -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="outwardFromDate" placeholder="Outward From Date"
+                    formControlName='outwardFromDate' readonly>
+                  <mat-datepicker-toggle matSuffix [for]="outwardFromDate"></mat-datepicker-toggle>
+                  <mat-datepicker #outwardFromDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- outward to date -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="outwardToDate" placeholder="Outward To Date"
+                    formControlName='outwardToDate' readonly>
+                  <mat-datepicker-toggle matSuffix [for]="outwardToDate"></mat-datepicker-toggle>
+                  <mat-datepicker #outwardToDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- letter type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="letterType" placeholder="Letter Type" numbersAlphabetsOnly>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="letterTypeCtrl" [placeholderLabel]="'Find Letter Type...'"
+                        [noEntriesFoundLabel]="'No matching Letter Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of letterTypeList |  filterSelectInput:letterTypeCtrl.value"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- outward mode -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="outwardMode" placeholder="Outward Mode">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="outwardModeCtrl" [placeholderLabel]="'Find Outward Mode...'"
+                        [noEntriesFoundLabel]="'no matching Outward Mode found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of outwardMode_list | filterSelectInput: outwardModeCtrl.value"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- outward no -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Outward No" formControlName="outwardNo">
+                </mat-form-field>
+              </div>
+
+
+            </div>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="submit" mat-raised-button color="primary" title="Search">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" aria-hidden="true"> restore </i>
+                Reset </button>
+
+            </div>
+          </form>
+        </div>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+    <!-- table -->
+
+    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="outwardRegisterReportTable">
+
+      <!-- position -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef scope="row"> Sr.No. </th>
+        <td mat-cell *matCellDef="let row;let i =index" class="centerAlign"> {{i+1}} </td>
+      </ng-container>
+
+      <!-- letter type -->
+      <ng-container matColumnDef="letterType">
+        <th mat-header-cell *matHeaderCellDef scope="row">Letter Type</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.letterType}} </td>
+      </ng-container>
+
+      <!-- outward date -->
+      <ng-container matColumnDef="outwardDate">
+        <th mat-header-cell *matHeaderCellDef scope="row">Outward Date</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.outwardDate}} </td>
+      </ng-container>
+
+      <!-- outward no -->
+      <ng-container matColumnDef="outwardNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Outward No</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.outwardNo}} </td>
+      </ng-container>
+
+      <!-- inward letter no -->
+      <ng-container matColumnDef="inwardLetterNo">
+        <th mat-header-cell *matHeaderCellDef scope="row">Inward Letter No </th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.inwardLetterNo}} </td>
+      </ng-container>
+
+      <!-- whom to send -->
+      <ng-container matColumnDef="whomToSend">
+        <th mat-header-cell *matHeaderCellDef scope="row">Whom to Send</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.whomToSend}} </td>
+      </ng-container>
+
+      <!-- outward mode -->
+      <ng-container matColumnDef="outwardMode">
+        <th mat-header-cell *matHeaderCellDef scope="row">Outward Mode</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.outwardMode}} </td>
+      </ng-container>
+
+      <!-- amount -->
+      <ng-container matColumnDef="amt">
+        <th mat-header-cell *matHeaderCellDef scope="row">Amount</th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign"> {{element.amt}} </td>
+      </ng-container>
+
+      <!-- remarks -->
+      <ng-container matColumnDef="remarks">
+        <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+        <td mat-cell *matCellDef="let element;let i= index;"> {{element.remarks}} </td>
+      </ng-container>
+
+      <!-- Header Section Of table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Data Fetch From .TS File to table -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+
+    </table>
+
+    <!-- paginator -->
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+
+  </div>
+</div>

@@ -1,0 +1,608 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Rights Mapping</div>
+            <div class="font-heading"><b>Reference Number:</b> 19-20/EDP/URM/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ today_date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <div #parentGrids>
+            <form [formGroup]="userMappingForm">
+                <div class="form-datatable-list">
+
+                    <div class="box box-primary">
+                        <div class="box-header">Office Details</div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="District" formControlName="district" disabled
+                                            readonly>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="DDO No." formControlName="ddoNo" disabled readonly>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="Cardex No." formControlName="cardexNo" disabled
+                                            readonly>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="DDO Office" formControlName="ddoOffice" disabled
+                                            readonly>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+
+                        <mat-tab label="Mapping">
+
+                            <div class="form-datatable-list">
+
+                                <div class="box box-primary">
+                                    <div class="box-header">Search Mapping</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput numbersOnly placeholder="Employee Number">
+                                                    <mat-icon matSuffix class="searchIcon" (click)="search()">search
+                                                    </mat-icon>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-datatable-list searchmappinglist mgt10" *ngIf="!isSearch">
+                                    <table mat-table [dataSource]="userRole" class="mat-elevation-z8 tablepointer">
+
+                                        <!-- Position Column -->
+                                        <ng-container matColumnDef="position">
+                                            <th mat-header-cell *matHeaderCellDef class="srnowidth"> Sr No. </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                                        </ng-container>
+
+                                        <!--  Employee Number Column -->
+                                        <ng-container matColumnDef="empNo">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Number </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <a *ngIf="!showModuleSelection"
+                                                    (click)="onEmployeeNumberClick(element)">{{element.empNo}}</a>
+                                                <span *ngIf="showModuleSelection"
+                                                    (click)="onEmployeeNumberClick(element)">{{element.empNo}}</span>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Employee Name  Column -->
+                                        <ng-container matColumnDef="empName">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.empName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postName">
+                                            <th mat-header-cell *matHeaderCellDef> Post Name</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postType">
+                                            <th mat-header-cell *matHeaderCellDef> Post Type</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postType}} </td>
+                                        </ng-container>
+
+
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedRoleColumn"></tr>
+                                        <tr mat-row *matRowDef="let row; let i = index;columns: displayedRoleColumn;"
+                                            id="tr{{i}}"></tr>
+                                    </table>
+                                    <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+
+                                </div>
+
+
+                                <div class="custom-list" *ngIf="showModuleSelection">
+
+                                    <div class="rolemappingbox Moduleidth">
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list selectedvalue">
+                                            <h3 class="sticky"> Module List</h3>
+                                            <mat-list *ngFor="let item of moduleList">
+                                                <mat-list-item (click)="clickOnModule(item)"
+                                                    [ngClass]="(item.viewValue == selectedModuleName) ? 'selectedModule' : '' ">
+                                                    {{item.viewValue}} </mat-list-item>
+                                            </mat-list>
+                                        </cdk-virtual-scroll-viewport>
+                                    </div>
+
+                                    <div class="rolemappingbox submenuwidth">
+
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list selectedvalue">
+                                            <h3 class="sticky"> Sub Module</h3>
+
+                                            <div *ngIf="subList">
+                                                <mat-list *ngFor="let item of subMenuList">
+                                                    <mat-list-item (click)="subMenu(item)"
+                                                        [ngClass]="(item.viewValue == selectedSubModuleName) ? 'selectedModule' : '' ">
+                                                        {{item.viewValue}} </mat-list-item>
+                                                </mat-list>
+                                            </div>
+
+                                        </cdk-virtual-scroll-viewport>
+                                    </div>
+
+                                    <div class="rolemappingbox menulist  menu_box">
+
+
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list">
+                                            <h3 class="sticky"> Menu</h3>
+                                            <div *ngIf="menuChecbox">
+                                                <mat-list *ngFor="let item of menu">
+                                                    <mat-list-item (click)="menuList(item)"
+                                                        [ngClass]="(item.viewValue == selectedmenuName) ? 'selectedModule' : '' ">
+                                                        {{item.viewValue}}
+                                                    </mat-list-item>
+                                                </mat-list>
+                                            </div>
+                                        </cdk-virtual-scroll-viewport>
+                                    </div>
+
+                                    <div class="rolemappingbox">
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list">
+                                            <h3 class="sticky"> Permission</h3>
+                                            <div class="allpercheckboxlist" *ngIf="permissionOn">
+                                                <ng-container>
+                                                    <mat-checkbox>Create </mat-checkbox>
+                                                    <mat-checkbox>Edit</mat-checkbox>
+                                                    <mat-checkbox checked='true'> View </mat-checkbox>
+                                                    <mat-checkbox>Delete </mat-checkbox>
+                                                </ng-container>
+                                            </div>
+                                        </cdk-virtual-scroll-viewport>
+                                    </div>
+
+
+                                    <!-- <div class="rolemappingbox">
+
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list mrgzero">
+                                            <div class="wrkflowbrd">
+                                                <h3 class="sticky nobrd disin"> Branch</h3>
+                                                <div class="rediobtnboxrole floatRight">
+                                                    <mat-radio-group aria-label="Select an option">
+                                                        <mat-radio-button (change)="branchshow($event)" *ngFor=" let a of workFlow_list" [value]="a.value" [checked]="a.value == '2'">
+                                                            {{a.viewValue}}
+                                                        </mat-radio-button>
+                                                    </mat-radio-group>
+                                                </div>
+                                            </div>
+
+                                            <div class="allworkflowlist" *ngIf="branchlistdrop">
+
+                                                <div class="col-sm-12">
+                                                    <mat-form-field class="full-width">
+                                                        <mat-select formControlName="branchName" placeholder="Branch">
+                                                            <mat-option>
+                                                                <ngx-mat-select-search [formControl]="branchCtrl" [placeholderLabel]="'Find Branch Type...'" [noEntriesFoundLabel]="'no matching Branch found'">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option *ngFor="let branch of branchList | filterSelectInput : branchCtrl.value" [value]="branch.value">
+                                                                {{branch.viewValue}}
+                                                            </mat-option>
+
+                                                        </mat-select>
+
+                                                    </mat-form-field>
+                                                </div>
+
+                                            </div>
+                                        </cdk-virtual-scroll-viewport>
+                                    </div> -->
+
+                                    <div class="rolemappingbox lastbox">
+
+                                        <cdk-virtual-scroll-viewport itemSize="50" class="select-list mrgzero">
+                                            <div class="wrkflowbrd">
+                                                <h3 class="sticky nobrd disin"> Workflow</h3>
+                                                <div class="rediobtnboxrole floatRight">
+                                                    <mat-radio-group aria-label="Select an option">
+                                                        <mat-radio-button (change)="workFlow($event)"
+                                                            *ngFor=" let a of workFlow_list" [value]="a.value"
+                                                            [checked]="a.value == '2'">
+                                                            {{a.viewValue}}
+                                                        </mat-radio-button>
+                                                    </mat-radio-group>
+                                                </div>
+                                            </div>
+
+                                            <div class="allworkflowlist" *ngIf="workFlowCheckBox">
+
+                                                <mat-checkbox>Create </mat-checkbox>
+
+                                                <mat-checkbox> Verifier</mat-checkbox>
+
+                                                <mat-checkbox> Approver</mat-checkbox>
+
+                                            </div>
+                                        </cdk-virtual-scroll-viewport>
+                                    </div>
+
+                                    <div class="col-sm-12 text-right roleview">
+                                        <a (click)="showConfirmationPopup()"> User Rights View </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" *ngIf="showModuleSelection">
+                                    <div class="form-action-button">
+                                        <button type="submit" mat-raised-button color="primary" (click)="addRow()">
+                                            <i class="material-icons" title="Save">
+                                                save
+                                            </i>
+                                            Save as Draft
+                                        </button>
+
+                                        <button type="button" mat-raised-button class="btnClose" (click)="oncancel()">
+                                            <i class="material-icons" aria-hidden="true"
+                                                title="Budget dashboard">close</i>Cancel</button>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-datatable-list mgt10">
+                                    <div class=" postlisttitle"> Rights to be Given </div>
+                                    <table mat-table [dataSource]="userRoleMap" class="mat-elevation-z8">
+
+                                        <!-- Position Column -->
+                                        <ng-container matColumnDef="position">
+                                            <th mat-header-cell *matHeaderCellDef class="srnowidth"> Sr No. </th>
+                                            <td mat-cell *matCellDef="let element;let i= index;"> {{i+1}} </td>
+                                        </ng-container>
+
+                                        <!--  Employee Number Column -->
+                                        <ng-container matColumnDef="empNo">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Number </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.empNo}} </td>
+                                        </ng-container>
+
+                                        <!-- Employee Name  Column -->
+                                        <ng-container matColumnDef="empName">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.empName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postName">
+                                            <th mat-header-cell *matHeaderCellDef> Post Name</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postType">
+                                            <th mat-header-cell *matHeaderCellDef> Post Type</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postType}} </td>
+                                        </ng-container>
+
+                                        <!--Module ListColumn -->
+                                        <ng-container matColumnDef="moduleList">
+                                            <th mat-header-cell *matHeaderCellDef> Module List</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.moduleList}} </td>
+                                        </ng-container>
+
+
+                                        <!--Sub Module ListColumn -->
+                                        <ng-container matColumnDef="subModule">
+                                            <th mat-header-cell *matHeaderCellDef> Sub Module</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.subModule}} </td>
+                                        </ng-container>
+
+
+                                        <!--Menu:CounteLristColumn -->
+                                        <ng-container matColumnDef="manuCounter">
+                                            <th mat-header-cell *matHeaderCellDef> Menu</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.manuCounter}} </td>
+                                        </ng-container>
+
+                                        <!--Permission Column -->
+                                        <ng-container matColumnDef="permission">
+                                            <th mat-header-cell *matHeaderCellDef> Permission</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.permission}} </td>
+                                        </ng-container>
+
+
+                                        <!--Branch Column -->
+                                        <!-- <ng-container matColumnDef="branch">
+                                            <th mat-header-cell *matHeaderCellDef> Branch</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.branch}} </td>
+                                        </ng-container> -->
+
+                                        <!--Workflow Column -->
+                                        <ng-container matColumnDef="workFLow">
+                                            <th mat-header-cell *matHeaderCellDef> Workflow</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.workFLow}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="action">
+                                            <th mat-header-cell *matHeaderCellDef class="actionwidthtwo">Action</th>
+                                            <td mat-cell *matCellDef="let item; let i = index">
+                                                <table class="iconTable">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><i class="material-icons plus edit-icon" title="Edit">
+                                                                    edit </i>
+
+                                                            </td>
+                                                            <td>
+                                                                <i class="material-icons plus delete">
+                                                                    delete
+                                                                </i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedRoleMapColumn"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedRoleMapColumn;"></tr>
+                                    </table>
+                                    <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+                                    <div class="text-center" *ngIf="userRoleMap.data.length === 0">
+                                        No Data Found
+                                    </div>
+                                </div>
+
+
+                                <div class="form-datatable-list mgt10">
+                                    <div class=" postlisttitle">Rights to be Remove </div>
+                                    <table mat-table [dataSource]="userRoleMapremove" class="mat-elevation-z8">
+
+                                        <!-- Position Column -->
+                                        <ng-container matColumnDef="position">
+                                            <th mat-header-cell *matHeaderCellDef class="srnowidth"> Sr No. </th>
+                                            <td mat-cell *matCellDef="let element;let i= index;"> {{i+1}} </td>
+                                        </ng-container>
+
+                                        <!--  Employee Number Column -->
+                                        <ng-container matColumnDef="empNo">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Number </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.empNo}} </td>
+                                        </ng-container>
+
+                                        <!-- Employee Name  Column -->
+                                        <ng-container matColumnDef="empName">
+                                            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.empName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postName">
+                                            <th mat-header-cell *matHeaderCellDef> Post Name</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postName}} </td>
+                                        </ng-container>
+
+                                        <!--Post Name Column -->
+                                        <ng-container matColumnDef="postType">
+                                            <th mat-header-cell *matHeaderCellDef> Post Type</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.postType}} </td>
+                                        </ng-container>
+
+                                        <!--Module ListColumn -->
+                                        <ng-container matColumnDef="moduleList">
+                                            <th mat-header-cell *matHeaderCellDef> Module List</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.moduleList}} </td>
+                                        </ng-container>
+
+
+                                        <!--Sub Module ListColumn -->
+                                        <ng-container matColumnDef="subModule">
+                                            <th mat-header-cell *matHeaderCellDef> Sub Module</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.subModule}} </td>
+                                        </ng-container>
+
+
+                                        <!--Menu:CounteLristColumn -->
+                                        <ng-container matColumnDef="manuCounter">
+                                            <th mat-header-cell *matHeaderCellDef> Menu</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.manuCounter}} </td>
+                                        </ng-container>
+
+                                        <!--Permission Column -->
+                                        <ng-container matColumnDef="permission">
+                                            <th mat-header-cell *matHeaderCellDef> Permission</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.permission}} </td>
+                                        </ng-container>
+
+
+                                        <!--Branch Column -->
+                                        <!-- <ng-container matColumnDef="branch">
+                                            <th mat-header-cell *matHeaderCellDef> Branch</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.branch}} </td>
+                                        </ng-container> -->
+
+                                        <!--Workflow Column -->
+                                        <ng-container matColumnDef="workFLow">
+                                            <th mat-header-cell *matHeaderCellDef> Workflow</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.workFLow}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="action">
+                                            <th mat-header-cell *matHeaderCellDef class="actionwidthtwo">Action</th>
+                                            <td mat-cell *matCellDef="let item; let i = index">
+                                                <table class="iconTable">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><i class="material-icons plus edit-icon" title="Edit">
+                                                                    edit </i>
+
+                                                            </td>
+                                                            <td>
+                                                                <i class="material-icons plus delete">
+                                                                    delete
+                                                                </i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </ng-container>
+
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedRoleMapremoveColumn"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedRoleMapremoveColumn;"></tr>
+                                    </table>
+                                    <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+                                    <div class="text-center" *ngIf="userRoleMap.data.length === 0">
+                                        No Data Found
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-action-button">
+
+                                        <button mat-raised-button type="submit" (click)="onSubmit()" class="green"><i
+                                                class="material-icons">
+                                                done
+                                            </i> Submit</button>
+                                        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                            <i class="material-icons" title="Listing">
+                                                list
+                                            </i>
+                                            Listing
+                                        </button>
+                                        <button type="submit" mat-raised-button color="primary" class="btn-print">
+                                            <i class="material-icons" aria-hidden="true">print </i>
+                                            Print
+                                        </button>
+                                        <button type="button" mat-raised-button class="btnClose">
+                                            <i class="material-icons" title="EDP dashboard">
+                                                close
+                                            </i>
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </mat-tab>
+
+                        <mat-tab label="Attachments">
+                            <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                                <ng-container matColumnDef="attachmentType">
+                                    <th mat-header-cell *matHeaderCellDef>Attachment Type <span>*</span></th>
+                                    <td mat-cell *matCellDef="let item;let i = index;">
+                                        <mat-label>Supporting Document</mat-label>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="fileName">
+                                    <th mat-header-cell *matHeaderCellDef>File Name</th>
+                                    <td mat-cell *matCellDef="let item">
+                                        <mat-form-field floatLabel="never">
+                                            <textarea matInput rows="2" maxlength="200" [value]="item.name"
+                                                [(ngModel)]="item.name"
+                                                [ngModelOptions]="{standalone: true}"></textarea>
+                                        </mat-form-field>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="browse">
+                                    <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                                    <td mat-cell *matCellDef="let i = index" class="centerAlign">
+                                        <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                                            Files</button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="uploadedFileName">
+                                    <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                                    <td mat-cell *matCellDef="let item">
+                                        <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                            <i class="material-icons closesmall">
+                                                close
+                                            </i>
+                                        </span>
+
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="uploadedBy">
+                                    <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                                    <td mat-cell *matCellDef="let item">
+                                        <mat-label>Mr. Pratik Shah</mat-label>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                                    <td mat-cell *matCellDef="let item; let i = index">
+                                        <table class="iconTable">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="action-btn-i centerAlign">
+                                                        <a>
+                                                            <i class="material-icons plus add"
+                                                                *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                                (click)="addBrowse()">add
+                                                            </i>
+                                                        </a>
+                                                        <a>
+                                                            <i class="material-icons plus view-icon"
+                                                                title="View">remove_red_eye
+                                                            </i>
+                                                        </a>
+                                                        <a>
+                                                            <i class="material-icons plus delete"
+                                                                *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1"
+                                                                (click)="deleteBrowse(i)">delete
+                                                            </i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                            </table>
+                            <input type="file" id="fileBrowse" style="visibility: hidden;"
+                                (change)="onFileSelection($event)" />
+                            <div class="legend">
+                                1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg',
+                                'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                            </div>
+                            <div class="form-action-button">
+                                <button type="submit" mat-raised-button color="primary">
+                                    <i class="material-icons" title="Save">cloud_upload</i>
+                                    Upload
+                                </button>
+                                <button mat-raised-button type="submit" class="green">
+                                    <i class="material-icons">done</i>
+                                    Submit
+                                </button>
+                                <button type="reset" mat-raised-button color="accent">
+                                    <i class="material-icons">restore</i>
+                                    Reset
+                                </button>
+                                <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                    <i class="material-icons" title="Listing">list</i>
+                                    Listing
+                                </button>
+                                <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                    <i class="material-icons" title="Budget dashboard">close</i>
+                                    Close
+                                </button>
+                            </div>
+                        </mat-tab>
+
+                    </mat-tab-group>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

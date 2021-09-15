@@ -1,0 +1,513 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- heading section -->
+        <div class="heading-section ng-star-inserted">
+            <div>8011 Interest Rate</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/EM/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <!-- navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+                <li class="breadcrumb-item active" aria-current="page">8011 Interest Rate</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <!-- form -->
+            <form [formGroup]="interestRateForm" (ngSubmit)="interestRateFormData()">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="true" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Interest Rate</div>
+                        </mat-expansion-panel-header>
+
+                        <div class="box-body">
+                            <div class="row">
+
+                                <!-- financial year -->
+                                <div class="col-md-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Financial Year" formControlName="finanacialYear"
+                                            value="2019-2020" readonly>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- from month -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="fromMonth" placeholder="From Month" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="fromMonthCtrl"
+                                                    [placeholderLabel]="'Find Month...'"
+                                                    [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let item of monthList | filterSelectInput:fromMonthCtrl.value"
+                                                [value]="item.value">
+                                                {{item.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper"
+                                            *ngIf="interestRateForm.controls.fromMonth.touched && interestRateForm.controls.fromMonth.errors">
+                                            <mat-error *ngIf="interestRateForm.controls.fromMonth.errors.required">
+                                                {{errorMessages.FROM_MONTH}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- to monh -->
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="toMonth" placeholder="To Month" required>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="toMonthCtrl"
+                                                    [placeholderLabel]="'Find Month...'"
+                                                    [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option
+                                                *ngFor="let item of monthList | filterSelectInput:toMonthCtrl.value"
+                                                [value]="item.value">
+                                                {{item.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <div class="error-wrapper"
+                                            *ngIf="interestRateForm.controls.toMonth.touched && interestRateForm.controls.toMonth.errors">
+                                            <mat-error *ngIf="interestRateForm.controls.toMonth.errors.required">
+                                                {{errorMessages.TO_MONTH}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- rate of interest -->
+                                <div class="col-md-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Rate of Interest" formControlName="rateOfInterest"
+                                            decimalLimitTwoOnly required>
+                                        <div class="error-wrapper"
+                                            *ngIf="interestRateForm.controls.rateOfInterest.touched && interestRateForm.controls.rateOfInterest.errors">
+                                            <mat-error *ngIf="interestRateForm.controls.rateOfInterest.errors.required">
+                                                {{errorMessages.RATE_OF_INTEREST}}
+                                            </mat-error>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                <!-- action button -->
+                                <div class="col-sm-12">
+                                    <div class="form-action-button">
+                                        <button type="submit" mat-raised-button color="primary" title="Search"
+                                            (click)="showResult($event)">
+                                            <i class="material-icons" aria-hidden="true">done</i> Submit
+                                        </button>
+                                        <button type="reset" mat-raised-button color="accent" title="Reset">
+                                            <i class="material-icons" aria-hidden="true">
+                                                restore
+                                            </i>
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- action button end -->
+
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <br>
+
+                <!-- if april-may quater start  show header-->
+                <div class="mat-elevation-z8 mt-2" *ngIf="aprilTable">
+
+                    <!-- table start -->
+                    <table mat-table [dataSource]="interestRateDataSource" width="100%" aria-describedby="interestRate"
+                        matSort>
+
+                        <!-- month -->
+                        <ng-container matColumnDef="month">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 15%;">Month
+                            </th>
+                        </ng-container>
+
+                        <!-- opening balance -->
+                        <ng-container matColumnDef="openingBalance">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 15%;">
+                                Opening Balance</th>
+                        </ng-container>
+
+                        <!-- interest amount -->
+                        <ng-container matColumnDef="interestAmount">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 15%;">
+                                Interest Amount</th>
+                        </ng-container>
+
+                        <!-- saving fund -->
+                        <ng-container matColumnDef="savingFund">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 15%;">Saving
+                                Fund</th>
+                        </ng-container>
+
+                        <!-- interest -->
+                        <ng-container matColumnDef="interest">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 15%;">
+                                Interest</th>
+                        </ng-container>
+
+                        <!-- interest rate -->
+                        <ng-container matColumnDef="interestRate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" style="width: 10%;">
+                                Rate Of Interest</th>
+                        </ng-container>
+
+                        <!-- closing balance -->
+                        <ng-container matColumnDef="closingBalance">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Closing Balance</th>
+                        </ng-container>
+
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="interestRateDataSourceColumn"></tr>
+                    </table>
+                    <!-- table entry -->
+
+                </div>
+
+                <!-- if april-may quater  -->
+                <div class="mat-elevation-z8 mt-2" *ngIf="aprilTable">
+
+                    <!-- table start -->
+                    <table mat-table [dataSource]="interestRateAprilDataSource" width="100%"
+                        aria-describedby="interestRate" matSort>
+
+                        <!-- month -->
+                        <ng-container matColumnDef="month">
+                            <td mat-cell *matCellDef="let element" style="width: 15%;">
+                                {{element.month}}
+                            </td>
+                        </ng-container>
+
+                        <!-- opening balance -->
+                        <ng-container matColumnDef="openingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.openingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest amount -->
+                        <ng-container matColumnDef="interestAmount">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interestAmount}}
+                            </td>
+                        </ng-container>
+
+                        <!-- saving fund -->
+                        <ng-container matColumnDef="savingFund">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.savingFund}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest -->
+                        <ng-container matColumnDef="interest">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interest}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interst rate -->
+                        <ng-container matColumnDef="interestRate">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 10%;">
+                                {{element.interestRate}}
+                            </td>
+                        </ng-container>
+
+                        <!-- closing balance -->
+                        <ng-container matColumnDef="closingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{element.closingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: interestRateDataSourceColumn;"></tr>
+                    </table>
+                    <!-- table entry -->
+
+                </div>
+
+                <!-- if july-sep quater -->
+                <div class="mat-elevation-z8 mt-2" *ngIf="julyTable">
+
+                    <!-- table start -->
+                    <table mat-table [dataSource]="interestRateJulyDataSource" width="100%"
+                        aria-describedby="interestRate" matSort>
+
+                        <!-- month -->
+                        <ng-container matColumnDef="month">
+                            <td mat-cell *matCellDef="let element" style="width: 15%;">
+                                {{element.month}}
+                            </td>
+                        </ng-container>
+
+                        <!-- opening balance -->
+                        <ng-container matColumnDef="openingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.openingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interst amount -->
+                        <ng-container matColumnDef="interestAmount">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interestAmount}}
+                            </td>
+                        </ng-container>
+
+                        <!-- saving amount -->
+                        <ng-container matColumnDef="savingFund">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.savingFund}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest -->
+                        <ng-container matColumnDef="interest">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interest}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest rate -->
+                        <ng-container matColumnDef="interestRate">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 10%;">
+                                {{element.interestRate}}
+                            </td>
+                        </ng-container>
+
+                        <!-- closing balance -->
+                        <ng-container matColumnDef="closingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{element.closingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: interestRateDataSourceColumn;"></tr>
+                    </table>
+                    <!-- table entry -->
+
+                </div>
+
+                <!-- if oct-dec quater  -->
+                <div class="mat-elevation-z8 mt-2" *ngIf="octoberTable">
+
+                    <!-- table start -->
+                    <table mat-table [dataSource]="interestRateOctoberDataSource" width="100%"
+                        aria-describedby="interestRate" matSort>
+
+                        <!-- month  -->
+                        <ng-container matColumnDef="month">
+                            <td mat-cell *matCellDef="let element" style="width: 15%;">
+                                {{element.month}}
+                            </td>
+                        </ng-container>
+
+                        <!-- opening balance -->
+                        <ng-container matColumnDef="openingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.openingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest amount -->
+                        <ng-container matColumnDef="interestAmount">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interestAmount}}
+                            </td>
+                        </ng-container>
+
+                        <!-- saving fund -->
+                        <ng-container matColumnDef="savingFund">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.savingFund}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest -->
+                        <ng-container matColumnDef="interest">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interest}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest rate -->
+                        <ng-container matColumnDef="interestRate">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 10%;">
+                                {{element.interestRate}}
+                            </td>
+                        </ng-container>
+
+                        <!-- closing balance -->
+                        <ng-container matColumnDef="closingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{element.closingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: interestRateDataSourceColumn;"></tr>
+                    </table>
+                    <!-- table end -->
+
+                </div>
+
+                <!-- if jan-mar quater -->
+                <div class="mat-elevation-z8 mt-2" *ngIf="januaryTable">
+
+                    <!-- table start -->
+                    <table mat-table [dataSource]="interestRateJanuaryDataSource" width="100%"
+                        aria-describedby="interestRate" matSort>
+
+                        <!-- month -->
+                        <ng-container matColumnDef="month">
+                            <td mat-cell *matCellDef="let element" style="width: 15%;">
+                                {{element.month}}
+                            </td>
+                        </ng-container>
+
+                        <!-- opening balance -->
+                        <ng-container matColumnDef="openingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.openingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest amount -->
+                        <ng-container matColumnDef="interestAmount">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interestAmount}}
+                            </td>
+                        </ng-container>
+
+                        <!-- saving fund -->
+                        <ng-container matColumnDef="savingFund">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.savingFund}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest -->
+                        <ng-container matColumnDef="interest">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 15%;">
+                                {{element.interest}}
+                            </td>
+                        </ng-container>
+
+                        <!-- interest rate -->
+                        <ng-container matColumnDef="interestRate">
+                            <td mat-cell *matCellDef="let element" class="rightAlign" style="width: 10%;">
+                                {{element.interestRate}}
+                            </td>
+                        </ng-container>
+
+                        <!-- closing balance -->
+                        <ng-container matColumnDef="closingBalance">
+                            <td mat-cell *matCellDef="let element" class="rightAlign">
+                                {{element.closingBalance}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: interestRateDataSourceColumn;"></tr>
+                    </table>
+                    <!-- table end -->
+
+                </div>
+
+            </form>
+            <!-- form end -->
+
+            <!-- action button -->
+            <div class="form-action-button" *ngIf="aprilTable">
+
+                <button mat-raised-button color="primary" title="Generate Statement 1" (click)="goToStatementOne()">
+                    <i class="material-icons" aria-hidden="true">
+                        send
+                    </i>
+                    Generate Statement 1
+                </button>
+
+                <button mat-raised-button color="primary" title="Generate Statement 2" (click)="goToStatementTwo()">
+                    <i class="material-icons" aria-hidden="true">
+                        send
+                    </i>
+                    Generate Statement 2
+                </button>
+
+                <button mat-raised-button color="primary" title="Generate Statement 3" (click)="goToStatementThree()">
+                    <i class="material-icons" aria-hidden="true">
+                        send
+                    </i>
+                    Generate Statement 3
+                </button>
+
+            </div>
+            <!-- action button end -->
+
+            <!-- common action button -->
+            <div class="form-action-button">
+
+                <button mat-raised-button color="primary" title="Save as Draft">
+                    <i class="material-icons" aria-hidden="true">
+                        save
+                    </i>
+                    Save as Draft
+                </button>
+
+                <button mat-raised-button type="button" class="green" title="Submit">
+                    <i class="material-icons" aria-hidden="true">done</i> Submit
+                </button>
+
+                <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                    <i class="material-icons" aria-hidden="true">
+                        restore
+                    </i>
+                    Reset
+                </button>
+
+                <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+                    <i class="material-icons" aria-hidden="true">
+                        list
+                    </i>
+                    Listing
+                </button>
+
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+                    <i class="material-icons" aria-hidden="true">
+                        close
+                    </i>
+                    Close
+                </button>
+
+                <button type="button" mat-raised-button class="print-btn" title="Print">
+                    <i class="material-icons" aria-hidden="true">
+                        print
+                    </i>
+                    Print
+                </button>
+
+            </div>
+            <!-- common action button end -->
+
+        </div>
+
+    </div>
+</div>

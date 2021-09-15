@@ -1,0 +1,330 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div> User Post Mapping </div>
+            <div class="font-heading"><b>Reference  Number:</b> 19-20/EDP/URM/001</div>
+            <div class="font-heading"><b>Reference  Date:</b> {{ today_date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page"> User Post Mapping </li>
+            </ol>
+        </nav>
+        <div #parentGrids>
+            <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+                        Post Mapping
+                    </ng-template>
+                    <div class="box box-primary">
+                        <div class="box-header">Search</div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="Employee No. " value="">
+                                        <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Post Transfer From Part -->
+                    <form [formGroup]="userpost">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="box box-primary">
+                                    <div class="box-header">Post Transfer from:</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="col-sm-3 " class="full-width">
+                                                    <mat-form-field>
+                                                        <input matInput placeholder="District" disabled
+                                                            value="Ahmedabad">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="DDO No " value="" maxlength="4">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="Cardex No " value=""
+                                                        (keyup)="textValueChangeddono($event)" maxlength="4">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="ddoOfcemployenamefr">
+                                                <mat-form-field class="full-width">
+                                                    <input matInput placeholder="DDO Office"
+                                                        value="Collector Office, Ahmedabad">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="ddoOfcemployenamefr">
+                                                <mat-form-field class="full-width">
+                                                    <mat-select formControlName="post"
+                                                        (selectionChange)="postselectfrom($event)" placeholder="From"
+                                                        required>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="postCtrl"
+                                                                [placeholderLabel]="'Find post Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Post found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option
+                                                            *ngFor="let post of Post_list | filterSelectInput: postCtrl.value"
+                                                            [value]="post.value">
+                                                            {{post.viewValue}}
+                                                        </mat-option>
+                                                    </mat-select>
+
+                                                    <div class="error-wrapper"
+                                                        *ngIf="userpost.controls.post.touched && userpost.controls.post.errors">
+                                                        <mat-error *ngIf="userpost.controls.post.errors.required">
+                                                            {{errorMessages.post}}</mat-error>
+                                                    </div>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="userIdNamepf">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart" placeholder="Employee Id"
+                                                        (keyup)="textValueChange()">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-6" *ngIf="userNamefrom">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Name" value="Mr. S R Shukla">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-12 user-post-table" *ngIf="userNamefrom">
+                                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                                                    <!-- Checkbox Column -->
+                                                    <ng-container matColumnDef="select">
+                                                        <th mat-header-cell *matHeaderCellDef>
+                                                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                                [checked]="selection.hasValue() && isAllSelected()"
+                                                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                                [aria-label]="checkboxLabel()">
+                                                            </mat-checkbox>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let row">
+                                                            <mat-checkbox (click)="$event.stopPropagation()"
+                                                                (change)="$event ? selection.toggle(row) : null"
+                                                                [checked]="selection.isSelected(row)"
+                                                                [aria-label]="checkboxLabel(row)">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="position">
+                                                        <th mat-header-cell *matHeaderCellDef> No. </th>
+                                                        <td mat-cell *matCellDef="let element"> {{element.position}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Name Column -->
+                                                    <ng-container matColumnDef="pname">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.pname}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Type </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            <mat-form-field>
+                                                                <mat-select name="post_type" placeholder="Post Type">
+                                                                    <mat-option value="Primary"> Primary </mat-option>
+                                                                    <mat-option value="Secondary"> Secondary
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </td>
+                                                    </ng-container>
+
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-sm-3" *ngIf="userPostfrom">
+                                                <mat-form-field>
+                                                    <mat-label>Post Name</mat-label>
+                                                    <mat-select [formControl]="poststo" multiple>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="Postnamecodectrl"
+                                                                [placeholderLabel]="'Find post Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Post found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option *ngFor="let post of postlist;let i =index"
+                                                            [value]="post" (click)="addPostListfrom(post, i)"> {{post}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-12 user-post-table" *ngIf="userPostfrom">
+                                                <div *ngIf="showPostListTitlet" class=" postlisttitle">Post will be
+                                                    transfer
+                                                </div>
+                                                <table mat-table class="user-post-table mat-elevation-z8"
+                                                    [dataSource]="dataSourceBrowseForPost" class="mat-elevation-z8">
+
+                                                    <!-- Position Column -->
+                                                    <ng-container matColumnDef="sr_no">
+                                                        <th mat-header-cell *matHeaderCellDef> No. </th>
+                                                        <td mat-cell *matCellDef="let item; let i = index"
+                                                            class="rightAllign">
+                                                            {{ i + 1 }}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Name Column -->
+                                                    <ng-container matColumnDef="post_name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.post_name}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="post_type">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Type </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            <mat-form-field>
+                                                                <mat-select name="post_type" placeholder="Post Type">
+                                                                    <mat-option value="Primary"> Primary </mat-option>
+                                                                    <mat-option value="Secondary"> Secondary
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="noData">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                                                        <td mat-cell *matCellDef="let element" colspan="9">No Data
+                                                            Available
+                                                        </td>
+                                                    </ng-container>
+                                                    <tr mat-header-row *matHeaderRowDef="displayedBrowseColumnsForPost">
+                                                    </tr>
+                                                    <tr mat-row
+                                                        *matRowDef="let row; columns: displayedColumnsForPost.value;">
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Post Transfer To Part -->
+                            <div class="col-sm-6">
+                                <div class="box box-primary">
+                                    <div class="box-header">Post Transfer To:</div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <mat-form-field class="full-width">
+                                                    <mat-select formControlName="post"
+                                                        (selectionChange)="postselectfto($event)" placeholder="To"
+                                                        required>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="postCtrl"
+                                                                [placeholderLabel]="'Find post Type...'"
+                                                                [noEntriesFoundLabel]="'no matching Post found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option
+                                                            *ngFor="let post of Post_list | filterSelectInput: postCtrl.value"
+                                                            [value]="post.value">
+                                                            {{post.viewValue}}
+                                                        </mat-option>
+                                                    </mat-select>
+
+                                                    <div class="error-wrapper"
+                                                        *ngIf="userpost.controls.post.touched && userpost.controls.post.errors">
+                                                        <mat-error *ngIf="userpost.controls.post.errors.required">
+                                                            {{errorMessages.post}}</mat-error>
+                                                    </div>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="userIdNamept">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart" placeholder="Employee Id"
+                                                        (keyup)="textValueChangeto()">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="userNameto">
+                                                <mat-form-field>
+                                                    <input matInput formControlName="Userpart"
+                                                        placeholder="Employee Name" value="Mr. S R Shukla">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-12 user-post-table" *ngIf="userNameto">
+                                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                                                    <!--  Post Name  Column -->
+                                                    <ng-container matColumnDef="pname">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Name </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.pname}} </td>
+                                                    </ng-container>
+
+                                                    <!-- Post Type Column -->
+                                                    <ng-container matColumnDef="name">
+                                                        <th mat-header-cell *matHeaderCellDef> Post Type </th>
+                                                        <td mat-cell *matCellDef="let element" class="text-left">
+                                                            {{element.name}} </td>
+                                                    </ng-container>
+
+
+                                                    <tr mat-header-row *matHeaderRowDef="displaycolumnto"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displaycolumnto;"></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                            Save as Draft
+                            <i class="material-icons" title="Next">
+                                chevron_right
+                            </i>
+                        </button>
+
+                        <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                                done
+                            </i> Submit</button>
+
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+
+                        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

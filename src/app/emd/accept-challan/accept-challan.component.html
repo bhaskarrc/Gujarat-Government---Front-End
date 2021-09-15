@@ -1,0 +1,224 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Posted EMD Challan</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EMD/PC/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+        <!-- Navigations -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EMD</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Posted EMD Challan - List</li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends -->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search
+                    </div>
+                </mat-expansion-panel-header>
+                <div class="form-datatable-list">
+                    <!-- Posted Challan Form-->
+                    <form class="col-sm-12" [formGroup]="postedChallanListForm" (ngSubmit)="postedChallanListFormFormData()">
+                        <div class="row">
+                            <!-- Challan No -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="challanNo" placeholder="Challan No" formControlName="challanNo">
+                                </mat-form-field>
+                            </div>
+                            <!-- Major Head -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="mHead" maxlength="4" placeholder="Major Head" formControlName="mHead" numbersOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" name="amount" placeholder="Amount" numbersOnly formControlName="amount" numbersOnly>
+                                </mat-form-field>
+                            </div>
+                            <!-- Payee Name -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="payeeName" maxlength="50" placeholder="Payee Name" formControlName="payeeName">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Tin No -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="tinNo" placeholder="Tin No" formControlName="tinNo">
+                                </mat-form-field>
+                            </div>
+                            <!-- Bank Code -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="bCode" placeholder="Bank Code" formControlName="bCode">
+                                </mat-form-field>
+                            </div>
+                            <!-- Branch Code -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="branchCode" placeholder="Branch Code" formControlName="branchCode">
+                                </mat-form-field>
+                            </div>
+                            <!-- Received By Bank Date Picker -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [max]='maxDate' [matDatepicker]="picker" placeholder="Received By Bank Date">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </form>
+                    <!-- Posted Challan Form Ends-->
+                </div>
+                <!-- Common Action Button -->
+                <div class="row displayBlock form-action-button">
+                    <div class="centerAlign">
+                        <button type="submit" mat-raised-button color="primary" (click)="search()">
+              <i class="material-icons" aria-hidden="true">search</i> Search </button>
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+              <i class="material-icons" aria-hidden="true">restore</i> Reset </button>
+                    </div>
+                </div>
+                <!-- End Of Common Action Button -->
+            </mat-expansion-panel>
+        </mat-accordion>
+        <br>
+
+        <div class="mat-elevation-z8 mt-2">
+            <!-- Table Columns- Posted Challan Details   -->
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="postedChallanList">
+                <!-- Column Checkbox -->
+                <ng-container matColumnDef="checkBox">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox (change)="$event ? directiveObject.masterToggle(ELEMENT_DATA) : null" [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(ELEMENT_DATA)" [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(ELEMENT_DATA)"
+                            [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA)">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="text-center">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObject.selection.toggle(row) : null" [checked]="directiveObject.selection.isSelected(row) " [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA, row)">
+                        </mat-checkbox>
+                    </td>
+
+                </ng-container>
+                <!-- Column Receipt No -->
+                <ng-container matColumnDef="receiptNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Receipt No</th>
+                    <td mat-cell *matCellDef="let element">{{element.receiptNo}} </td>
+                </ng-container>
+                <!-- Column Bank Date -->
+                <ng-container matColumnDef="bankDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Received By Bank Date</th>
+                    <td mat-cell *matCellDef="let element"> {{element.bankDate}} </td>
+                </ng-container>
+                <!-- Column Depositor Name -->
+                <ng-container matColumnDef="depositorName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Depositor Name</th>
+                    <td mat-cell *matCellDef="let element"> {{element.depositorName}} </td>
+                </ng-container>
+                <!-- Column Major Head -->
+                <ng-container matColumnDef="majorHead">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Major Head</th>
+                    <td mat-cell *matCellDef="let element">
+
+                        <mat-form-field floatLabel="never" class="">
+                            <input matInput [value]="element.majorHead" [(ngModel)]="element.majorHead" [ngModelOptions]="{standalone: false}" required [disabled]='toggleButton'>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!-- Column Amount -->
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">{{element.amount}}
+                    </td>
+                </ng-container>
+                <!-- Column Challan Type -->
+                <ng-container matColumnDef="challanType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan Type</th>
+                    <td mat-cell *matCellDef="let element"> {{element.challanType}} </td>
+                </ng-container>
+                <!-- Column Bank Code -->
+                <ng-container matColumnDef="bankCode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bank Code</th>
+                    <td mat-cell *matCellDef="let element"> {{element.bankCode}} </td>
+                </ng-container>
+                <!-- Column Branch Code -->
+                <ng-container matColumnDef="branchCode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Branch Code</th>
+                    <td mat-cell *matCellDef="let element"> {{element.branchCode}} </td>
+                </ng-container>
+                <!-- Column Tin No -->
+                <ng-container matColumnDef="tinNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Tin No</th>
+                    <td mat-cell *matCellDef="let element"> {{element.tinNo}} </td>
+                </ng-container>
+
+                <!-- Common Action Button -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action</th>
+                    <td mat-cell *matCellDef="let element ;let i=index" class="centerAlign">
+                        <table class="iconTable" aria-describedby="actionBtn">
+                            <tbody>
+                                <tr>
+                                    <td width="30">
+                                        <i aria-hidden="true" class="material-icons plus edit-icon" title="Edit"> edit </i>
+                                    </td>
+                                    <td width="30">
+                                        <i aria-hidden="true" class="material-icons plus view-icon" title="View">remove_red_eye
+                    </i>
+                                    </td>
+                                    <td width="30">
+                                        <i class="material-icons plus delete" aria-hidden="true" (click)="delete(i)">
+                      delete
+                    </i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </ng-container>
+
+                <!-- End Of Common Action Button -->
+
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i= index;columns:
+              displayedColumns;" [ngClass]="{'completed': (row.status ===
+              '100%'),'incomplete': (row.status !== '100%')}">
+                </tr>
+            </table>
+            <!-- Table Columns- Posted Challan Details Ends -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+
+        <!-- Common Action Button -->
+        <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green">
+        <i aria-hidden="true" class="material-icons">
+          done
+        </i>Receive</button>
+
+            <button type="button" mat-raised-button class="btnClose">
+        <i aria-hidden="true" class="material-icons" title="Close">close</i>
+        Close
+      </button>
+        </div>
+        <!-- End Of Common Action Button -->
+    </div>
+</div>

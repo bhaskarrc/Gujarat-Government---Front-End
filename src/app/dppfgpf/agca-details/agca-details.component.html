@@ -1,0 +1,293 @@
+<div class="form-wrapper">
+    <div class="pannel-group">
+        <div class="heading-section ng-star-inserted">
+            <div>Agca Detail </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/GPF/AD/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Agca Detail </li>
+            </ol>
+        </nav>
+        <!-- AGCA Details Starts  -->
+        <form [formGroup]='gpfVoucherEntryForm'>
+            <div class=" box box-primary">
+                <div class="box-header">
+                    AGCA Details
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Inward No." formControlName='inwardNumber' (change)="enterInwardNo()" required>
+                                <mat-icon matSuffix (click)="openInwardDialog()">search</mat-icon>
+                                <div class="error-wrapper" *ngIf=" gpfVoucherEntryForm.controls.inwardNumber.touched &&gpfVoucherEntryForm.controls.inwardNumber.errors">
+                                    <mat-error *ngIf="gpfVoucherEntryForm.controls.inwardNumber.errors.required">
+                                        {{ errorMessage.INWARD_NUMBER }}
+                                    </mat-error>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field>
+                                <mat-label>Inward Date</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="dateInward" [max]='maxDate' DateOnly />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+
+                            </mat-form-field>
+                        </div>
+
+
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="month" placeholder="Month">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfMonthCtrl" [placeholderLabel]="'Find Month...'" [noEntriesFoundLabel]="'no matching Month found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfMonth
+                      | filterSelectInput: typeOfMonthCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="year" placeholder="Year">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfYearCtrl" [placeholderLabel]="'Find Year...'" [noEntriesFoundLabel]="'no matching Year found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfYear
+                      | filterSelectInput: typeOfYearCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+
+
+
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="AGCA Amount" formControlName='agcaAmount' decimalLimitTwoOnly maxlength="16">
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-6 col-md-3">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="AGAC Amount" formControlName='agacAmount' decimalLimitTwoOnly maxlength="16">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="creditDebit" placeholder="Credit/Debit">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="typeOfCreditDebitCtrl" [placeholderLabel]="'Find Credit/Debit...'" [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="
+                    let CE of classTypeOfCreditDebit
+                      | filterSelectInput: typeOfCreditDebitCtrl.value
+                  " [value]="CE.value">
+                                        {{ CE.viewValue }}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- AGCA Details Ends -->
+
+        <!-- Table Starts -->
+        <div class="box-body">
+            <div class="row">
+                <div class="mat-elevation-z8 table-responsive">
+
+                    <table mat-table [dataSource]="recoveryDataSource" aria-describedby="recovery">
+                        <ng-container matColumnDef="parent1">
+                            <th mat-header-cell *matHeaderCellDef colspan="6" class="centerAlign">
+                                Treasury Details </th>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="codeNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Code No
+                            </th>
+                            <td mat-cell *matCellDef="let
+                            element">
+                                <span *ngIf="element.codeNo">{{element.codeNo}}</span>
+
+                                <mat-form-field class="example-full-width" *ngIf="!element.codeNo">
+                                    <input matInput value="{{element.codeNo}}" decimalLimitTwoOnly (keydown.enter)="recoveryData()" maxlength="4" [datoAutoFocus]="true">
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>Total </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="treasuryName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Treasury Name
+                            </th>
+                            <td mat-cell *matCellDef="let
+                            element">
+                                <span *ngIf="element.treasuryName">{{element.treasuryName}}</span>
+
+                                <mat-form-field class="example-full-width" *ngIf="!element.treasuryName">
+                                    <input matInput value="{{element.treasuryName}}" alphabetsSpaceOnly (keydown.enter)="recoveryData()" [datoAutoFocus]="false">
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> AGCA Amount (Rs.)
+                            </th>
+                            <td mat-cell *matCellDef="let
+                            element  let i =index">
+                                <mat-form-field class="example-full-width" class="rightAlign">
+                                    <input matInput [(ngModel)]="element.amount" value="element.amount
+                                    |
+                                    number:'1.2-2'" decimalLimitTwoOnly [ngModelOptions]="{standalone:
+                                    true}" maxlength="16">
+
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                {{totalRecovery() | number:'1.2-2'}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="agacAmount">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> AGAC Amount (Rs.)
+                            </th>
+                            <td mat-cell *matCellDef="let
+                            element  let i =index">
+                                <mat-form-field class="example-full-width" class="rightAlign">
+                                    <input matInput [(ngModel)]="element.agacAmount" value="element.agacAmount
+                                    |
+                                    number:'1.2-2'" decimalLimitTwoOnly [ngModelOptions]="{standalone:
+                                    true}" maxlength="16">
+
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                {{totalRecoveryAgac() | number:'1.2-2'}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks
+                            </th>
+                            <td mat-cell *matCellDef="let
+                            element">
+
+                                <span *ngIf="element.remarks">{{element.remarks}}</span>
+
+                                <mat-form-field class="example-full-width" *ngIf="!element.remarks">
+                                    <input matInput value="{{element.remarks}}" (keydown.enter)="recoveryData()" [datoAutoFocus]="false">
+                                </mat-form-field>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row" style="width: 4%;">Action</th>
+                            <td mat-cell *matCellDef="let
+                            element;let i=index">
+                                <table class="iconTable" aria-describedby="actionBtn">
+                                    <tbody>
+                                        <tr>
+
+                                            <td width="30" (click)="addRecoveryDetailRow(i);" *ngIf="(i == recoveryDataSource.data.length - 1)">
+                                                <a><i class="material-icons plus add" aria-hidden="true">
+                      add
+                    </i></a>
+                                            </td>
+
+
+                                            <td width="30" *ngIf="(i > 0)">
+                                                <i class="material-icons
+                                                plus
+                                                delete" aria-hidden="true" (click)="deleteRowRecovery(i)">
+                    delete
+                  </i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef> </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['parent1']" class="example-second-header-row">
+                        </tr>
+
+                        <tr mat-header-row *matHeaderRowDef="recoveryColumn"></tr>
+                        <tr mat-row *matRowDef="let row;
+                        let i=
+                        index;columns:recoveryColumn"></tr>
+                        <tr mat-footer-row *matFooterRowDef="recoveryColumn"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- table Ends -->
+
+        <!-- Action Buttons -->
+        <div class="form-action-button">
+
+            <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+        Submit
+      </button>
+            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+            <button type="button" mat-raised-button color="warn" title="Listing" [routerLink]="['agca-details-listing']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+        </div>
+
+
+    </div>
+</div>

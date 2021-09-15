@@ -1,0 +1,477 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Dispatch Level Tracker</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/TBP/DLT/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">TBP</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dispatch Level Tracker</li>
+      </ol>
+    </nav>
+    <form [formGroup]="dispatchForm">
+      <div class="panel-group">
+        <!-- Search Dispatch Level Tracker -->
+        <div class="box box-primary">
+          <div class="box-header">Search</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="district" formControlName="district" placeholder="District">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Select District  ...'"
+                        [noEntriesFoundLabel]="'no matching District found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let type of district_list | filterSelectInput : districtCtrl.value : 'viewValue'"
+                      [value]="type.value" [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput name="ddo" maxlength="4" placeholder="DDO No" formControlName="ddo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput name="cardex" maxlength="4" placeholder="Cardex No" formControlName="cardex">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput name="office" placeholder="Office Name" formControlName="office">
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="billType" formControlName="billType" placeholder="Bill Type" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="billCtrl" [placeholderLabel]="'Select Bill Type  ...'"
+                        [noEntriesFoundLabel]="'no matching Bill Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let type of bill_list | filterSelectInput : billCtrl.value : 'viewValue'"
+                      [value]="type.value" [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="inwardDate" [matDatepicker]="inwardDate" [max]='maxDate'
+                    placeholder="Inward Date" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="inwardDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #inwardDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Workflow Level" formControlName="workflowLevel">
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="budgetDesc" formControlName="budgetDesc" placeholder="Budget Head Description">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="budgetDescCtrl"
+                        [placeholderLabel]="'Select Budget Head description  ...'"
+                        [noEntriesFoundLabel]="'no matching Budget Head description found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let type of budgetDesc_list | filterSelectInput : budgetDescCtrl.value : 'viewValue'"
+                      [value]="type.value" [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="head" formControlName="head" placeholder="Head Structure">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="headCtrl" [placeholderLabel]="'Select Head Structure  ...'"
+                        [noEntriesFoundLabel]="'no matching Head Structure found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let type of head_list | filterSelectInput : headCtrl.value : 'viewValue'"
+                      [value]="type.value" [matTooltip]="type.viewValue">
+                      {{type.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+            </div>
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="search">search</i>
+                Search
+              </button>
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true" title="reset">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Search Dispatch Level Tracker -->
+        <!-- Bill Details -->
+        <div class="box box-primary">
+          <div class="box-header">Bill Details</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput type="text" name="amount" placeholder="Bill Gross Amount" decimalPoint2
+                    decimalLimitTwoOnly value="" formControlName="amount" numbersOnly>
+                </mat-form-field>
+              </div>
+
+            </div>
+            <div class="form-action-button">
+              <button mat-raised-button type="submit" class="green" (click)="pending()">
+                <i aria-hidden="true" class="material-icons">
+                  done </i> Submit
+              </button>
+
+              <button type="submit" mat-raised-button color="primary" class="btn-print">
+                <i class="material-icons" aria-hidden="true">print </i>
+                Print
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Bill Details -->
+
+      </div>
+      <!-- Table Pending for Release -->
+      <div class="box box-primary" *ngIf="isRelease">
+        <div class="box-header">Pending for Release</div>
+        <div class="box-body">
+
+          <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="postedChallan">
+
+            <ng-container matColumnDef="checkBox">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+                  [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+                  [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+                  [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row" class="text-center">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                  (change)="$event ? directiveObject.selection.toggle(row) : null"
+                  [checked]="directiveObject.selection.isSelected(row) "
+                  [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="srNo">
+              <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+              <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                {{i + 1}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="district">
+              <th mat-header-cell *matHeaderCellDef scope="row">District</th>
+              <td mat-cell *matCellDef="let element"> {{element.district}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef scope="row">TO/STO/PAO Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tokenNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Token No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.tokenNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="refNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Reference No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.refNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddo">
+              <th mat-header-cell *matHeaderCellDef scope="row">DDO No</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.ddo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cardex">
+              <th mat-header-cell *matHeaderCellDef scope="row">Cardex No</th>
+              <td mat-cell *matCellDef="let element"> {{element.cardex}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="office">
+              <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.office}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bType">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Type</th>
+              <td mat-cell *matCellDef="let element"> {{element.bType}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="indDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Inward Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.indDate}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="majorHead">
+              <th mat-header-cell *matHeaderCellDef scope="row">Major Head</th>
+              <td mat-cell *matCellDef="let element"> {{element.majorHead}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="headStr">
+              <th mat-header-cell *matHeaderCellDef scope="row">Head Structure</th>
+              <td mat-cell *matCellDef="let element" style="max-width:none;"> {{element.headStr}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="headDesc">
+              <th mat-header-cell *matHeaderCellDef scope="row">Budget Head Description</th>
+              <td mat-cell *matCellDef="let element"> {{element.headDesc}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="grossAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Gross Amount</th>
+              <td mat-cell *matCellDef="let element"> {{element.grossAmt}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="netAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Net Amount</th>
+              <td mat-cell *matCellDef="let element"> {{element.netAmt}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="payMode">
+              <th mat-header-cell *matHeaderCellDef scope="row">Payment Mode</th>
+              <td mat-cell *matCellDef="let element"> {{element.payMode}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="wStatus">
+              <th mat-header-cell *matHeaderCellDef scope="row">Workflow Status</th>
+              <td mat-cell *matCellDef="let element"> {{element.wStatus}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lying">
+              <th mat-header-cell *matHeaderCellDef scope="row">Lying with</th>
+              <td mat-cell *matCellDef="let element"> {{element.lying}}</td>
+            </ng-container>
+
+
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+            </tr>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <!-- COmmon Button -->
+          <div class="form-action-button">
+            <button type="button" mat-raised-button color="primary" (click)="withdraw()">
+              <i class="material-icons" aria-hidden="true" title="Save">
+                save
+              </i>
+              Release
+            </button>
+          </div>
+          <!-- ENd COmmon Button -->
+        </div>
+      </div>
+      <!-- End Table Pending for Release -->
+      <!-- Withdrawal -->
+      <div class="box box-primary" *ngIf="iswithdraw">
+        <div class="box-header">Withdrawal</div>
+        <div class="box-body">
+
+          <table mat-table [dataSource]="dataSource1" width="100%" matSort aria-describedby="postedChallan">
+
+            <ng-container matColumnDef="checkBox">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+                <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data1) : null"
+                  [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data1)"
+                  [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data1)"
+                  [aria-label]="directiveObject.checkboxLabel(Element_Data1)">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row" class="text-center">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                  (change)="$event ? directiveObject.selection.toggle(row) : null"
+                  [checked]="directiveObject.selection.isSelected(row) "
+                  [aria-label]="directiveObject.checkboxLabel(Element_Data1, row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="srNo">
+              <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+              <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                {{i + 1}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="district">
+              <th mat-header-cell *matHeaderCellDef scope="row">District</th>
+              <td mat-cell *matCellDef="let element"> {{element.district}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef scope="row">TO/STO/PAO Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tokenNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Token No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.tokenNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="refNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Reference No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.refNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddo">
+              <th mat-header-cell *matHeaderCellDef scope="row">DDO No</th>
+              <td mat-cell *matCellDef="let element">
+                {{element.ddo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cardex">
+              <th mat-header-cell *matHeaderCellDef scope="row">Cardex No</th>
+              <td mat-cell *matCellDef="let element"> {{element.cardex}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="office">
+              <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.office}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bType">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Type</th>
+              <td mat-cell *matCellDef="let element"> {{element.bType}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="indDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Inward Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.indDate}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="majorHead">
+              <th mat-header-cell *matHeaderCellDef scope="row">Major Head</th>
+              <td mat-cell *matCellDef="let element"> {{element.majorHead}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="headStr">
+              <th mat-header-cell *matHeaderCellDef scope="row">Head Structure</th>
+              <td mat-cell *matCellDef="let element" style="max-width:none;"> {{element.headStr}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="headDesc">
+              <th mat-header-cell *matHeaderCellDef scope="row">Budget Head Description</th>
+              <td mat-cell *matCellDef="let element"> {{element.headDesc}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="rDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Release Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.rDate}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="grossAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Gross Amount</th>
+              <td mat-cell *matCellDef="let element"> {{element.grossAmt}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="netAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row">Bill Net Amount</th>
+              <td mat-cell *matCellDef="let element"> {{element.netAmt}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="payMode">
+              <th mat-header-cell *matHeaderCellDef scope="row">Payment Mode</th>
+              <td mat-cell *matCellDef="let element"> {{element.payMode}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="wStatus">
+              <th mat-header-cell *matHeaderCellDef scope="row">Workflow Status</th>
+              <td mat-cell *matCellDef="let element"> {{element.wStatus}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lying">
+              <th mat-header-cell *matHeaderCellDef scope="row">Lying with</th>
+              <td mat-cell *matCellDef="let element"> {{element.lying}}</td>
+            </ng-container>
+
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns1;">
+            </tr>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <!-- common Button -->
+          <div class="form-action-button">
+            <button type="button" mat-raised-button color="primary" (click)="Release()">
+              <i class="material-icons" aria-hidden="true" title="Save">
+                save
+              </i>
+              Withdrawal
+            </button>
+
+            <button type="submit" mat-raised-button color="primary" class="btn-print">
+              <i class="material-icons" aria-hidden="true">print </i>
+              Print
+            </button>
+
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+              <i class="material-icons" title="Close" aria-hidden="true">
+                close
+              </i>
+              Close
+            </button>
+
+          </div>
+          <!-- End common Button -->
+        </div>
+      </div>
+      <!-- End Withdrawal -->
+    </form>
+
+  </div>
+</div>

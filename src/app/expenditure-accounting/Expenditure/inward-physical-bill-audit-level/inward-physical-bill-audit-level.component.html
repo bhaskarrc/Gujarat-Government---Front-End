@@ -1,0 +1,890 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Inward Physical Bill Audit Level</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EA/IPB/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EA</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inward Physical Bill Audit Level
+                </li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <form [formGroup]="billinwardform">
+
+            <div class="panel-group">
+                <mat-tab-group mat-stretch-tabs (selectedIndexChange)="getTabIndex($event)">
+                    <!-- Bill Preparation tab starts -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Bill Preparation
+                        </ng-template>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <mat-form-field>
+                                        <input matInput numbersOnly maxlength="6" placeholder="Token No." formControlName="tokenNo">
+                                        <mat-icon matSuffix class="searchIcon" (click)="tokenNo()">search
+                                        </mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Office Details starts -->
+                        <div class="box box-primary">
+                            <div class="box-header">Office Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <input #inputCardexNo matInput numbersOnly maxlength="6" (blur)=setCardexNo(inputCardexNo.value) placeholder="Cardex No." formControlName="cardexNo" readonly>
+                                            <mat-icon matSuffix class="searchIcon" (click)="cardexNo()">
+                                                search
+                                            </mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly maxlength="6" placeholder="DDO No." formControlName="ddoNo" disabled>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <textarea matInput placeholder="Office Name" formControlName="officeName" readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Office Details ends -->
+                        <!-- Grant Details starts -->
+                        <div class="box box-primary">
+                            <div class="box-header">Grant Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <a (click)="dddoGrant()" class="form-link">
+                                            <span class="form-link-border" style="display: flex;">
+                        DDO Grant Head <span class="ml-12"></span>
+                                            <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="fundType" formControlName="fundType" placeholder="Fund Type" (selectionChange)="contegin($event)" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="fundTypeCtrl" [placeholderLabel]="'Select Fund Type ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let fund of fundTypeList | filterSelectInput : fundTypeCtrl.value : 'viewValue'" [value]="fund.value">
+                                                    {{fund.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.fundType.touched || (billinwardform.controls.fundType.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.fundType.errors?.required">
+                                                    {{errorMessages.FUND_TYPE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="contegins">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput numbersOnly maxlength="6" placeholder="CNF Order No." required formControlName="cnfOrderNo">
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.cnfOrderNo.touched || (billinwardform.controls.cnfOrderNo.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.cnfOrderNo.errors?.required">
+                                                    {{errorMessages.CNF_ORDER_NO}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="contegins">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="pickercnf" formControlName="cnfDate" placeholder="CNF Date" [max]='maxDate' required>
+                                            <mat-datepicker-toggle matSuffix [for]="pickercnf"></mat-datepicker-toggle>
+                                            <mat-datepicker #pickercnf></mat-datepicker>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.cnfDate.touched || (billinwardform.controls.cnfDate.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.cnfDate.errors?.required">
+                                                    {{errorMessages.CNF_DATE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="typeOfEstimate" formControlName="typeOfEstimate" placeholder="Type Of Estimate " (selectionChange)="itemSelect($event)" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEstimateCtrl" [placeholderLabel]="'Select Type Of Estimate ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let estimate of typeOfEstimateList | filterSelectInput : typeOfEstimateCtrl.value : 'viewValue'" [value]="estimate.value">
+                                                    {{estimate.viewValue}}
+                                                </mat-option>
+                                                <div class="error-wrapper" *ngIf="billinwardform.controls.typeOfEstimate.touched || (billinwardform.controls.typeOfEstimate.errors && isSubmitted)">
+                                                    <mat-error *ngIf="billinwardform.controls.typeOfEstimate.errors?.required">
+                                                        {{errorMessages.TYPE_OF_ESTIMATE}}
+                                                    </mat-error>
+                                                </div>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isItemList">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput numbersOnly maxlength="6" placeholder="Item Name/Work Name" formControlName="itemNameOrWorkName" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.itemNameOrWorkName.touched || (billinwardform.controls.itemNameOrWorkName.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.itemNameOrWorkName.errors?.required">
+                                                    {{errorMessages.IREM_NAME_OR_WORK_NAME}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="classOfExpenditure" formControlName="classOfExpenditure" required placeholder="Class of Expenditure">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="classOfExpenditureCtrl" [placeholderLabel]="'Select Class of Expenditure ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let class of classOfExpenditureList | filterSelectInput : classOfExpenditureCtrl.value : 'viewValue'" [value]="class.value">
+                                                    {{class.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.classOfExpenditure.touched || (billinwardform.controls.classOfExpenditure.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.classOfExpenditure.errors?.required">
+                                                    {{errorMessages.CLASS_OF_EXPENDITURE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="stateCss" formControlName="stateCss" placeholder="State / CSS" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="stateCsseCtrl" [placeholderLabel]="'Select State / CSS ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let state of stateCssList | filterSelectInput : stateCsseCtrl.value : 'viewValue'" [value]="state.value">
+                                                    {{state.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.stateCss.touched || (billinwardform.controls.stateCss.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.stateCss.errors?.required">
+                                                    {{errorMessages.STATE_CSS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Scheme Code " formControlName="schemeCode" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.schemeCode.touched || (billinwardform.controls.schemeCode.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.schemeCode.errors?.required">
+                                                    {{errorMessages.SCHEME_CODE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="demand" placeholder="Demand" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="demandCtrl" [placeholderLabel]="'Find
+                                  Demand...'" [noEntriesFoundLabel]="'no
+                                  matching Demand found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let demand
+                              of demand_list |
+                              filterSelectInput:
+                              demandCtrl.value" [value]="demand.value" matTooltip="{{demand.viewValue}}">
+                                                    {{demand.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.demand.touched || (billinwardform.controls.demand.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.demand.errors?.required">
+                                                    {{errorMessages.DEMAND}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="majorHead" placeholder="Major Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no
+                                    matching Major Head
+                                    found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let
+                                majorHead of majorHead_list
+                                | filterSelectInput:
+                                majorHeadCtrl.value" [value]="majorHead.value" matTooltip="{{majorHead.viewValue}}">
+                                                    {{majorHead.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.majorHead.touched || (billinwardform.controls.majorHead.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.majorHead.errors?.required">
+                                                    {{errorMessages.MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="subMajorHead" placeholder="Sub Major Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="subMajorHeadCtrl" [placeholderLabel]="'Find Sub Major Head...'" [noEntriesFoundLabel]="'no matching Sub Major Head
+                            found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let subMajorHead of subMajorHead_list |
+                          filterSelectInput: subMajorHeadCtrl.value" [value]="subMajorHead.value">
+                                                    {{subMajorHead.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.subMajorHead.touched || (billinwardform.controls.subMajorHead.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.subMajorHead.errors?.required">
+                                                    {{errorMessages.SUB_MAJOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="minorHead" placeholder="Minor Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="minorHeadCtrl" [placeholderLabel]="'Find Minor Head...'" [noEntriesFoundLabel]="'no matching Minor Head
+                              found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let minorHead of minorHead_list |
+                            filterSelectInput: minorHeadCtrl.value" [value]="minorHead.value">
+                                                    {{minorHead.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.minorHead.touched || (billinwardform.controls.minorHead.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.minorHead.errors?.required">
+                                                    {{errorMessages.MINOR_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="subHead" placeholder="Sub
+                        Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="subHeadCtrl" [placeholderLabel]="'Find Sub Head...'" [noEntriesFoundLabel]="'no matching Sub Head'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let subHead of subHead_list |
+                          filterSelectInput: subHeadCtrl.value" [value]="subHead.value">
+                                                    {{subHead.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.subHead.touched || (billinwardform.controls.subHead.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.subHead.errors?.required">
+                                                    {{errorMessages.SUB_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="detailHead" placeholder="Detailed Head" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="detailHeadCtrl" [placeholderLabel]="'Find Detail Head...'" [noEntriesFoundLabel]="'no matching Detail Head'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let detailHead of detailHead_list|
+                          filterSelectInput: detailHeadCtrl.value" [value]="detailHead.value" matTooltip="{{detailHead.viewValue}}">
+                                                    {{detailHead.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.detailHead.touched || (billinwardform.controls.detailHead.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.detailHead.errors?.required">
+                                                    {{errorMessages.DETAIL_HEAD}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="objectClass" formControlName="objectClass" placeholder="Object Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="objectClassCtrl" [placeholderLabel]="'Select Object Class ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let object of objectClassList | filterSelectInput : objectClassCtrl.value : 'viewValue'" [value]="object.value">
+                                                    {{object.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.objectClass.touched || (billinwardform.controls.objectClass.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.objectClass.errors?.required">
+                                                    {{errorMessages.CLASS_OBJECT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="headChargable" placeholder="Head Chargable" required [disabled]='headChargable'>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.headChargable.touched || (billinwardform.controls.headChargable.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.headChargable.errors?.required">
+                                                    {{errorMessages.HEAD_CHARGEABLE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="exempted" formControlName="grantExempted" placeholder="Exempted" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="grantExemptedCtrl" [placeholderLabel]="'Select Exempted ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let exempteds of grantExemptedList | filterSelectInput : grantExemptedCtrl.value : 'viewValue'" matTooltip="{{exempteds.viewValue}}" [value]="exempteds.value">
+                                                    {{exempteds.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.grantExempted.touched || (billinwardform.controls.grantExempted.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.grantExempted.errors?.required">
+                                                    {{errorMessages.EXMPTED}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="totalExpenditure" placeholder="Total Expenditure" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="releasedGrant" placeholder="Released Grant" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="availableGrant" placeholder="Available Grant" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" hidden>
+                                        <div class="">
+                                            <a (click)="objectHead()" class="form-link">
+                                                <span class="form-link-border" style="display: flex;">
+                          Object Class Heading <span class="ml-12"></span>
+                                                <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3" hidden>
+                                        <div>
+                                            <a (click)="grantDetails()" class="form-link">
+                                                <span class="form-link-border" style="display: flex;">
+                          Grant Details <span class="ml-12"></span>
+                                                <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Grant Details ends -->
+                        <!-- Bill Details starts -->
+                        <div class="box box-primary">
+                            <div class="box-header">Bill Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="billType" formControlName="billType" placeholder="Bill Type" (selectionChange)="isBillType($event)" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billTypeCtrl" [placeholderLabel]="'Select Bill Type ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let billTypes of billTypeList | filterSelectInput : billTypeCtrl.value : 'viewValue'" [value]="billTypes.value">
+                                                    {{billTypes.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billType.touched || (billinwardform.controls.billType.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billType.errors?.required">
+                                                    {{errorMessages.BILL_TYPE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="officeCategory" formControlName="officeCategory" placeholder="Office Category" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="officeCategoryCtrl" [placeholderLabel]="'Select Office Category ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let office of officeCategoryList | filterSelectInput : officeCategoryCtrl.value : 'viewValue'" [value]="office.value">
+                                                    {{office.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.officeCategory.touched || (billinwardform.controls.officeCategory.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.officeCategory.errors?.required">
+                                                    {{errorMessages.OFFICE_CATEGORY}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="auditorName" formControlName="auditorName" placeholder="Auditor Name" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="auditorNameCtrl" [placeholderLabel]="'Select Auditor Name ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let auditor of auditorNameList | filterSelectInput : auditorNameCtrl.value : 'viewValue'" matTooltip="{{auditor.viewValue}}" [value]="auditor.value">
+                                                    {{auditor.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.auditorName.touched || (billinwardform.controls.auditorName.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.auditorName.errors?.required">
+                                                    {{errorMessages.AUDITOR_NAME}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="billCategory" formControlName="billCategory" placeholder="Bill Category" required required (selectionChange)="ontoken($event)" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billCategoryCtrl" [placeholderLabel]="'Select Bill Category ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let bill of billCategoryList | filterSelectInput : billCategoryCtrl.value : 'viewValue'" [value]="bill.value">
+                                                    {{bill.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billCategory.touched || (billinwardform.controls.billCategory.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billCategory.errors?.required">
+                                                    {{errorMessages.BILL_CATEGORY}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="billGrossAmount" numbersOnly placeholder="Bill Gross Amount" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billGrossAmount.touched || (billinwardform.controls.billGrossAmount.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billGrossAmount.errors?.required">
+                                                    {{errorMessages.BILL_GROSS_AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="billNetAmount" numbersOnly placeholder="Bill Net Ammount" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billNetAmount.touched || (billinwardform.controls.billNetAmount.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billNetAmount.errors?.required">
+                                                    {{errorMessages.BILL_NET_AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput formControlName="deductionA" placeholder="Deduction A" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.deductionA.touched || (billinwardform.controls.deductionA.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.deductionA.errors?.required">
+                                                    {{errorMessages.DEDUCTION_A}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput formControlName="deductionB" placeholder="Deduction B" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.deductionB.touched || (billinwardform.controls.deductionB.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.deductionB.errors?.required">
+                                                    {{errorMessages.DEDUCTION_B}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="chequeParty" formControlName="chequeParty" placeholder="Cheque Party">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billCategoryCtrl" [placeholderLabel]="'Select Cheque Party ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option>-- None --</mat-option>
+                                                <mat-option *ngFor="let chequePartys of chequePartyList | filterSelectInput : chequePartyCtrl.value : 'viewValue'" [value]="chequePartys.value">
+                                                    {{chequePartys.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="exempted" formControlName="billExempted" placeholder="Exempted" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billExemptedCtrl" [placeholderLabel]="'Select Exempted ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let exempteds of billExemptedList | filterSelectInput : billExemptedCtrl.value : 'viewValue'" [value]="exempteds.value">
+                                                    {{exempteds.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billExempted.touched || (billinwardform.controls.billExempted.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billExempted.errors?.required">
+                                                    {{errorMessages.EXMPTED}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select name="billCode" formControlName="billCode" placeholder="Bill Code">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="billCodeCtrl" [placeholderLabel]="'Select Bill Code ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let billCodes of billCodeList | filterSelectInput : billCodeCtrl.value : 'viewValue'" matTooltip="{{billCodes.viewValue}}" [value]="billCodes.value">
+                                                    {{billCodes.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="billremoarks" placeholder="Bill Remarks" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.billremoarks.touched || (billinwardform.controls.billremoarks.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.billremoarks.errors?.required">
+                                                    {{errorMessages.BILL_REMARKS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isBillSchedule">
+                                        <mat-form-field>
+                                            <input matInput formControlName="scheduleNo" placeholder="Schedule No." required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.scheduleNo.touched || (billinwardform.controls.scheduleNo.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.scheduleNo.errors.required">
+                                                    {{errorMessages.SCHEDULE_NO}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isBillSchedule">
+                                        <mat-form-field>
+                                            <input matInput formControlName="scheduleAmount" numbersOnly placeholder="Schedule Amount" required>
+                                            <div class="error-wrapper" *ngIf="billinwardform.controls.scheduleAmount.touched || (billinwardform.controls.scheduleAmount.errors && isSubmitted)">
+                                                <mat-error *ngIf="billinwardform.controls.scheduleAmount.errors?.required">
+                                                    {{errorMessages.SCHEDULE_AMOUNT}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="isBillList">
+                                        <a (click)="challanNo()" class="form-link">
+                                            <span class="form-link-border" style="display: flex;">
+                        Challan Number <span class="ml-12"></span>
+                                            <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="isBillSchedule">
+                                    <div class="col-sm-4">
+                                        <div class="labelCSS">
+                                            Register:
+                                            <a [routerLink]="'../slo-details'">
+                                                <span>
+                          SLO Audit,
+                        </span>
+                                            </a>
+                                            <a [routerLink]="'../other-bill-register'">
+                                                <span>
+                          Other Register,
+                        </span>
+                                            </a>
+                                            <a [routerLink]="'../fly-leaf-register'">
+                                                <span>
+                          Flyleaf Register
+                        </span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bill Details ends -->
+                        <!-- on click bill category starts-->
+                        <div class="box box-primary" *ngIf="isTokentable">
+                            <div class="box-header">Transfer Credit Information </div>
+                            <div class="box-body">
+
+                                <table mat-table [dataSource]="transferDataSource" class="mat-elevation-z8" aria-describedby="transferCreadit">
+                                    <ng-container matColumnDef="srNo">
+                                        <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                                            {{i + 1}}
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef>Total
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="challanNo">
+                                        <th mat-header-cell *matHeaderCellDef scope="row"> Challan No. </th>
+                                        <td mat-cell *matCellDef="let element" class="centerAlign">
+                                            <mat-form-field floatLabel="never" class="centerAlign">
+                                                <input matInput [(ngModel)]="element.challanNo" [ngModelOptions]="{standalone: true}" type="text">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="challanDate">
+                                        <th mat-header-cell *matHeaderCellDef scope="row"> Challan Date </th>
+                                        <td mat-cell *matCellDef="let element" class="centerAlign">
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="picker2" max readonly formControlName="billDate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker2></mat-datepicker>
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="challanMajorhead">
+                                        <th mat-header-cell *matHeaderCellDef scope="row"> Challan Major Head </th>
+                                        <td mat-cell *matCellDef="let element" class="centerAlign">
+                                            <div class="dropdown-status">
+                                                <mat-form-field class="full-width">
+                                                    <mat-select formControlName="challanMajorhead">
+                                                        <mat-option>
+                                                            <ngx-mat-select-search [formControl]="challanMajorheadCtrl" [placeholderLabel]="'Find Sub Major Head...'" [noEntriesFoundLabel]="'no matching Sub Major Head
+                                found'">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option *ngFor="let challanMajorhead of challanMajorhead_list |
+                              filterSelectInput: challanMajorheadCtrl.value" [value]="challanMajorhead.value">
+                                                            {{challanMajorhead.viewValue}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="challanAmount">
+                                        <th mat-header-cell *matHeaderCellDef scope="row"> Challan Amount(in Rs.) </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field floatLabel="never" class="rightAlign">
+                                                <input matInput [(ngModel)]="element.challanAmount" decimalLimitTwoOnly value="{{element.challanAmount}}" decimalPoint2 [ngModelOptions]="{standalone: true}" type="text">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                            {{totalExpeAmount() | number:'1.2-2'}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" scope="row">Action</th>
+                                        <td mat-cell *matCellDef="let element; let i=index">
+                                            <table class="iconTable" aria-describedby="actionBtn">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="30">
+                                                            <i class="material-icons plus add" aria-hidden="true" (click)="addLeave();" *ngIf="(i==transferDataSource.data.length-1)">
+                                add
+                              </i>
+                                                        </td>
+                                                        <td width="30">
+                                                            <i class="material-icons plus delete" aria-hidden="true" (click)="deletTransferRow(i)" *ngIf="(i>=1)">
+                                delete
+                              </i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="transferDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: transferDisplayedColumns;"></tr>
+                                    <tr mat-footer-row *matFooterRowDef="transferDisplayedColumns"></tr>
+                                </table>
+
+                            </div>
+                        </div>
+                        <!-- on click bill category ends-->
+                        <div class="checkbox-label">
+                            <mat-checkbox>Objection Raised As per Attched Sheet</mat-checkbox>
+                        </div>
+
+                        <!-- Common Action Button Starts -->
+                        <div class="form-action-button">
+
+
+                            <button type="button" mat-raised-button color="primary" (click)="onSubmit()">
+                <i class="material-icons" aria-hidden="true" title="Save">save</i>
+                Save
+              </button>
+
+                            <button type="button" mat-raised-button (click)="directiveObject.onClose()" class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Budget dashboard">close</i>
+                Close
+              </button>
+                        </div>
+                        <!-- Common Action Button Ends-->
+                        <br>
+
+
+                    </mat-tab>
+                    <!-- Bill Preparation tab ends -->
+                    <!-- Attachment tab starts -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Attachment
+                        </ng-template>
+                        <!-- Attachment Table List Starts-->
+                        <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable" aria-describedby="attachment">
+                            <ng-container matColumnDef="attachmentType">
+                                <th mat-header-cell *matHeaderCellDef>Attachment Scanned Bill</th>
+                                <td mat-cell *matCellDef="let item;let i = index;">
+                                    Scanned Bill
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fileName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">File name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput [value]="item.name" formControlName="fileName" [(ngModel)]="item.name">
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="browse">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Dropdown</th>
+                                <td mat-cell *matCellDef="let i = index">
+                                    <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                    Files</button>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="uploadedFileName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded file name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="uploadedBy">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-label>Mr. Pratik Shah</mat-label>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" scope="row">Action</th>
+                                <td mat-cell *matCellDef="let element; let i=index">
+                                    <table class="iconTable" aria-describedby="actionBtn">
+                                        <tbody>
+                                            <tr>
+                                                <td width="30">
+                                                    <i class="material-icons plus add" aria-hidden="true" (click)="addBrowse(i);" *ngIf="(i==dataSourceBrowse.data.length-1)">
+                            add
+                          </i>
+                                                </td>
+                                                <td width="30">
+                                                    <i class="material-icons plus delete" aria-hidden="true" (click)="deleteBrowse(i)" *ngIf="(i>=1)">
+                            delete
+                          </i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td mat-footer-cell *matFooterCellDef> </td>
+                            </ng-container>
+                            <!-- Display Table Columns -->
+                            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                        </table>
+                        <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection()" />
+                        <!-- Attachment Table List ends-->
+                        <!-- Common Action Button Starts -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                  save
+                </i>
+                Save as Draft
+              </button>
+                            <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+                Submit
+              </button>
+                            <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                <i class="material-icons" title="Reset" aria-hidden="true">restore</i>
+                Reset
+              </button>
+                            <button type="button" mat-raised-button color="warn" title="Listing" (click)="gotoListing()" [routerLink]="['']" routerLinkActive="router-link-active">
+                <i class="material-icons" title="Listing" aria-hidden="true">list</i>
+                Listing
+              </button>
+                            <button type="button" mat-raised-button class="btnClose" (click)="goToDashboard()" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">close</i>
+                Close
+              </button>
+                            <button type="button" mat-raised-button class="print-btn" title="Print">
+                <i class="material-icons" title="Print" aria-hidden="true">print</i>
+                Print
+              </button>
+                        </div>
+                        <!-- Common Action Button Ends-->
+                    </mat-tab>
+                    <!-- Attachment tab ends -->
+                </mat-tab-group>
+            </div>
+        </form>
+    </div>
+</div>

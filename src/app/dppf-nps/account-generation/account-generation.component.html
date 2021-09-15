@@ -1,0 +1,662 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Account Generation</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF-NPS/AG/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF - NPS</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Account Generation</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="accountGenerationForm">
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+          <!-- Account Generation -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Account Generation
+            </ng-template>
+
+            <div class="box box-primary">
+              <div class="box-header">Account Holder Details</div>
+              <div class="box-body">
+                <div class="row">
+
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="RAG Number" formControlName="ragNumber" required charactersOnly>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogEmployeeNumber()">
+                        search</mat-icon>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="inwardDate" [matDatepicker]="picker1" placeholder="Inward Date"
+                        dateOnly>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Enployee Number" formControlName="employeeNo" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="PPAN Number" formControlName="ppanNO" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="PRAN Number" formControlName="pranNo" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO Registration No." formControlName="ddoRegNo" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Short Name" formControlName="shortName" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="First Name" formControlName="firstName" required>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.firstName.touched || (accountGenerationForm.controls.firstName.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.firstName.errors?.required">
+                          {{errorMessages.FIRST_NAME}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Middle Name" formControlName="middleName">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Last Name" formControlName="lastName">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="dateOfBirth" [matDatepicker]="picker2"
+                        placeholder="Date of Birth" required dateOnly>
+                      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker #picker2 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.dateOfBirth.touched || (accountGenerationForm.controls.dateOfBirth.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.dateOfBirth.errors?.required">
+                          {{errorMessages.DATE_OF_BIRTH}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="joiningDate" [matDatepicker]="picker3"
+                        placeholder="Date to Joining (Full Pay)" required dateOnly>
+                      <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                      <mat-datepicker #picker3 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.joiningDate.touched || (accountGenerationForm.controls.joiningDate.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.joiningDate.errors?.required">
+                          {{errorMessages.JOINING_DATE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="department" placeholder="Department Name" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="deparmentCTRL" [placeholderLabel]="'Find Department...'"
+                            [noEntriesFoundLabel]="'No matching Department found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let departmentName of departmentList | filterSelectInput:deparmentCTRL.value"
+                          [value]="departmentName.value">
+                          {{departmentName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.department.touched || (accountGenerationForm.controls.department.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.department.errors?.required">
+                          {{errorMessages.DEPARTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="headOfDepartment" placeholder="Head of Department" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="headOfDeparmentCTRL"
+                            [placeholderLabel]="'Find Head of Department...'"
+                            [noEntriesFoundLabel]="'No matching Head of Department found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let departmentName of headOfDepartmentList | filterSelectInput:headOfDeparmentCTRL.value"
+                          [value]="departmentName.value" matTooltip="{{ departmentName.viewValue }}">
+                          {{departmentName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.headOfDepartment.touched || (accountGenerationForm.controls.headOfDepartment.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.headOfDepartment.errors?.required">
+                          {{errorMessages.HEAD_OF_DEPARTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="district" placeholder="District" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="districtCTRL" [placeholderLabel]="'Find Distritct...'"
+                            [noEntriesFoundLabel]="'No matching Distritct found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let districtName of districtList | filterSelectInput:districtCTRL.value"
+                          [value]="districtName.value">
+                          {{districtName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.district.touched || (accountGenerationForm.controls.district.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.district.errors?.required">
+                          {{errorMessages.DISTRICT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="category" placeholder="Category" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="categoryCTRL" [placeholderLabel]="'Find Category...'"
+                            [noEntriesFoundLabel]="'No matching Category found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let categoryName of categoryList | filterSelectInput:categoryCTRL.value"
+                          [value]="categoryName.value">
+                          {{categoryName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.category.touched || (accountGenerationForm.controls.category.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.category.errors?.required">
+                          {{errorMessages.CATEGORY}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="gender" placeholder="Gender" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="genderCTRL" [placeholderLabel]="'Find Gender...'"
+                            [noEntriesFoundLabel]="'No matching Gender found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let genderName of genderList | filterSelectInput:genderCTRL.value"
+                          [value]="genderName.value">
+                          {{genderName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.gender.touched || (accountGenerationForm.controls.gender.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.gender.errors?.required">
+                          {{errorMessages.GENDER}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="payScale" placeholder="Pay Scale" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="payScaleCTRL" [placeholderLabel]="'Find Pay Scale...'"
+                            [noEntriesFoundLabel]="'No matching Pay Scale found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let payScaleName of payScaleList | filterSelectInput:payScaleCTRL.value"
+                          [value]="payScaleName.value">
+                          {{payScaleName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.payScale.touched || (accountGenerationForm.controls.payScale.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.payScale.errors?.required">
+                          {{errorMessages.PAY_SCALE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3" *ngIf="accountGenerationForm.controls.payScale.value == '2'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="payBand" placeholder="Pay Band" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="payBandCTRL" [placeholderLabel]="'Find Pay Band...'"
+                            [noEntriesFoundLabel]="'No matching Pay Band found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let payBandName of payBandList | filterSelectInput:payBandCTRL.value"
+                          [value]="payBandName.value">
+                          {{payBandName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.payBand.touched || (accountGenerationForm.controls.payBand.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.payBand.errors?.required">
+                          {{errorMessages.PAY_BAND}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="accountGenerationForm.controls.payScale.value == '2'">
+                    <mat-form-field>
+                      <input matInput placeholder="Pay Band Value" formControlName="payBandValue" numbersOnly required>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.payBandValue.touched || (accountGenerationForm.controls.payBandValue.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.payBandValue.errors?.required">
+                          {{errorMessages.PAY_BAND_VALUE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="accountGenerationForm.controls.payScale.value == '2'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="gradPay" placeholder="Grad Pay" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="gradPayCTRL" [placeholderLabel]="'Find Grad Pay...'"
+                            [noEntriesFoundLabel]="'No matching Grad Pay found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let gradPayName of gradPayList | filterSelectInput:gradPayCTRL.value"
+                          [value]="gradPayName.value">
+                          {{gradPayName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.gradPay.touched || (accountGenerationForm.controls.gradPay.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.gradPay.errors?.required">
+                          {{errorMessages.GRAND_PAY}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="accountGenerationForm.controls.payScale.value == '2' || accountGenerationForm.controls.payScale.value == '3'">
+                    <mat-form-field>
+                      <input matInput placeholder="Basic Pay" formControlName="basicPay" numbersOnly required>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.basicPay.touched || (accountGenerationForm.controls.basicPay.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.basicPay.errors?.required">
+                          {{errorMessages.BASIC_PAY}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="accountGenerationForm.controls.payScale.value == '3'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="payLevel" placeholder="Pay Level" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="payLevelCTRL" [placeholderLabel]="'Find Pay Level...'"
+                            [noEntriesFoundLabel]="'No matching Pay Level found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let payLevelName of payLevelList | filterSelectInput:payLevelCTRL.value"
+                          [value]="payLevelName.value">
+                          {{payLevelName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.payLevel.touched || (accountGenerationForm.controls.payLevel.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.payLevel.errors?.required">
+                          {{errorMessages.PAY_LEVEL}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="accountGenerationForm.controls.payScale.value == '3'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="cellId" placeholder="Cell Id" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="cellIdCTRL" [placeholderLabel]="'Find Cell ID...'"
+                            [noEntriesFoundLabel]="'No matching Cell ID found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let cellIdName of cellIdList | filterSelectInput:cellIdCTRL.value"
+                          [value]="cellIdName.value">
+                          {{cellIdName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.cellId.touched || (accountGenerationForm.controls.cellId.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.cellId.errors?.required">
+                          {{errorMessages.CELL_ID}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="employeeClass" placeholder="Employee Class" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="employeeClassCTRL"
+                            [placeholderLabel]="'Find Employee Class...'"
+                            [noEntriesFoundLabel]="'No matching Employee Class found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let employeeClassName of employeeClassList | filterSelectInput:employeeClassCTRL.value"
+                          [value]="employeeClassName.value">
+                          {{employeeClassName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.employeeClass.touched || (accountGenerationForm.controls.employeeClass.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.employeeClass.errors?.required">
+                          {{errorMessages.EMPLOYEE_CLASS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Month of Start of Subscription"
+                        formControlName="monthOfStartOfSubscription" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Year" formControlName="year" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="designation" placeholder="Designation">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="designationCTRL"
+                            [placeholderLabel]="'Find Designation...'"
+                            [noEntriesFoundLabel]="'No matching Designation found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option
+                          *ngFor="let designationName of designationList | filterSelectInput:designationCTRL.value"
+                          [value]="designationName.value" matTooltip="{{ designationName.viewValue }}">
+                          {{designationName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3" *ngIf="accountGenerationForm.controls.designation.value==='11'">
+                    <mat-form-field>
+                      <input matInput placeholder="Other Designation" formControlName="otherDesignation">
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="box box-primary">
+              <div class="box-header">Authority Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Order Number" formControlName="orderNumber" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="sanctionDate" [matDatepicker]="picker4"
+                        placeholder="Sanction Date" dateOnly required>
+                      <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                      <mat-datepicker #picker4 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="accountGenerationForm.controls.sanctionDate.touched || (accountGenerationForm.controls.sanctionDate.errors && isSubmitted)">
+                        <mat-error *ngIf="accountGenerationForm.controls.sanctionDate.errors?.required">
+                          {{errorMessages.SANCTION_DATE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Major Head" formControlName="majorHead" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="approvedDate" [matDatepicker]="picker5"
+                        placeholder="Approved Date" dateOnly>
+                      <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                      <mat-datepicker #picker5 [disabled]="false"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Authority Name" formControlName="authorityName"
+                        numbersAlphabetsSpaceOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Authority Designation" formControlName="authorityDesignation"
+                        numbersAlphabetsSpaceOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <textarea matInput placeholder="Authority Address" formControlName="authorityAddress"
+                        numbersAlphabetsSpaceOnly></textarea>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="box box-primary">
+              <div class="box-header">Nominee Details</div>
+              <div class="box-body">
+                <table mat-table [dataSource]="familDetailsDataSource" matSort>
+
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Nominee Name</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <mat-form-field floatLabel="never">
+                        <input [(ngModel)]="element.name" matInput [value]="element.name" alphabetsSpaceOnly
+                          [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="dateOfBirth">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Date Of Birth</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <mat-form-field>
+                        <input matInput formControlName="dateOfBirthT" [matDatepicker]="picker4" dateOnly readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                        <mat-datepicker #picker4 [disabled]="false"></mat-datepicker>
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="age">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Age</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <mat-form-field floatLabel="never">
+                        <input matInput [(ngModel)]="element.age" [ngModelOptions]="{standalone: true}"
+                          [value]="element.age" numbersOnly maxlength="3">
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="percentage">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Percentage % </th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <mat-form-field floatLabel="never">
+                        <input matInput [(ngModel)]="element.percentage" percentageOnly [value]="element.percentage"
+                          maxlength="2" [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="relation">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Relation</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                      <mat-form-field class="full-width">
+                        <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="element.relation">
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="relationCTRL" [placeholderLabel]="'Find Relation...'"
+                              [noEntriesFoundLabel]="'No matching Relation found'">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option *ngFor="let relationName of relation_lists | filterSelectInput:relationCTRL.value"
+                            [value]="relationName.value">
+                            {{relationName.viewValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+                    <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <i class="material-icons plus add" aria-hidden="true" (click)="addFamilyRow()">
+                                add
+                              </i>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" aria-hidden="true"
+                                *ngIf="familDetailsDataSource && familDetailsDataSource.data && familDetailsDataSource.data.length > 1"
+                                (click)="directiveObj.deleteRow(familDetailsDataSource,i)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="familyDetailColumns"></tr>
+                  <tr mat-row *matRowDef="let row; let i = index;columns:familyDetailColumns"></tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                Save & Proceed
+                <i class="material-icons" aria-hidden="true" title="Next">
+                  chevron_right
+                </i>
+              </button>
+            </div>
+          </mat-tab>
+          <!-- End Account Generation -->
+          <!-- Attachment -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Attachment
+            </ng-template>
+            <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+          </mat-tab>
+          <!-- End Attachment -->
+        </mat-tab-group>
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button mat-raised-button color="primary" title="Save as Draft">
+            <i class="material-icons" title="Save as Draft" aria-hidden="true">
+              save
+            </i>
+            Save as Draft
+          </button>
+          <button mat-raised-button type="button" class="green" (click)="onSubmit()" title="Submit">
+            <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+          </button>
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+          <button type="button" mat-raised-button color="warn" title="Listing" (click)="goToListing()">
+            <i class="material-icons" title="Listing" aria-hidden="true">
+              list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+    </div>
+
+  </div>
+</div>

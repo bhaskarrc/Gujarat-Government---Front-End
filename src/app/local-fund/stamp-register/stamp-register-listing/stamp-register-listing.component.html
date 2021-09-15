@@ -1,0 +1,202 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted"> Stamp Register </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Stamp
+          Register Listing</li>
+      </ol>
+    </nav>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Stamp Register Listing
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="stampRegisterReport">
+            <div class="row">
+
+              <!-- from date -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="fromDate" placeholder="From Date" formControlName='fromDate'
+                    readonly>
+                  <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                  <mat-datepicker #fromDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- to date -->
+              <div class=" col-md-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="toDate" placeholder="To Date" formControlName='toDate' readonly>
+                  <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                  <mat-datepicker #toDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="year" placeholder=" Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Find  Year...'"
+                        [noEntriesFoundLabel]="'no matching  Year found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let item of yearList | filterSelectInput:yearCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- month -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="month" placeholder="Month">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                        [noEntriesFoundLabel]="'no matching Month found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let item of monthList | filterSelectInput:monthCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="submit" mat-raised-button title="search" color="primary">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button title="Reset" color="accent">
+                <i class="material-icons" aria-hidden="true"> restore </i>
+                Reset </button>
+
+            </div>
+          </form>
+        </div>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+    <!-- table -->
+    <div class="mat-elevation-z8 overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="stampRegisterListingTable">
+
+        <!-- position -->
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef scope="row"> Sr.No. </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign"> {{i+1}} </td>
+        </ng-container>
+
+        <!-- date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef scope="row">Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;"> {{element.date}} </td>
+        </ng-container>
+
+        <!-- opening balance -->
+        <ng-container matColumnDef="openingBalance">
+          <th mat-header-cell *matHeaderCellDef scope="row">Opening balance of the day</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign"> {{element.openingBalance}} </td>
+        </ng-container>
+
+        <!-- amount of received tickets -->
+        <ng-container matColumnDef="amtOfReceivedTickets">
+          <th mat-header-cell *matHeaderCellDef scope="row">Amount of Received Tickets</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign"> {{element.amtOfReceivedTickets}}
+          </td>
+        </ng-container>
+
+        <!-- total amount of tickets -->
+        <ng-container matColumnDef="totalAmtOfTickets">
+          <th mat-header-cell *matHeaderCellDef scope="row">Total amount of tickets</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign"> {{element.totalAmtOfTickets}} </td>
+        </ng-container>
+
+        <!-- utilization amount of tickets -->
+        <ng-container matColumnDef="utilizationAmountOfTickets">
+          <th mat-header-cell *matHeaderCellDef scope="row">Utilization amount of tickets</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.utilizationAmountOfTickets}} </td>
+        </ng-container>
+
+        <!-- closing balance -->
+        <ng-container matColumnDef="closingBalance">
+          <th mat-header-cell *matHeaderCellDef scope="row">Closing balance of end of the day</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign"> {{element.closingBalance}} </td>
+        </ng-container>
+
+        <!-- remarks -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+          <td mat-cell *matCellDef="let element;let i= index;"> {{element.remarks}} </td>
+        </ng-container>
+
+        <!-- status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+          <td mat-cell *matCellDef="let element;let i= index;"> {{element.status}} </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+          <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tbody>
+                <tr>
+                  <td>
+                    <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true"
+                        title="View">remove_red_eye</i></a>
+                  </td>
+                  <td width="30">
+                    <i class="material-icons plus add" title="Edit" aria-hidden="true">
+                      edit
+                    </i>
+                  </td>
+                  <td width="30">
+                    <i class="material-icons plus delete" aria-hidden="true" title="delete">delete_forever</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+
+      </table>
+    </div>
+
+    <!-- paginator -->
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+
+
+  </div>
+</div>

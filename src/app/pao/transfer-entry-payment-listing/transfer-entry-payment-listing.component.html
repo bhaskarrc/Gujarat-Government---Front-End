@@ -1,0 +1,188 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Transfer Entry Payment Listing</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Transfer Entry Payment Listing</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Search Transfer Entry Payment Listing -->
+      <div class="box box-primary">
+        <div class="box-header">Search</div>
+        <div class="box-body">
+          <form [formGroup]="transferEntryPaymentListingForm">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Challan No." numbersOnly formControlName="challanNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="challanDate" [matDatepicker]="challanDate" placeholder="Challan Date"
+                    readonly>
+                  <mat-datepicker-toggle matSuffix [for]="challanDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #challanDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Challan Amount" numbersOnly formControlName="challanAmount">
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Cardex No" maxlength="4" numbersOnly
+                    formControlName="cardexNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="DDO No" maxlength="4" numbersOnly formControlName="ddoNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="majorHead" formControlName="majorHead" placeholder="Major Head" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching Major Head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="search">search</i>
+                Search
+              </button>
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true" title="reset">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- End Search Transfer Entry Payment Listing -->
+    </div>
+    <!-- Table Transfer Entry Payment Listing -->
+    <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="postedChallan">
+
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+        <td mat-cell *matCellDef="let element; let i = index;" class="centerAlign">
+          {{ i + 1 }} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="challanNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan No</th>
+        <td mat-cell *matCellDef="let element"> {{element.challanNo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="challanDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan Date</th>
+        <td mat-cell *matCellDef="let element"> {{element.challanDate}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="challanAmount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Challan Amount</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.challanAmount}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cardexNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cardex No</th>
+        <td mat-cell *matCellDef="let element"> {{element.cardexNo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ddoNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">DDO No </th>
+        <td mat-cell *matCellDef="let element"> {{element.ddoNo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="majorHead">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head </th>
+        <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}">Action</th>
+        <td mat-cell *matCellDef="let item; let i = index">
+          <table aria-describedby="actionBtn">
+            <tr>
+              <td>
+                <a [routerLink]="'../challan-detail-posting'">
+                  <i class="material-icons plus edit-icon" aria-hidden="true" title="Edit">
+                    edit
+                  </i>
+                </a>
+              </td>
+              <td>
+                <a>
+                  <i class="material-icons plus view-icon" aria-hidden="true" title="View">
+                    remove_red_eye
+                  </i>
+                </a>
+              </td>
+              <td>
+                <a>
+                  <i class="material-icons plus delete" aria-hidden="true" (click)="deleteEntry(i)" title="Delete">
+                    delete
+                  </i>
+                </a>
+              </td>
+            </tr>
+          </table>
+
+
+        </td>
+      </ng-container>
+      <!-- Header Section Of table -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Data Fetch From .TS File to table -->
+      <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    <!-- End Table Transfer Entry Payment Listing -->
+    <!-- Common Burtton -->
+    <div class="form-action-button">
+      <button type="button" mat-raised-button class="btnClose">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+    </div>
+    <!-- End Common Burtton -->
+  </div>
+</div>

@@ -1,0 +1,218 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Saved MR Request</div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Saved MR Request</li>
+            </ol>
+        </nav>
+        <!-- search fields -->
+        <div class="panel-group">
+            <form [formGroup]="savedMRForm" (ngSubmit)="savedMRFormData()">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="inwardNo" placeholder="Inward/ Reference Number" formControlName="inwardNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="inwardDate" [matDatepicker]="picker1" placeholder="Inward/ Reference Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                            <span *ngIf="optionCtrl">
+                                                <mat-option *ngFor="let option of filteredppoNo | async"
+                                                    [value]="option">
+                                                    {{option.ppoNo}}
+                                                </mat-option>
+                                            </span>
+                                        </mat-autocomplete>
+                                        <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search
+                                        </mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="reimbursementAmount" placeholder="Reimbursement Amount" formControlName="reimbursementAmount" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="auditorname" formControlName="auditorname" placeholder="Auditor Name">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="auditornameCtrl" [placeholderLabel]="'Select Auditor Name ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let auditore of auditor_list | filterSelectInput : auditornameCtrl.value : 'viewValue'" [value]="auditore.value">
+                                                {{auditore.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="status" formControlName="status" placeholder="Status">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Select Status...'" [noEntriesFoundLabel]="'no matching Status found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let statusName of status_list | filterSelectInput : statusCtrl.value : 'viewValue'" [value]="statusName.value">
+                                                {{statusName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                                        <i class="material-icons" aria-hidden="true">search</i> Search
+                                    </button>
+                                    <button type="reset" mat-raised-button color="accent">
+                                        <i class="material-icons" aria-hidden="true">
+                                            restore
+                                        </i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </form>
+            <br>
+            <!-- filtered data table -->
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table [dataSource]="savedMRDataSource" class="mat-elevation-z8 " aria-describedby="savedMrRequest">
+
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            <mat-checkbox (change)="$event ? directiveObj.masterToggle(savedMRDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(savedMRDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(savedMRDataSource)"
+                                [aria-label]="directiveObj.checkboxLabel(savedMRDataSource)">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="centerAlign">
+                            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(savedMRDataSource,row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="srno">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            Sr. No. </th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{ i + 1 }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="inwardNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Inward/ Reference Number</th>
+                        <td mat-cell *matCellDef="let element">
+                            <a href="javascript:void(0)">{{element.inwardNo}}</a>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="refNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Reference No</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.refNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="inwardDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Inward/ Reference Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.inwardDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ppoNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">PPO No</th>
+                        <td mat-cell *matCellDef="let element">
+                            <a href="javascript:void(0)">{{element.ppoNo}}</a>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pensionerName">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Pensioner Name</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.pensionerName}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reimbursementAmount">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Reimbursement Amount</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.reimbursementAmount}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="auditorName">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Auditor Name</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.auditorName}}
+                        </td>
+                    </ng-container>
+
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-header-row *matHeaderRowDef="savedMRColumns"></tr>
+                    <!-- Header Section Of table -->
+                    <tr mat-row *matRowDef="let row; columns: savedMRColumns;"></tr>
+                </table>
+                <!-- table ends -->
+            </div>
+        </div>
+        <!-- common buttons -->
+        <div class="form-action-button">
+
+            <button mat-raised-button type="submit" class="green" title="Submit" (click)="directiveObject.workflowDetails()">
+                <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+            <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button class="btnClose" title="Close">
+                <i class="material-icons" title="Close" aria-hidden="true">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+        <!-- common buttons end -->
+
+    </div>
+</div>

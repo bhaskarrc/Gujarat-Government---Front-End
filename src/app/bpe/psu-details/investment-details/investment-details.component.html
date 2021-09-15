@@ -1,0 +1,355 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Investment Details </div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/BPE/PSU/ID/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Navigations Starts -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">BPE / PSU Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Investment Details</li>
+      </ol>
+    </nav>
+    <!-- Navigations Ends-->
+
+    <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+      <!-- investment details -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          Investment Details
+        </ng-template>
+
+        <!-- rs in lakhs -->
+        <div class="rsClass">Rs. in Lakhs</div>
+
+        <div class="panel-group">
+          <!-- form start -->
+          <form [formGroup]="investmentDetailsForm">
+
+            <div class="box box-primary">
+              <div class=" box-header">Statement 19</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name='financialYear' formControlName='financialYear' placeholder='Financial Year'
+                        required numbersOnly (selectionChange)="selectFinancialYear($event)">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]='financialYearCtrl'
+                            [placeholderLabel]="'Select Financial Year ...'"
+                            [noEntriesFoundLabel]="'no matching Financial Year found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of financialYearList | filterSelectInput : financialYearCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.financialYear.touched || (investmentDetailsForm.controls.financialYear.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.financialYear.errors?.required">
+                          {{errorMessages.FIN_YEAR}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="isSelected">
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width disabled">
+                      <input matInput type="text" placeholder="ID" formControlName="id" maxlength="15" required
+                        readonly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.id.touched || (investmentDetailsForm.controls.id.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.id.errors?.required">
+                          {{errorMessages.ID}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name='nameOfCorporation' formControlName='nameOfCorporation'
+                        placeholder='Name of Corporations/Companies' required numbersAlphabetsOnly>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]='nameOfCorporationCtrl'
+                            [placeholderLabel]="'Select Name of Corporations/Companies ...'"
+                            [noEntriesFoundLabel]="'no matching Name of Corporations/Companies found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of nameOfCorporationList | filterSelectInput : nameOfCorporationCtrl.value : 'viewValue'"
+                          [value]="item.value"  matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.nameOfCorporation.touched || (investmentDetailsForm.controls.nameOfCorporation.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.nameOfCorporation.errors?.required">
+                          {{errorMessages.NAME_OF_CORPORATION}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name='typeOfCorporation' formControlName='typeOfCorporation'
+                        placeholder='Type of Corporations/Companies' required numbersAlphabetsOnly>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]='typeOfCorporationCtrl'
+                            [placeholderLabel]="'Select Type of Corporations/Companies ...'"
+                            [noEntriesFoundLabel]="'no matching Type of Corporations/Companies found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of typeOfCorporationList | filterSelectInput : typeOfCorporationCtrl.value : 'viewValue'"
+                          [value]="item.value"  matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.typeOfCorporation.touched || (investmentDetailsForm.controls.typeOfCorporation.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.typeOfCorporation.errors?.required">
+                          {{errorMessages.TYPE_OF_CORPORATION}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name='yearsOfInvestment' formControlName='yearsOfInvestment'
+                        placeholder='Year(s) of Investment' required numbersAlphabetsOnly>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]='yearsOfInvestmentCtrl'
+                            [placeholderLabel]="'Select Year(s) of Investment ...'"
+                            [noEntriesFoundLabel]="'no matching Year(s) of Investment found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of yearsOfInvestmentList | filterSelectInput : yearsOfInvestmentCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.yearsOfInvestment.touched || (investmentDetailsForm.controls.yearsOfInvestment.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.yearsOfInvestment.errors?.required">
+                          {{errorMessages.YEAR_OF_INVESTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select name='typeOfInvestment' formControlName='typeOfInvestment'
+                        placeholder='Type of Investment Share Capital' required numbersAlphabetsOnly
+                        (selectionChange)="onSelectingTypeOfInvestment($event)">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]='typeOfInvestmentCtrl'
+                            [placeholderLabel]="'Select Type of Investment Share Capital ...'"
+                            [noEntriesFoundLabel]="'no matching Type of Investment Share Capital found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of typeOfInvestmentList | filterSelectInput : typeOfInvestmentCtrl.value : 'viewValue'"
+                          [value]="item.value"  matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.typeOfInvestment.touched || (investmentDetailsForm.controls.typeOfInvestment.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.typeOfInvestment.errors?.required">
+                          {{errorMessages.TYPE_OF_INVESTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Number of shares" formControlName="noOfShares" required numbersOnly
+                        maxlength="20" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.noOfShares.touched || (investmentDetailsForm.controls.noOfShares.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.noOfShares.errors?.required">
+                          {{errorMessages.NUMBER_OF_SHARES}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Face value of each Share" formControlName="faceValue" required
+                        numbersOnly maxlength="10" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.faceValue.touched || (investmentDetailsForm.controls.faceValue.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.faceValue.errors?.required">
+                          {{errorMessages.FACE_VALUE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Amount of Investment up to the year 2016-17" formControlName="amount"
+                        required numbersOnly maxlength="20" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.amount.touched || (investmentDetailsForm.controls.amount.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.amount.errors?.required">
+                          {{errorMessages.AMOUNT_INVESTED}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Amount of Investment during the year 2017-18"
+                        formControlName="amountInvestment" required numbersOnly maxlength="20" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.amountInvestment.touched || (investmentDetailsForm.controls.amountInvestment.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.amountInvestment.errors?.required">
+                          {{errorMessages.AMOUNT_INVESTED_2017}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Percentage of Govt. Investment to the total paid-up capital"
+                        formControlName="govtInvestment" required numbersOnly maxlength="5" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.govtInvestment.touched || (investmentDetailsForm.controls.govtInvestment.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.govtInvestment.errors?.required">
+                          {{errorMessages.GOVT_INVESTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput
+                        placeholder="Dividend / Interest received & credited to Government during the year(s)"
+                        formControlName="interestReceived" required numbersOnly maxlength="20" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.interestReceived.touched || (investmentDetailsForm.controls.interestReceived.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.interestReceived.errors?.required">
+                          {{errorMessages.INTEREST_RECEIVED_GOVT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Dividend Interest declared but not credited to Govt. Account"
+                        formControlName="interestNotCredited" required numbersOnly maxlength="20" decimalLimitTwoOnly>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.interestNotCredited.touched || (investmentDetailsForm.controls.interestNotCredited.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.interestNotCredited.errors?.required">
+                          {{errorMessages.INTERST_NOT_CREDITED_TO_GOVT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="!isRemarksRequired">
+                    <mat-form-field class="full-width">
+                      <textarea matInput type="text" placeholder="Remarks" formControlName="remarks"
+                        numbersAlphabetsOnly maxlength="1000"></textarea>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="isRemarksRequired">
+                    <mat-form-field class="full-width">
+                      <textarea matInput type="text" placeholder="Remarks" formControlName="remarksRequired"
+                        numbersAlphabetsOnly maxlength="1000" required></textarea>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.remarksRequired.touched || (investmentDetailsForm.controls.remarksRequired.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.remarksRequired.errors?.required">
+                          {{errorMessages.REMARKS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Grand Total" formControlName="total" required numbersOnly
+                        maxlength="20" value={{calculateTotal()}}>
+                      <div class="error-wrapper"
+                        *ngIf="investmentDetailsForm.controls.total.touched || (investmentDetailsForm.controls.total.errors && isSubmitted)">
+                        <mat-error *ngIf="investmentDetailsForm.controls.total.errors?.required">
+                          {{errorMessages.TOTAL}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+          <!-- form end -->
+        </div>
+      </mat-tab>
+
+      <!--Attachment tab start  -->
+      <mat-tab label="Attachment">
+        <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+      </mat-tab>
+
+    </mat-tab-group>
+
+
+    <!-- Common Action Button Starts -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="button" class="green" title="Submit" (click)="onSubmit()">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+        Submit
+      </button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset">
+        <i class="material-icons" title="Reset" aria-hidden="true">restore</i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../../psu-details/investment-details-listing']">
+        <i class="material-icons" title="Listing" aria-hidden="true">list</i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">close</i>
+        Close
+      </button>
+
+    </div>
+  </div>
+</div>

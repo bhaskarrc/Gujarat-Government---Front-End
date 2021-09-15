@@ -1,0 +1,250 @@
+<div class="common-workflow-section">
+  <div class="heading-section ng-star-inserted">
+    <div> Interest Amount </div>
+  </div>
+
+  <div class="panel-group">
+    <div class="box box-primary">
+      <div class="box-header">Demand Of Interest Conformation Letter</div>
+      <div class="box-body">
+
+        <div class="row">
+          <div class="col-sm-6" *ngFor="let item of headerJso">
+            <div style="display: inline-block;">
+              <div class="labelCSS">{{item.label}} </div>
+              <div class="paddingUnset">{{item.value}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mat-elevation-z8  mt-2 interest-dialog">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" aria-describedby="interestTable">
+
+            <ng-container matColumnDef="emiNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">EMI No</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="centerAlign">
+                {{i+1}}
+              </td>
+
+            </ng-container>
+
+            <ng-container matColumnDef="month">
+              <th mat-header-cell *matHeaderCellDef scope="row">Month</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field>
+                  <mat-select [(value)]="element.month" [(ngModel)]="element.month"
+                    [ngModelOptions]="{standalone: true}" name="month" [disabled]='isDisable'>
+                    <mat-option *ngFor="let item of month_list" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="year">
+              <th mat-header-cell *matHeaderCellDef scope="row">Year</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field>
+                  <mat-select [(value)]="element.year" [(ngModel)]="element.year" [ngModelOptions]="{standalone: true}"
+                    name="year" [disabled]='isDisable'>
+                    <mat-option *ngFor="let item of year_list" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="emiAmount">
+              <th mat-header-cell *matHeaderCellDef scope="row">EMI Amount</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field class="rightAlign">
+                  <input matInput [value]="element.emiAmount" [(ngModel)]="element.emiAmount"
+                    [ngModelOptions]="{standalone: true}" [disabled]="isDisable" numbersonly>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef colspan="4" class="centerAlign">Total</td>
+            </ng-container>
+
+            <ng-container matColumnDef="loan">
+              <th mat-header-cell *matHeaderCellDef scope="row">Loan</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field class="rightAlign">
+                  <input matInput [value]="element.loan" [(ngModel)]="element.loan"
+                    [ngModelOptions]="{standalone: true}" [disabled]="isDisable" numbersonly>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{totalLoan()}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef scope="row">Type</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field>
+                  <mat-select [(value)]="element.type" name="type" [disabled]="isDisable">
+                    <mat-option *ngFor="let item of type_list" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field class="leftAlign">
+                  <input matInput [value]="element.status" [(ngModel)]="element.status"
+                    [ngModelOptions]="{standalone: true}" [disabled]="element.isStatus">
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="voucherNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Voucher No</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field class="leftAlign">
+                  <input matInput [value]="element.voucherNo" [(ngModel)]="element.voucherNo"
+                    [ngModelOptions]="{standalone: true}" [disabled]="isDisable" numbersonly>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="recoveredDate">
+              <th mat-header-cell *matHeaderCellDef scope="row">Recovered Date</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field>
+                  <input matInput [(ngModel)]="element.recoveredDate" [max]='maxDate' [matDatepicker]="recoveredDate"
+                    [ngModelOptions]="{standalone: true}" [disabled]="isDisable">
+                  <mat-datepicker-toggle matSuffix [for]="recoveredDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #recoveredDate></mat-datepicker>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="additionalInterest">
+              <th mat-header-cell *matHeaderCellDef scope="row">0.5 % Additional Interest</th>
+              <td mat-cell *matCellDef="let element" class="rightAlign">
+                {{addInterest(element)}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{additionalInterest()}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="penaltyInterest">
+              <th mat-header-cell *matHeaderCellDef scope="row" class="penaltyInterest">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()"
+                      [disabled]="isDisable">
+                    </mat-checkbox>
+                  </div>
+                  <div class="col-sm-6">
+                    <a (click)="onPenaltyInterest()" class="penLink centerAlign" *ngIf="!isDisable"> 2.75 Penalty
+                      Interest</a>
+                    <span *ngIf="isDisable" class="centerAlign"> 2.75 Penalty Interest</span>
+                  </div>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <mat-checkbox class="leftAlign" (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(element) : null" [checked]="selection.isSelected(element)"
+                      [aria-label]="checkboxLabel(element)" [disabled]="isDisable">
+                    </mat-checkbox>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="rightAlign">
+                      {{penInterest(element)}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{penaltyInterest()}}
+              </td>
+            </ng-container>
+
+            <!-- Action -->
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef style="width: 10%;"> Action </th>
+              <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                <a><i class="material-icons plus add-icon" title="Add" (click)="onAdd(i)">add</i></a>
+                <a class="delete-icon" (click)="delete(i)">
+                  <i class="material-icons plus delete" title="delete">delete_forever</i></a>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="centerAlign"></td>
+            </ng-container>
+
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedFooterColumns"></tr>
+          </table>
+
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6" *ngFor="let item of headerJso2">
+            <div style="display: inline-block;">
+              <div
+                *ngIf="item.label==='પગાર બીલ આધારિત ખરાઈ કરી વસૂલાત નું પત્રક બનાવેલ છે.'; then isCheck else notCheck">
+              </div>
+              <ng-template #isCheck>
+                <mat-checkbox><span class="labelCSS">{{item.label}}</span></mat-checkbox>
+              </ng-template>
+
+              <ng-template #notCheck>
+                <span class="labelCSS">{{item.label}}</span>
+                <ng-container *ngIf="!item.link">{{item.value}}</ng-container>
+                <ng-container *ngIf="item.link">
+                  <a (click)="onInterest(item.value)" class="hyper-link"> {{item.value}}</a>
+                </ng-container>
+                <ng-container *ngIf="item.label==='2.75 Penalty Interest(If applicable) : '">
+                  {{penaltyInterest()}}
+                </ng-container>
+                <ng-container *ngIf="item.label==='Additional 0.5 Only for HBA : '">
+                  {{additionalInterest()}}
+                </ng-container>
+              </ng-template>
+            </div>
+
+
+
+          </div>
+        </div>
+
+
+        <div class="form-action-button">
+          <button type="button" mat-raised-button color="primary" title="Calculate">
+            <i class="material-icons" title="Calculate" aria-hidden="true">
+              list
+            </i>
+            Calculate
+          </button>
+          <button type="button" mat-raised-button color="primary" title="Save">
+            <i class="material-icons" title="Save" aria-hidden="true">
+              save
+            </i>
+            Save
+          </button>
+          <button type="button" mat-raised-button class="btnClose" (click)="onClose()">
+            <i class="material-icons" aria-hidden="true" title="Close">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

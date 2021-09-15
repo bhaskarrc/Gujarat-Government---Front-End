@@ -1,0 +1,262 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Paper Token Reprint</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Inward</li>
+        <li class="breadcrumb-item active" aria-current="page">Paper Token Reprint
+        </li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="reprintForm" (ngSubmit)="reprintData()">
+        <mat-accordion class="colapsedata">
+          <!-- Paper Token Reprint -->
+          <div class="box box-primary">
+            <div class="box-header">
+              Search
+            </div>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="tokennumber" maxlength="6" numbersOnly placeholder=" Token No"
+                      formControlName="tokennumber" [datoAutoFocus]="true">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder=" Inward date" formControlName="inwardDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="referenceNumber" maxlength="6" numbersOnly placeholder=" Reference Number"
+                      formControlName="refNo">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="ddoNo" maxlength="6" numbersOnly placeholder="DDO Number"
+                      formControlName="ddoNo">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="cardexNo" maxlength="6" numbersOnly placeholder="Cardex Number"
+                      formControlName="refNo">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="officeName" maxlength="6" numbersOnly placeholder="Office Name"
+                      formControlName="officeName">
+                    <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- Common Button -->
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary"><i class="material-icons" title="search"
+                    aria-hidden="true">search</i>
+                  Search</button>
+                <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                  <i class="material-icons" aria-hidden="true">
+                    restore
+                  </i>
+                  Reset
+                </button>
+
+              </div>
+              <!-- End Common Button -->
+            </div>
+            <!-- End Paper Token Reprint -->
+          </div>
+        </mat-accordion>
+
+
+        <div class="box box-primary">
+          <div class="box-header">Bill List</div>
+          <div class="box-body">
+
+            <!-- Bill List Table -->
+            <div class="mat-elevation-z8 mt-2">
+              <table mat-table [dataSource]="newDataSource" class="mat-elevation-z8 "
+                aria-describedby="tokenReprintForm1">
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+                      [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+                      [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+                      [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="text-center">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? directiveObject.selection.toggle(row) : null"
+                      [checked]="directiveObject.selection.isSelected(row) "
+                      [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billRefNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Reference Number</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billRefNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="lastUsedToken">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Last Used.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.lastUsedToken}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.cardexNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="partyName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Party Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    <a (click)="directiveObject.partyDetails()"> {{element.partyName}}</a>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billRegNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Reg No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billRegNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="tokenNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Token No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field floatLabel="never" class="rightAlign">
+                      <input matInput [value]="element.tokenNo" [(ngModel)]="element.tokenNo"
+                        [ngModelOptions]="{standalone: true}" [disabled]='toggleButton'>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billGrossAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Gross Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.billGrossAmount}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Net Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.billAmount}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billType">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Type</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billType}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billDate}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="ddoNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> DDO No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.ddoNo}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="ddoName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Office Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.ddoName}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="mhead">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Major Head</th>
+                  <td mat-cell *matCellDef="let element" [matTooltip]="element.mhead">
+                    {{element.mhead}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="billCat">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Bill Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billCat}}
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="authiorName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Auditor Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="auditorctrl" formControlName="auditorctrl" required disabled="true">
+                        <mat-option *ngFor="let auditor of auditor_list" [matTooltip]="auditor.viewValue"
+                          [value]="auditor.value">
+                          {{auditor.viewValue}}
+                        </mat-option>
+
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                  <td mat-cell *matCellDef="let element; let i=index" class="action-btn-i centerAlign">
+                    <table class="iconTable" aria-describedby="actionBtn" aria-describedby="tokenReprintButton">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a (click)="gotopage()"><i class="material-icons plus edit-icon" aria-hidden="true"
+                                title="Edit">
+                                edit</i></a>
+
+                            <a (click)="gotopage()">
+                              <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye
+                              </i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+              </table>
+            </div>
+            <!-- End Bill List Table -->
+            <!-- Common Button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" class="btn-print">
+                <i class="material-icons" aria-hidden="true">print </i>
+                Print
+              </button>
+
+              <button type="button" mat-raised-button class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                  close
+                </i>
+                Close
+              </button>
+            </div>
+            <!-- End Common Button -->
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

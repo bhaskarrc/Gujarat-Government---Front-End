@@ -1,0 +1,171 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Field Case</div>
+            <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+                <li class="breadcrumb-item active" aria-current="page">Field Case</li>
+            </ol>
+        </nav>
+        <div class="panel-group">
+            <form [formGroup]="fieldCaseForm" (ngSubmit)="fieldCaseData()">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="true" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">
+                                Search
+                            </div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <!-- Field Case -->
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="inwardNo" placeholder="Inward No. "
+                                            formControlName="inwardNo">
+                                        <mat-icon matSuffix class="searchIcon" (click)="inwardNo()">search
+                                        </mat-icon>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="picker" formControlName="inwardDate"
+                                            placeholder="Inward Date ">
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <mat-select formControlName="inwardType" placeholder="Inward Type">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="inwardTypeCtrl"
+                                                    [placeholderLabel]="'Find Inward Types...'" [noEntriesFoundLabel]="
+                            'no matching Department Types found'
+                          ">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+
+                                            <mat-option>-- None --</mat-option>
+                                            <mat-option *ngFor="
+                          let inward of inwarde_list
+                            | filterSelectInput: inwardTypeCtrl.value
+                        " [value]="inward.value">
+                                                {{ inward.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="accountNo" placeholder="Account No. "
+                                            formControlName="accountNo">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="name" placeholder="Name" formControlName="name">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-action-button">
+                                        <button type="submit" mat-raised-button color="primary" title="Search">
+                                            <i class="material-icons" aria-hidden="true">search</i>
+                                            Search
+                                        </button>
+                                        <button type="reset" mat-raised-button color="accent">
+                                            <i class="material-icons" aria-hidden="true" title="reset">
+                                                restore
+                                            </i>
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Field Case -->
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </form>
+            <div class="mat-elevation-z8 mt-2 table-responsive col-sm-12">
+                <!-- Field Case Table -->
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" aria-describedby="fieldCase">
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            <mat-checkbox (change)="$event ? directiveObject.masterToggle(ELEMENT_DATA) : null"
+                                [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(ELEMENT_DATA)"
+                                [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(ELEMENT_DATA)"
+                                [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA)">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="text-center">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? directiveObject.selection.toggle(row) : null"
+                                [checked]="directiveObject.selection.isSelected(row) "
+                                [aria-label]="directiveObject.checkboxLabel(ELEMENT_DATA, row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="inwardNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Inward No. </th>
+                        <td mat-cell *matCellDef="let element"><a (click)="gotopage()" class="linkcursor">
+                                {{element.inwardNo}}</a> </td>
+                    </ng-container>
+                    <ng-container matColumnDef="inwardDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Inward Date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.inwardDate}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="inwardType">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Inward Type </th>
+                        <td mat-cell *matCellDef="let element"> {{element.inwardType}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="hbaMcaAccount">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> HBA/MCA Account No. </th>
+                        <td mat-cell *matCellDef="let element">
+                            <a (click)="hbaDialod()" class="linkcursor"> {{element.hbaMcaAccount}} </a>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Status</th>
+                        <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="to">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> To </th>
+                        <td mat-cell *matCellDef="let element"> {{element.to}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="nothing">
+                        <th mat-header-cell *matHeaderCellDef scope="row"> Noting </th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.nothing}}
+                        </td>
+                    </ng-container>
+                    <!-- Header Section Of table -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <!-- Data Fetch From .TS File to table -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <!-- End Field Case Table -->
+                <!-- Common Button -->
+                <div class="form-action-button">
+                    <button type="button" mat-raised-button class="btnClose">
+                        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+                <!-- End Common Button -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,453 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">District Mahekam Register (For MPR)
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/DMR/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">District Mahekam Register (For MPR)</li>
+      </ol>
+    </nav>
+
+    <!-- form -->
+    <form [formGroup]="distMahekam" (ngSubmit)="submitFormData()">
+
+      <!-- district mahekam register -->
+      <div class="box box-primary">
+        <div class="box-header">District Mahekam Register (For MPR)</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- id -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="id" placeholder="ID" readonly required>
+              </mat-form-field>
+            </div>
+
+            <!-- district name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="district" placeholder="District Name" readonly required>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Type of Institute" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.instituteType.touched || (distMahekam.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="instituteName" placeholder="Name of the Institute " readonly required>
+              </mat-form-field>
+            </div>
+
+            <!-- position name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="posName" placeholder="Position Name" required readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- permanent position -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="perPos" numbersOnlyKeypress maxlength="10" [(ngModel)]="perPosVal"
+                  placeholder="Permanent Position" required>
+              </mat-form-field>
+            </div>
+
+            <!-- contractual position -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="contrPos" numbersOnlyKeypress maxlength="10" [(ngModel)]="contraPosVal"
+                  placeholder="Contractual Position" required>
+              </mat-form-field>
+            </div>
+
+            <!-- total position -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="totPos" [value]="(perPosVal - 0) + (contraPosVal - 0)"
+                  numbersOnlyKeypress maxlength="10" placeholder="Total Position" required readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- filled positions -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput formControlName="filledPos" numbersOnlyKeypress maxlength="10"
+                  placeholder="Filled Positions" required>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.filledPos.touched || (distMahekam.controls.filledPos.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.filledPos.errors?.required">
+                    {{errorMessages.POSITION}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- vacant position -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput type="text" formControlName="vacantPos" numbersOnlyKeypress maxlength="10"
+                  placeholder="Vacant Position" required>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.vacantPos.touched || (distMahekam.controls.vacantPos.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.vacantPos.errors?.required">
+                    {{errorMessages.POSITION}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- vacant date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="vacantDate" [matDatepicker]="vacantDate"
+                  placeholder="Date of Vacant Position" required>
+                <mat-datepicker-toggle matSuffix [for]="vacantDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #vacantDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.vacantDate.touched || (distMahekam.controls.vacantDate.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.vacantDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- reason for vacant position -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="vacPosReason" placeholder="Reason for Vacant Position" maxlength="100"
+                  required>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.vacPosReason.touched || (distMahekam.controls.vacPosReason.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.vacPosReason.errors?.required">
+                    {{errorMessages.REASON}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- name of employee (whose position is vacant)  -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="vacEmpName" placeholder="Name of Employee (whose position is Vacant)"
+                  maxlength="100" required>
+                <div class="error-wrapper"
+                  *ngIf="distMahekam.controls.vacEmpName.touched || (distMahekam.controls.vacEmpName.errors && isSubmitted)">
+                  <mat-error *ngIf="distMahekam.controls.vacEmpName.errors?.required">
+                    {{errorMessages.NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- name of employee(retiring in next 12 month) -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="retEmpName" placeholder="Name of Employee (retiring in next 12 month)"
+                  maxlength="100">
+              </mat-form-field>
+            </div>
+
+            <!-- appointment date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="appointDate" [matDatepicker]="appointDate"
+                  placeholder="Date of appointment (for retired employee)">
+                <mat-datepicker-toggle matSuffix [for]="appointDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #appointDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- retirement date  -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="retDate" [matDatepicker]="retDate" placeholder="Date of Retirement">
+                <mat-datepicker-toggle matSuffix [for]="retDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #retDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- details of pension -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="pensionDet" placeholder="Details of Pension" maxlength="100">
+              </mat-form-field>
+            </div>
+
+            <!-- remarks -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <textarea matInput formControlName="remarks" placeholder="Remarks" maxLength="1000"
+                  numbersAlphabetsOnly>
+                </textarea>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" (click)="add();">
+            <i class="material-icons" aria-hidden="true" title="search">add</i>
+            Add
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- listing -->
+    <div class="mat-elevation-z8  mt-2 overflow-x-scroll">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="auditParaRegister">
+
+        <!-- sr no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">Sr.No.</th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">{{i+1}}</td>
+        </ng-container>
+
+        <!--id  -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef scope="row">ID</th>
+          <td mat-cell *matCellDef="let element;let i =index" class="centerAlign">{{element.id}}</td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- institute name -->
+        <ng-container matColumnDef="instituteName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name of the Institute</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteName}}
+          </td>
+        </ng-container>
+
+        <!-- institute type -->
+        <ng-container matColumnDef="instituteType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Type of Institute</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteType}}
+          </td>
+        </ng-container>
+
+        <!-- position name -->
+        <ng-container matColumnDef="posName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Position Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.posName}}
+          </td>
+        </ng-container>
+
+        <!-- permanent position -->
+        <ng-container matColumnDef="perPos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Permanent Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.perPos}}
+          </td>
+        </ng-container>
+
+        <!-- contractual position -->
+        <ng-container matColumnDef="contrPos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Contractual Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.contrPos}}
+          </td>
+        </ng-container>
+
+        <!-- total position -->
+        <ng-container matColumnDef="totPos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Total Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.totPos}}
+          </td>
+        </ng-container>
+
+        <!-- filled position -->
+        <ng-container matColumnDef="filledPos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Filled Positions</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.filledPos}}
+          </td>
+        </ng-container>
+
+        <!-- vacant position -->
+        <ng-container matColumnDef="vacantPos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Vacant Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.vacantPos}}
+          </td>
+        </ng-container>
+
+        <!-- vacant date -->
+        <ng-container matColumnDef="vacantDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Date of Vacant Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.vacantDate}}
+          </td>
+        </ng-container>
+
+        <!-- reason for vacant position -->
+        <ng-container matColumnDef="vacPosReason">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Reason for Vacant Position</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.vacPosReason}}
+          </td>
+        </ng-container>
+
+        <!-- name of employee (whose poistion is vacant) -->
+        <ng-container matColumnDef="vacEmpName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name of Employee (whose position is Vacant)
+          </th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.vacEmpName}}
+          </td>
+        </ng-container>
+
+        <!-- name of employee (retiring in next 12 month) -->
+        <ng-container matColumnDef="retEmpName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name of Employee (retiring in next 12 month)
+          </th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.retEmpName}}
+          </td>
+        </ng-container>
+
+        <!-- appointment date -->
+        <ng-container matColumnDef="appointDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Date of appointment (for retired employee)
+          </th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.appointDate}}
+          </td>
+        </ng-container>
+
+        <!-- date of retirement -->
+        <ng-container matColumnDef="retDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Date of Retirement</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.retDate}}
+          </td>
+        </ng-container>
+
+        <!-- details of pension -->
+        <ng-container matColumnDef="pensionDet">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Details of Pension</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.pensionDet}}
+          </td>
+        </ng-container>
+
+        <!-- remarks -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Remarks</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.remarks}}
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+            <i (click)="updateValue()" class="material-icons plus add" title="Edit" aria-hidden="true">
+              edit
+            </i>
+            <a><i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i></a>
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <!-- action button -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails();" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+        Submit</button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../district-mahekam-register-list']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+    </div>
+  </div>
+</div>

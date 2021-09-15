@@ -1,0 +1,652 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Office Updation</div>
+            <div class="font-heading"><strong>Transaction Number:</strong> 19-20/EDP/OU/001</div>
+            <div class="font-heading"><strong>Transaction Date:</strong> {{ today_date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <div #parentGrids>
+            <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Update Office
+                    </ng-template>
+                    <form [formGroup]="ddoForm" (ngSubmit)="saveDDO()">
+                        <div class="box box-primary">
+                            <div class="box-header">Office Detail</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="grNo" formControlName="grNo" [(ngModel)]="grNo" placeholder="GR No." required [readonly]="isDDO">
+                                        </mat-form-field>
+                                        <div class="error-wrapper"
+                                            *ngIf="ddoForm.controls.grNo.touched && ddoForm.controls.grNo.errors">
+                                            <mat-error *ngIf="ddoForm.controls.grNo.errors.required">
+                                                {{errorMessages.grNo}}
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="uniqueId" formControlName="uniqueId" [(ngModel)]="uniqueId" placeholder="Unique Id" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="district" formControlName="district" [(ngModel)]="district" placeholder="District" readonly required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="officeLevel" formControlName="officeLevel" [(ngModel)]="officeLevel" placeholder="Office Type" readonly required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="level" formControlName="level" [(ngModel)]="level" placeholder="Level" readonly required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="ddoOfficeName" formControlName="ddoOfficeName" [(ngModel)]="ddoOfficeName" placeholder="DDO Office Name" required [readonly]="isDDO">
+                                        </mat-form-field>
+                                        <div class="error-wrapper"
+                                            *ngIf="ddoForm.controls.ddoOfficeName.touched && ddoForm.controls.ddoOfficeName.errors">
+                                            <mat-error *ngIf="ddoForm.controls.ddoOfficeName.errors.required">
+                                                {{errorMessages.ddoOfficeName}}
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                      
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Pay Verification Unit" formControlName="pvu" name="pvu" [(ngModel)]="pvu" required [disabled]="isDDO">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pvuCtrl"
+                                                        [placeholderLabel]="'Find Pay Verification Unit...'"
+                                                        [noEntriesFoundLabel]="'no matching pay verification unit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let pvu of pvuList | filterSelectInput : pvuCtrl.value : 'viewValue'" [value]="pvu.value" style="color: rgba(0,0,0,.38) !important;
+                                                font-weight: normal !important;">
+                                                    {{pvu.viewValue}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <mat-select formControlName="designationName" name="designationName" [(ngModel)]="designationName" placeholder="Designation of DDO" required [disabled]="isDDO">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="designationCtrl"
+                                                            [placeholderLabel]="'Find Designation Name...'"
+                                                            [noEntriesFoundLabel]="'no matching Designation Name found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let designationName of designationList | filterSelectInput : designationCtrl.value : 'viewValue'" [value]="designationName.value" style="color: rgba(0,0,0,.38) !important;
+                                                    font-weight: normal !important;">
+                                                        {{designationName.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput name="requestTo" formControlName="requestTo" [(ngModel)]="requestTo" placeholder="Request To" required readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput name="treasuryType" formControlName="treasuryType" [(ngModel)]="treasuryType" placeholder="Treasury Type" readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Is this Controlling Office?" formControlName="isCoOffice" name="isCoOffice" [(ngModel)]="isCoOffice" [disabled]="isDDO">
+                                                    <mat-option *ngFor="let isCoOffice of isOfficeList" [value]="isCoOffice.value">
+                                                        {{isCoOffice.viewValue}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput numbersOnly name="employeeNo" formControlName="employeeNo" [(ngModel)]="employeeNo"
+                                                    placeholder="Employee Number" maxlength="10" readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput name="employeeName" formControlName="employeeName"
+                                                    placeholder="Employee Name" [(ngModel)]="employeeName" readonly>
+                                            </mat-form-field>
+                                        </div>
+                
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="ddoNo" formControlName="ddoNo" [(ngModel)]="ddoNo" placeholder="DDO No" required readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="cardexNo" formControlName="cardexNo" [(ngModel)]="cardexNo" placeholder="Cardex No" required readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="ddoType" formControlName="ddoType" [(ngModel)]="ddoType" placeholder="DDO Type" required readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="nonDdoType" formControlName="nonDdoType" [(ngModel)]="nonDdoType" placeholder="Non DDO" required readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-primary">
+                                <div class="box-header">Office Address Detail</div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <mat-form-field>
+                                                <input matInput name="address1" formControlName="address1" [(ngModel)]="address1" placeholder="Address Line 1" required>
+                                                <div class="error-wrapper"
+                                                    *ngIf="ddoForm.controls.address1.touched && ddoForm.controls.address1.errors">
+                                                    <mat-error *ngIf="ddoForm.controls.address1.errors.required">
+                                                        {{errorMessages.address1}}
+                                                    </mat-error>
+                                                </div>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <mat-form-field>
+                                                <input matInput name="address2" formControlName="address2" [(ngModel)]="address2" placeholder="Address Line 2" >
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput name="district" formControlName="district" [(ngModel)]="district" placeholder="District" readonly required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <mat-select formControlName="taluka" name="taluka" [(ngModel)]="taluka" placeholder="Taluka">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="talukaCtrl"
+                                                            [placeholderLabel]="'Find Taluka Name...'"
+                                                            [noEntriesFoundLabel]="'no matching Taluka Name found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let talukaName of talukaList | filterSelectInput : talukaCtrl.value : 'viewValue'"
+                                                        [value]="talukaName.value">
+                                                        {{talukaName.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput name="station" formControlName="station" [(ngModel)]="station" placeholder="Station">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput numbersOnly name="pinCode" formControlName="pinCode" [(ngModel)]="pinCode" placeholder="Pin code" maxlength="6">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-3 phoneNo">
+                                            <div class="col-sm-4 phoneNoPaddingZero">
+                                                <mat-form-field>
+                                                    <input matInput numbersOnly name="stdCode" formControlName="stdCode" [(ngModel)]="stdCode" placeholder="STD Code" >
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-8 phoneNoPaddingZero">
+                                            <mat-form-field>
+                                                <input matInput numbersOnly name="phoneNo" formControlName="phoneNo" [(ngModel)]="phoneNo" placeholder="Phone No." >
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="mobileNo" formControlName="mobileNo" [(ngModel)]="mobileNo" placeholder="Mobile No." maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput numbersOnly name="faxNo" formControlName="faxNo" [(ngModel)]="faxNo" placeholder="Fax No.">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="emailId" formControlName="emailId" [(ngModel)]="emailId" placeholder="Office Email Id">
+                                        </mat-form-field>
+                                    </div>
+                                     <div class="col-sm-3">
+                                        <mat-form-field hintLabel="DDO Office Name, Station, Taluka, District">
+                                            <input matInput name="officeNameForDisplay" formControlName="officeNameForDisplay" [(ngModel)]="officeNameForDisplay" placeholder="Office Name For Display" readonly>
+                                        </mat-form-field>
+                                    </div>                                           
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Office Mapping</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="department" formControlName="department" placeholder="Department" [(ngModel)]="department" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput name="hod" formControlName="hod" [(ngModel)]="hod" placeholder="HOD" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select placeholder="CO Designation" formControlName="coName" name="coName"  [(ngModel)]="coName">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="coNameCtrl"
+                                                        [placeholderLabel]="'Find CO Name...'"
+                                                        [noEntriesFoundLabel]="'no matching CO Name found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let coName of coList | filterSelectInput : coNameCtrl.value : 'viewValue'"
+                                                    [value]="coName.value">
+                                                    {{coName.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="ddoForm.controls.coName.touched && ddoForm.controls.coName.errors">
+                                                <mat-error *ngIf="ddoForm.controls.coName.errors.required">
+                                                    {{errorMessages.coName}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select placeholder="CO Office Name" formControlName="coOfficeName"
+                                                name="coOfficeName" [required] [(ngModel)]="coOfficeName">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="coOfficeNameCtrl"
+                                                        [placeholderLabel]="'Find CO Office Name...'"
+                                                        [noEntriesFoundLabel]="'no matching CO Office Name found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let officeName of officeList | filterSelectInput : coOfficeNameCtrl.value : 'viewValue'"
+                                                    [value]="officeName.value">
+                                                    {{officeName.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="ddoForm.controls.coOfficeName.touched && ddoForm.controls.coOfficeName.errors">
+                                                <mat-error *ngIf="ddoForm.controls.coOfficeName.errors.required">
+                                                    {{errorMessages.coOfficeName}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Office Bill Mapping</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <mat-select formControlName="treasuryOffice" name="treasuryOffice"
+                                                placeholder="Bill Submited To" required [(ngModel)]="treasuryOffice">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="treasuryCtrl"
+                                                        [placeholderLabel]="'Find Treasury/Sub Treasury Name...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/Sub Treasury Name found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let treasuryName of treasuryOfficeList | filterSelectInput : treasuryCtrl.value : 'viewValue'"
+                                                    [value]="treasuryName.value">
+                                                    {{treasuryName.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="ddoForm.controls.treasuryOffice.touched && ddoForm.controls.treasuryOffice.errors">
+                                                <mat-error *ngIf="ddoForm.controls.treasuryOffice.errors.required">
+                                                    {{errorMessages.treasuryOffice}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                         <mat-form-field>
+                                            <mat-select placeholder="Bill Type" formControlName="billType"
+                                                name="billType" required (selectionChange)="selectBill()"  [(ngModel)]="billType">
+                                                <mat-option *ngFor="let billName of billTypeList"
+                                                    [value]="billName.value">
+                                                    {{billName.viewValue}}</mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="ddoForm.controls.billType.touched && ddoForm.controls.billType.errors">
+                                                <mat-error *ngIf="ddoForm.controls.billType.errors.required">
+                                                    {{errorMessages.billType}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="isSelected">
+                                        <mat-form-field>
+                                            <mat-select formControlName="selectedBill" name="selectedBill"
+                                                placeholder="List of Bills" multiple [disabled]="isDDO">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="selectedBillCtrl"
+                                                        [placeholderLabel]="'Find Bill Name...'"
+                                                        [noEntriesFoundLabel]="'no matching bill name found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let selectedBillName of billSelectedTypeList | filterSelectInput : selectedBillCtrl.value : 'viewValue'"
+                                                    [value]="selectedBillName.value">
+                                                    {{selectedBillName.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Office Status</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Status" formControlName="status" name="status" (selectionChange)="selectStatus()" [disabled]="isDDO">
+                                                <mat-option *ngFor="let statusName of statusList" [value]="statusName.value">
+                                                    {{statusName.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <input matInput name="fromDate" placeholder="Office Start Date" [(ngModel)]="date" formControlName="fromDate" readonly>
+                                        </mat-form-field>
+                                    </div>
+                                    
+                                    <div class="col-sm-4" *ngIf="isInActiveSelected">
+                                        <mat-form-field>
+                                            <input matInput [min]="date.value" [matDatepicker]="inactiveEndDate" name="inactiveEndDate" formControlName="inactiveEndDate" placeholder="Office End Date" [readonly]="isDDO">
+                                            <mat-datepicker-toggle matSuffix [for]="inactiveEndDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #inactiveEndDate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-4" *ngIf="isCancelSelected">
+                                        <mat-form-field>
+                                            <input matInput [min]="date.value" [matDatepicker]="cancelEndDate" name="cancelEndDate" formControlName="cancelEndDate" placeholder="Office End Date" [readonly]="isDDO">
+                                            <mat-datepicker-toggle matSuffix [for]="cancelEndDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #cancelEndDate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                            <input matInput name="comments" formControlName="comments" placeholder="Comments" [readonly]="isDDO">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <mat-form-field>
+                                        <a> <input matInput  placeholder="Office History" readonly></a>
+                                       </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Comment</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <textarea matInput name="approvalComment" formControlName="approvalComment" [(ngModel)]="approvalComment" placeholder="Comment" required></textarea>
+                                        </mat-form-field>
+                                        <div class="error-wrapper"
+                                            *ngIf="ddoForm.controls.approvalComment.touched && ddoForm.controls.approvalComment.errors">
+                                            <mat-error *ngIf="ddoForm.controls.approvalComment.errors.required">
+                                                {{errorMessages.approvalComment}}
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-header">Objection Detail</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-checkbox [(ngModel)]="checked" formControlName="checked" (click)="ObjectionRemarks()">Objection</mat-checkbox>
+                                    </div>
+                                    <div class="col-sm-12" *ngIf="checked">
+                                        <mat-form-field>
+                                            <textarea matInput name="objectionRemarks" formControlName="objectionRemarks" placeholder="Objection Remarks" required></textarea>
+                                        </mat-form-field>
+                                        <div class="error-wrapper"
+                                            *ngIf="ddoForm.controls.objectionRemarks.touched && ddoForm.controls.objectionRemarks.errors">
+                                            <mat-error *ngIf="ddoForm.controls.objectionRemarks.errors.required">
+                                                {{errorMessages.objectionRemarks}}
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-action-button" *ngIf="!doneHeader">
+                        <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                            <i class="material-icons" title="Save">save</i>
+                            Save as Draft
+                        </button>
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons">done</i>
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons">restore</i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                            <i class="material-icons" title="Listing">list</i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">close</i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+
+                <mat-tab label="Sub Offices">
+                    <div class="row">
+                        <div class="col-sm-12 officeNameData">
+                            <span><b>{{ddoOfficeName}}</b></span>
+                            <button type="submit" mat-raised-button color="primary" class="subOffice"
+                            (click)="createSubChild({});$event.stopPropagation();">
+                            <i class="material-icons" title="Save">add</i>
+                            Create Sub Office
+                        </button>
+                        </div>
+                    </div>
+                    <table mat-table #table [dataSource]="subOfficesList"
+                        class="responsive-table subofficelisttable nonescroll">
+                        <ng-container matColumnDef="srNo">
+                            <th mat-header-cell *matHeaderCellDef class="srnowidth">Sr.No</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">{{i+1}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ddoOfficeName">
+                            <th mat-header-cell *matHeaderCellDef>Office Name</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{element.ddoOfficeName}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="department">
+                            <th mat-header-cell *matHeaderCellDef>Department</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{element.department}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="hod">
+                            <th mat-header-cell *matHeaderCellDef>HOD</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{element.hod}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="district">
+                            <th mat-header-cell *matHeaderCellDef>District</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{element.district}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="taluka">
+                            <th mat-header-cell *matHeaderCellDef>Taluka</th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{element.taluka}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="actionwidthtwo">Action</th>
+                            <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                                <a>
+                                    <i class="material-icons plus edit-icon" title="Edit" (click)="createSubChild({});$event.stopPropagation();"> edit </i>
+                                </a>
+                                <a>
+                                    <i class="material-icons plus view-icon" title="View"(click)="Creatsubofficeview()">remove_red_eye</i>
+                                </a>
+                            
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="subOfficeColumn;"></tr>
+                        <tr mat-row *matRowDef="let row;let i= index;columns:subOfficeColumn;"></tr>
+                    </table>
+                    <div class="form-action-button">
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons">done</i>
+                            Submit
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                            <i class="material-icons" title="Listing">list</i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">close</i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Attachment" >
+                    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td mat-cell *matCellDef="let item;let i = index;">
+                                <mat-label>Supporting Document</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse Files</button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" title="Add"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" 
+                                                        (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                           
+                                                <a>
+                                                    <i class="material-icons plus delete" title="Delete" 
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 0" 
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+                    <input type="file" id="fileBrowse" class="fileBrowse" (change)="onFileSelection($event)" />
+                    <div class="legend">
+                            1. Total File size should be under 4MB<br>
+                            2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’,  ‘JPEG’, ‘PNG’,  ‘PDF’.    
+                        </div>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" title="Save">cloud_upload</i>
+                            Upload
+                        </button>
+                        <button mat-raised-button type="submit" class="green">
+                            <i class="material-icons">done</i> 
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons">restore</i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                            <i class="material-icons" title="Listing">list</i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" title="Budget dashboard">close</i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

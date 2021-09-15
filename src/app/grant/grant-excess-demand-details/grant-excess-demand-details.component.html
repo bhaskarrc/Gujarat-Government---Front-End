@@ -1,0 +1,355 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section">
+      <!-- <div>Excess Demand Details - HoD Screen</div> -->
+      <div>Consolidated Grant Request</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/Grant/EXDD/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Grant</a></li>
+        <!-- <li class="breadcrumb-item active" aria-current="page">Grant Excess Demand Details</li> -->
+        <li class="breadcrumb-item active" aria-current="page">Consolidated Grant Request</li>
+      </ol>
+    </nav>
+
+
+    <div class="row header-detail mgb10">
+      <div class="col-sm-4 colPadding" *ngFor="let item of headerJson">
+        <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+        <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+      </div>
+    </div>
+
+    <div class="box box-primary">
+      <div class="box-header">Search</div>
+      <div class="box-body">
+        <form class="col-sm-12" [formGroup]="excessDemandForm">
+          <div class="row">
+
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="ddoNO" placeholder="DDO NO">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="ddoNoCtrl" [placeholderLabel]="'Find DDo No...'"
+                      [noEntriesFoundLabel]="'no matching DDo No'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let ddo of ddono_list | filterSelectInput:ddoNoCtrl.value" [value]="ddo.value">
+                    {{ddo.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- 
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="schemeType" placeholder="Scheme Type">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="SchemeTypeCtrl" [placeholderLabel]="'Find Scheme Type...'"
+                      [noEntriesFoundLabel]="'no matching Scheme Type'">
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let ddo of SchemeType_list | filterSelectInput:SchemeTypeCtrl.value"
+                    [value]="ddo.value">
+                    {{ddo.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div> -->
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-top history-list">
+      <div class="rsClass"> (₹ in Lakhs) </div>
+      <table mat-table [dataSource]="subDetailHeadSource" width="100%" class="responsive-table " matSort>
+
+        <ng-container matColumnDef="checkBox">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            <mat-checkbox [(ngModel)]="selectedAll" (change)="selectAll()"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox [(ngModel)]="element.selected" (change)="checkIfAllSelected()"></mat-checkbox>
+          </td>
+          <td mat-footer-cell *matFooterCellDef> </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Sr. No.</th>
+          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          <td mat-footer-cell *matFooterCellDef>Total </td>
+        </ng-container>
+        <ng-container matColumnDef="objClass">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Object Class</th>
+          <td mat-cell *matCellDef="let element" class="combine">
+            <!-- <a>
+              <i class="material-icons plus btn-history " title="View History" (click)="view()">history</i>
+              </a> -->
+
+            <div class="row">
+              <div class="col-sm-12">
+                <span matTooltip="{{element.toolTipData}}">
+                  {{element.objClass}} </span>
+              </div>
+              <!-- <div class="col-sm-2">
+                <a>
+                  <i class="material-icons  btn-history " title="View History" (click)="view()">history</i>
+                </a>
+              </div> -->
+            </div>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+        <ng-container matColumnDef="bEState">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Budget Estimate</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign combine" rowspan="1"> <span> {{element.bEState}}
+            </span>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{bEStateTotal()| number : '1.4-4'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="bECss">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Revised Budget Estimate</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign combine">
+            <span>{{element.bECss | number : '1.4-4'}}</span> </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{revisedBudget() | number : '1.4-4'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="ddoName">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Name of Office</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.ddoName}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="relGrant">
+          <th mat-header-cell *matHeaderCellDef  scope="row" mat-sort-header>Released Grant</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign">
+            {{element.relGrant}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{releaseGrant() | number : '1.4-4'}} </td>
+        </ng-container> -->
+
+
+        <ng-container matColumnDef="adiDemand">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Additional Demand</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign">
+            {{element.adiDemand}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{adiDemand() | number : '1.4-4'}} </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="edrDDO">
+                    <th mat-header-cell *matHeaderCellDef  scope="row" mat-sort-header>Excess Demand raised by DDO</th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.edrDDO}} </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">{{edrDDOTotal()}} </td>
+                </ng-container> -->
+
+        <ng-container matColumnDef="gtrDDO">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Grant to be Released to Office</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign">
+            <mat-form-field floatLabel="never" class="rightAlign">
+              <input matInput (keypress)="decimalKeyPress($event)" [(ngModel)]="element.gtrDDO"
+                (blur)="decimalPoint(element,'gtrDDO')">
+            </mat-form-field>
+
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{grantRealeseDDo() | number : '1.4-4'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="edbDDO">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Expenditure done by Office</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            <a href="javascript:void(0)" class="underline"> {{element.edbDDO| number : '1.4-4'}}</a>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{edbDDOTotal()| number : '1.4-4'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="probableExpenditure">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Probable Expenditure</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.probableExpenditure | number : '1.4-4'}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> {{probableExpenditureTotal() | number : '1.4-4'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="agwDDO">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Available Grant with Office</th>
+          <td mat-cell *matCellDef="let element" class="rightAlign"> <span>{{element.agwDDO}} </span></td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{agwDDOTotal()}}</td>
+        </ng-container>
+        <ng-container matColumnDef="agwHOD">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Available Grant with HoD </th>
+          <td mat-cell *matCellDef="let element" class="rightAlign combine">
+            <span>{{element.agwHOD| number : '1.4-4'}}</span> </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign">{{agwHODTotal()| number : '1.4-4'}}</td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef  scope="row" mat-sort-header>Remarks </th>
+          <td mat-cell *matCellDef="let element">
+            <a href="javascript:void(0)" class="underline"> View </a>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+
+        </ng-container>
+        <ng-container matColumnDef="document">
+          <th mat-header-cell *matHeaderCellDef  scope="row" mat-sort-header>Document </th>
+          <td mat-cell *matCellDef="let element"> <a href="javascript:void(0)">Download</a> </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container> -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Status </th>
+          <td mat-cell *matCellDef="let element"> {{element.status}}</td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+        <ng-container matColumnDef="lyingWith">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Lying with </th>
+          <td mat-cell *matCellDef="let element"> {{element.lyingWith}}</td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+        <ng-container matColumnDef="accessDemand">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Remarks for Grant </th>
+          <td mat-cell *matCellDef="let element">
+
+            <mat-form-field class="example-full-width">
+              <textarea matInput></textarea>
+            </mat-form-field>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Action </th>
+          <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+            <a>
+              <i class="material-icons plus view-icon" aria-hidden="true" title="View Remarks">remove_red_eye</i>
+            </a>
+            <a>
+              <i class="material-icons plus btn-history " title="View History" (click)="view()">history</i>
+            </a>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+        <!--   
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef  scope="row">Action</th>
+          <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+            <a>
+              <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye</i>
+            </a>
+                </td>
+        </ng-container> -->
+
+
+
+        <ng-container matColumnDef="1">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">A</th>
+        </ng-container>
+        <ng-container matColumnDef="2">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">B</th>
+        </ng-container>
+        <ng-container matColumnDef="3">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">C</th>
+        </ng-container>
+        <ng-container matColumnDef="4">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">D</th>
+        </ng-container>
+        <ng-container matColumnDef="5">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">E</th>
+        </ng-container>
+        <ng-container matColumnDef="6">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">F</th>
+        </ng-container>
+        <ng-container matColumnDef="7">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">G</th>
+        </ng-container>
+        <ng-container matColumnDef="8">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">H</th>
+        </ng-container>
+        <ng-container matColumnDef="9">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">I</th>
+        </ng-container>
+
+        <ng-container matColumnDef="10">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">J</th>
+        </ng-container>
+        <ng-container matColumnDef="11">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">K</th>
+        </ng-container>
+        <ng-container matColumnDef="12">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">L</th>
+        </ng-container>
+        <ng-container matColumnDef="13">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">M</th>
+        </ng-container>
+        <ng-container matColumnDef="14">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">N</th>
+        </ng-container>
+        <ng-container matColumnDef="15">
+          <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">O</th>
+        </ng-container>
+        <ng-container matColumnDef="16">
+          <th mat-header-cell *matHeaderCellDef scope="row" scope="row" class="tblwithoutBg">P</th>
+        </ng-container>
+        <ng-container matColumnDef="17">
+          <th mat-header-cell *matHeaderCellDef scope="row" scope="row" class="tblwithoutBg">Q</th>
+        </ng-container>
+
+
+
+
+
+        <tr mat-header-row class="unsetHeight"
+          *matHeaderRowDef="['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedSubDetailHeadColumns"></tr>
+        <tr mat-row *matRowDef="let row; let i = index;columns: displayedSubDetailHeadColumns;">
+
+        </tr>
+        <tr mat-footer-row *matFooterRowDef="displayedSubDetailHeadColumns"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <div class="form-action-button">
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+      <button mat-raised-button title="Submit" type="submit" class="green" (click)="workflowDetails()"><i
+          class="material-icons" title="Submit" aria-hidden="true">
+          done
+        </i> Submit
+      </button>
+      <button type="reset" mat-raised-button color="accent" title="Reset">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+      <button type="button" title="Listing" mat-raised-button color="warn"
+        [routerLink]="['../request-for-grant/request-for-grant-list']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+      <button type="view" mat-raised-button color="accent" (click)="workflowDetails()">
+        <i class="material-icons" title="View" aria-hidden="true">remove_red_eye</i>
+        View Comments
+      </button>
+    </div>
+  </div>

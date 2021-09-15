@@ -1,0 +1,230 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      Schedule 2 : Recovery Report
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Schedule 2 : Recovery Report</li>
+      </ol>
+    </nav>
+
+    <!-- search criteria -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search Criteria
+          </div>
+        </mat-expansion-panel-header>
+
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="searchForm" (ngSubmit)="searchFormData()">
+            <div class="row">
+
+              <!-- financial year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="financialYear" placeholder="Financial Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="financialYearCtrl"
+                        [placeholderLabel]="'Find Financial Year...'"
+                        [noEntriesFoundLabel]="'No matching Financial Year found'" numberHypenOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None---</mat-option>
+                    <mat-option *ngFor="let item of financialYearList |
+                        filterSelectInput:financialYearCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- district name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="districtName" placeholder="District">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="districtNameCtrl"
+                        [placeholderLabel]="'Find District Name...'"
+                        [noEntriesFoundLabel]="'No matching District Name found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None---</mat-option>
+                    <mat-option *ngFor="let item of districtNameList |
+                        filterSelectInput:districtNameCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- department -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="department" placeholder="Department">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="departmentCodeCtrl"
+                        [placeholderLabel]="'Find Department...'" [noEntriesFoundLabel]="'no matching Department found'"
+                        alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None---</mat-option>
+                    <mat-option *ngFor="let department of departmentList| filterSelectInput:departmentCodeCtrl.value"
+                      [value]="department.value" matTooltip="{{item.viewValue}}">
+                      {{department.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- major head -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="majorHead" placeholder="Major Head">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Find Major Head...'"
+                        [noEntriesFoundLabel]="'no matching Major Head found'" numbersAlphabetsOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None---</mat-option>
+                    <mat-option *ngFor="let item of majorHeadList | filterSelectInput:majorHeadCtrl.value"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" title="Search" (click)="onSearch();">
+            <i class="material-icons" aria-hidden="true">search</i>
+            Search
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" title="Reset" (click)="clearForm();">
+            <i class="material-icons" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- listing -->
+    <div class="mat-elevation-z8 row  mt-2 table-responsive overflow-y-auto">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="scheduleTwo">
+
+        <!-- serial no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- financial year -->
+        <ng-container matColumnDef="financialYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Financial Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.financialYear}}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- department -->
+        <ng-container matColumnDef="department">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Department</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.department}}
+          </td>
+        </ng-container>
+
+        <!-- major head -->
+        <ng-container matColumnDef="majorHead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.majorHead}}
+          </td>
+        </ng-container>
+
+        <!-- recoverable anount -->
+        <ng-container matColumnDef="recoverableAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Recoverable Amount</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.recoverableAmount}}
+          </td>
+        </ng-container>
+
+        <!-- received amount -->
+        <ng-container matColumnDef="receivedAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Received Amount</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.receivedAmount}}
+          </td>
+        </ng-container>
+
+        <!-- pending amount -->
+        <ng-container matColumnDef="pendingAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Pending Amount</th>
+          <td mat-cell *matCellDef="let element;let i= index;" class="rightAlign">
+            {{element.pendingAmount}}
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <!-- action buttons -->
+    <div class="form-action-button">
+
+      <button mat-raised-button type="submit" class="green" title="Generate Report" (click)="goToReport()">
+        <i class="material-icons" aria-hidden="true">done</i> Generate Report</button>
+
+      <button type="submit" mat-raised-button color="primary" title="Export To Excel" class="btn-export-excel">
+        <i class="material-icons" aria-hidden="true">insert_drive_file </i>
+        Export to Excel
+      </button>
+
+      <button type="reset" mat-raised-button color="accent" title="Export To PDF" (click)="captureScreen()"
+        class="btn-export-pdf">
+        <i class="material-icons" aria-hidden="true">picture_as_pdf</i>
+        Export to PDF
+      </button>
+
+    </div>
+
+
+  </div>
+</div>

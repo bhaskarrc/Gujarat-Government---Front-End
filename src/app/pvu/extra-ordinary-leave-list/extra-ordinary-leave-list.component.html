@@ -1,0 +1,182 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Extra Ordinary Leave List</div>
+        </div>
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search Employee
+                    </div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="employeeLeaveDetail" (ngSubmit)="leaveSubmit()">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="sdate" placeholder="Leave Start Date"
+                                        formControlName="sdate">
+                                    <mat-datepicker-toggle matSuffix [for]="sdate"></mat-datepicker-toggle>
+                                    <mat-datepicker #sdate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="edate" placeholder="Leave End Date"
+                                        formControlName="edate">
+                                    <mat-datepicker-toggle matSuffix [for]="edate"></mat-datepicker-toggle>
+                                    <mat-datepicker #edate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Transaction Number"
+                                        formControlName="transactionNo">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Employee Number"
+                                        formControlName="employeeNo">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Employee Name"
+                                        formControlName="employeeName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Designation"
+                                        formControlName="employeeDesignation">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Case Number"
+                                        formControlName="caseNo">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input class="textBox" matInput maxlength="11" placeholder="Office Name"
+                                        formControlName="officeName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="leaveStatus" placeholder="Work Flow Status">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="leaveStatusCtrl"
+                                                [placeholderLabel]="'Leave Status...'"
+                                                [noEntriesFoundLabel]="'No matching leave status found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let leaveStatusList of filteredleaveStatus | async "
+                                            [value]="leaveStatusList.value">
+                                            {{leaveStatusList.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" (click)="search()">
+                        <i class="material-icons">search</i> Search </button>
+
+                    <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                        <i class="material-icons">restore</i>Reset</button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="mat-elevation-z8 table-responsive mt-2" *ngIf="!isSearch">
+            <div class="heading-section ng-star-inserted row mx-auto mt-3 mb-3">
+            </div>
+            <table mat-table #table [dataSource]="dataSource" class="responsive-table">
+                <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef>Sr. No. </th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{i+1}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="transactionNo">
+                    <th mat-header-cell *matHeaderCellDef>Transaction No</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.transactionNo}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="employeeNo">
+                    <th mat-header-cell *matHeaderCellDef>Employee No </th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.employeeNo}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="empName">
+                    <th mat-header-cell *matHeaderCellDef>Employee Name </th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.empName}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="empDesignation">
+                    <th mat-header-cell *matHeaderCellDef>Designation</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.empDesignation}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="class">
+                    <th mat-header-cell *matHeaderCellDef>Employee Class </th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.class}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="startDate">
+                    <th mat-header-cell *matHeaderCellDef>Leave Start Date</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.startDate}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="endDate">
+                    <th mat-header-cell *matHeaderCellDef>Leave End Date</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.endDate}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noOfDays">
+                    <th mat-header-cell *matHeaderCellDef>No of days</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.noOfDays}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="officeName">
+                    <th mat-header-cell *matHeaderCellDef>Office Name</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.officeName}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.status}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>action</th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                        <a [routerLink]="'../extra-ordinary-leave'"><i class="material-icons plus edit-icon"
+                                title="Edit"> edit </i></a>
+                        <a [routerLink]="'../extra-ordinary-leave'"><i class="material-icons plus view-icon"
+                                title="View">remove_red_eye</i></a>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

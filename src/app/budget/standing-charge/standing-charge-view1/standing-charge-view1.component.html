@@ -1,0 +1,542 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Standing Charges Estimate View</div>
+      <div class="font-heading"><strong>Transaction Number:</strong> 19-20/BUD/SCE/001</div>
+      <div class="font-heading"><strong>Transaction Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Budget</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Standing Charges Estimates View</li>
+      </ol>
+
+      <button (click)="toggleExpandState()">{{ allExpandState ? "Collapse All" : "Expand All" }}</button>
+    </nav>
+
+
+    <mat-accordion #accordion="matAccordion" [multi]="true">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Header
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+    
+        <div class="row header-detail">
+          <div class="col-sm-6 colPadding" *ngFor="let item of headerJson">
+            <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+            <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Detail
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="rsClass"> (₹ in Lakhs) </div>
+        <table mat-table #table [dataSource]="dataSource" class="responsive-table">
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="objecthead">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Object Head</th>
+                <td mat-cell *matCellDef="let element;let i= index;">
+                  {{element.objecthead}}
+                </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="thirdlastyear">
+                <th mat-header-cell *matHeaderCellDef>Third last year</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.thirdlastyear | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="secondlastyear">
+                <th mat-header-cell *matHeaderCellDef>Second last year</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.secondlastyear | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="lastyear">
+                <th mat-header-cell *matHeaderCellDef>Last year</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.lastyear | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="currentyear">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Budget estimates for current year</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.currentyear | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <!-- Fav Column -->
+            <ng-container matColumnDef="last8month">
+                <th mat-header-cell *matHeaderCellDef>Last 8 month of the previous year
+                </th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.currentyear | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="first4month">
+                <th mat-header-cell *matHeaderCellDef>First 4 month of the current year</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{element.first4month | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalof8and4month">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" class="gray-color">Total of 8 & 4 month</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                  {{ element.totalof8and4month | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="col6">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" class="gray-color">Col 6*1.5</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{ element.last8month * 1.5 | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="col7">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" class="gray-color">Col 7*3</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{ element.first4month * 3 | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="amountproposedbyHOD">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Proposed Amount</th>
+                <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.amountproposedbyHOD | number : '1.2-2'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Remarks</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.remarks}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ObjectHead1">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Object Head</th>
+            </ng-container>
+            <ng-container matColumnDef="BudgetEstimate">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Budget estimates for current year</th>
+            </ng-container>
+            <ng-container matColumnDef="totalof8and4month1">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Total of 8 & 4 month</th>
+            </ng-container>
+            <ng-container matColumnDef="col61">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Col 6*1.5</th>
+            </ng-container>
+            <ng-container matColumnDef="col71">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Col 7*3</th>
+            </ng-container>
+            <ng-container matColumnDef="amountproposedbyHOD1">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Proposed Amount</th>
+            </ng-container>
+            <ng-container matColumnDef="remarks1">
+                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks</th>
+            </ng-container>
+            <ng-container matColumnDef="header3">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Account of</th>
+            </ng-container>
+            <ng-container matColumnDef="header4">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Actuals of</th>
+            </ng-container>
+
+            <ng-container matColumnDef="1">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">1</th>
+            </ng-container>
+            <ng-container matColumnDef="2">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">2</th>
+            </ng-container>
+            <ng-container matColumnDef="3">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">3</th>
+            </ng-container>
+            <ng-container matColumnDef="4">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">4</th>
+            </ng-container>
+            <ng-container matColumnDef="5">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">5</th>
+            </ng-container>
+            <ng-container matColumnDef="6">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">6</th>
+            </ng-container>
+            <ng-container matColumnDef="7">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">7</th>
+            </ng-container>
+            <ng-container matColumnDef="8">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">8</th>
+            </ng-container>
+            <ng-container matColumnDef="9">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">9</th>
+            </ng-container>
+            <ng-container matColumnDef="10">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">10</th>
+            </ng-container>
+            <ng-container matColumnDef="11">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">11</th>
+            </ng-container>
+            <ng-container matColumnDef="12">
+                <th mat-header-cell *matHeaderCellDef class="tblwithoutBg">12</th>
+            </ng-container>
+
+            <tr mat-header-row class="unsetHeight"
+                *matHeaderRowDef="['1','2','3','4','5','6','7','8','9','10','11','12']">
+            </tr>
+
+            <tr mat-header-row
+                *matHeaderRowDef="['ObjectHead1','header3','BudgetEstimate','header4','totalof8and4month1','col61','col71','amountproposedbyHOD1','remarks1']">
+            </tr>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+        </table>
+        
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Establishment
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="rsClass"> (₹ in Lakhs) </div>
+        <table mat-table [dataSource]="dataSourceAttachment">
+          <ng-container matColumnDef="data">
+            <th mat-header-cell *matHeaderCellDef>Edu Office </th>
+            <td mat-cell *matCellDef="let item;" [attr.colspan]="item.extend ? '9' : '1'">
+              {{item.data}} </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val1">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val1}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val2">
+            <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val2 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val3">
+            <th mat-header-cell *matHeaderCellDef>DA </th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val3 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val4">
+            <th mat-header-cell *matHeaderCellDef> HRA </th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val4 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val5">
+            <th mat-header-cell *matHeaderCellDef> CLA </th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val5 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val6">
+            <th mat-header-cell *matHeaderCellDef>OA </th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val6 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val7">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let item" class="rightAlign" style="width: 146px;">
+              {{item.val7 | number : '1.2-2'}}</td>
+          </ng-container>
+        
+          <ng-container matColumnDef="remark">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let item">
+              {{item.remark}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="header1">
+            <th mat-header-cell *matHeaderCellDef>Name of Office</th>
+          </ng-container>
+        
+          <ng-container matColumnDef="header2">
+            <th mat-header-cell *matHeaderCellDef>No of Post</th>
+          </ng-container>
+        
+          <ng-container matColumnDef="header3">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="5">Provision for Next Financial Year </th>
+          </ng-container>
+        
+          <ng-container matColumnDef="header4">
+            <th mat-header-cell *matHeaderCellDef> Total </th>
+          </ng-container>
+        
+          <ng-container matColumnDef="header5">
+            <th mat-header-cell *matHeaderCellDef> Remarks </th>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="['header1', 'header2', 'header3', 'header4', 'header5']"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedAttachmentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedAttachmentColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['data']; when: isExtendedRow" class="darken">
+          </tr>
+        
+        </table>
+        <table mat-table [dataSource]="dataSourceSubAttachment" style="width: 100%; border-top:unset; ">
+          <ng-container matColumnDef="data">
+            <th mat-header-cell *matHeaderCellDef>Post</th>
+            <td mat-cell *matCellDef="let item;"> {{item.data}} </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val1">
+            <th mat-header-cell *matHeaderCellDef>Total no</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val1}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val2">
+            <th mat-header-cell *matHeaderCellDef>Approximate Estimate</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val2 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val3">
+            <th mat-header-cell *matHeaderCellDef>Post</th>
+            <td mat-cell *matCellDef="let item" style="font-weight: 600;">{{item.val3}}</td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val4">
+            <th mat-header-cell *matHeaderCellDef>Total No</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val4}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="val5">
+            <th mat-header-cell *matHeaderCellDef>Approximate Estimate</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.val5 | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="header1">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Informations for Post filled in</th>
+          </ng-container>
+        
+          <ng-container matColumnDef="header2">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Details Regarding
+              requisition and send to
+              G.P.S.C/G.S.S.S.B</th>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="['header1', 'header2']"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedSubAttachmentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedSubAttachmentColumns;"></tr>
+        </table>
+      </mat-expansion-panel>
+      
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Rojmdar & Work charge
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="rsClass"> (₹ in Lakhs) </div>
+        <table mat-table [dataSource]="dataSourceRojamadar" width="100%">
+          <ng-container matColumnDef="data">
+              <th mat-header-cell *matHeaderCellDef>Type of Expenditure</th>
+              <td mat-cell *matCellDef="let item">
+                {{item.data}}
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="val1">
+              <th mat-header-cell *matHeaderCellDef>No of Post</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                {{item.val1}}
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="val2">
+              <th mat-header-cell *matHeaderCellDef>Salaries</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                {{item.val2 | number : '1.2-2'}}
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="val3">
+              <th mat-header-cell *matHeaderCellDef>Other Allowance</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                {{item.val3 | number : '1.2-2'}}
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="val4">
+              <th mat-header-cell *matHeaderCellDef>Total</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign" style="width: 146px;">
+                  {{item.val4 | number : '1.2-2'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="remark">
+              <th mat-header-cell *matHeaderCellDef>Remarks</th>
+              <td mat-cell *matCellDef="let item">
+                {{item.remark}}
+              </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedRojamdarColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedRojamdarColumns;"></tr>
+        </table>
+      </mat-expansion-panel>
+      
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Outsource
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="rsClass"> (₹ in Lakhs) </div>
+        <table mat-table [dataSource]="dataSourceOutSource" width="100%" id="outSourceTable">
+          <ng-container matColumnDef="serviceType">
+            <th mat-header-cell *matHeaderCellDef>Expenditure details / services type</th>
+            <td mat-cell *matCellDef="let item">
+              {{item.serviceType}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="budgetEstimate">
+            <th mat-header-cell *matHeaderCellDef>Budget Estimates</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.budgetEstimate | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="displayedOutSourceColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedOutSourceColumns;"></tr>
+        </table>
+      </mat-expansion-panel>
+      
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Leave Encashment
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="rsClass"> (₹ in Lakhs) </div>
+        <table mat-table [dataSource]="dataSourceLeaveEncashment" width="100%" id="leaveEncashmentTable">
+          <ng-container matColumnDef="nameOfOfficer">
+            <th mat-header-cell *matHeaderCellDef>Name of Officer / Employee</th>
+            <td mat-cell *matCellDef="let item">
+              {{item.nameOfOfficer}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="designation">
+            <th mat-header-cell *matHeaderCellDef>Designation</th>
+            <td mat-cell *matCellDef="let item">
+              {{item.designation}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="basicSalary">
+            <th mat-header-cell *matHeaderCellDef>Basic Salary</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.basicSalary | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="proposedAmount">
+            <th mat-header-cell *matHeaderCellDef>Proposed Amount for Leave Encashment</th>
+            <td mat-cell *matCellDef="let item" class="rightAlign">
+              {{item.proposedAmount | number : '1.2-2'}}
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="dateOfRetirement">
+            <th mat-header-cell *matHeaderCellDef>Date of Retirement</th>
+            <td mat-cell *matCellDef="let item">
+              {{item.dateOfRetirement}}
+            </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="displayedLeaveEncashmentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedLeaveEncashmentColumns;"></tr>
+        </table>
+      </mat-expansion-panel>
+      
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Attachments
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+          <ng-container matColumnDef="financialYear">
+            <th mat-header-cell *matHeaderCellDef>Financial Year</th>
+            <td mat-cell *matCellDef="let item;let i = index;">
+              {{item.financialYear}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="fileName">
+            <th mat-header-cell *matHeaderCellDef>File name</th>
+            <td mat-cell *matCellDef="let item">
+              {{item.fileName}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let item; let i = index">
+              <table class="iconTable">
+                <tbody>
+                  <tr>
+                    <td width="30">
+                      <i class="material-icons plus" (click)="view()" title="view">
+                        visibility
+                      </i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

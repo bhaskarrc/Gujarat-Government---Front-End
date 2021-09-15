@@ -1,0 +1,396 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Update Component Details </div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/PPO/UPD/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Bill Processing</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Update Component Details</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="updatePayment" (ngSubmit)="updatePaymentData()">
+                <!-- Type Selection -->
+                <div class="box box-primary">
+                    <div class="box-header">Update Payment Details</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="orderDate" [matDatepicker]="orderDate" placeholder="Order Date">
+                                    <mat-datepicker-toggle matSuffix [for]="orderDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #orderDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Order No." formControlName="orderNo">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <mat-select (selectionChange)="ontoken($event)" name="paycompontn" formControlName="paycompontn" placeholder="Pay Component">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="paycompontnCtrl" [placeholderLabel]="'Select Pay Component ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="let pc of pay_list | filterSelectInput : paycompontnCtrl.value : 'viewValue'" [value]="pc.value">
+                                            {{pc.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="effectiveDate" [matDatepicker]="effectiveDate" placeholder="Effective Date">
+                                    <mat-datepicker-toggle matSuffix [for]="effectiveDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #effectiveDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input type="text" matInput [(formControl)]="ppoNoCtrl" value="{{ppoNoVal}}" placeholder="PPO No" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                        <span *ngIf="optionCtrl">
+                                            <mat-option *ngFor="let option of filteredppoNo | async" [value]="option">
+                                                {{option.ppoNo}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-autocomplete>
+                                    <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Current Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Current Details</div>
+                    <div class="box-body">
+                        <div class="row header-detail">
+                            <div class="col-sm-6 colPadding" *ngFor="let item of headerJson">
+                                <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+                                <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Post Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Post Details</div>
+                    <div class="box-body">
+                        <!-- table starts -->
+                        <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8" *ngIf="isTokentable">
+                            <ng-container matColumnDef="duration">
+                                <th mat-header-cell *matHeaderCellDef> Duration</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="durationCtrl" [placeholderLabel]="'Select Duration ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let du of duration_list| filterSelectInput : durationCtrl.value : 'viewValue'" [value]="du.value">
+                                                {{ du.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fromMonth">
+                                <th mat-header-cell *matHeaderCellDef> From Month</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Select Month ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let month of month_list| filterSelectInput : monthCtrl.value : 'viewValue'" [value]="month.value">
+                                                {{ month.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fromYear">
+                                <th mat-header-cell *matHeaderCellDef> From Year</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Select Year ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                          let year of year_list| filterSelectInput : yearCtrl.value : 'viewValue'" [value]="year.value">
+                                                {{ year.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="toMonth">
+                                <th mat-header-cell *matHeaderCellDef> To Month</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Select Month ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let month of month_list| filterSelectInput : monthCtrl.value : 'viewValue'" [value]="month.value">
+                                                {{ month.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="toYear">
+                                <th mat-header-cell *matHeaderCellDef> To Year</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Select Year ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                          let year of year_list| filterSelectInput : yearCtrl.value : 'viewValue'" [value]="year.value">
+                                                {{ year.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef> Amount</th>
+                                <td mat-cell *matCellDef="let element">
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                                <td mat-cell *matCellDef="let item; let i = index" class="text-center">
+                                    <i class="material-icons plus add" aria-hidden="true" (click)="addRow()">add</i>
+                                </td>
+                            </ng-container>
+
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+                            <!-- Header Section Of table -->
+                            <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+
+                        </table>
+                        <!-- table ends -->
+                        <!-- table starts -->
+                        <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8" *ngIf="!isTokentable">
+                            <ng-container matColumnDef="duration">
+                                <th mat-header-cell *matHeaderCellDef> Duration</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="durationCtrl" [placeholderLabel]="'Select Duration ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let du of duration_list| filterSelectInput : durationCtrl.value : 'viewValue'" [value]="du.value">
+                                                {{ du.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fromMonth">
+                                <th mat-header-cell *matHeaderCellDef> From Month</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Select Month ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let month of month_list| filterSelectInput : monthCtrl.value : 'viewValue'" [value]="month.value">
+                                                {{ month.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fromYear">
+                                <th mat-header-cell *matHeaderCellDef> From Year</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Select Year ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                          let year of year_list| filterSelectInput : yearCtrl.value : 'viewValue'" [value]="year.value">
+                                                {{ year.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="toMonth">
+                                <th mat-header-cell *matHeaderCellDef> To Month</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Select Month ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                            let month of month_list| filterSelectInput : monthCtrl.value : 'viewValue'" [value]="month.value">
+                                                {{ month.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="toYear">
+                                <th mat-header-cell *matHeaderCellDef> To Year</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select>
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Select Year ...'" [noEntriesFoundLabel]="'no matching Tange type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="
+                          let year of year_list| filterSelectInput : yearCtrl.value : 'viewValue'" [value]="year.value">
+                                                {{ year.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef> Amount</th>
+                                <td mat-cell *matCellDef="let element">
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                                <td mat-cell *matCellDef="let item; let i = index" class="text-center">
+                                    <i class="material-icons plus add" aria-hidden="true" (click)="addRow()">add</i>
+                                </td>
+                            </ng-container>
+
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-header-row *matHeaderRowDef="newdisplayedColumns2"></tr>
+                            <!-- Header Section Of table -->
+                            <tr mat-row *matRowDef="let row; columns: newdisplayedColumns2;"></tr>
+
+                        </table>
+                        <!-- table ends -->
+                        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </div>
+
+                <!-- Arrear/Recovery Details -->
+                <div class="box box-primary">
+                    <div class="box-header">Arrear/Recovery Details</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="arrearRecovery" placeholder=" Arrear/Recovery">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="arrearRecoverByCtrl" [placeholderLabel]="'Select  ...'" [noEntriesFoundLabel]="'no matching found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let pc of arrearRecoverBy_list | filterSelectInput : arrearRecoverByCtrl.value : 'viewValue'" [value]="pc.value">
+                                            {{pc.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="amt" placeholder="Amount" numbersOnly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="payRecoverBy" #payBy placeholder="Pay/Recovery By">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payRecoverByCtrl" [placeholderLabel]="'Select  ...'" [noEntriesFoundLabel]="'no matching found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let pc of payRecoverBy_list | filterSelectInput : payRecoverByCtrl.value : 'viewValue'" [value]="pc.value">
+                                            {{pc.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3" *ngIf="payBy.value=='2'">
+                                <mat-form-field>
+                                    <mat-select formControlName="fullPartial" placeholder="Full/Partial">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="partialFullCtrl" [placeholderLabel]="'Select  ...'" [noEntriesFoundLabel]="'no matching found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let pc of partialFull_list | filterSelectInput : partialFullCtrl.value : 'viewValue'" [value]="pc.value">
+                                            {{pc.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- common buttons -->
+                <div class="form-action-button">
+                    <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                            done
+                        </i> Submit</button>
+
+                    <button type="reset" mat-raised-button color="accent">
+                        <i class="material-icons" aria-hidden="true">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+
+                    <button type="button" mat-raised-button color="warn" (click)="goToListing()">
+                        <i class="material-icons" aria-hidden="true" title="Listing">
+                            list
+                        </i>
+                        Listing
+                    </button>
+
+                    <button type="button" mat-raised-button class="btnClose">
+                        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                            close
+                        </i>
+                        Close
+                    </button>
+
+                </div>
+                <!-- common buttons end -->
+            </form>
+        </div>
+    </div>
+</div>

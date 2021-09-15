@@ -1,0 +1,265 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Export Department Expenditure Details</div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/BUD/BR/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Budget</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export Department Expenditure Details</li>
+            </ol>
+        </nav>
+
+        <div>
+            <div class="box box-primary">
+            <div class="box-header">Export Department Expenditure Details</div>
+            <div class="box-body">
+                <form [formGroup]="budgetreportsform">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="finYear" placeholder="Financial Year" #singleSelect1 required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'" [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+
+                                    <mat-option *ngFor="let FY of filteredFinYear | async" [value]="FY.value">
+                                        {{FY.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div class="error-wrapper" *ngIf="budgetreportsform.controls.finYear.touched && budgetreportsform.controls.finYear.errors">
+                                <mat-error *ngIf="budgetreportsform.controls.finYear.errors.required">
+                                    {{errorMessages.FIN_YEAR}}
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="departmentCode" placeholder="Department" #singleSelect1 required>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="departmentCodeCtrl" [placeholderLabel]="'Find Name of Department...'" [noEntriesFoundLabel]="'no matching Name of Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+
+                                    <mat-option *ngFor="let department of filteredDepartmentCode | async" [value]="department.value">
+                                        {{department.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div class="error-wrapper" *ngIf="budgetreportsform.controls.departmentCode.touched && budgetreportsform.controls.departmentCode.errors">
+                                <mat-error *ngIf="budgetreportsform.controls.departmentCode.errors.required">
+                                    {{errorMessages.DEPARTMENT}}
+                                </mat-error>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" (click)="toggle()">
+                      <i class="material-icons" aria-hidden="true">insert_chart_outlined</i>
+                      Generate Reports
+                  </button>
+                    <button type="submit" mat-raised-button color="primary" (click)="toggle()">
+                      <i class="material-icons" aria-hidden="true">search</i>
+                    Search Results
+                </button>
+                    <button type="reset" mat-raised-button color="accent">
+                  <i class="material-icons" aria-hidden="true">
+                      restore
+                  </i>
+                  Reset
+              </button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div id="contentToConvert" *ngIf="show">
+            <div class="mat-elevation-z8">
+                <table mat-table #table aria-describedby="deptExpReportTable" [dataSource]="dataSource" width="100%" class="responsive-table">
+                    <ng-container matColumnDef="bpn">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">BPN</th>
+                        <td mat-cell *matCellDef="let reports_data;let i= index;">
+                            {{reports_data.bpn}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="demand">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">DEMAND</th>
+                        <td mat-cell *matCellDef="let reports_data;let i= index;">
+                            {{reports_data.demand}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="majorHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">MAJORHEAD</th>
+                        <td mat-cell *matCellDef="let reports_data;let i= index;">
+                            {{reports_data.majorHead}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="subMajorHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}" class="gray-color">SUBMAJORHEAD</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.subMajorHead | number : '1.2-2'}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="minorHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">MINORHEAD
+                        </th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.minorHead | number : '1.2-2'}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="subHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">SUBHEAD</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.subHead | number : '1.2-2'}}
+
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="detailHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">DETAILHEAD</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.detailHead | number : '1.2-2'}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="objectHead">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">OBJECTHEAD</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.objectHead}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="chargeVoted">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">CHARGE_VOTED</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.chargeVoted}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="planNonPlan">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">PLAN_NONPLAN</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.planNonPlan}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="formType">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">FORMTYPE</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.formType}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="account">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">ACCOUNT</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.account}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="curtYrBe">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">CURT_YR_BE</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.curtYrBe}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="curtYrRe">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">CURT_YR_RE</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.curtYrRe}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="nxtYrBe">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">NXT_YR_BE</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.nxtYrBe}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="nxtYrBeDept">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">NXT_YR_BE_DEPT</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.nxtYrBeDept}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="recFlag">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">REC_FLAG</th>
+                        <td mat-cell *matCellDef="let reports_data" class="rightAlign">
+                            {{reports_data.recFlag}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="bpn1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Bpn</th>
+                    </ng-container>
+                    <ng-container matColumnDef="demand1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Demand</th>
+                    </ng-container>
+                    <ng-container matColumnDef="majorhead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Major Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="submajorhead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sub Major Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="minorhead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Minor Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="subhead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sub Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="detailhead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Detail Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="ObjectHead1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Object Head</th>
+                    </ng-container>
+                    <ng-container matColumnDef="chargevoted1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Charge Voted</th>
+                    </ng-container>
+                    <ng-container matColumnDef="plannonplan1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Plan/Non Plan</th>
+                    </ng-container>
+                    <ng-container matColumnDef="formtype1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Form Type</th>
+                    </ng-container>
+                    <ng-container matColumnDef="account1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Account</th>
+                    </ng-container>
+                    <ng-container matColumnDef="curtyrbe1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Curt_Yr_Be</th>
+                    </ng-container>
+                    <ng-container matColumnDef="curtyrRe1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Curt_Yr_Re</th>
+                    </ng-container>
+                    <ng-container matColumnDef="nxtYrBe1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Nxt_Yr_Be</th>
+                    </ng-container>
+                    <ng-container matColumnDef="nxtYrBeDept1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Nxt_Yr_Be_Dept</th>
+                    </ng-container>
+                    <ng-container matColumnDef="recFlag1">
+                        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Rec_Flag</th>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['bpn1', 'demand1', 'majorhead1', 'submajorhead1',  'minorhead1', 'subhead1', 'detailhead1', 'ObjectHead1', 'chargevoted1', 'plannonplan1', 'formtype1', 'account1', 'curtyrbe1', 'curtyrRe1', 'nxtYrBe1', 'nxtYrBeDept1', 'recFlag1']">
+                    </tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+            </div>
+            <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" class="btn-print">
+                  <i class="material-icons" aria-hidden="true">print </i>
+                  Print
+              </button>
+                <button type="submit" mat-raised-button color="primary" class="btn-export-excel">
+                  <i class="material-icons" aria-hidden="true">insert_drive_file </i>
+              Export to Excel
+          </button>
+                <button type="reset" mat-raised-button color="accent" (click)="captureScreen()" class="btn-export-pdf">
+              <i class="material-icons" aria-hidden="true">picture_as_pdf</i>
+              Export to PDF
+          </button>
+            </div>
+        </div>
+
+    </div>
+</div>

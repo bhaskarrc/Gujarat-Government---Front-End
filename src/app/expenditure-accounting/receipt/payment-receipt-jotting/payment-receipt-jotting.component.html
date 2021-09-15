@@ -1,0 +1,212 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Payment / Receipt jotting</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EA/RJ/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EA</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Payment / Receipt jotting</li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <div class="panel-group">
+            <!-- Payment / Receipt jotting starts -->
+            <div class="box box-primary">
+                <div class="box-header">Payment / Receipt jotting</div>
+                <div class="box-body">
+                    <form [formGroup]="prJottingForm">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='type' placeholder='Type' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='typeCtrl' [placeholderLabel]="'Select Type ...'" [noEntriesFoundLabel]="'no matching Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of type_list | filterSelectInput : typeCtrl.value : 'viewValue'" [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.type.touched || (prJottingForm.controls.type.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.type.errors?.required">
+                                            {{errorMessages.TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='subTreasury' formControlName='subTreasury' placeholder='Sub - Treasury (Y/N)' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='subTreasuryCtrl' [placeholderLabel]="'Select Type ...'" [noEntriesFoundLabel]="'no matching Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of subTreasury_list | filterSelectInput : subTreasuryCtrl.value : 'viewValue'" [value]="item.value" (click)="selectYes(item.value)">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.subTreasury.touched || (prJottingForm.controls.subTreasury.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.subTreasury.errors?.required">
+                                            {{errorMessages.TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="subTreasuryYes">
+                                <mat-form-field>
+                                    <mat-select name='subTreasuryName' formControlName='subTreasuryName' placeholder='Sub - Treasury Name' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='subTreasuryNameCtrl' [placeholderLabel]="'Select Sub - Treasury Name ...'" [noEntriesFoundLabel]="'no matching Sub - Treasury Name found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of subTreasuryName_list | filterSelectInput : subTreasuryNameCtrl.value : 'viewValue'" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.subTreasuryName.touched || (prJottingForm.controls.subTreasuryName.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.subTreasuryName.errors?.required">
+                                            {{errorMessages.SUB_TREASURY_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="scrollDate" [matDatepicker]="scrollDate" [max]='maxDate' placeholder="Scroll Date" required readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="scrollDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #scrollDate></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.scrollDate.touched || (prJottingForm.controls.scrollDate.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.scrollDate.errors?.required">
+                                            {{errorMessages.DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Branch Code" formControlName="branchCode" maxlength="10" required>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.branchCode.touched || (prJottingForm.controls.branchCode.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.branchCode.errors?.required">
+                                            {{errorMessages.BRANCH_CODE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Bank" formControlName="bank" required readonly>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.bank.touched || (prJottingForm.controls.bank.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.bank.errors?.required">
+                                            {{errorMessages.BANK}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Branch" formControlName="branch" required>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.branch.touched || (prJottingForm.controls.branch.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.branch.errors?.required">
+                                            {{errorMessages.BRANCH}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Page No ." formControlName="pgNo" maxlength="5" required>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.pgNo.touched || (prJottingForm.controls.pgNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.pgNo.errors?.required">
+                                            {{errorMessages.PAGE_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head / STO" maxlength="10" formControlName="majorHead" numbersOnly>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.majorHead.touched || (prJottingForm.controls.majorHead.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.majorHead.errors?.required">
+                                            {{errorMessages.M_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Amount (Rs)" maxlength="16" numbersOnly formControlName="amount" required>
+                                    <div class="error-wrapper" *ngIf="prJottingForm.controls.amount.touched || (prJottingForm.controls.amount.errors && isSubmitted)">
+                                        <mat-error *ngIf="prJottingForm.controls.amount.errors?.required">
+                                            {{errorMessages.AMOUNT}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="TC" numbersOnly formControlName="tc">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="No. of Documents" numbersOnly formControlName="documents">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- Common Action Button Starts -->
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Save">
+                  save
+                </i>
+                Save
+              </button>
+
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+
+                            <button type="button" [routerLink]="'../payment-receipt-jotting-list'" mat-raised-button color="warn">
+                <i class="material-icons" aria-hidden="true" title="Listing">
+                  list
+                </i>
+                Listing
+              </button>
+                            <button type="button" mat-raised-button class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="close">
+                  close
+                </i>
+                Close
+              </button>
+                        </div>
+                        <!-- Common Action Button Ends-->
+                    </form>
+                </div>
+            </div>
+            <!-- Payment / Receipt jotting ends -->
+        </div>
+    </div>
+</div>

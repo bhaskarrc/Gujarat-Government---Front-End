@@ -1,0 +1,947 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Tiku Pay Details</div>
+            <div class="font-heading">
+                <strong>Reference No:</strong> 19-20/PVU/TKP/001</div>
+            <div class="font-heading">
+                <strong>Reference Date:</strong> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs>
+                <mat-tab label="Pay Fixation Event">
+                    <form [formGroup]="tikuPayForm" (ngSubmit)="saveEstimate(tikuPayForm.value)">
+                        <div class="box box-primary">
+                            <div class="box-header">Tiku Pay Details</div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="payCommission" placeholder="Pay Commission" (selectionChange)="promotionChange()" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="payCommissionCtrl" [placeholderLabel]="'Find payCommission...'" [noEntriesFoundLabel]="'no matching payCommission found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let payCommission of payCommission_list | filterSelectInput: payCommissionCtrl.value" [value]="payCommission.value">
+                                                    {{payCommission.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.payCommission.touched && tikuPayForm.controls.payCommission.errors">
+                                                <mat-error *ngIf="tikuPayForm.controls.payCommission.errors.required">
+                                                    {{errorMessage.PAY_COMMISSION}}</mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput type="text" placeholder="Office Name" value="Office 1" formControlName="officeName" required readonly>
+                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.officeName.touched && tikuPayForm.controls.officeName.errors">
+                                                <mat-error *ngIf="tikuPayForm.controls.officeName.errors.required">
+                                                    {{errorMessage.OFFICE_NAME}}</mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput type="text" placeholder="Event Order Number" formControlName="eventOrderNumber" required>
+                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.eventOrderNumber.touched && tikuPayForm.controls.eventOrderNumber.errors">
+                                                <mat-error *ngIf="tikuPayForm.controls.eventOrderNumber.errors.required">
+                                                    {{errorMessage.EVENT_ORDER_NUMBER}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="eventOrderDate" placeholder="Event Order Date" formControlName="eventOrderDate" required>
+                                            <mat-datepicker-toggle matSuffix [for]="eventOrderDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #eventOrderDate></mat-datepicker>
+                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.eventOrderDate.touched && tikuPayForm.controls.eventOrderDate.errors">
+                                                <mat-error *ngIf="tikuPayForm.controls.eventOrderDate.errors.required">
+                                                    {{errorMessage.EVENT_ORDER_DATE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="eventEffectiveDate" placeholder="Event Effective Date" formControlName="eventEffectiveDate" required>
+                                            <mat-datepicker-toggle matSuffix [for]="eventEffectiveDate"></mat-datepicker-toggle>
+                                            <mat-datepicker #eventEffectiveDate></mat-datepicker>
+                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.eventEffectiveDate.touched && tikuPayForm.controls.eventEffectiveDate.errors">
+                                                <mat-error *ngIf="tikuPayForm.controls.eventEffectiveDate.errors.required">
+                                                    {{errorMessage.EVENT_EFFECTIVE_DATE}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-action-button">
+                                    <button type="add" mat-raised-button color="primary" (click)="add()">
+                                        <i class="material-icons" aria-hidden="true" title="Add Employee">add_circle_outline</i>Add Employee
+                                    </button>
+                                </div>
+                                <div class="accordionSection">
+                                    <div class="box-header">Employee Details</div>
+                                    <mat-accordion class="colapsedata" *ngFor="let container of containers">
+                                        <mat-expansion-panel [expanded]="true" class="nopadding">
+                                            <mat-expansion-panel-header (click)="emplyeeeDataList()">
+                                                <div *ngIf="emplyeeeDataListShow" class="hideData">
+                                                    <span>Employee Id</span>
+                                                    <span>Employee Name</span>
+                                                    <span>Employee Type</span>
+                                                    <span>Designation</span>
+                                                    <span>Employee Type</span>
+                                                    <span>Employee Pay Type</span>
+                                                </div>
+                                                <i class="material-icons plus delete" aria-hidden="true" title="delete forever" (click)="deleteRow(i)" (click)="$event.stopPropagation()">delete_forever</i>
+                                            </mat-expansion-panel-header>
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <mat-form-field class="full-width">
+                                                            <mat-select formControlName="type" placeholder="Type" #samePayLevel required>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search [formControl]="typeCtrl" [placeholderLabel]="'Find Type ...'" [noEntriesFoundLabel]="'no matching Type found'">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option *ngFor="let type of type_list | filterSelectInput: typeCtrl.value" [value]="type.value">
+                                                                    {{type.viewValue}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.type.touched && tikuPayForm.controls.type.errors">
+                                                                <mat-error *ngIf="tikuPayForm.controls.type.errors.required">
+                                                                    {{errorMessage.OPTION_TYPE}}</mat-error>
+                                                            </div>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-3" *ngIf="samePayLevel.value == 2">
+                                                        <mat-form-field class="full-width">
+                                                            <mat-select formControlName="tikuPayType" placeholder="Tiku Pay Type" (selectionChange)="tikuPayTypeChanges($event)" required>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search [formControl]="tikuPayTypeCtrl" [placeholderLabel]="'Find tikuPayType ...'" [noEntriesFoundLabel]="'no matching Type found'">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option *ngFor="let tikuPayType of tikuPayType_list | filterSelectInput: tikuPayTypeCtrl.value" [value]="tikuPayType.value">
+                                                                    {{tikuPayType.viewValue}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.tikuPayType.touched && tikuPayForm.controls.tikuPayType.errors">
+                                                                <mat-error *ngIf="tikuPayForm.controls.tikuPayType.errors.required">
+                                                                    {{errorMessage.TIKU_PAY_TYPE}}</mat-error>
+                                                            </div>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <mat-form-field class="full-width">
+                                                            <input matInput type="text" placeholder="Employee Number" value="" formControlName="employeeNumber" required>
+                                                            <mat-icon matSuffix (click)="openDialogEmployeeNumber()">search
+                                                            </mat-icon>
+                                                            <div class="error-wrapper" *ngIf="tikuPayForm.controls.employeeNumber.touched && tikuPayForm.controls.employeeNumber.errors">
+                                                                <mat-error *ngIf="tikuPayForm.controls.employeeNumber.errors.required">
+                                                                    {{errorMessage.EMP_NO}}</mat-error>
+                                                            </div>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="box box-primary">
+                                                    <div class="box-header">Current Details</div>
+                                                    <div class="box-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Employee Name" readonly formControlName="employeeName">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Class" readonly formControlName="employeeClass">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Designation" readonly formControlName="employeeDesignation">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSeventhPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Pay Level" readonly formControlName="employeePayLevel">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSeventhPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Cell Id" readonly formControlName="employeeCellId">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Pay Band" readonly formControlName="employeePayBand">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Pay Band Value" readonly formControlName="employeePayBandValueCurrent">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Grade Pay" readonly formControlName="employeeGradePay">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <!-- <div class="col-sm-3" *ngIf="showFifthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Grade" readonly formControlName="gradeCurrent">
+                                                                </mat-form-field>
+                                                            </div> -->
+                                                            <div class="col-sm-3" *ngIf="showFifthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Scale" readonly formControlName="scaleCurrent">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Basic Pay" readonly formControlName="employeeBasicPayCurrent">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Date of Joining" readonly formControlName="employeeDoj">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Date of Retirement" readonly formControlName="dateOfRetirement">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Office Name" readonly formControlName="employeeOfficeName">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Date of Next Increment" readonly formControlName="dateOfNextIncrementCurrent">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="tikuPay1">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Tiku Pay 1 Effective Date" readonly formControlName="tikuPayEffectiveDate1">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="tikuPay2">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Tiku Pay 2 Effective Date" readonly formControlName="tikuPayEffectiveDate2">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-12">
+                                                                <div class="box box-primary search-grid">
+                                                                    <div class="box-header">CCC/CCC+ Exam Detail</div>
+                                                                    <div class="box-body">
+                                                                        <table mat-table #table [dataSource]="cccexamtable" aria-describedby="examdetails" class="responsive-table">
+                                                                            <ng-container matColumnDef="examName">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Exam Name
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="examNameCcc">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="examBody">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Exam Body
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="examBodyCcc">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="dateOfPassing">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Date of Passing
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="dateOfPassingCcc">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+
+                                                                            <ng-container matColumnDef="status">
+                                                                                <th mat-header-cell *matHeaderCellDef class="gray-color" scope="row">Status</th>
+                                                                                <td mat-cell *matCellDef="let element" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentStatus">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <tr mat-header-row *matHeaderRowDef="displayedColumns">
+                                                                            </tr>
+                                                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;">
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12">
+                                                                <div class="box box-primary search-grid">
+                                                                    <div class="box-header">Departmental Exam Detail
+                                                                    </div>
+                                                                    <div class="box-body">
+                                                                        <table mat-table #table [dataSource]="dataSourceDept" aria-describedby="depatexamdetails" class="responsive-table">
+                                                                            <ng-container matColumnDef="examName">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Exam Name
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentExamName">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="examBody">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Exam Body
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentExamBody">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="dateOfPassing">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Date of Passing
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentDateOfPassing">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+
+                                                                            <ng-container matColumnDef="status">
+                                                                                <th mat-header-cell *matHeaderCellDef class="gray-color" scope="row">Status</th>
+                                                                                <td mat-cell *matCellDef="let element" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentStatus">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <tr mat-header-row *matHeaderRowDef="displayedDeptColumns">
+                                                                            </tr>
+                                                                            <tr mat-row *matRowDef="let row; columns: displayedDeptColumns;let i= index;">
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12">
+                                                                <div class="box box-primary search-grid">
+                                                                    <div class="box-header">Language Exam Detail</div>
+                                                                    <div class="box-body">
+                                                                        <table aria-describedby="languageexamdetails" mat-table #table [dataSource]="dataSourceLang" class="responsive-table">
+                                                                            <ng-container matColumnDef="langName">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Language Name
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="ExamLangName">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="examBody">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Exam Body
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="LanguageExamBody">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="dateOfPassing">
+                                                                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                                                                    Date of Passing
+                                                                                </th>
+                                                                                <td mat-cell *matCellDef="let element;let i= index;" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="LanguageDateOfPassing">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <ng-container matColumnDef="status">
+                                                                                <th mat-header-cell *matHeaderCellDef class="gray-color" scope="row">Status</th>
+                                                                                <td mat-cell *matCellDef="let element" class="">
+                                                                                    <mat-form-field class="full-width">
+                                                                                        <input matInput type="text" value="Auto Populated" readonly formControlName="departmentStatus">
+                                                                                    </mat-form-field>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                            <tr mat-header-row *matHeaderRowDef="displayedLangColumns">
+                                                                            </tr>
+                                                                            <tr mat-row *matRowDef="let row; columns: displayedLangColumns;let i= index;">
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="box box-primary">
+                                                    <div class="box-header">Post Event Details</div>
+                                                    <div class="box-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="adhoc" placeholder="Adhoc" #adhocValue required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="adhocCtrl" [placeholderLabel]="'Find adhoc...'" [noEntriesFoundLabel]="'no matching adhoc found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let adhoc of adhoc_list | filterSelectInput: adhocCtrl.value" [value]="adhoc.value">
+                                                                            {{adhoc.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.adhoc.touched && tikuPayForm.controls.adhoc.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.adhoc.errors.required">
+                                                                            {{errorMessage.ADHOC}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="adhocValue.value == 1">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="fromdateAdhoc" placeholder="From Date" formControlName="fromDate" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="fromdateAdhoc">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #fromdateAdhoc></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.fromDate.touched && tikuPayForm.controls.fromDate.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.fromDate.errors.required">
+                                                                            {{errorMessage.FROM_DATE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="adhocValue.value == 1">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="todateAdhoc" formControlName="toDate" placeholder="To Date" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="todateAdhoc">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #todateAdhoc></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.toDate.touched && tikuPayForm.controls.toDate.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.toDate.errors.required">
+                                                                            {{errorMessage.TO_DATE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="adhocValue.value == 1">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="adhocContiniousServices" placeholder="Adhoc Services Regularised" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="adhocContiniousServicesCtrl" [placeholderLabel]="'Find Adhoc Services Regularised...'" [noEntriesFoundLabel]="'no matching Adhoc Services Regularised found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let adhocContiniousServices of adhocContiniousServices_list | filterSelectInput: adhocContiniousServicesCtrl.value" [value]="adhocContiniousServices.value">
+                                                                            {{adhocContiniousServices.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.adhocContiniousServices.touched && tikuPayForm.controls.adhocContiniousServices.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.adhocContiniousServices.errors.required">
+                                                                            {{errorMessage.ADHOC_CONTINIOUS_SERVICES}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="gpscExamPassed" placeholder="GPSC Exam Passed" #gpscexampassed required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="gpscExamPassedCtrl" [placeholderLabel]="'Find gpscExamPassed...'" [noEntriesFoundLabel]="'no matching gpsc Exam Passed found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let gpscExamPassed of gpscExamPassed_list | filterSelectInput: gpscExamPassedCtrl.value" [value]="gpscExamPassed.value">
+                                                                            {{gpscExamPassed.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.gpscExamPassed.touched && tikuPayForm.controls.gpscExamPassed.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.gpscExamPassed.errors.required">
+                                                                            {{errorMessage.GPSC_EXAM_PASSED}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="gpscexampassed.value == 1">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="gpscExamPassedDate" formControlName="gpscExamPassedDate" placeholder="GPSC Exam Passed Date" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="gpscExamPassedDate">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #gpscExamPassedDate></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.gpscExamPassedDate.touched && tikuPayForm.controls.gpscExamPassedDate.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.gpscExamPassedDate.errors.required">
+                                                                            {{errorMessage.GPSC_EXAM_PASSED_DATE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="dojRegularService" formControlName="dojRegularService" placeholder="Date of Joining in Regular Service" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="dojRegularService">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #dojRegularService></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.dojRegularService.touched && tikuPayForm.controls.dojRegularService.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.dojRegularService.errors.required">
+                                                                            {{errorMessage.DATE_OF_JOINING}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Class" value="" readonly formControlName="employeeClass">
+                                                                </mat-form-field>
+                                                                <!-- <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="class" placeholder="Class" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="classCtrl" [placeholderLabel]="'Find class...'" [noEntriesFoundLabel]="'no matching class found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let class of class_list | filterSelectInput: classCtrl.value" [value]="class.value">
+                                                                            {{class.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.class.touched && tikuPayForm.controls.class.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.class.errors.required">
+                                                                            {{errorMessage.CLASS}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field> -->
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Designation" value="" readonly formControlName="employeeDesignation">
+                                                                </mat-form-field>
+                                                                <!-- <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="designation" placeholder="Designation" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="designationCtrl" [placeholderLabel]="'Find designation...'" [noEntriesFoundLabel]="'no matching designation found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let designation of designation_list | filterSelectInput: designationCtrl.value" [value]="designation.value">
+                                                                            {{designation.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.designation.touched && tikuPayForm.controls.designation.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.designation.errors.required">
+                                                                            {{errorMessage.DESIGNATION}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field> -->
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="optionAvailed" placeholder="Option Availed" #optionAvailed required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="optionAvailedCtrl" [placeholderLabel]="'Find option Opted...'" [noEntriesFoundLabel]="'no matching option Opted found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let optionAvailed of optionAvailed_list | filterSelectInput: optionAvailedCtrl.value" [value]="optionAvailed.value">
+                                                                            {{optionAvailed.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.optionAvailed.touched && tikuPayForm.controls.optionAvailed.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.optionAvailed.errors.required">
+                                                                            {{errorMessage.OPTION_AVAILED}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="samePayLevel.value == 3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Option Availed" value="No" formControlName="optionAvailed" readonly required>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="optionAvailed.value == 1">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="optionDate" formControlName="optionDate" placeholder="Option Date" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="optionDate">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #optionDate></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.optionDate.touched && tikuPayForm.controls.optionDate.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.optionDate.errors.required">
+                                                                            {{errorMessage.OPTION_DATE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="payBand" placeholder="Pay Band" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="payBandCtrl" [placeholderLabel]="'Find Pay Band...'" [noEntriesFoundLabel]="'no matching Pay Band found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let payBand of payBand_list | filterSelectInput:payBandCtrl.value" [value]="payBand.value">
+                                                                            {{payBand.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.payBand.touched && tikuPayForm.controls.payBand.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.payBand.errors.required">
+                                                                            {{errorMessage.PAY_BAND}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Pay Band Value" value="" (change)="basicPay()" readonly formControlName="employeePayBandValue" required>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.employeePayBandValue.touched && tikuPayForm.controls.employeePayBandValue.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.employeePayBandValue.errors.required">
+                                                                            {{errorMessage.PAY_BAND_VALUE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSixthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="gradePay" (selectionChange)="basicPay()" placeholder="Grade Pay" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="gradePayCtrl" [placeholderLabel]="'Find Grade Pay...'" [noEntriesFoundLabel]="'no matching Grade Pay found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let gradePay of gradePay_list | filterSelectInput:gradePayCtrl.value" [value]="gradePay.value">
+                                                                            {{gradePay.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.gradePay.touched && tikuPayForm.controls.gradePay.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.gradePay.errors.required">
+                                                                            {{errorMessage.GRADE_PAY}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" *ngIf="showSeventhPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="payLevel" placeholder="Pay Level" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="payLevelCtrl" [placeholderLabel]="'Find Pay Level...'" [noEntriesFoundLabel]="'no matching Pay Level found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let payLevel of payLevel_list | filterSelectInput:payLevelCtrl.value" [value]="payLevel.value">
+                                                                            {{payLevel.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.payLevel.touched && tikuPayForm.controls.payLevel.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.payLevel.errors.required">
+                                                                            {{errorMessage.PAY_LEVEL}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+
+                                                            <div class="col-sm-3" *ngIf="showSeventhPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="cellId" placeholder="Cell Id" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="cellIdCtrl" [placeholderLabel]="'Find Cell Id ...'" [noEntriesFoundLabel]="'no matching Cell Id found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let cellId of cellId_list | filterSelectInput:cellIdCtrl.value" [value]="cellId.value">
+                                                                            {{cellId.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.cellId.touched && tikuPayForm.controls.cellId.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.cellId.errors.required">
+                                                                            {{errorMessage.CELL_ID}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <!-- <div class="col-sm-3" *ngIf="showFifthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="grade" placeholder="Grade" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="gradeCtrl" [placeholderLabel]="'Find Grade ...'" [noEntriesFoundLabel]="'no matching Grade found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let grade of grade_list | filterSelectInput:gradeCtrl.value" [value]="grade.value">
+                                                                            {{grade.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.grade.touched && tikuPayForm.controls.grade.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.grade.errors.required">
+                                                                            {{errorMessage.GRADE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div> -->
+                                                            <div class="col-sm-3" *ngIf="showFifthPayCommField">
+                                                                <mat-form-field class="full-width">
+                                                                    <mat-select formControlName="scale" placeholder="Scale" required>
+                                                                        <mat-option>
+                                                                            <ngx-mat-select-search [formControl]="scaleCtrl" [placeholderLabel]="'Find Scale ...'" [noEntriesFoundLabel]="'no matching Scale found'">
+                                                                            </ngx-mat-select-search>
+                                                                        </mat-option>
+                                                                        <mat-option *ngFor="let scale of scale_list | filterSelectInput:scaleCtrl.value" [value]="scale.value">
+                                                                            {{scale.viewValue}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.scale.touched && tikuPayForm.controls.scale.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.scale.errors.required">
+                                                                            {{errorMessage.SCALE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field class="full-width">
+                                                                    <input matInput type="text" placeholder="Basic Pay" value="Auto Calculated" formControlName="employeeBasicPay" required readonly>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.employeeBasicPay.touched && tikuPayForm.controls.employeeBasicPay.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.employeeBasicPay.errors.required">
+                                                                            {{errorMessage.BASIC_PAY}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="benifitEffectiveDate" formControlName="benifitEffectiveDate" placeholder="Benifit Effective Date" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="benifitEffectiveDate">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #benifitEffectiveDate></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.benifitEffectiveDate.touched && tikuPayForm.controls.benifitEffectiveDate.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.benifitEffectiveDate.errors.required">
+                                                                            {{errorMessage.BENEFIT_EFFECTIVE_DATE}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <mat-form-field>
+                                                                    <input matInput [matDatepicker]="dateOfNextIncrement" formControlName="dateOfNextIncrement" placeholder="Date of Next Increment" required>
+                                                                    <mat-datepicker-toggle matSuffix [for]="dateOfNextIncrement">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #dateOfNextIncrement></mat-datepicker>
+                                                                    <div class="error-wrapper" *ngIf="tikuPayForm.controls.dateOfNextIncrement.touched && tikuPayForm.controls.dateOfNextIncrement.errors">
+                                                                        <mat-error *ngIf="tikuPayForm.controls.dateOfNextIncrement.errors.required">
+                                                                            {{errorMessage.DATE_OF_NEXT_INCREMENT}}</mat-error>
+                                                                    </div>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="box box-primary">
+                                                    <div class="box-header">Remarks</div>
+                                                    <div class="box-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <textarea matInput placeholder="Remarks"></textarea>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-action-button">
+                                                <button type="submit" mat-raised-button color="primary" (click)="submitDetails()">
+                                                    <i class="material-icons" title="Save" aria-hidden="true" >
+                                                        save
+                                                    </i>
+                                                    Save as Draft
+                                                </button>
+                                                <button type="reset" mat-raised-button color="accent" (click)="resetForm()">
+                                                    <i class="material-icons"  aria-hidden="true"  title="restore">
+                                                        restore
+                                                    </i>
+                                                    Reset
+                                                </button>
+                                            </div>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+                                </div>
+                                <div class="form-action-button">
+                                    <button mat-raised-button type="submit" class="green" (click)="submitDetails()">
+                                        <i class="material-icons" aria-hidden="true" title="done"> done</i> Submit</button>
+                                    <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                        <i class="material-icons" aria-hidden="true" title="Close">
+                                            close
+                                        </i>
+                                        Close
+                                    </button>
+                                    <button type="button" mat-raised-button (click)="goToDashboard()" class="print-btn">
+                                        <i class="material-icons" aria-hidden="true" title="close">
+                                            print
+                                        </i>
+                                        Print
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </mat-tab>
+
+                <mat-tab label="Attachments">
+                    <table mat-table [dataSource]="dataSourceBrowse" aria-describedby="attchment" width="100%" id="browseTable" *ngIf="DDO">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                Sr. No.
+                            </th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Attachment Type</th>
+                            <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                                {{item.attachment}}
+                                <span *ngIf="i < 6" class="starSign">*</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                                    Browse Files
+                                </button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall" aria-hidden="true" title="close">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable" aria-describedby="action">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" aria-hidden="true" title="Add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete" aria-hidden="true" title="delete"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6"
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+
+                    <table mat-table [dataSource]="nonDdoDataSourceBrowse" width="100%" id="browseTable" *ngIf="isNonDDO" aria-describedby="browse">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                Sr. No.
+                            </th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Attachment Type</th>
+                            <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                                {{item.attachment}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                                    Browse Files
+                                </button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable" aria-describedby="icon">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" title="Add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6"
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+
+                    <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+
+                    <div class="legend">
+                        1. Max size of atatchment is 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                    </div>
+                    <div class="form-action-button">
+                        <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                                done
+                            </i> Submit</button>
+                        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                            <i class="material-icons" title="EDP dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

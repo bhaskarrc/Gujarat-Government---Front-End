@@ -1,0 +1,151 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Outcome Achivement List</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Budget</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Outcome Achivement List</li>
+            </ol>
+        </nav>
+
+        <!-- Search Section Starts-->
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search
+                    </div>
+                </mat-expansion-panel-header>
+                <form class="col-sm-12" [formGroup]="createOutcomeForm">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="departCtrl" placeholder="Department">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="departCtrlCtrl" [placeholderLabel]="'Find Department...'" [noEntriesFoundLabel]="'no matching Department found'">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let FY of department_list | filterSelectInput : departCtrlCtrl.value : 'viewValue'" 
+                                    matTooltip="{{FY.viewValue}}" [value]="FY.value">
+                                        {{FY.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <input matInput type="text" placeholder="Financial Year" formControlName="fyctrl">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="quaterType" placeholder="Quater">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="quaterCtrl" [placeholderLabel]="'Find Scheme Type...'" [noEntriesFoundLabel]="'no matching Scheme Type found'">
+                                        </ngx-mat-select-search>
+
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let quater of quater_lists | filterSelectInput : quaterCtrl.value : 'viewValue'" 
+                                    matTooltip="{{quater.viewValue}}" [value]="quater.value">
+                                        {{quater.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <mat-form-field class="full-width">
+                                <mat-select formControlName="schemeType" (selectionChange)="schemtype()" placeholder="Scheme Type">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="schemeTypeCtrl" [placeholderLabel]="'Find Scheme Type...'" [noEntriesFoundLabel]="'no matching Scheme Type found'">
+                                        </ngx-mat-select-search>
+
+                                    </mat-option>
+                                    <mat-option>-- None --</mat-option>
+                                    <mat-option *ngFor="let scheme of schemeType_list | filterSelectInput : schemeTypeCtrl.value : 'viewValue'" 
+                                    matTooltip="{{scheme.viewValue}}" [value]="scheme.value">
+                                        {{scheme.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Action Buttons -->
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true" title="search">search</i>
+                    Search
+                  </button>
+    
+                  <button type="reset" mat-raised-button color="accent" (click)="clearForm()"><i class="material-icons"
+                      aria-hidden="true" title="reset">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <!-- Search Section Ends-->
+
+        <div class="mat-elevation-z8 mt-2">
+            <!-- Table Section Starts -->
+            <table mat-table [dataSource]="dataSourceoutcomeachive" width="100%">
+
+                <!-- Sr. No. -->
+                <ng-container matColumnDef="srno">
+                    <th mat-header-cell *matHeaderCellDef class="srnowidth" scope="row">Sr. No.</th>
+                    <td mat-cell *matCellDef="let item; let i = index" class="centerAlign"> {{ i + 1 }} </td>
+                </ng-container>
+
+                <!-- Department -->
+                <ng-container matColumnDef="depart">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Department</th>
+                    <td mat-cell *matCellDef="let element"> {{element.depart}} </td>
+                </ng-container>
+
+
+                <!-- Financial Year -->
+                <ng-container matColumnDef="finYr">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Financial Year</th>
+                    <td mat-cell *matCellDef="let element"> {{element.finYr}} </td>
+                </ng-container>
+
+                <!-- Quater -->
+                <ng-container matColumnDef="quter">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Quater</th>
+                    <td mat-cell *matCellDef="let element"> {{element.quter}} </td>
+                </ng-container>
+
+                <!-- Scheme Type -->
+                <ng-container matColumnDef="schenType">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Scheme Type</th>
+                    <td mat-cell *matCellDef="let element"> {{element.schenType}} </td>
+                </ng-container>
+
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedoutcomeachive"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: displayedoutcomeachive;"></tr>
+            </table>
+            <!-- Table Section Ends -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+
+
+
+    </div>
+
+</div>

@@ -1,0 +1,404 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- expenditure details -->
+    <div class="heading-section ng-star-inserted">
+      <div>Expenditure Statement</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/GI/PLMIST/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">Group Insurance</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Expenditure Statement </li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- form -->
+      <form [formGroup]="expenditureStatementForm" (ngSubmit)="expenditureStatementFormData()">
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="false" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">Search</div>
+            </mat-expansion-panel-header>
+
+            <div class="box-body">
+              <div class="row">
+                <!-- district -->
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="district" placeholder="District" (selectionChange)="updateOffice()">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find Distritct...'"
+                          [noEntriesFoundLabel]="'No matching Distritct found'" alphabetsSpaceOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let item of districtList | filterSelectInput:districtCtrl.value"
+                        [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- if district is ahmedabad -->
+                <div class="col-sm-3" *ngIf="expenditureStatementForm.controls.district.value === '1'">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="treasuryOfficeAhmedabad" placeholder='Treasury Office Name'>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="treasuryOfficeAhmedabadCtrl"
+                          [placeholderLabel]="'Find Treasury Office Name...'"
+                          [noEntriesFoundLabel]="'No matching Treasury Office Name found'" alphabetSpaceCommaOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let item of treasuryOfficeAhmedabadList | filterSelectInput:treasuryOfficeAhmedabadCtrl.value"
+                        [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- if district is gandhinagar -->
+                <div class="col-sm-3" *ngIf="expenditureStatementForm.controls.district.value === '2'">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="treasuryOfficeGandhinagar" placeholder='Treasury Office Name'>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="treasuryOfficeGandhinagarCtrl"
+                          [placeholderLabel]="'Find Treasury Office Name...'"
+                          [noEntriesFoundLabel]="'No matching Treasury Office Name found'" alphabetSpaceCommaOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let item of treasuryOfficeGandhinagarList | filterSelectInput:treasuryOfficeGandhinagarCtrl.value"
+                        [value]="item.value" matTooltip="{{item.viewValue}}">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- if user select any other district -->
+                <div class="col-md-3"
+                  *ngIf="expenditureStatementForm.controls.district.value !== '1' && expenditureStatementForm.controls.district.value !== '2' ">
+                  <mat-form-field>
+                    <input matInput placeholder="Treasury Office Name" formControlName="treasuryOffice" readonly
+                      matTooltip="{{expenditureStatementForm.controls.treasuryOffice.value}}">
+                  </mat-form-field>
+                </div>
+
+                <!-- month -->
+                <div class="col-md-3">
+                  <mat-form-field>
+                    <mat-select formControlName="month" placeholder="Month">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="monthCtrl" [placeholderLabel]="'Find Month...'"
+                          [noEntriesFoundLabel]="'No matching Month found'" charactersOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>--None--</mat-option>
+                      <mat-option *ngFor="let item of monthList | filterSelectInput:monthCtrl.value"
+                        [value]="item.value">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- year -->
+                <div class="col-md-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="year" placeholder="Year">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="yearCtrl" [placeholderLabel]="'Find Year...'"
+                          [noEntriesFoundLabel]="'No matching Year found'" numbersOnly>
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>--None--</mat-option>
+                      <mat-option *ngFor="let item of yearList | filterSelectInput:yearCtrl.value" [value]="item.value">
+                        {{item.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- action  button -->
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Search" (click)="showResult($event)">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                    <button type="reset" mat-raised-button color="accent" title="Reset">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+
+      <div class="mat-elevation-z8 row" *ngIf="showTable">
+        <div class="col-sm-12">
+          <!-- table start -->
+          <table mat-table [dataSource]="expenditureStatementDataSource" aria-describedby="expenditureStatement"
+            class="mt-3">
+
+            <!-- expenditure Statement -->
+            <ng-container matColumnDef="parent1">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="18" scope="row"> Expenditure Statement </th>
+            </ng-container>
+
+            <!-- sr no  data-->
+            <ng-container matColumnDef="srno">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">
+                Serial No.
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index" class="centerAlign" style="width: 5%;">
+                {{ i + 1 }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Total</td>
+            </ng-container>
+
+            <!-- sr no header -->
+            <ng-container matColumnDef="No">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Serial No.</th>
+            </ng-container>
+
+            <!-- date -->
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">Date</th>
+              <td mat-cell *matCellDef="let element;let i=index">
+                {{element.date}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- date header -->
+            <ng-container matColumnDef="date2">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Date</th>
+            </ng-container>
+
+            <!-- employee no  -->
+            <ng-container matColumnDef="employeeNo">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">Employee No.</th>
+              <td mat-cell *matCellDef="let element;let i=index">
+                {{element.employeeNo}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- employee no header -->
+            <ng-container matColumnDef="employeeNo2">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Employee No.</th>
+            </ng-container>
+
+            <!-- employee name data -->
+            <ng-container matColumnDef="employeeName">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">Employee Name</th>
+              <td mat-cell *matCellDef="let element;let i=index">
+                {{element.employeeName}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- employee name data -->
+            <ng-container matColumnDef="employeeName2">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Employee Name</th>
+            </ng-container>
+
+            <!-- ddo name -->
+            <ng-container matColumnDef="ddoName">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">DDO Name</th>
+              <td mat-cell *matCellDef="let element;let i=index">
+                {{element.ddoName}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- ddo name header -->
+            <ng-container matColumnDef="ddoName2">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">DDO Name</th>
+            </ng-container>
+
+            <!-- expired insurance fund -->
+            <ng-container matColumnDef="header-row-second-group">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" scope="row"> Expired Insurance Fund </th>
+            </ng-container>
+
+            <!-- expired insurance fund A -->
+            <ng-container matColumnDef="expiredInsuranceA">
+              <th mat-header-cell *matHeaderCellDef scope="row">A</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredInsuranceA | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredInsuranceA() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- expired insurance fund B -->
+            <ng-container matColumnDef="expiredInsuranceB">
+              <th mat-header-cell *matHeaderCellDef scope="row">B</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredInsuranceB | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredInsuranceB() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- expired insurance fund C -->
+            <ng-container matColumnDef="expiredInsuranceC">
+              <th mat-header-cell *matHeaderCellDef scope="row">C</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredInsuranceC | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredInsuranceC() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- expired insurance fund D -->
+            <ng-container matColumnDef="expiredInsuranceD">
+              <th mat-header-cell *matHeaderCellDef scope="row">D</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredInsuranceD | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredInsuranceD() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- expired saving fund -->
+            <ng-container matColumnDef="header-row-third-group">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" scope="row"> Expired Saving Fund </th>
+            </ng-container>
+
+            <!-- expired saving fund A -->
+            <ng-container matColumnDef="expiredSavingA">
+              <th mat-header-cell *matHeaderCellDef scope="row">A</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredSavingA | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredSavingA() | number: '1.2-2'}}</td>
+            </ng-container>
+
+            <!-- expired saving fund B -->
+            <ng-container matColumnDef="expiredSavingB">
+              <th mat-header-cell *matHeaderCellDef scope="row">B</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredSavingB | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredSavingB() | number: '1.2-2'}}</td>
+            </ng-container>
+
+            <!-- expired saving fund C -->
+            <ng-container matColumnDef="expiredSavingC">
+              <th mat-header-cell *matHeaderCellDef scope="row">C</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredSavingC | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredSavingC() | number: '1.2-2'}}</td>
+            </ng-container>
+
+            <!-- expired saving fund D -->
+            <ng-container matColumnDef="expiredSavingD">
+              <th mat-header-cell *matHeaderCellDef scope="row">D</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.expiredSavingD | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalExpiredSavingD() | number: '1.2-2'}}</td>
+            </ng-container>
+
+            <!-- Retired fund -->
+            <ng-container matColumnDef="header-row-fourth-group">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" scope="row"> Retired Fund </th>
+            </ng-container>
+
+            <!-- Retired fund A  -->
+            <ng-container matColumnDef="retrivedSavingA">
+              <th mat-header-cell *matHeaderCellDef scope="row">A</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.retrivedSavingA | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalRetrivedSavingA() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- Retired fund B -->
+            <ng-container matColumnDef="retrivedSavingB">
+              <th mat-header-cell *matHeaderCellDef scope="row">B</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.retrivedSavingB | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalRetrivedSavingB() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- Retired fund C -->
+            <ng-container matColumnDef="retrivedSavingC">
+              <th mat-header-cell *matHeaderCellDef scope="row">C</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.retrivedSavingC | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalRetrivedSavingC() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- Retired fund D -->
+            <ng-container matColumnDef="retrivedSavingD">
+              <th mat-header-cell *matHeaderCellDef scope="row">D</th>
+              <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                {{element.retrivedSavingD | number: '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{ totalRetrivedSavingD() | number: '1.2-2'}}
+              </td>
+            </ng-container>
+
+            <!-- date data  -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}" scope="row">Date</th>
+              <td mat-cell *matCellDef="let element;let i=index">
+                {{element.total}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!--total header  -->
+            <ng-container matColumnDef="total2">
+              <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2" scope="row">Total</th>
+            </ng-container>
+
+            <!-- custom Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="['parent1']"></tr>
+
+            <!-- custom Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="['No', 'date2', 'employeeNo2', 'employeeName2', 'ddoName2',
+           'header-row-second-group', 'header-row-third-group', 'header-row-fourth-group', 'total2']"></tr>
+
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="expenditureStatementDataColumn"></tr>
+
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns:expenditureStatementDataColumn"></tr>
+
+            <!-- Footer Section Of table -->
+            <tr mat-footer-row *matFooterRowDef="expenditureStatementDataColumn"></tr>
+
+          </table>
+          <!-- table ends -->
+
+          <!-- paginator -->
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

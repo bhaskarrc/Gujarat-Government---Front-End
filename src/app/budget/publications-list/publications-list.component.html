@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="form-wrapper">
+      <div class="heading-section ng-star-inserted">
+          <div>Publications List</div>
+      </div>
+
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Budget</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Publications List</li>
+          </ol>
+      </nav>
+      <mat-accordion class="search-accordian">
+          <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                  <div class="heading-section">
+                      Search
+                  </div>
+              </mat-expansion-panel-header>
+              <div class=" form-datatable-list">
+                  <form class="col-sm-12" [formGroup]="publicationsListForm" (ngSubmit)="leaveSubmit()">
+                      <div class="row">
+                                     
+                          <!-- fin year -->
+                          <div class="col-sm-6 col-md-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="finYear" placeholder="Financial Year">
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="finYearCtrl"
+                                              [placeholderLabel]="'Financial Year...'"
+                                              [noEntriesFoundLabel]="'No matching Financial Year'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let finYearList of filteredfinYear | async "
+                                          [value]="finYearList.value">
+                                          {{finYearList.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </div>
+
+                            <!-- attatchment type -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="attatchmentType" placeholder="Attatchment Type">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="attatchmentTypeCtrl"
+                                                [placeholderLabel]="'Attatchment Type...'"
+                                                [noEntriesFoundLabel]="'No matching Attatchment Type Found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let attatchmentTypeList of filteredAttatchmentType | async "
+                                            [value]="attatchmentTypeList.value">
+                                            {{attatchmentTypeList.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                             <!--Status-->
+                             <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="statusType" placeholder="Status">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="statusTypeCtrl"
+                                                [placeholderLabel]="'Status...'"
+                                                [noEntriesFoundLabel]="'No matching Status Found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let statusList of filteredStatusType | async "
+                                            [value]="statusList.value">
+                                            {{statusList.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+
+                      </div>
+                  </form>
+              </div>
+              <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" (click)="search()">
+                      <i aria-hidden="true" class="material-icons">search</i> Search </button>
+
+                  <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                      <i aria-hidden="true" class="material-icons">restore</i>Reset</button>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+      <div class="mat-elevation-z8 mt-2" *ngIf="!isSearch">
+          <table mat-table #table [dataSource]="dataSource" aria-describedby="publicationsListTable" class="responsive-table">
+              <ng-container matColumnDef="srNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                  <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+                      {{i+1}}
+                  </td>
+              </ng-container>
+
+              <ng-container matColumnDef="financialYear">
+                <th mat-header-cell *matHeaderCellDef scope="row">Financial Year</th>
+                <td mat-cell *matCellDef="let element;let i= index;">
+                    {{element.financialYear}}
+                </td>
+            </ng-container>
+
+            <!-- attatchment type -->
+            <ng-container matColumnDef="atttType">
+                <th mat-header-cell *matHeaderCellDef scope="row">Attatchment Type</th>
+                <td mat-cell *matCellDef="let element;let i= index;">
+                    {{element.atttType}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="uploadDateTime">
+              <th mat-header-cell *matHeaderCellDef scope="row">Upload Date/Time</th>
+              <td mat-cell *matCellDef="let element;let i= index;">
+                  {{element.uploadDateTime}}
+              </td>
+          </ng-container>
+          <ng-container matColumnDef="uploadOfficeName">
+            <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By Office Name</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+                {{element.uploadOfficeName}}
+            </td>
+        </ng-container>
+
+              <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                  <td mat-cell *matCellDef="let element;let i= index;">
+                      {{element.status}}
+                  </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row">action</th>
+                  <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                      <a [routerLink]="'#'"><i aria-hidden="true" class="material-icons plus edit-icon"
+                              title="Edit"> edit </i></a>
+                      <a [routerLink]="'#'"><i aria-hidden="true" class="material-icons plus view-icon"
+                              title="View">remove_red_eye</i></a>
+                  </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+              </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+  </div>
+</div>

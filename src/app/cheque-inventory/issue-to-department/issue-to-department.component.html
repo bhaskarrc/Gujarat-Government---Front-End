@@ -1,0 +1,418 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Issue to Department</div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/CI/ITD/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Cheque Inventory</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Issue to Department</li>
+            </ol>
+        </nav>
+
+
+        <form [formGroup]="issueToDepartmentForm">
+            <!-- Cheque Book Issue Pannel -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Cheque Book Issue</div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="availableChequeBook" placeholder="Available Cheque Book stock" readonly value="40">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="minimumChequeBook" placeholder="Minimum Cheque Book stock" readonly value="15">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="balanceChequeBook" placeholder="Balance Cheque Book stock" readonly value="30">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Issue Date -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="issueDate" [matDatepicker]="issueDate" placeholder="Issue Date" required readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="issueDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #issueDate></mat-datepicker>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.issueDate.touched || (issueToDepartmentForm.controls.issueDate.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.issueDate.errors?.required">
+                                            {{errorMessages.DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Account No. -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="accountNumber" placeholder="Account No." numbersAlphabetsOnly required>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.accountNumber.touched || (issueToDepartmentForm.controls.accountNumber.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.accountNumber.errors?.required">
+                                            {{errorMessages.ACCOUNT_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Cheque Book Type -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='chequeType' placeholder='Cheque Book Type' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='chequeTypeCtrl' [placeholderLabel]="'Select Cheque Book Type ...'" [noEntriesFoundLabel]="'no matching Cheque Book Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of chequeType_list | filterSelectInput : chequeTypeCtrl.value : 'viewValue'" [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.chequeType.touched || (issueToDepartmentForm.controls.chequeType.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.chequeType.errors?.required">
+                                            {{errorMessages.CHEQUE_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Mode of Issue -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='modeOfIssue' placeholder='Mode of Issue' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='modeOfIssueCtrl' [placeholderLabel]="'Select Mode of Issue ...'" [noEntriesFoundLabel]="'no matching Mode of Issue found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of modeOfIssue_list | filterSelectInput : modeOfIssueCtrl.value : 'viewValue'" [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.modeOfIssue.touched || (issueToDepartmentForm.controls.modeOfIssue.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.modeOfIssue.errors?.required">
+                                            {{errorMessages.MODE_OF_ISSUE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Account Name/Description -->
+                            <div class="col-sm-3" *ngIf="issueToDepartmentForm.controls.modeOfIssue.value === '2'">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="accountName" placeholder="Account Name/Description" charactersOnly>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.accountName.touched || (issueToDepartmentForm.controls.accountName.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.accountName.errors?.required">
+                                            {{errorMessages.ACCOUNT_SHORT_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Messenger Name -->
+                            <div class="col-sm-3" *ngIf="issueToDepartmentForm.controls.modeOfIssue.value === '1'">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="messengerName" charactersOnly placeholder="Messenger Name">
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.messengerName.touched || (issueToDepartmentForm.controls.messengerName.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.messengerName.errors?.required">
+                                            {{errorMessages.MESSENGER_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Tracking number -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="trackingNumber" placeholder="Tracking Number" required>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.trackingNumber.touched || (issueToDepartmentForm.controls.trackingNumber.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.trackingNumber.errors?.required">
+                                            {{errorMessages.TRACKING_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Indent Number -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='indentNumber' placeholder='Indent Number' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='indentNumberCtrl' [placeholderLabel]="'Select Indent Number ...'" [noEntriesFoundLabel]="'no matching Indent Number found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of indentNumber_list | filterSelectInput : indentNumberCtrl.value : 'viewValue'" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.indentNumber.touched || (issueToDepartmentForm.controls.indentNumber.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.indentNumber.errors?.required">
+                                            {{errorMessages.INDENT_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Order No/ Description -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="orderNo" placeholder="Order No/ Description">
+                                    <div class="error-wrapper" *ngIf="issueToDepartmentForm.controls.orderNo.touched || (issueToDepartmentForm.controls.orderNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="issueToDepartmentForm.controls.orderNo.errors?.required">
+                                            {{errorMessages.ORDER_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Indent Requested Quantity -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="indentRequestedQuantity" placeholder="Indent Requested Quantity" disabled='true' value="10" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Issued Quantity -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="issuedQuantity" placeholder="Issued Quantity" value="10" disabled='true'>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Remaining Balance -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="remainingBalance" placeholder="Remaining Balance" value="30" disabled='true' readonly>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cheque Book Details Panel -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Cheque Book Details</div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+
+                            <!-- Available Series for CTS Cheque -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="availableSeriesForCTSCheque" placeholder="Available Series for CTS Cheque" numbersOnly disabled="true" value="000101-000200" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- CTS Account Number -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='ctsAccountNumber' placeholder='CTS Account Number'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='ctsAccountNumberCtrl' [placeholderLabel]="'Select CTS Account Number ...'" [noEntriesFoundLabel]="'no matching CTS Account Number found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of ctsAccountNumber_list | filterSelectInput : ctsAccountNumberCtrl.value : 'viewValue'" [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Start Series -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="startSeries" placeholder="Start Series" numbersOnly value="534000" maxlength="6">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- End Series -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="endSeries" placeholder="End Series" value="534010" numbersOnly maxlength="6">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Number of Cheque -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="numberOfCheque" value="10" numbersOnly placeholder="Number of Cheque" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Number of Cheque in Book -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="numberOfChequeInBook" numbersOnly value="10" placeholder="Number of Cheque in Book" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Number of cheque books -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="numberOfChequeBooks" numbersOnly placeholder="Number of cheque books" value="1" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="onAdd();">
+                <i class="material-icons" aria-hidden="true">add</i> Add</button>
+                            <button type="button" mat-raised-button color="accent" (click)="reset();">
+                <i class="material-icons" aria-hidden="true">restore</i>Reset
+              </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- issue to department table -->
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="issueToDepartment">
+
+                <!-- select -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox (change)="$event ? directiveObj.masterToggle(dataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(dataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(dataSource)"
+                            [aria-label]="directiveObj.checkboxLabel(dataSource)">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="centerAlign">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(dataSource,row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Sr. No. -->
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+                    <td mat-cell *matCellDef="let element; let i = index;" class="centerAlign">
+                        {{ i + 1 }} </td>
+                </ng-container>
+
+
+                <!-- Cheque Book Type -->
+                <ng-container matColumnDef="chequeBookType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque Book Type</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.chequeBookType}}
+                    </td>
+                </ng-container>
+
+                <!-- Revision/Account No -->
+                <ng-container matColumnDef="revision">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Revision/Account No</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.revision}}
+                    </td>
+                </ng-container>
+
+                <!-- Start Series -->
+                <ng-container matColumnDef="startSeries">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Start Series</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.startSeries}}
+                    </td>
+                </ng-container>
+
+                <!-- End Series -->
+                <ng-container matColumnDef="endSeries">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">End Series</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.endSeries}}
+                    </td>
+                </ng-container>
+
+                <!-- Number of Cheque -->
+                <ng-container matColumnDef="numberOfCheque">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Number of Cheque</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.numberOfCheque}}
+                    </td>
+                </ng-container>
+
+                <!-- Number of Cheque in Book -->
+                <ng-container matColumnDef="numberOfChequeInBook">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Number of Cheque in Book</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.numberOfChequeInBook}}
+                    </td>
+                </ng-container>
+
+                <!-- Number of cheque books -->
+                <ng-container matColumnDef="numberOfChequeBooks">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Number of cheque books</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.numberOfChequeBooks}}
+                    </td>
+                </ng-container>
+
+                <!-- Action -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef style="width: 10%;"> Action </th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                        <a class="delete-icon" (click)="delete(element)">
+                            <i class="material-icons plus delete" title="delete">delete_forever</i></a>
+                    </td>
+                </ng-container>
+
+                <!-- Header column of Table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                <!-- Data fetch from .TS File  -->
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;"></tr>
+            </table>
+            <!-- table ends -->
+        </form>
+
+        <!-- Action Buttons -->
+        <div class="form-action-button">
+            <button type="button" mat-raised-button color="primary">
+        <i class="material-icons" aria-hidden="true">
+          save as draft
+        </i>
+        Save
+      </button>
+            <button mat-raised-button type="submit" color="primary" (click)="issue()">
+          Issue</button>
+
+            <button type="submit" mat-raised-button color="primary"><i class="material-icons" title="save">save</i>
+        Print</button>
+
+            <button type="button" mat-raised-button color="warn" (click)="gotToListing()">
+        <i class="material-icons" aria-hidden="true" title="Listing"> list </i>
+        Listing
+      </button>
+
+            <button type="button" mat-raised-button color="accent" (click)="reset()">
+        <i class="material-icons" aria-hidden="true"> restore </i>
+        Reset </button>
+
+            <button type="button" mat-raised-button color="secoundry" class="btnClose">
+        <i class="material-icons" aria-hidden="true">close</i>Cancel</button>
+
+        </div>
+        <!-- Action Buttons ends-->
+
+    </div>
+</div>

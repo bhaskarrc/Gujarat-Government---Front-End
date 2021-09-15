@@ -1,0 +1,292 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      Pending Cases for Removal at HQ Register
+    </div>
+
+    <!-- navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Pending Cases for Removal at HQ Register</li>
+      </ol>
+    </nav>
+
+
+    <form [formGroup]="pendingCasesRemovalHQForm">
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Pending Cases for Removal at HQ Register Details</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <!-- id -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="id" placeholder="ID" maxlength="15" numbersAlphabetsOnly>
+                </mat-form-field>
+              </div>
+
+              <!-- institute type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteType" placeholder="Type of Institute" numbersAlphabetsOnly
+                    maxlength="100" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                        [placeholderLabel]="'Find Type of Institute...'"
+                        [noEntriesFoundLabel]="'No matching Type of Institute found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="pendingCasesRemovalHQForm.controls.instituteType.touched || (pendingCasesRemovalHQForm.controls.instituteType.errors && isSubmitted)">
+                    <mat-error *ngIf="pendingCasesRemovalHQForm.controls.instituteType.errors?.required">
+                      {{errorMessages.INSTITUTE_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- institute name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="instituteName" placeholder="Name of the Institute"
+                    numbersAlphabetsOnly maxlength="100" [disabled]="true">
+                </mat-form-field>
+              </div>
+
+              <!-- outward no -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="outwardNo" placeholder="Outward No" maxlength="20"
+                    numbersAlphabetsOnly required>
+                  <div class="error-wrapper"
+                    *ngIf="pendingCasesRemovalHQForm.controls.outwardNo.touched || (pendingCasesRemovalHQForm.controls.outwardNo.errors && isSubmitted)">
+                    <mat-error *ngIf="pendingCasesRemovalHQForm.controls.outwardNo.errors?.required">
+                      {{errorMessages.OUTWARD_NO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- outward date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="outwardDate" [matDatepicker]="outwardDate" placeholder="Outward Date"
+                    maxlength="20" required>
+                  <mat-datepicker-toggle matSuffix [for]="outwardDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #outwardDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="pendingCasesRemovalHQForm.controls.outwardDate.touched || (pendingCasesRemovalHQForm.controls.outwardDate.errors && isSubmitted)">
+                    <mat-error *ngIf="pendingCasesRemovalHQForm.controls.outwardDate.errors?.required">
+                      {{errorMessages.OUTWARD_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- subject -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="subject" placeholder="Subject" maxlength="100" numbersAlphabetsOnly
+                    required>
+                  <div class="error-wrapper"
+                    *ngIf="pendingCasesRemovalHQForm.controls.subject.touched || (pendingCasesRemovalHQForm.controls.subject.errors && isSubmitted)">
+                    <mat-error *ngIf="pendingCasesRemovalHQForm.controls.subject.errors?.required">
+                      {{errorMessages.SUBJECT}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <!-- reply from hq -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="replyFromHQ" placeholder="Reply from HQ" maxlength="100"
+                    numbersAlphabetsOnly>
+                </mat-form-field>
+              </div>
+
+              <!-- remark -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="remark" placeholder="Remark" maxlength="100" numbersAlphabetsOnly>
+                </mat-form-field>
+              </div>
+            </div>
+
+
+            <!-- action  button -->
+            <div class="form-action-button">
+
+              <button type="submit" mat-raised-button color="primary" title="Save" (click)="onSave();">
+                <i class="material-icons" aria-hidden="true">
+                  save
+                </i>
+                Save
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset();">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- table start -->
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" width="100%" matSort
+          aria-describedby="pendingCasesRemovalHQRegister">
+
+          <!-- serial no -->
+          <ng-container matColumnDef="serialNo">
+            <th mat-header-cell *matHeaderCellDef scope="row">Sr.No.</th>
+            <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">{{i+1}}</td>
+          </ng-container>
+
+          <!-- id -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef scope="row">ID</th>
+            <td mat-cell *matCellDef="let element;let i =index" class="centerAlign">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.id" [(ngModel)]="element.id" [ngModelOptions]="{standalone: true}"
+                  [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- institute type -->
+          <ng-container matColumnDef="instituteType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Type of Institute</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field>
+                <mat-select [(value)]="element.instituteType" name="instituteType" [disabled]='element.edit'>
+                  <mat-option *ngFor="let item of instituteTypeList" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- institute name -->
+          <ng-container matColumnDef="instituteName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Name of the Institute</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.instituteName" [(ngModel)]="element.instituteName"
+                  [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- outward no -->
+          <ng-container matColumnDef="outwardNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Outward No</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.outwardNo" [(ngModel)]="element.outwardNo"
+                  [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- outward date -->
+          <ng-container matColumnDef="outwardDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Forwarding Letter Date</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field>
+                <input matInput [(ngModel)]="element.outwardDate" [max]='maxDate' [disabled]='element.edit'
+                  [matDatepicker]="outwardDateT" [ngModelOptions]="{standalone: true}">
+                <mat-datepicker-toggle matSuffix [for]="outwardDateT">
+                </mat-datepicker-toggle>
+                <mat-datepicker #outwardDateT></mat-datepicker>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- subject -->
+          <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Subject</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.subject" [(ngModel)]="element.subject"
+                  [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- reply from hq -->
+          <ng-container matColumnDef="replyFromHQ">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Reply from HQ</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.replyFromHQ" [(ngModel)]="element.replyFromHQ"
+                  [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- remark -->
+          <ng-container matColumnDef="remark">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Remark</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+              <mat-form-field floatLabel="never">
+                <input matInput [value]="element.remark" [(ngModel)]="element.remark"
+                  [ngModelOptions]="{standalone: true}" [disabled]='element.edit'>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+              <i (click)="onEdit(element)" class="material-icons plus add" title="Edit" aria-hidden="true">
+                edit
+              </i>
+              <i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i>
+            </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+        </table>
+
+        <!-- paginator -->
+        <mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+      <!-- common action button -->
+      <div class="form-action-button">
+
+        <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+
+      </div>
+
+    </form>
+  </div>
+</div>

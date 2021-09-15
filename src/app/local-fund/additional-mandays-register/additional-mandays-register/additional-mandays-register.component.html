@@ -1,0 +1,535 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      Additional Man-days Register
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/AMR/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Additional Man-days Register</li>
+      </ol>
+    </nav>
+
+    <!--additional manDays register form  -->
+    <form [formGroup]="additionalManDaysRegisterForm" (ngSubmit)="additionalManDaysRegisterFormData()">
+
+      <!-- district level -->
+      <div class="box box-primary">
+        <div class="box-header">District Level</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- district -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="districtName" placeholder="District" readonly>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.instituteType.touched || (additionalManDaysRegisterForm.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteName" placeholder="Institute Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteNameCtrl"
+                      [placeholderLabel]="'Find Institute Name...'"
+                      [noEntriesFoundLabel]="'No matching Institute Name found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteNameList |
+                      filterSelectInput:instituteNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.instituteName.touched || (additionalManDaysRegisterForm.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.instituteName.errors?.required">
+                    {{errorMessages.INSTITUTE_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditType" placeholder="Audit Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditTypeCtrl" [placeholderLabel]="'Find Audit Type...'"
+                      [noEntriesFoundLabel]="'No matching Audit Type found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditTypeList |
+                      filterSelectInput:auditTypeCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.auditType.touched || (additionalManDaysRegisterForm.controls.auditType.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.auditType.errors?.required">
+                    {{errorMessages.AUDIT_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditYear" placeholder="Audit Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditYearCtrl" [placeholderLabel]="'Find Audit Year...'"
+                      [noEntriesFoundLabel]="'No matching Audit Year found'" numbersHyphenOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditYearList |
+                      filterSelectInput:auditYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.auditYear.touched || (additionalManDaysRegisterForm.controls.auditYear.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.auditYear.errors?.required">
+                    {{errorMessages.AUDIT_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- sanctioned mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="sanctionedMandays" placeholder="Sanctioned Mandays" required
+                  numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.sanctionedMandays.touched || (additionalManDaysRegisterForm.controls.sanctionedMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.sanctionedMandays.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- auditor name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditorName" placeholder="Auditor Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditorNameCtrl" [placeholderLabel]="'Find Auditor Name...'"
+                      [noEntriesFoundLabel]="'No matching Auditor Name found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditorNameList |
+                      filterSelectInput:auditorNameCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.auditorName.touched || (additionalManDaysRegisterForm.controls.auditorName.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.auditorName.errors?.required">
+                    {{errorMessages.AUDITOR_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit start date -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="auditStartDate" [matDatepicker]="auditStartDate"
+                  placeholder="Audit Start Date" required>
+                <mat-datepicker-toggle matSuffix [for]="auditStartDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #auditStartDate></mat-datepicker>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.auditStartDate.touched || (additionalManDaysRegisterForm.controls.auditStartDate.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.auditStartDate.errors?.required">
+                    {{errorMessages.DATE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- requested additionl mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="requestedAdditionalMandays" placeholder="Requested Additional Mandays"
+                  required numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.requestedAdditionalMandays.touched || (additionalManDaysRegisterForm.controls.requestedAdditionalMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.requestedAdditionalMandays.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- reason for additional mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="reasonForAdditionalMandays"
+                  placeholder="Reasons for Additional Man-days" required alphabetsSpaceOnly>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.reasonForAdditionalMandays.touched || (additionalManDaysRegisterForm.controls.reasonForAdditionalMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.reasonForAdditionalMandays.errors?.required">
+                    {{errorMessages.REASON}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- last 2 year income -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="lastTwoYearIncome" placeholder="Last 2 Year Income" required
+                  numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearIncome.touched || (additionalManDaysRegisterForm.controls.lastTwoYearIncome.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearIncome.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- last two year expenditure -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="lastTwoYearExpenditure" placeholder="Last 2 Year Expenditure" required
+                  numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearExpenditure.touched || (additionalManDaysRegisterForm.controls.lastTwoYearExpenditure.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearExpenditure.errors?.required">
+                    {{errorMessages.AMOUNT}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- last 2 year voucher -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="lastTwoYearVoucher" placeholder="No. of Last 2 Year voucher" required
+                  numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearVoucher.touched || (additionalManDaysRegisterForm.controls.lastTwoYearVoucher.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.lastTwoYearVoucher.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- select months -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="monthsFromAuditYear" placeholder="Select Months" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="monthsFromAuditYearCtrl"
+                      [placeholderLabel]="'Find Selected months from the Audit Year...'"
+                      [noEntriesFoundLabel]="'No matching Selected months from the Audit Year found'"
+                      alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of monthsFromAuditYearList |
+                      filterSelectInput:monthsFromAuditYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.monthsFromAuditYear.touched || (additionalManDaysRegisterForm.controls.monthsFromAuditYear.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.monthsFromAuditYear.errors?.required">
+                    {{errorMessages.YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- no of pf account -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="noOfPfaccount" placeholder="No. of P.F Account" required
+                  numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.noOfPfaccount.touched || (additionalManDaysRegisterForm.controls.noOfPfaccount.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.noOfPfaccount.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- no of legal voucher -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="noOfLegalVoucher"
+                  placeholder="No. of Legal Voucher Count From Selected Month" required numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.noOfLegalVoucher.touched || (additionalManDaysRegisterForm.controls.noOfLegalVoucher.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.noOfLegalVoucher.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- last year approved mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="lastYearApprovedMandays" placeholder="Last Year Approved Man-days"
+                  required numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="additionalManDaysRegisterForm.controls.lastYearApprovedMandays.touched || (additionalManDaysRegisterForm.controls.lastYearApprovedMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="additionalManDaysRegisterForm.controls.lastYearApprovedMandays.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- form action button -->
+          <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary" (click)="add();" title="Add">
+              <i class="material-icons" aria-hidden="true">add</i>
+              Add
+            </button>
+            <button type="reset" mat-raised-button color="accent" (click)="clearForm();" title="Reset">
+              <i class="material-icons" aria-hidden="true">
+                restore
+              </i>
+              Reset
+            </button>
+          </div>
+          <!-- form action button end -->
+
+        </div>
+      </div>
+      <!-- district level end -->
+
+    </form>
+    <!--additional manDays register form  end -->
+
+    <!-- listing -->
+    <div class="mat-elevation-z8 table-responsive mt-2">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="additionalMandaysRegister">
+
+        <!-- sr no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.district}}
+          </td>
+        </ng-container>
+
+        <!-- audit year -->
+        <ng-container matColumnDef="auditYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditYear}}
+          </td>
+        </ng-container>
+
+        <!-- month -->
+        <ng-container matColumnDef="month">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Month</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.month}}
+          </td>
+        </ng-container>
+
+        <!-- institute type -->
+        <ng-container matColumnDef="instituteType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Type</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteType}}
+          </td>
+        </ng-container>
+
+        <!-- institute name -->
+        <ng-container matColumnDef="instituteName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteName}}
+          </td>
+        </ng-container>
+
+        <!-- audit type -->
+        <ng-container matColumnDef="auditType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="gray-color" scope="row">Audit Type</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.auditType}}
+          </td>
+        </ng-container>
+
+        <!-- auditor name -->
+        <ng-container matColumnDef="auditorName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Auditor Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditorName}}
+          </td>
+        </ng-container>
+
+        <!-- audit start date -->
+        <ng-container matColumnDef="auditStartDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Audit Start Date</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.auditStartDate | date: 'dd-MMM-yyyy'}}
+          </td>
+        </ng-container>
+
+        <!-- sanstioned mandays -->
+        <ng-container matColumnDef="sanctionedMandays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sanctioned Man-days</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.sanctionedMandays}}
+          </td>
+        </ng-container>
+
+        <!-- requested additional mandays -->
+        <ng-container matColumnDef="requestedAdditionalMandays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Requested Additional Man-days</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.requestedAdditionalMandays}}
+          </td>
+        </ng-container>
+
+        <!-- reason -->
+        <ng-container matColumnDef="reason">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Reason</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.reason}}
+          </td>
+        </ng-container>
+
+        <!-- action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Action
+          </th>
+          <td mat-cell *matCellDef="let element;let i=index">
+            <table class="iconTable" aria-describedby="actionBtn">
+              <tbody>
+                <tr>
+                  <td>
+                    <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye</i>
+                  </td>
+                  <td width="30">
+                    <i class="material-icons plus add" aria-hidden="true" title="Edit">
+                      edit
+                    </i>
+                  </td>
+                  <td width="30">
+                    <i class="material-icons plus delete" aria-hidden="true" (click)="deleteRow(i)" title="Delete">
+                      delete
+                    </i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+    <!-- listing end -->
+
+    <!-- action button -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="reset()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../additional-mandays-register-listing']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" title="Print" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+
+    </div>
+    <!-- action button end -->
+
+  </div>
+</div>

@@ -1,0 +1,159 @@
+<div class="container common-workflow-section">
+    <div class="row">
+        <div class="heading-section ng-star-inserted">
+            <div>Receipt Estimate</div>
+            <div class="font-heading"><b>Reference No:</b>19-20/BUD/RE/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex"
+                > -->
+        <!-- <mat-tab> -->
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+            Comment
+        </ng-template>
+        <div class="row header-detail">
+            <div class="col-sm-4 colPadding" *ngFor="let item of headerJso">
+                <div class="labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+                <div class="paddingUnset">{{item.value}}</div>
+            </div>
+        </div>
+
+        <div class="forward-module-container">
+            <div class="forward-dialog-left">
+                <div class="col-sm-12">
+                    <div mat-dialog-actions>
+                        <button type="submit" mat-raised-button color="primary"><i
+                                class="material-icons" title="save">save</i> Print</button>
+                        <button type="button" mat-raised-button (click)="onNoClick()" class="btnClose"><i class="material-icons" aria-hidden="true"
+                                title="Budget dashboard">close</i>Close</button>
+                    </div>
+                    <div class="form-datatable-list history-common-section">
+                        <!-- <mat-checkbox (change)="selectAll" class="htry-hding-name">Comment History:</mat-checkbox> -->
+                        <!-- <mat-list-item> -->
+                        <mat-checkbox [(ngModel)]="master_checked" [(indeterminate)]="master_indeterminate" (change)="master_change()"><b>Comment History</b></mat-checkbox>
+                        <!-- </mat-list-item> -->
+                        <div class="category-deprt"><b>Education Department</b></div>
+                        <mat-list *ngFor="let comments of forwardDialog_history_list">
+                            <div class="cover-box">
+                                <mat-list-item>
+                                    <div class="check-box-list-btn">
+                                        <mat-checkbox [(ngModel)]="comments.checked" [disabled]="comments.disabled" [labelPosition]="comments.labelPosition" (change)="list_change()">
+                                        </mat-checkbox>
+                                    </div>
+                                </mat-list-item>
+                                <div class="check-box-contain-list">
+                                    <div class="histy-box">
+                                        <mat-list-item class="txt-heading">
+                                            {{comments.userName}},{{comments.designation}} ({{comments.role}})
+                                        </mat-list-item>
+                                        <mat-list-item class="txt-heading">
+                                            <!-- {{ dated | date: 'dd-MMM-yyyy HH:mm'}} -->{{comments.date}}
+                                        </mat-list-item>
+                                    </div>
+                                    <mat-list-item class="comment-text"> {{comments.comment}}</mat-list-item>
+                                    <mat-list-item>
+                                        <div class="box-opener">
+                                            <p class="flexicon">
+                                                <a *ngFor="let file of attachment" (click)="checkDisplayFile(file)" class="attachmentType" (click)="file_name = file.fileName;">{{file.fileName}}
+                                                    <!-- <button style="position: absolute; right: 0; padding-right: 10px;" (click)="checkDisplayImg(file)" type="attachment" mat-raised-button color="primary" cdkFocusInitial>
+                                                                            <i
+                                                                             class="material-icons" title="attachment">attachment</i> Attachment 1</button> -->
+                                                    <!-- <i class="material-icons" aria-hidden="true">
+                                                                                    attachment
+                                                                                    </i> -->
+                                                    <i class="material-icons iconset">
+                                                        save_alt
+                                                    </i>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </mat-list-item>
+                                </div>
+
+                            </div>
+
+                        </mat-list>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-datatable-list action-common-section">
+                <form class="col-sm-12" [formGroup]="actionForm" (ngSubmit)="forwardConsolidate()">
+                    <div *ngIf="show">
+                        <div *ngFor="let file of attachment">
+                            <div *ngIf="file_name === file.fileName">
+                                <img *ngIf="file.imgStatus && file.fileType == 'image'" src="{{file.filePath}}" alt="file.filePath">
+                                <span *ngIf="file.pdfStatus && file.fileType === 'pdf'">
+                                    <!-- <pdf-viewer [src]="file.filePath" [render-text]="true" [original-size]="false"
+                                        [fit-to-page]="true" [show-all]="true" [autoresize]="true"
+                                        (after-load-complete)="afterLoadComplete($event)" style="display: block;">
+                                    </pdf-viewer> -->
+
+                                    <!-- <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
+                                                  <button style="display: block;float: right;" (click)="nextPage()" [disabled]="page === totalPages">Next</button> -->
+                                </span>
+                                <!-- <p *ngIf="file.fileType == 'pdf'">{{ page }} / {{ totalPages }}</p> -->
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+            <!-- <form class="example-form">
+                                            <mat-form-field class="example-full-width">
+                                                <input type="text" placeholder="Forward To" aria-label="Number" matInput [formControl]="myControl"
+                                                    [matAutocomplete]="auto">
+                                                <mat-autocomplete #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                            <mat-form-field class="example-full-width">
+                                                <textarea matInput placeholder="Comment" [formControl]="additionalText"></textarea>
+                                            </mat-form-field>
+                                            <div mat-dialog-actions>
+                                                <button type="button" mat-raised-button (click)="onNoClick()"><i class="material-icons" aria-hidden="true"
+                                                        title="Budget dashboard">close</i>Cancel</button>
+                                                <button type="submit" mat-raised-button color="primary" [mat-dialog-close]="data.animal" cdkFocusInitial><i
+                                                        class="material-icons" title="save">save</i> Submit</button>
+                                            </div>
+                                        </form> -->
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+        <!-- </mat-tab> -->
+
+        <!-- <mat-tab>
+                        <ng-template mat-tab-label>
+                                <mat-icon class="example-tab-icon" *ngIf="doneHeader">check</mat-icon>
+                                PDF
+                            </ng-template>
+                            <div  id="block2" style="" *ngIf="show">
+                                    <div *ngFor="let file of attachment">
+                                      <div *ngIf="file_name === file.fileName">
+                                        <img *ngIf="file.imgStatus && file.fileType == 'image'" src="{{file.filePath}}" alt="file.filePath">
+                                        <span *ngIf="file.pdfStatus && file.fileType == 'pdf'">
+                                          <pdf-viewer [src]="file.filePath" [render-text]="true" 
+                                            [original-size]="false" [fit-to-page]="true" [show-all]="true" [autoresize]="true"
+                                            (after-load-complete)="afterLoadComplete($event)" style="display: block;">
+                                          </pdf-viewer>
+                                          <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
+                                          <button style="display: block;float: right;" (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+                                        </span>
+                                        <p *ngIf="file.fileType == 'pdf'">{{ page }} / {{ totalPages }}</p>
+                                      </div>
+                                    </div> 
+                                  </div>
+                                  <div class="box-opener" style="display: block; float: right;" >  
+                                    <mat-card *ngFor="let file of attachment" (click)="checkDisplayImg(file)" style="min-width: 170px !important;padding: 10px;margin: 0 5px 5px 5px;cursor: pointer;" (click)="file_name = file.fileName;">{{file.fileName}}           
+                                      <mat-icon *ngIf="file.fileType === 'image'">image</mat-icon>
+                                      <mat-icon *ngIf="file.fileType === 'pdf'">picture_as_pdf</mat-icon>
+                                    </mat-card>
+                                  </div>
+                </mat-tab>     -->
+        <!-- </mat-tab-group> -->
+    </div>

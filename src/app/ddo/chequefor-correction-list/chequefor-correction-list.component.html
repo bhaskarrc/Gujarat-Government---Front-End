@@ -1,0 +1,258 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>Cheque For Correction - List</div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/DDO/CFC/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- Navigations Starts -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">DDO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cheque For Correction - List</li>
+      </ol>
+    </nav>
+    <!-- Navigations Ends-->
+
+    <form [formGroup]="chequeCorrectionList">
+      <div class="panel-group">
+
+        <!-- Search Starts -->
+        <div class="box box-primary">
+
+          <!-- Search  -->
+          <div class="box-header">Search</div>
+          <div class="box-body">
+            <div class="row">
+
+              <!-- cheque no -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Cheque No" formControlName="chequeNo">
+                </mat-form-field>
+              </div>
+
+              <!-- cheque date -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="chequeDate" [matDatepicker]="chequeDate" placeholder="Cheque Date"
+                    readonly [max]="maxDate">
+                  <mat-datepicker-toggle matSuffix [for]="chequeDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #chequeDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- bill type -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='billType' formControlName='billType' placeholder='Bill Type'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='billTypeCtrl' [placeholderLabel]="'Select Bill Type ...'"
+                        [noEntriesFoundLabel]="'no matching Bill Type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of billTypeList | filterSelectInput : billTypeCtrl.value : 'viewValue'"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- action type -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='actionType' formControlName='actionType' placeholder='Type of Action'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='actTypeCtrl'
+                        [placeholderLabel]="'Select Type of Action ...'"
+                        [noEntriesFoundLabel]="'no matching Type of Action found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of actionList | filterSelectInput : actTypeCtrl.value : 'viewValue'"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- status -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='status' formControlName='status' placeholder='Cheque Status'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='statusCtrl' [placeholderLabel]="'Select Cheque Status ...'"
+                        [noEntriesFoundLabel]="'no matching Cheque Status found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of statusList | filterSelectInput : statusCtrl.value : 'viewValue'"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- lying with -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Lying with" formControlName="lyingWith">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- action button -->
+            <div class="form-action-button">
+
+              <button type="button" mat-raised-button color="primary" title="Search">
+                <i class="material-icons" aria-hidden="true">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm();" title="Reset">
+                <i class="material-icons" aria-hidden="true">
+                  restore
+                </i>
+                Reset
+              </button>
+
+            </div>
+            <!-- End action button -->
+
+          </div>
+        </div>
+        <!-- Search Ends -->
+
+        <!-- Table List Starts-->
+        <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="chequeCorrectionList">
+
+          <!-- position -->
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sr. No.</th>
+            <td mat-cell *matCellDef="let element; let i = index;" class="centerAlign">
+              {{ i + 1 }} </td>
+          </ng-container>
+
+          <!-- ref no -->
+          <ng-container matColumnDef="refNo">
+            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Ref No </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.refNo}}
+            </td>
+          </ng-container>
+
+          <!-- ref date -->
+          <ng-container matColumnDef="refDate">
+            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Ref Date </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.refDate}}
+            </td>
+          </ng-container>
+
+          <!-- cardex no -->
+          <ng-container matColumnDef="cardex">
+            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> Cardex No </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.cardex}}
+            </td>
+          </ng-container>
+
+          <!-- ddo no -->
+          <ng-container matColumnDef="ddo">
+            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> DDO No </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.ddo}}
+            </td>
+          </ng-container>
+
+          <!-- office name -->
+          <ng-container matColumnDef="office">
+            <th mat-header-cell mat-sort-header scope="row" *matHeaderCellDef> office Name </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.office}}
+            </td>
+          </ng-container>
+
+          <!-- cheque no -->
+          <ng-container matColumnDef="chequeNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque No </th>
+            <td mat-cell *matCellDef="let element"> {{element.chequeNo}} </td>
+          </ng-container>
+
+          <!-- cheque date -->
+          <ng-container matColumnDef="chequeDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque Date</th>
+            <td mat-cell *matCellDef="let element"> {{element.chequeDate}} </td>
+          </ng-container>
+
+          <!-- bill type -->
+          <ng-container matColumnDef="billType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Type </th>
+            <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+          </ng-container>
+
+          <!-- type of action -->
+          <ng-container matColumnDef="typeAction">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Type of Action</th>
+            <td mat-cell *matCellDef="let element"> {{element.typeAction}} </td>
+          </ng-container>
+
+          <!-- status -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Cheque Status</th>
+            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+          </ng-container>
+
+          <!-- lying with -->
+          <ng-container matColumnDef="lyingWith">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Lying with</th>
+            <td mat-cell *matCellDef="let element"> {{element.lyingWith}} </td>
+          </ng-container>
+
+          <!-- action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action </th>
+            <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+              <i class="material-icons plus edit-icon" title="Edit" aria-hidden="true"> edit </i>
+              <i class="material-icons plus delete-icon" title="Delete" aria-hidden="true"> delete </i>
+              <i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i>
+            </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+          </tr>
+        </table>
+        <!-- paginator -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        <!-- Table List Ends -->
+
+        <!-- Common Action Button Starts -->
+        <div class="form-action-button">
+
+          <button type="button" mat-raised-button class="btnClose" title="close">
+            <i class="material-icons" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+
+        </div>
+        <!-- Common Action Button Ends-->
+
+      </div>
+    </form>
+  </div>
+</div>

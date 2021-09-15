@@ -1,0 +1,220 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div class="col-md-4 col-sm-12 title">Physical Stock Verification - Treasury Office</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Physical Stock Verification - Treasury Office</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <!-- Search Section Starts-->
+      <mat-accordion class="search-accordian">
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <div class="heading-section">
+                    Search
+                </div>
+            </mat-expansion-panel-header>
+          <div #parentGrids>
+            <form class="col-sm-12" [formGroup]="physicalStockToListForm">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="finYear" placeholder="Financial Year">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                          [noEntriesFoundLabel]="'no matching Financial Year found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let FY of finYear_list | filterSelectInput:finYearCtrl.value"
+                        [value]="FY.value">
+                        {{FY.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="troffice" placeholder="Sub Treasury Office">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="trOfficeCtrl"
+                          [placeholderLabel]="'Find Sub Treasury Office...'"
+                          [noEntriesFoundLabel]="'no Sub Treasury Office found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let ch of treasury_List | filterSelectInput:trOfficeCtrl.value"
+                      matTooltip="{{ch.viewValue}}" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="visitFromDate" placeholder="Date Of Visit From"
+                      [matDatepicker]="picker">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="todate" placeholder="Date Of Visit To" [matDatepicker]="picker1">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="status" placeholder="Status">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Find Status...'"
+                          [noEntriesFoundLabel]="'no matching Status found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let stm of status_List | filterSelectInput:statusCtrl.value"
+                        [value]="stm.value">
+                        {{stm.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+
+
+
+
+              </div>
+            </form>
+
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="search">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm()"><i class="material-icons"
+                  aria-hidden="true" title="reset">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+
+          </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+    <!-- Search Section Ends-->
+
+          <div class="mat-elevation-z8 mt-2">
+
+            <!-- Table Section -->
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" aria-describedby="physicalStockTo">
+
+              <!-- Sr. No.  -->
+              <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+              </ng-container>
+
+              <!-- Financial Year -->
+              <ng-container matColumnDef="fYear">
+                <th mat-header-cell *matHeaderCellDef scope="row">Financial Year</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.fYear}} </td>
+              </ng-container>
+
+              <!-- Sub Treasury Office -->
+              <ng-container matColumnDef="toffice">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sub Treasury Office</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.toffice}} </td>
+              </ng-container>
+
+              <!-- Date Of Visit -->
+              <ng-container matColumnDef="closingDate">
+                <th mat-header-cell *matHeaderCellDef scope="row">Date Of Visit</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.closingDate}} </td>
+              </ng-container>
+
+              <!-- Name Of Verification Officer -->
+              <ng-container matColumnDef="vName">
+                <th mat-header-cell *matHeaderCellDef scope="row">Name Of Verification Officer</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.vName}} </td>
+              </ng-container>
+
+
+
+              <!-- Designation -->
+              <ng-container matColumnDef="desi">
+                <th mat-header-cell *matHeaderCellDef scope="row">Designation</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.desi}} </td>
+              </ng-container>
+
+              <!-- Status -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.status}} </td>
+              </ng-container>
+
+              <!-- Action -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let element;let i=index">
+                  <div class="centerAlign">
+                    <a [routerLink]="'../physical-stock-verification-to'">
+                      <i *ngIf="element.status==='Draft' || element.status==='Pending'"
+                        class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+
+                    <a [routerLink]="'../physical-stock-verification-to-view'">
+                      <i *ngIf="element.status==='Draft' || element.status==='Pending' || element.status==='Submitted'"
+                        class="material-icons plus view-icon" title="View">remove_red_eye</i></a>&nbsp;
+
+                    <i *ngIf="element.status==='Draft' || element.status==='Pending'" class="material-icons plus delete"
+                      (click)="delete(i)" title="Delete">delete</i>&nbsp;
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+          </div>
+
+
+          <!-- Action Buttons -->
+      <div class="form-action-button">
+
+        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="close">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

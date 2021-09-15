@@ -1,0 +1,227 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>User Rights Mapping</div>
+        </div>
+        <div class="form-datatable-list">
+            <form [formGroup]="userMappingForm" (ngSubmit)="onSubmit(userMappingForm.value)">
+                <div class="box box-primary">
+                    <div class="box-header">Office Details</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="district" formControlName="district"
+                                        [(ngModel)]="district" placeholder="District" readonly required>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput numbersOnly placeholder="DDO No." formControlName="ddoNo" [(ngModel)]="ddoNo" (input)="onDDONoSelect(ddoNo)" required maxlength="4">
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.ddoNo.touched && userMappingForm.controls.ddoNo.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.ddoNo.errors.required">
+                                            {{errorMessages.DDO_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput numbersOnly placeholder="Cardex No." formControlName="cardexNo" [(ngModel)]="cardexNo" (input)="onCardexNoSelect(cardexNo)" required maxlength="4">
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.cardexNo.touched && userMappingForm.controls.cardexNo.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.cardexNo.errors.required">
+                                            {{errorMessages.CARDEX_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="DDO Office" formControlName="ddoOffice" [(ngModel)]="ddoOffice" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.ddoOffice.touched && userMappingForm.controls.ddoOffice.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.ddoOffice.errors.required">
+                                            {{errorMessages.DDO_OFFICE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header">Search Mapping</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="employeeNo" placeholder="Employee No"
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeNoCtrl"
+                                                [placeholderLabel]="'Find Employee No ...'"
+                                                [noEntriesFoundLabel]="'no matching Employee No found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                        *ngFor="let emp of employee_no_list | filterSelectInput : employeeNoCtrl.value"
+                                        [value]="emp.value">
+                                        {{emp.empNo}} - {{emp.name}}
+                                    </mat-option>
+                                    </mat-select>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.employeeNo.touched && userMappingForm.controls.employeeNo.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.employeeNo.errors.required">
+                                            {{errorMessages.USER_ID_GPF_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Employee Name" formControlName="userName" disabled>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="postName" placeholder="Post Name" #singleSelect1
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="postNameCtrl"
+                                                [placeholderLabel]="'Find Post Name ...'"
+                                                [noEntriesFoundLabel]="'no matching Post Name found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option
+                                        *ngFor="let post of post_name_list | filterSelectInput : postNameCtrl.value"
+                                        [value]="post.value">
+                                        {{post.viewValue}}
+                                    </mat-option>
+
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.postName.touched && userMappingForm.controls.postName.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.postName.errors.required">
+                                            {{errorMessages.POST_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="moduleName" placeholder="Module Name" #singleSelect1
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="moduleNameCtrl"
+                                                [placeholderLabel]="'Find Module Name ...'"
+                                                [noEntriesFoundLabel]="'no matching Module Name found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option
+                                        *ngFor="let module of module_name_list | filterSelectInput : moduleNameCtrl.value"
+                                        [value]="module.value"  (click)="onModuleNameSelect(module)">
+                                        {{module.viewValue}}
+                                    </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="userMappingForm.controls.moduleName.touched && userMappingForm.controls.moduleName.errors">
+                                        <mat-error *ngIf="userMappingForm.controls.moduleName.errors.required">
+                                            {{errorMessages.MODULE_NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 textcenter">
+                    <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons">
+                            add_circle_outline
+                        </i>
+                        Add User
+                    </button>
+                </div>
+                <hr>
+            </form>
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-label><b>All User for the Activity</b>
+                    </mat-label>
+                    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport selectedvalue">
+                        <div class="example-item" *ngFor="let item of array ">
+                            <p> {{item.AddUser2}}</p>
+                        </div>
+                    </cdk-virtual-scroll-viewport>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label><b>Role</b>
+                    </mat-label>
+                    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                        <div *cdkVirtualFor="let role of role" class="example-item">
+                            <mat-checkbox>{{role.viewvalue}} </mat-checkbox>
+                        </div>
+                    </cdk-virtual-scroll-viewport>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label><b>All Sub Activity</b>
+                    </mat-label>
+                    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                        <div *cdkVirtualFor="let subAct of sub_activity;let i =index" class="example-item">
+                            <mat-checkbox *ngIf="showSubActivity" (click)="onSubActivitySelect(subAct,i)">{{subAct}}
+                            </mat-checkbox>
+                        </div>
+                    </cdk-virtual-scroll-viewport>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label><b>All Sub Activity Mapped to the User</b>
+                    </mat-label>
+                    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                        <div *ngFor="let item of allSubMappedAct">
+                            {{item}}
+                        </div>
+                    </cdk-virtual-scroll-viewport>
+                </div>
+            </div>
+            <br>
+            <div class="row displayBlock form-action-button">
+                <div class="col-sm-12">
+                    <p>User Post Name: <b>{{designation}}</b></p>
+                    <div class="centerAlign">
+                        <div class="form-action-button">
+                            <button mat-raised-button type="submit" (click)="gotoListing()" class="green"><i
+                                    class="material-icons">
+                                    done
+                                </i> Apply Changes</button>
+                            <button type="reset" mat-raised-button color="accent" (click)="resetAll()">
+                                <i class="material-icons">
+                                    restore
+                                </i>
+                                Reset
+                            </button>
+                            <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                                <i class="material-icons" title="Listing">
+                                    list
+                                </i>
+                                Listing
+                            </button>
+                            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                <i class="material-icons" title="EDP dashboard">
+                                    close
+                                </i>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

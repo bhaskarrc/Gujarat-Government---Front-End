@@ -1,0 +1,661 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>New and Continuous Item Budget Estimate</div>
+            <div class="font-heading">
+                <b>Reference No:</b> 19-20/BUD/NW/001</div>
+            <div class="font-heading">
+                <b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Budget</a></li>
+                <li class="breadcrumb-item active" aria-current="page">New and Continuous Item Budget Estimate</li>
+            </ol>
+        </nav>
+        <div class="panel-group">
+            <form [formGroup]="budgetForm" (ngSubmit)="saveEstimate()">
+                <div class="box box-primary">
+                    <div class="box-header">Budget Estimate</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="text-right col-sm-12">
+                                <button mat-raised-button type="button" class="lang-btn"
+                                    (click)="toggleLanguage()">{{currentLang.value == 'Eng' ? 'Guj' : 'Eng' }}</button>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="financialYear" placeholder="Financial Year" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="financialYearCtrl"
+                                                [placeholderLabel]="'Find financial Year...'"
+                                                [noEntriesFoundLabel]="'no matching financial Year found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let financialYear of financialYear_list | filterSelectInput: financialYearCtrl.value"
+                                            [value]="financialYear.value" matTooltip="{{financialYear.viewValue}}">
+                                            {{financialYear.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="departmentCode" placeholder="Department" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="departmentCodeCtrl"
+                                                [placeholderLabel]="'Find Department...'"
+                                                [noEntriesFoundLabel]="'no matching Department found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option
+                                            *ngFor="let department of department_list | filterSelectInput: departmentCodeCtrl.value"
+                                            [value]="department.value">
+                                            {{department.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="branch" placeholder="Name of the Branch" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="branchCtrl"
+                                                [placeholderLabel]="'Find Branch Name...'"
+                                                [noEntriesFoundLabel]="'no matching Name of the Branch found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let br of branch_list | filterSelectInput: branchCtrl.value"
+                                            [value]="br.value" matTooltip="{{br.viewValue}}">
+                                            {{br.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.branch.touched && (budgetForm.controls.branch.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.branch.errors.required">
+                                            {{errorMessages.BRANCH}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="estimateBy" placeholder="Estimation from" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="estimateByCtrl"
+                                                [placeholderLabel]="'Find Estimation From...'"
+                                                [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let estimation of estimation_list | filterSelectInput: estimateByCtrl.value"
+                                            [value]="estimation.value" matTooltip="{{estimation.viewValue}}">
+                                            {{estimation.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="demandCode" placeholder="Demand" required
+                                        (selectionChange)="displayDemand();">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="demandCodeCtrl"
+                                                [placeholderLabel]="'Find Demand Code...'"
+                                                [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let demand of demand_list | filterSelectInput: demandCodeCtrl.value"
+                                            [value]="demand.value" matTooltip="{{demand.viewValue}}">
+                                            {{demand.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.demandCode.touched && (budgetForm.controls.demandCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.demandCode.errors.required">
+                                            {{errorMessages.DEMAND}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="showBPNCode">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="bpnCode" placeholder="BPN Code" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="bpnCodeCtrl"
+                                                [placeholderLabel]="'Find BPN Code...'"
+                                                [noEntriesFoundLabel]="'no matching BPN Code found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let bpn of bpn_list | filterSelectInput: bpnCodeCtrl.value"
+                                            [value]="bpn.value" matTooltip="{{bpn.viewValue}}">
+                                            {{bpn.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="majorHeadCode" placeholder="Major Head" required
+                                        (selectionChange)="displayRevCap();">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="majorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Major Head...'"
+                                                [noEntriesFoundLabel]="'no matching Major Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let majorhead of majorHead_list | filterSelectInput: majorHeadCodeCtrl.value"
+                                            [value]="majorhead.value" matTooltip="{{majorhead.viewValue}}">
+                                            {{majorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.majorHeadCode.touched && (budgetForm.controls.majorHeadCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.majorHeadCode.errors.required">
+                                            {{errorMessages.MAJOR_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="showRevCap">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="revenueCapital" placeholder="Revenue/Capital" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="revenueCapitalCtrl"
+                                                [placeholderLabel]="'Find Revenue/Capital...'"
+                                                [noEntriesFoundLabel]="'no matching Revenue/Capital found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let revenueCapital of revenueCapital_list | filterSelectInput: revenueCapitalCtrl.value"
+                                            [value]="revenueCapital.value" matTooltip="{{revenueCapital.viewValue}}">
+                                            {{revenueCapital.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subMajorHeadCode" placeholder="Sub Major Head"
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subMajorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Major Head...'"
+                                                [noEntriesFoundLabel]="'no matching Major Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let majorhead of subMajorHead_list | filterSelectInput: majorHeadCodeCtrl.value"
+                                            [value]="majorhead.value" matTooltip="{{majorhead.viewValue}}">
+                                            {{majorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.subMajorHeadCode.touched && (budgetForm.controls.subMajorHeadCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.subMajorHeadCode.errors.required">
+                                            {{errorMessages.SUB_MAJOR_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="minorHeadCode" placeholder="Minor Head" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="minorHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Minor Head...'"
+                                                [noEntriesFoundLabel]="'no matching Minor Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let minorhead of minorHead_list | filterSelectInput: minorHeadCodeCtrl.value"
+                                            [value]="minorhead.value" matTooltip="{{minorhead.viewValue}}">
+                                            {{minorhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.minorHeadCode.touched && (budgetForm.controls.minorHeadCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.minorHeadCode.errors.required">
+                                            {{errorMessages.MINOR_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subHeadCode" placeholder="Sub Head" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Sub Head...'"
+                                                [noEntriesFoundLabel]="'no matching Sub Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let subhead of subHead_list | filterSelectInput: subHeadCodeCtrl.value"
+                                            [value]="subhead.value" matTooltip="{{subhead.viewValue}}">
+                                            {{subhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.subHeadCode.touched && (budgetForm.controls.subHeadCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.subHeadCode.errors.required">
+                                            {{errorMessages.SUB_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="detailHeadCode" placeholder="Detailed Head" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="detailHeadCodeCtrl"
+                                                [placeholderLabel]="'Find Detailed Head...'"
+                                                [noEntriesFoundLabel]="'no matching Detailed Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let detailhead of detailHead_list | filterSelectInput: detailHeadCodeCtrl.value"
+                                            [value]="detailhead.value" matTooltip="{{detailhead.viewValue}}">
+                                            {{detailhead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.detailHeadCode.touched && (budgetForm.controls.detailHeadCode.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.detailHeadCode.errors.required">
+                                            {{errorMessages.DETAILED_HEAD}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="proposalType" placeholder="Proposal Type" #proposalType
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="proposalTypeCtrl"
+                                                [placeholderLabel]="'Find Proposal Type...'"
+                                                [noEntriesFoundLabel]="'no matching Proposal Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let proposalType of proposalType_list | filterSelectInput: proposalTypeCtrl.value"
+                                            [value]="proposalType.value" matTooltip="{{proposalType.viewValue}}">
+                                            {{proposalType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.proposalType.touched && (budgetForm.controls.proposalType.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.proposalType.errors.required">
+                                            {{errorMessages.TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="majorCategory" placeholder="Type of Category"
+                                        #majorCategorySelect required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="majorCategoryCtrl"
+                                                [placeholderLabel]="'Find Major Category...'"
+                                                [noEntriesFoundLabel]="'no matching Major Category found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let majorCategory of majorCategory_list | filterSelectInput: majorCategoryCtrl.value"
+                                            [value]="majorCategory.value">
+                                            {{majorCategory.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.majorCategory.touched && (budgetForm.controls.majorCategory.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.majorCategory.errors.required">
+                                            {{errorMessages.CATEGORY}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="proposalCategory" placeholder="Proposal Category"
+                                        #proposalCategory required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="proposalCategoryCtrl"
+                                                [placeholderLabel]="'Find Proposal Category...'"
+                                                [noEntriesFoundLabel]="'no matching Proposal Category found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <div
+                                            *ngIf="budgetForm.controls.majorCategory.value == '1'; then cond1 else cond2">
+                                        </div>
+
+                                        <ng-template #cond1>
+                                            <mat-option
+                                                *ngFor="let proposalCategory of proposalCategory_list1 | filterSelectInput: proposalCategoryCtrl.value"
+                                                [value]="proposalCategory.value" matTooltip="{{proposalCategory.viewValue}}">
+                                                {{proposalCategory.viewValue}}
+                                            </mat-option>
+                                        </ng-template>
+
+                                        <ng-template #cond2>
+
+                                            <mat-option
+                                                *ngFor="let proposalCategory of proposalCategory_list2 | filterSelectInput: proposalCategoryCtrl.value"
+                                                [value]="proposalCategory.value"  matTooltip="{{proposalCategory.viewValue}}">
+                                                {{proposalCategory.viewValue}}
+                                            </mat-option>
+                                        </ng-template>
+
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.proposalCategory.touched && (budgetForm.controls.proposalCategory.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.proposalCategory.errors.required">
+                                            {{errorMessages.CATEGORY}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 2 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="itemName" placeholder="Item Name" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="itemNameCtrl"
+                                                [placeholderLabel]="'Find Item Name...'"
+                                                [noEntriesFoundLabel]="'no matching Item Name'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let itemName of itemName_list | filterSelectInput: itemNameCtrl.value"
+                                            [value]="itemName.value" matTooltip="{{itemName.viewValue}}">
+                                            {{itemName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="schemeType" placeholder="Type of Scheme" required
+                                        (selectionChange)="showSchemeRatio($event)" #scheme>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="schemeTypeCtrl"
+                                                [placeholderLabel]="'Find Scheme Type...'"
+                                                [noEntriesFoundLabel]="'no matching Scheme Typefound'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let schemeType of schemeType_list | filterSelectInput: schemeTypeCtrl.value"
+                                            [value]="schemeType.value" matTooltip="{{schemeType.viewValue}}">
+                                            {{schemeType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.schemeType.touched && (budgetForm.controls.schemeType.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.schemeType.errors.required">
+                                            {{errorMessages.SCHEME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="showRatio">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="% (Ratio) of State burden"
+                                        formControlName="schemeTypeRatio" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="showRatio1">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="% (Ratio) of CSS burden"
+                                        formControlName="schemeTypeRatio1" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="showRatio2">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="number" min="0" max="100"
+                                        placeholder="% (Ratio) of State burden" (keypress)="percentageKeyPress($event)"
+                                        formControlName="schemeTypeRatio2" numberOnly required>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="showRatio3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="number" min="0" max="100"
+                                        placeholder="% (Ratio) of CSS burden" (keypress)="percentageKeyPress($event)"
+                                        formControlName="schemeTypeRatio3" numberOnly required>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="chargedVoted" placeholder="Charged Voted" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="chargedVotedCtrl"
+                                                [placeholderLabel]="'Find Charged Voted...'"
+                                                [noEntriesFoundLabel]="'no matching Charged Voted found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let chargedVoted of chargedVoted_list | filterSelectInput: chargedVotedCtrl.value"
+                                            [value]="chargedVoted.value">
+                                            {{chargedVoted.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.chargedVoted.touched && (budgetForm.controls.chargedVoted.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.chargedVoted.errors.required">
+                                            {{errorMessages.charged_Voted}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="proposalType.value == 1">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="ministerInCharge" placeholder="Minister In Charge"
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="ministerInChargeCtrl"
+                                                [placeholderLabel]="'Find Minister In Charge...'"
+                                                [noEntriesFoundLabel]="'no matching Minister In Charge'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let schemeType of minister_list | filterSelectInput: schemeTypeCtrl.value"
+                                            [value]="schemeType.value">
+                                            {{schemeType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && proposalCategory.value == 3) || (proposalType.value == 2 && proposalCategory.value == 3)">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="objectClass" placeholder="Object Class">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="classOneCtrl"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let C of classType | filterSelectInput:classOneCtrl.value"
+                                            [value]="C.value">
+                                            {{C.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && proposalCategory.value == 3) || (proposalType.value == 2 && proposalCategory.value == 3)">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="objectHead" placeholder="Object Head" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="objectHeadCtrl"
+                                                [placeholderLabel]="'Find Object Head...'"
+                                                [noEntriesFoundLabel]="'no matching Object Head'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let objectHead of objectHead_list | filterSelectInput: objectHeadCtrl.value"
+                                            [value]="objectHead.value" matTooltip="{{objectHead.viewValue}}">
+                                            {{objectHead.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="5" matInput
+                                        placeholder="Item Name (English)" formControlName="itemNames"
+                                        required></textarea>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.itemNames.touched && (budgetForm.controls.itemNames.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.itemNames.errors.required">
+                                            {{errorMessages.NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="5" matInput
+                                        placeholder="Item Name (Gujarati)" formControlName="itemNamesGuj"
+                                        (focus)="setGujaratiDefault()" [ngClass]="hasFocusSet == 1 ? 'hasfocus' : ''"
+                                        (focusout)="hasFocusSet=1;setEnglishOnFocusOut()" required></textarea>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.itemNamesGuj.touched && (budgetForm.controls.itemNamesGuj.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.itemNamesGuj.errors.required">
+                                            {{errorMessages.NAME}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="5" matInput
+                                        placeholder="Write up (English)" formControlName="writeUpEnglish" required>
+                                    </textarea>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.writeUpEnglish.touched && (budgetForm.controls.writeUpEnglish.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.writeUpEnglish.errors.required">
+                                            {{errorMessages.WRITE_UP_ENG}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <textarea style="word-break: break-all" cdkTextareaAutosize cdkAutosizeMinRows="5"
+                                        matInput placeholder="Write up (Gujarati)" formControlName="writeUpGujrati"
+                                        required (focus)="setGujaratiDefault()"
+                                        [ngClass]="hasFocusSet == 2 ? 'hasfocus' : ''"
+                                        (focusout)="hasFocusSet=2;setEnglishOnFocusOut()"></textarea>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.writeUpGujrati.touched && (budgetForm.controls.writeUpGujrati.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.writeUpGujrati.errors.required">
+                                            {{errorMessages.WRITE_UP_GUJ}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="establishment" placeholder="Establishment Details"
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="establishmentCtrl"
+                                                [placeholderLabel]="'Find Establishment...'"
+                                                [noEntriesFoundLabel]="'no matching Establishment'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let establishment of establishment_list | filterSelectInput: establishmentCtrl.value"
+                                            [value]="establishment.value" matTooltip="{{establishment.viewValue}}">
+                                            {{establishment.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.establishment.touched && (budgetForm.controls.establishment.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.establishment.errors.required">
+                                            {{errorMessages.ESTAB_DETAIL}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3"
+                                *ngIf="(proposalType.value == 1 && (proposalCategory.value !=null && proposalCategory.value != 3))">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="expenditureType" placeholder="Expenditure Type"
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="expenditureTypeCtrl"
+                                                [placeholderLabel]="'Find Expenditure Type...'"
+                                                [noEntriesFoundLabel]="'no matching Expenditure Type'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let expenditureType of expenditureType_list | filterSelectInput: expenditureTypeCtrl.value"
+                                            [value]="expenditureType.value" matTooltip="{{expenditureType.viewValue}}">
+                                            {{expenditureType.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="budgetForm.controls.expenditureType.touched && (budgetForm.controls.expenditureType.errors)">
+                                        <mat-error *ngIf="budgetForm.controls.expenditureType.errors.required">
+                                            {{errorMessages.TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- <div class="col-sm-12">
+                                <div class="legend">
+                                1. The Toggle Button for changing the language is only applicable to Write-Up (Gujarati) and Item Name (Gujarati) Fields.
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="form-action-button next-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="saveConfirmationPopup()">
+                                Save & Proceed
+                                <i class="material-icons" aria-hidden="true" title="Next">
+                                    chevron_right
+                                </i>
+                            </button>
+                        </div>
+                        <div class="legend">
+                            1. The Toggle Button for changing the language is only applicable to Write-Up (Gujarati) and
+                            Item Name (Gujarati) Fields.
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

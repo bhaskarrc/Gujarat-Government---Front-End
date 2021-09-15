@@ -1,0 +1,195 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Advice Verification - Auditor</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/PDPLA/OPR/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PD/PLA</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Advice Verification - Auditor</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <!-- search fields -->
+            <form [formGroup]="pdplaSavedAdviceForm" (ngSubmit)="pdplaSavedAdviceFormData()">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Advice No." formControlName="adviceNumber" maxlength="4">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="adviceDate" [matDatepicker]="picker1" placeholder="Advice Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="PD/PLA A/C No" formControlName="pdplaAccNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Cardex No." formControlName="cardexNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Total Amount" formControlName="totalAmount">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Virtual Token No" formControlName="virtualTokenNo">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-action-button">
+                                        <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                                        <button type="reset" mat-raised-button color="accent">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </form>
+            <br>
+
+            <!-- filtered data table -->
+            <div class="mat-elevation-z8 mt-2">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 " aria-describedby="adviceVerification">
+
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            <mat-checkbox (change)="$event ? directiveObject.masterToggle(pdplaSavedAdviceData) : null" [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(pdplaSavedAdviceData)" [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(pdplaSavedAdviceData)"
+                                [aria-label]="directiveObject.checkboxLabel(pdplaSavedAdviceData)">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="text-center">
+                            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObject.selection.toggle(row) : null" [checked]="directiveObject.selection.isSelected(row) " [aria-label]="directiveObject.checkboxLabel(pdplaSavedAdviceData, row)">
+                            </mat-checkbox>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="srno">
+                        <th mat-header-cell *matHeaderCellDef scope="row">
+                            Sr. No. </th>
+                        <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                            {{ i + 1 }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="adviceNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Advice No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            <a>{{element.adviceNo}}</a>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pdplaAccNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">PD/PLA A/C No</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.pdplaAccNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="officeName">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.officeName}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="cardexNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Cardex No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.cardexNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="virtualTokenNo">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Virtual Token No.</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.virtualTokenNo}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="adviceAmount">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Advice Amount</th>
+                        <td mat-cell *matCellDef="let element" class="text-right">
+                            {{element.adviceAmount}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="adviceDate">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Advice Date</th>
+                        <td mat-cell *matCellDef="let element">
+                            {{element.adviceDate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        <td mat-cell *matCellDef="let element" class="centerAlign">
+                            <a><i class="material-icons plus edit-icon mr-2" aria-hidden="true" title="Edit" (click)="gotoPage()">
+                  edit </i></a>
+                            <a><i class="material-icons plus view-icon mr-2 " aria-hidden="true" title="View">remove_red_eye</i></a>
+
+                            <!-- <a class="delete-icon"><i class="material-icons plus delete mr-2" title="delete" aria-hidden="true">
+                  delete_forever</i></a> -->
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="column"></tr>
+                    <tr mat-row *matRowDef="let row; columns: column;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+            <!-- form-action-button -->
+            <div class="form-action-button">
+                <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()">
+          <i class="material-icons" title="Receive and Forward" aria-hidden="true">done</i> Submit</button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+          <i class="material-icons" title="Close" aria-hidden="true">
+            close
+          </i>
+          Close
+        </button>
+            </div>
+        </div>
+
+    </div>
+</div>

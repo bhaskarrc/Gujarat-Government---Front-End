@@ -1,0 +1,234 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Cardex Mapping</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Bill Processing</li>
+        <li class="breadcrumb-item active" aria-current="page">Cardex Mapping</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Search Cardex Mapping -->
+      <form [formGroup]="cardexMappingForm" (ngSubmit)="cardexMappingFormData()">
+        <mat-expansion-panel [expanded]="false" class="nopadding">
+          <mat-expansion-panel-header>
+            <div class="heading-section">
+              Search
+            </div>
+          </mat-expansion-panel-header>
+          <div class="box-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="ddoName" placeholder="DDO / Cardex Name" formControlName="ddoName">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="ddoNo" numbersOnly maxlength="6" placeholder="DDO No." formControlName="ddoNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="cardexNo" numbersOnly maxlength="6" placeholder="Cardex No."
+                    formControlName="cardexNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" title="Search">
+                    <i class="material-icons" aria-hidden="true">search</i> Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent" (click)="resetForm()">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </mat-expansion-panel>
+      </form>
+      <!-- End Search Cardex Mapping -->
+      <br>
+      <!-- DDO / Cardex List -->
+      <div class=" box box-primary">
+        <div class="box-header">DDO / Cardex List</div>
+        <div class="box-body">
+          <div class="mat-elevation-z8  mt-2">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 " aria-describedby="ddoCardexList">
+
+              <ng-container matColumnDef="radioButton">
+                <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                  <mat-radio-group aria-labelledby="radio-group">
+                    <mat-radio-button class="mat-radio-button mat-accent "
+                      (click)="$event.stopPropagation(); onClickingRadioButton(element);"
+                      (change)="$event ? selection.toggle(element) : null" [value]="selection.isSelected(element)"
+                      [checked]="selection.isSelected(element)"></mat-radio-button>
+                  </mat-radio-group>
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="ddoName">
+                <th mat-header-cell *matHeaderCellDef scope="row"> DDO Name</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.ddoName}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ddono">
+                <th mat-header-cell *matHeaderCellDef scope="row"> DDO NO</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.ddono}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="cardexNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Cardex No.</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.cardexNo}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let element;let i = index">
+                  <table class="iconTable">
+                    <tbody>
+                      <tr>
+                        <td><i class="material-icons plus view-icon" title="View" (click)="onView(i)">
+                            remove_red_eye </i>
+
+                        </td>
+                        <td>
+                          <i class="material-icons plus delete" (click)="onDelete(i)">
+                            delete
+                          </i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+      <!-- End DDO / Cardex List -->
+
+      <!-- DDO / Cardex Image Upload -->
+      <div class=" box box-primary">
+        <div class="box-header">DDO / Cardex Image Upload</div>
+        <div class="box-body">
+          <div class="mat-elevation-z8  mt-2">
+            <table mat-table [dataSource]="imageUploadDataSource" class="mat-elevation-z8 "
+              aria-describedby="ddoCardexImageUpload">
+
+              <ng-container matColumnDef="ddoName">
+                <th mat-header-cell *matHeaderCellDef scope="row"> DDO/ Cardex Name</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.ddoName}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ddono">
+                <th mat-header-cell *matHeaderCellDef scope="row"> DDO NO</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.ddono}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="cardexNo">
+                <th mat-header-cell *matHeaderCellDef scope="row">Cardex No.</th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.cardexNo}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fileDescription">
+                <th mat-header-cell *matHeaderCellDef scope="row">File Description
+                </th>
+                <td mat-cell *matCellDef="let item">
+                  <mat-form-field floatLabel="never">
+                    <textarea matInput [value]="item.fileDescription" [(ngModel)]="item.fileDescription"></textarea>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="browse">
+                <th mat-header-cell *matHeaderCellDef scope="row">Browse File
+                </th>
+                <td mat-cell *matCellDef="let item;let i= index" class="centerAlign">
+                  <button type="button" (click)="openFileSelector(item,i)" class="btn-browse">Browse
+                    Files</button>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef scope="row">File name
+                </th>
+                <td mat-cell *matCellDef="let item">
+                  <span> {{item.fileName}}</span>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="imageUploadDisplayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: imageUploadDisplayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+            <input type="file" id="fileBrowse" style="visibility:
+            hidden;" (change)="onFileSelection($event)" />
+            <div class="legend">
+              1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png',
+              'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+            </div>
+          </div>
+          <!-- Common Button -->
+          <div class="form-action-button">
+
+            <button type="button" mat-raised-button color="primary">
+              <i class="material-icons" aria-hidden="true" title="Save">
+                save
+              </i>
+              Save
+            </button>
+            <button type="button" mat-raised-button class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Close">
+                close
+              </i>
+              Close
+            </button>
+
+          </div>
+          <!-- End Common Button -->
+        </div>
+      </div>
+      <!-- End DDO / Cardex Image Upload -->
+
+
+    </div>
+  </div>
+</div>

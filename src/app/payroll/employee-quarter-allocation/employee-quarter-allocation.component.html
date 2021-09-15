@@ -1,0 +1,510 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- Screen Name -->
+        <div class="heading-section ng-star-inserted">
+            <div> Employees Quarter Allocation</div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Payroll
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page"> Employees Quarter Allocation
+                </li>
+            </ol>
+        </nav>
+
+        <form [formGroup]="createpayrollForm">
+            <!-- Employees Quarter Allocation Starts -->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Employees Quarter Allocation</div>
+                    <div class="box-body">
+                        <!-- Part One Starts -->
+                        <div class="row">
+
+                            <!-- DDO No -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" placeholder="DDO No " formControlName="ddono">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Cardex No -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" placeholder="Cardex No " formControlName="cardexNo">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- DDO Office Name -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" placeholder="Office Name" formControlName="ddoofcName">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="District" formControlName="district">
+
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="subOfficeName" placeholder="Sub Office ">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="subOfficeCtrl"
+                                                [placeholderLabel]="'Find Sub Office...'"
+                                                [noEntriesFoundLabel]="'No matching Sub Office found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="let item of subOfficeList |
+                                      filterSelectInput:subOfficeCtrl.value" [value]="item.value"
+                                            matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Payroll  -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payrollType" placeholder="Payroll Type"
+                                        (selectionChange)="onPayrollType($event.value)" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payrollTypeCtrl"
+                                                [placeholderLabel]="'Find Payroll Type...'"
+                                                [noEntriesFoundLabel]="'no matching Payroll Type found'"
+                                                alphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let payrollName  of Payroll_Type_list | filterSelectInput:payrollTypeCtrl.value"
+                                            [value]="payrollName.value">
+                                            {{payrollName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="createpayrollForm.controls.payrollType.touched && (createpayrollForm.controls.payrollType.errors)">
+                                        <mat-error *ngIf="createpayrollForm.controls.payrollType.errors?.required">
+                                            {{errorMessages.PAYROLL_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Financial Year  -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="financialYear" placeholder="Financial Year">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="financialYearCtrl"
+                                                [placeholderLabel]="'Find Financial Year...'"
+                                                [noEntriesFoundLabel]="'no matching Financial Year found'"
+                                                numbersHyphenOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let financialYearName  of Financial_Year_list | filterSelectInput:financialYearCtrl.value"
+                                            [value]="financialYearName.value">
+                                            {{financialYearName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Pay Month -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="payMonth" placeholder="Pay Month" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="payMonthCtrl"
+                                                [placeholderLabel]="'Find Pay Month...'"
+                                                [noEntriesFoundLabel]="'no matching Pay Month found'" charactersOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let payMonthName  of Pay_month_list | filterSelectInput:payMonthCtrl.value"
+                                            [value]="payMonthName.value">
+                                            {{payMonthName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="createpayrollForm.controls.payMonth.touched && (createpayrollForm.controls.payMonth.errors)">
+                                        <mat-error *ngIf="createpayrollForm.controls.payMonth.errors?.required">
+                                            {{errorMessages.PAY_MONTH}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                        <!-- Part One Ends -->
+
+                        <!-- Action Button Starts -->
+                        <div class="form-action-button">
+                            <button type="button" mat-raised-button color="primary" (click)="onChangeYearType()">Change
+                                Year\Type</button>
+                        </div>
+                        <!-- Action Button Ends -->
+                    </div>
+
+                    <!--search part two Starts -->
+                    <div class="box-body">
+                        <div class="row">
+                            <!-- <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="employeeCategory" placeholder="Employee Category">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="employeeCategoryCtrl"
+                                                [placeholderLabel]="'Find employee category...'"
+                                                [noEntriesFoundLabel]="'no matching employee category found'"
+                                                charactersOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let item of employeeCategory_list | filterSelectInput : employeeCategoryCtrl.value"
+                                            [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div> -->
+                            <!-- Employee Type -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="employeeType" placeholder="Employee Class"
+                                        #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]=" employeeTypeCtrl"
+                                                [placeholderLabel]="'Find Employee Type...'"
+                                                [noEntriesFoundLabel]="'no matching Employee Type found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let item of  employee_Type_list| filterSelectInput:employeeTypeCtrl.value"
+                                            [value]="item.value">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="designation" placeholder="Designation" multiple>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="designationListCtrl"
+                                                [placeholderLabel]="'Find Designation...'"
+                                                [noEntriesFoundLabel]="'no matching Designation found'"
+                                                numbersAlphabetsSpaceOnly>
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <!-- <mat-option #allSelected (click)="ddAllSelection()" [value]="0">All
+                                        </mat-option> -->
+                                        <mat-option
+                                            *ngFor="let item of designationType_list | filterSelectInput :designationListCtrl.value"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- Employee Id -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" placeholder="Employee No." formControlName="employeeId"
+                                        numbersOnly prEmpNoOnly>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Employee Name  -->
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="text" placeholder="Employee Name "
+                                        formControlName="employeeName" maxlength="100" alphabetsSpaceOnly>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-action-button">
+
+                                <button type="submit" mat-raised-button color="primary" (click)="search()"> <i
+                                        class="material-icons">search</i>
+                                    Search </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--search part two Ends -->
+
+                </div>
+            </div>
+            <!-- Employees Quarter Allocation Starts -->
+        </form>
+
+
+
+
+        <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+            <!-- Table Starts -->
+            <table mat-table [dataSource]="dataSource" matSort aria-describedby="employeeQuarterTable">
+
+
+                <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                    <td mat-cell *matCellDef="let element;" class="centerAlign"> {{element.srno}}</td>
+                </ng-container>
+
+                <!-- Employee Id Column -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Employee No. </th>
+                    <td mat-cell *matCellDef="let element" class="centerAlign"> {{element.id}} </td>
+                </ng-container>
+
+                <!-- Employee Name  Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Employee Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <!-- Employee Class Column -->
+                <ng-container matColumnDef="class">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Employee Class </th>
+                    <td mat-cell *matCellDef="let element"> {{element.class}} </td>
+                </ng-container>
+
+                <!-- Designation Column -->
+                <ng-container matColumnDef="designation">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Designation </th>
+                    <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+                </ng-container>
+
+                <!-- Basic pay Column -->
+                <ng-container matColumnDef="basicPay">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Basic Pay </th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.basicPay}} </td>
+                </ng-container>
+
+                <!-- Allocated to Column -->
+                <ng-container matColumnDef="allocatedto">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Allocated to </th>
+                    <td mat-cell *matCellDef="let element">
+                        <!-- {{element.allocatedto}}  -->
+                        <mat-form-field class="full-width">
+                            <mat-select [(ngModel)]="element.allocatedto" [ngModelOptions]="{standalone: true}"
+                                [(value)]="element.allocatedto" [disabled]='false'
+                                (selectionChange)="onAllocatedTo(element)">
+                                <mat-option>-- None --</mat-option>
+                                <mat-option *ngFor="let item of allocated_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <!-- Is in Same HQ Column -->
+                <ng-container matColumnDef="isInSameHQ">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Is In Same HQ ?</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="full-width">
+                            <mat-select [(ngModel)]="element.isInSameHQ" [ngModelOptions]="{standalone: true}"
+                                [(value)]="element.isInSameHQ"
+                                [disabled]="element.allocatedto===''||element.allocatedto==='1'||element.allocatedto===undefined"
+                                (selectionChange)="onisInSameHQ(element)">
+                                <mat-option *ngFor="let item of isInSameHQList" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <!-- District Column -->
+                <ng-container matColumnDef="district">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> District</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="full-width">
+                            <mat-select [(ngModel)]="element.district" [ngModelOptions]="{standalone: true}"
+                                [(value)]="element.district">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="districtCtrl"
+                                        [placeholderLabel]="'Find District...'"
+                                        [noEntriesFoundLabel]="'no matching District found'" numbersAlphabetsSpaceOnly>
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let item of districtList| filterSelectInput :districtCtrl.value"
+                                    [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!-- Quarter category Column -->
+                <ng-container matColumnDef="quarterCategory">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Quarter Category </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="full-width">
+                            <mat-select [(value)]="element.category" [(ngModel)]="element.category"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="element.allocatedto===''||element.allocatedto===undefined||element.isInSameHQ==='1'||element.isInSameHQ===''||element.isInSameHQ===undefined">
+                                <mat-option *ngFor=" let item of quarterCategory_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!-- Quarter type Column -->
+                <ng-container matColumnDef="quartertype">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Quarter type </th>
+                    <td mat-cell *matCellDef="let element">
+                        <!-- {{element.quartertype}}  -->
+                        <mat-form-field class="full-width">
+                            <mat-select [(value)]="element.quartertype" [(ngModel)]="element.quartertype"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="element.category===''||element.category===undefined||element.allocatedto===''||element.allocatedto===undefined||element.isInSameHQ==='1'||element.isInSameHQ===undefined">
+                                <mat-option *ngFor="let item of quarterType_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!--Quarter Rent Category Column -->
+                <ng-container matColumnDef="quarterrent">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Quarter Rent Category </th>
+                    <td mat-cell *matCellDef="let element">
+                        <!-- {{element.quarterrent}} -->
+                        <mat-form-field class="full-width">
+                            <mat-select [(value)]="element.quarterrent" [(ngModel)]="element.quarterrent"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="element.quartertype===''||element.quartertype===undefined||element.category===''||element.category===undefined||element.allocatedto===''||element.allocatedto===undefined||element.isInSameHQ==='1'||element.isInSameHQ===undefined">
+                                <mat-option *ngFor="let item of quarterRentCategory_list" [value]="item.value">
+                                    {{item.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!-- Address Column -->
+                <ng-container matColumnDef="address">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Address</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="full-width">
+                            <textarea matInput [(value)]="element.address" [(ngModel)]="element.address"
+                                [ngModelOptions]="{standalone: true}"></textarea>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <!--Rent amount Column -->
+                <ng-container matColumnDef="rentamount">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Rent amount </th>
+                    <td mat-cell *matCellDef="let element" class="rightAlign">
+                        <div *ngIf="element.quarterrent=='1'">
+                            {{getRentAmt(element)}} {{element.rentamount}}
+                        </div>
+                        <div *ngIf="element.quarterrent=='2'">
+                            0.00
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- From Date Column -->
+                <ng-container matColumnDef="fd">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Effective From Date </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="picker" [value]="element.fd" [(ngModel)]="element.fd"
+                                [ngModelOptions]="{standalone: true}" [max]="element.tod" dateOnly
+                                [disabled]="element.isInSameHQ==='1'||element.allocatedto===''||element.allocatedto===undefined">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker
+                                [disabled]="element.isInSameHQ==='1'||element.allocatedto===''||element.allocatedto===undefined">
+                            </mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+
+                <!-- From Date Column -->
+                <ng-container matColumnDef="tod">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Effective To Date </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="picker" [value]="element.tod" [(ngModel)]="element.tod"
+                                [ngModelOptions]="{standalone: true}" [min]="element.fd" dateOnly
+                                [disabled]="element.isInSameHQ==='1'||element.allocatedto===''||element.allocatedto===undefined">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker
+                                [disabled]="element.isInSameHQ==='1'||element.allocatedto===''||element.allocatedto===undefined">
+                            </mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <th mat-header-cell *matHeaderCellDef scope="row"></th>
+                    <td mat-cell *matCellDef="let element;" colspan="16" class="centerAlign">
+                        {{element.noData}}
+                    </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i = index;columns:displayedRows"></tr>
+
+            </table>
+            <!-- Table Ends -->
+        </div>
+        <mat-paginator *ngIf="isSearch" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        <!-- Action Button Starts -->
+        <div class="form-action-button">
+            <button mat-raised-button title="Submit" aria-hidden="true" class="green" (click)="onClickSubmit()"><i
+                    class="material-icons">
+                    done
+                </i> Submit</button>
+            <button type="button" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                <i class="material-icons" title="Reset" aria-hidden="true">
+                    restore
+                </i>
+                Reset
+            </button>
+            <button type="button" mat-raised-button class="btnClose"><i class="material-icons" title="Close"
+                    aria-hidden="true">
+                    close </i> Close </button>
+
+        </div>
+        <!-- Action Button Ends -->
+    </div>
+
+
+</div>

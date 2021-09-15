@@ -1,0 +1,203 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Provisional Cases</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/PPO/APC/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">PPO</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Provisional Cases</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <form [formGroup]="provisionalCasesForm" (ngSubmit)="provisionalCasesFormData()">
+                <mat-accordion class="colapsedata">
+                    <mat-expansion-panel [expanded]="false" class="nopadding">
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">Search</div>
+                        </mat-expansion-panel-header>
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <mat-select name="status" formControlName="status" placeholder="Status">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Select Pension Type ...'" [noEntriesFoundLabel]="'no matching Pension type found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option>-- None --</mat-option>
+
+                                            <mat-option *ngFor="let statusName of status_list | filterSelectInput : statusCtrl.value : 'viewValue'" [value]="statusName.value">
+                                                {{statusName.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field class="full-width">
+                                        <input type="text" matInput [(formControl)]="ppoNoCtrl" placeholder="PPO No" value="{{ppoNoVal}}" [matAutocomplete]="auto" (blur)="sendPPOData($event.target.value)">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                            <span *ngIf="optionCtrl">
+                                                <mat-option *ngFor="let option of filteredppoNo | async"
+                                                    [value]="option">
+                                                    {{option.ppoNo}}
+                                                </mat-option>
+                                            </span>
+                                        </mat-autocomplete>
+                                        <mat-icon matSuffix class="searchIcon" (click)="openPPODialog()">search
+                                        </mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="inwardDate" [matDatepicker]="picker1" placeholder="Inward Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput formControlName="commenecementDate" [matDatepicker]="picker2" placeholder="Commenecement Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2 [disabled]="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="bankCode" placeholder="Bank Code" formControlName="bankCode" maxlength="6" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="headCode" placeholder="Head Code" formControlName="headCode" maxlength="3" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <mat-form-field>
+                                        <input matInput name="accountNo" placeholder="Account No" formControlName="accountNo" maxlength="15" numbersOnly>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                                        <i class="material-icons" aria-hidden="true">search</i> Search
+                                    </button>
+                                    <button type="reset" mat-raised-button color="accent">
+                                        <i class="material-icons" aria-hidden="true">
+                                            restore
+                                        </i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <br>
+
+                <div class="mat-elevation-z8 mt-2">
+                    <table mat-table [dataSource]="approvedFPDataSource" class="mat-elevation-z8 " aria-describedby="provisionalCases">
+
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                <mat-checkbox (change)="$event ? directiveObj.masterToggle(approvedFPDataSource) : null" [checked]="directiveObj.selection.hasValue() && directiveObj.isAllSelected(approvedFPDataSource)" [indeterminate]="directiveObj.selection.hasValue() && !directiveObj.isAllSelected(approvedFPDataSource)"
+                                    [aria-label]="directiveObj.checkboxLabel(approvedFPDataSource)">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="centerAlign">
+                                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? directiveObj.selection.toggle(row) : null" [checked]="directiveObj.selection.isSelected(row)" [aria-label]="directiveObj.checkboxLabel(approvedFPDataSource,row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="srno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                Sr. No. </th>
+                            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ppoNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPO Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                <a href="javascript:void(0)">{{element.ppoNo}}</a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Name</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.name}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="caseType">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Case Type</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.caseType}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="inwardDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Inward Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.inwardDate}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="commenecementDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Commenecement Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.commenecementDate}}
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="approvedFPColumn"></tr>
+                        <tr mat-row *matRowDef="let row; columns: approvedFPColumn;"></tr>
+
+                    </table>
+                </div>
+
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Save As Draft">
+                        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+                            save
+                        </i>
+                        Save as Draft
+                    </button>
+                    <button mat-raised-button type="submit" class="green" title="Submit">
+                        <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit</button>
+                    <button type="reset" mat-raised-button color="accent" title="Reset">
+                        <i class="material-icons" title="Reset" aria-hidden="true">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                    <button type="button" mat-raised-button class="btnClose" title="Close">
+                        <i class="material-icons" title="Close" aria-hidden="true">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,471 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Challan Preparation at Counter</div>
+
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Receipt Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Challan Preparation at Counter</li>
+            </ol>
+        </nav>
+        <form [formGroup]="challanPreparationForm">
+
+            <!--Payer Details-->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Payer Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <!--Name of the Payer-->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Name of the Payer"
+                                        formControlName="payerName" maxlength="100" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.payerName.touched || (challanPreparationForm.controls.payerName.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.payerName.errors?.required">
+                                            {{errorMessages.NAME_PAYERS}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!--Phone-->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Mobile No." formControlName="phone"
+                                        maxlength="10" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.phone.touched || (challanPreparationForm.controls.phone.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.phone.errors?.required">
+                                            {{errorMessages.MOBILE_NO}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!--email-->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Email Id" formControlName="email"
+                                        maxlength="20">
+                                </mat-form-field>
+                            </div>
+
+                            <!--Date-->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="date" [matDatepicker]="date" [max]='maxDate'
+                                        placeholder="Date" readonly required>
+                                    <mat-datepicker-toggle matSuffix [for]="date">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #date></mat-datepicker>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.date.touched || (challanPreparationForm.controls.date.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.date.errors?.required">
+                                            {{errorMessages.DATE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Challan Details-->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Challan Details</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <!--From Date-->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="fromDate" [matDatepicker]="fromDate"
+                                        placeholder="From Date" readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="fromDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #fromDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <!--To Date-->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="toDate" [matDatepicker]="toDate"
+                                        placeholder="To Date" readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="toDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #toDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <!--Challan Type-->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='cType' formControlName='cType' placeholder='Challan Type'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='challanTypeCtrl'
+                                                [placeholderLabel]="'Select Challan Type ...'"
+                                                [noEntriesFoundLabel]="'no matching Challan Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of challanType_list | filterSelectInput : challanTypeCtrl.value : 'viewValue'"
+                                            [value]="item.value" (click)="selectChallanType(item.value)">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+
+                                </mat-form-field>
+                            </div>
+                            <!--Deposit Type-->
+                            <div class="col-sm-3" *ngIf="isSelectedDeposite">
+                                <mat-form-field>
+                                    <mat-select name='depositType1' formControlName='depositType1'
+                                        placeholder='Deposit Type'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='depositType1Ctrl'
+                                                [placeholderLabel]="'Select Deposit Type ...'"
+                                                [noEntriesFoundLabel]="'no matching Deposit Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of deposit1Type_list | filterSelectInput : depositType1Ctrl.value : 'viewValue'"
+                                            [value]="item.value" (click)="selectDepositType(item.value)">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="showSubDeposit && isSelectedDeposite">
+                                <mat-form-field>
+                                    <mat-select formControlName='subDepositType' placeholder='Sub Deposit Type'
+                                        (selectionChange)="selectSubDeposit($event.value)">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='subDepositTypeCtrl'
+                                                [placeholderLabel]="'Select sub Deposit Type ...'"
+                                                [noEntriesFoundLabel]="'no matching sub Deposit Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of subDeposit_list | filterSelectInput : subDepositTypeCtrl.value : 'viewValue'"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!--PDPLA No-->
+                            <div class="col-sm-3" *ngIf="isSelectedDeposite">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="PDPLA No." formControlName="pdpla">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="mat-elevation-z8 table-responsive mt-2">
+                                <table mat-table [dataSource]="dataSourceClhallanPre" width="100%" matSort
+                                    aria-describedby="closeaccount">
+                                    <ng-container matColumnDef="pCode">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Purpose
+                                            Description</th>
+                                        <td mat-cell *matCellDef="let item">
+                                            <mat-form-field floatLabel="never"
+                                                *ngIf="isSelectedDeposite && !showSubDeposit">
+                                                <mat-select name="pCodeCtrl" formControlName="pCode">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                            [placeholderLabel]="'Select Purpose  ...'"
+                                                            [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option
+                                                        *ngFor="let purp of purposeForDeposit_list | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                        [value]="purp.value" (click)="selectChallan1(purp.viewValue)">
+                                                        {{purp.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field floatLabel="never" *ngIf="isSelectedReceipt">
+                                                <mat-select name="pCodeCtrl" formControlName="pCode">
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                            [placeholderLabel]="'Select Purpose  ...'"
+                                                            [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option
+                                                        *ngFor="let purp of purpose | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                        [value]="purp.value" (click)="selectChallan1(purp.viewValue)">
+                                                        {{purp.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <!-- if challan type deposit and sub deposit type is selected -->
+                                            <mat-form-field floatLabel="never"
+                                                *ngIf="showSubDeposit && !isSelectedReceipt && isSelectedDeposite">
+                                                <mat-select name="pCodeCtrl" formControlName="purposeDescription"
+                                                    disabled>
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="pCodeCtrl"
+                                                            [placeholderLabel]="'Select Purpose  ...'"
+                                                            [noEntriesFoundLabel]="'no matching Purpose  found'">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option
+                                                        *ngFor="let purp of subDepositDetial_list | filterSelectInput : pCodeCtrl.value : 'viewValue'"
+                                                        [value]="purp.value">
+                                                        {{purp.viewValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </td>
+                                        <td class="text-left" mat-footer-cell *matFooterCellDef>Total Amount
+                                            <br> Total Amount In Words</td>
+
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="pCode1">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Deposit Type
+                                            Purpose</th>
+
+                                        <td mat-cell *matCellDef="let element">
+                                            <div *ngIf="isSelected2">
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput type="text" formControlName="pCode1">
+                                                </mat-form-field>
+                                            </div>
+                                        </td>
+
+                                        <td mat-footer-cell *matFooterCellDef></td>
+
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="mjrHead">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head
+                                        </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="mjrHead">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+
+                                    </ng-container>
+
+
+
+                                    <ng-container matColumnDef="subMjrHead">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub-Major Head
+                                        </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="subMjrHead">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="mrHead">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Minor Head
+                                        </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="mrHead">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="subHead">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Sub Head</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="subHead">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+
+                                    </ng-container>
+
+
+                                    <ng-container matColumnDef="amt">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <mat-form-field class="example-full-width" class="rightAlign">
+                                                <input tabindex="0" matInput [(ngModel)]="element.amt"
+                                                    decimalLimitTwoOnly value="{{element.amt}}" decimalPoint2
+                                                    [ngModelOptions]="{standalone: true}">
+                                            </mat-form-field>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                                            {{totalExpeAmount() | number:'1.2-2'}}
+                                            <br>{{totalExpeAmountWords()}}
+                                        </td>
+
+                                    </ng-container>
+
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"
+                                            [ngStyle]="{'width':'4%'}">
+                                            Action</th>
+                                        <td mat-cell *matCellDef="let element; let i=index">
+                                            <table class="iconTable" aria-describedby="actionBtn">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="30">
+                                                            <i class="material-icons plus add" aria-hidden="true"
+                                                                *ngIf="(i == dataSourceClhallanPre.data.length - 1)"
+                                                                (click)="addLeave(i);">
+                                                                add
+                                                            </i>
+                                                        </td>
+                                                        <td width="30">
+                                                            <i class="material-icons plus delete" aria-hidden="true"
+                                                                *ngIf="(dataSourceClhallanPre.data.length > 1)"
+                                                                (click)="deletExpenditureRow(i)">
+                                                                delete
+                                                            </i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+
+                                    </ng-container>
+
+                                    <!-- Header Section Of table -->
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnschallnPreListing"></tr>
+
+                                    <!-- Data Fetch From .TS File to table -->
+                                    <tr mat-row
+                                        *matRowDef="let row; let i = index;columns: displayedColumnschallnPreListing;">
+                                    </tr>
+
+                                    <tr mat-footer-row *matFooterRowDef="displayedColumnschallnPreListing"></tr>
+
+                                </table>
+                                <!-- table ends -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Payment mode-->
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Payment Mode</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <!--Payment mode-->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='paymentMode' formControlName='paymentMode'
+                                        placeholder='Payment Mode' required
+                                        (selectionChange)="selectPaymentMode($event.value)">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='paymentModeCtrl'
+                                                [placeholderLabel]="'Select Major Head ...'"
+                                                [noEntriesFoundLabel]="'no matching Major Head found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let item of paymentMode_list | filterSelectInput : paymentModeCtrl.value : 'viewValue'"
+                                            [value]="item.value" (click)="selectChallan(item.value)">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.paymentMode.touched || (challanPreparationForm.controls.paymentMode.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.paymentMode.errors?.required">
+                                            {{errorMessages.PAYMENT_MODE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Cheque No -->
+                            <div class="col-sm-3" *ngIf="isSelectedCheque">
+                                <mat-form-field>
+                                    <input matInput formControlName="chequeNo" placeholder="Cheque No" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.chequeNo.touched || (challanPreparationForm.controls.chequeNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.chequeNo.errors?.required">
+                                            {{errorMessages.POSTAL_ORDER}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Demand Draft No -->
+                            <div class="col-sm-3" *ngIf="isSelectedDD">
+                                <mat-form-field>
+                                    <input matInput formControlName="ddNo" placeholder="Demand Draft No" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.ddNo.touched || (challanPreparationForm.controls.ddNo.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.ddNo.errors?.required">
+                                            {{errorMessages.POSTAL_ORDER}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!--Postal Order-->
+                            <div class="col-sm-3" *ngIf="isSelectedPostalOrder">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder=" Postal Order No"
+                                        formControlName="postalOrder" required maxlength="15">
+                                    <div class="error-wrapper"
+                                        *ngIf="challanPreparationForm.controls.postalOrder.touched || (challanPreparationForm.controls.postalOrder.errors && isSubmitted)">
+                                        <mat-error *ngIf="challanPreparationForm.controls.postalOrder.errors?.required">
+                                            {{errorMessages.POSTAL_ORDER}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Action Buttons-->
+            <div class="form-action-button">
+
+                <button mat-raised-button type="submit" class="green" (click)="onSave();">
+                    <i class="material-icons" aria-hidden="true" title="done">
+                        done
+                    </i> Submit</button>
+
+                <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                    <i class="material-icons" aria-hidden="true" title="Listing">
+                        list
+                    </i>
+                    Listing
+                </button>
+
+                <button type="button" mat-raised-button class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="close">
+                        close
+                    </i>
+                    Close
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

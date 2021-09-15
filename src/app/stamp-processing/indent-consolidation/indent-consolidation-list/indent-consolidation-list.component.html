@@ -1,0 +1,340 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div class="col-md-4 col-sm-12 title">Indent Consolidation - List</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Indent Consolidation</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Search Section Starts-->
+      <mat-accordion class="search-accordian">
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <div class="heading-section">
+              Search
+            </div>
+          </mat-expansion-panel-header>
+          <div #parentGrids>
+            <form class="col-sm-12" [formGroup]="indentConsolidationListForm">
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="finYear" placeholder="Financial Year" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'"
+                          [noEntriesFoundLabel]="'no matching Financial Year found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let FY of finYear_list | filterSelectInput:finYearCtrl.value"
+                        [value]="FY.value">
+                        {{FY.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                    <div class="error-wrapper"
+                      *ngIf="indentConsolidationListForm.controls.finYear.touched && (indentConsolidationListForm.controls.finYear.errors)">
+                      <mat-error *ngIf="indentConsolidationListForm.controls.finYear.errors.required">
+                        {{errorMessages.FIN_YEAR}}
+                      </mat-error>
+                    </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="fromDate" placeholder="Indent From Date" [matDatepicker]="picker">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="toDate" placeholder="Indent To Date" [matDatepicker]="picker1">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <input matInput formControlName="indNumber" placeholder="Indent Number">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="indType" placeholder="Type of Indent">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="indTypeCtrl" [placeholderLabel]="'Find Indent For...'"
+                          [noEntriesFoundLabel]="'no matching Indent found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let ch of indType_List | filterSelectInput:indTypeCtrl.value"
+                        [matTooltip]="ch.viewValue" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="refNo" placeholder="Reference No.">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="refFromDate" placeholder="Reference From Date"
+                      [matDatepicker]="picker2">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="refToDate" placeholder="Reference To Date"
+                      [matDatepicker]="picker3">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker #picker3></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="receive" #receiveVal placeholder="Received From / Sent To">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="receiveCtrl"
+                          [placeholderLabel]="'Find Received From / Sent To...'"
+                          [noEntriesFoundLabel]="'no matching Received From / Sent To found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let stm of receive_List | filterSelectInput:receiveCtrl.value"
+                        [value]="stm.value">
+                        {{stm.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div *ngIf="receiveVal.value=='1'" class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="recFrom" placeholder="Received From">
+                  </mat-form-field>
+                </div>
+
+                <div *ngIf="receiveVal.value=='2'" class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="sentTo" placeholder="Sent To">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="lyingWith" placeholder="Lying with">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                      <mat-select formControlName="wStatus" placeholder="Workflow Status">
+                          <mat-option>
+                              <ngx-mat-select-search [formControl]="wStatusCtrl" [placeholderLabel]="'Find Workflow Status...'"
+                              [noEntriesFoundLabel]="'no Workflow Status found'">
+                              </ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option>-- None --</mat-option>
+                          <mat-option *ngFor="let req of wStatus_List | filterSelectInput:statusCtrl.value" [value]="req.value">
+                              {{req.viewValue}}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="status" placeholder="Status">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Find Status...'"
+                          [noEntriesFoundLabel]="'no matching Status found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option *ngFor="let stm of status_List | filterSelectInput:statusCtrl.value"
+                        [value]="stm.value">
+                        {{stm.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </form>
+
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="search">search</i>
+                Search
+              </button>
+
+              <button type="reset" mat-raised-button color="accent" (click)="clearForm()"><i class="material-icons"
+                  aria-hidden="true" title="reset">
+                  restore
+                </i>
+                Reset
+              </button>
+            </div>
+
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <!-- Search Section Ends-->
+
+      <div class="mat-elevation-z8 customresponsive mt-2">
+        <!-- Table Section -->
+
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" aria-describedby="indentConsolidation">
+
+          <!-- Sr. No.  -->
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+          </ng-container>
+
+          <!-- Financial Year -->
+          <ng-container matColumnDef="fYear">
+            <th mat-header-cell *matHeaderCellDef scope="row">Financial Year</th>
+            <td mat-cell *matCellDef="let element"> {{element.fYear}} </td>
+          </ng-container>
+
+          <!-- No. of Indents -->
+          <ng-container matColumnDef="indNo">
+            <th mat-header-cell *matHeaderCellDef scope="row">No. of Indents</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign">
+              <a class="hyper-link" [routerLink]="'../indent-number-list'">{{element.indNo}}</a>
+            </td>
+          </ng-container>
+
+          <!-- Type of Indent -->
+          <ng-container matColumnDef="indType">
+            <th mat-header-cell *matHeaderCellDef scope="row">Type of Indent</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.indType}} </td>
+          </ng-container>
+
+          <!-- Indent Number -->
+          <ng-container matColumnDef="cIndentNumber">
+            <th mat-header-cell *matHeaderCellDef scope="row">Indent Number</th>
+            <td mat-cell *matCellDef="let element" style="max-width: 200px;"> {{element.cIndentNumber}} </td>
+          </ng-container>
+
+          <!-- Referene Number -->
+          <ng-container matColumnDef="refNo">
+            <th mat-header-cell *matHeaderCellDef scope="row">Reference No.</th>
+            <td mat-cell *matCellDef="let element"> {{element.refNo}} </td>
+          </ng-container>
+
+          <!-- Received From Received On -->
+          <ng-container matColumnDef="recFromOn">
+            <th mat-header-cell *matHeaderCellDef scope="row">Received From Received On</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.recFromOn}} </td>
+          </ng-container>
+
+          <!-- Sent To Sent On -->
+          <ng-container matColumnDef="sentToON">
+            <th mat-header-cell *matHeaderCellDef scope="row">Sent To Sent On</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.sentToON}} </td>
+          </ng-container>
+
+          <!-- Lying With -->
+          <ng-container matColumnDef="lyingWith">
+            <th mat-header-cell *matHeaderCellDef scope="row">Lying With</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.lyingWith}} </td>
+          </ng-container>
+
+          <!-- Worfklow Status -->
+          <ng-container matColumnDef="wStatus">
+            <th mat-header-cell *matHeaderCellDef scope="row">Worfklow Status</th>
+            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.wStatus}} </td>
+          </ng-container>
+
+
+          <!-- Status -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+          </ng-container>
+
+
+          <!-- Action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+            <td mat-cell *matCellDef="let element;let i=index">
+              <div class="action-btn-i centerAlign">
+                <a [routerLink]="'../indent-consolidated'">
+                  <i aria-hidden="true" *ngIf="element.status==='Pending' || element.status==='Draft'"
+                    class="material-icons plus edit-icon" title="Edit">
+                    edit
+                  </i>
+                </a>
+
+                <a *ngIf="element.status==='-'" [routerLink]="'../indent-consolidated'">
+                  <i aria-hidden="true" class="material-icons plus restore" title="Consolidate">device_hub</i></a>
+
+                <a (click)="onView()">
+                  <i aria-hidden="true" *ngIf="element.status!='-'" class="material-icons plus view-icon"
+                    title="View Consolidated Indent">
+                    remove_red_eye
+                  </i>
+                </a>
+
+                <a *ngIf="element.status!='-'">
+                  <i class="material-icons plus" (click)="showHistoryDialog()" aria-hidden="true"
+                    title="History Detail">receipt</i>
+                </a>
+
+
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+      </div>
+
+
+      <!-- Action Buttons -->
+      <div class="form-action-button">
+
+        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="close">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

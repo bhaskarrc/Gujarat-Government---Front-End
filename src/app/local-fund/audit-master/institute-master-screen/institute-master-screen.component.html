@@ -1,0 +1,286 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading-section -->
+    <div class="heading-section ng-star-inserted">
+      Audit Master
+      <div class="font-heading"><strong>{{referenceNumber}}</strong> 19-20/LF/AM/001
+      </div>
+      <div class="font-heading"><strong>{{referenceNumberDate}} </strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Audit Master</li>
+      </ol>
+    </nav>
+
+    <!-- form -->
+    <form [formGroup]="instituteMasterScreenForm" (ngSubmit)="submitFormData()">
+      <div class="box box-primary">
+        <div class="box-header">{{ instituteMasterScreenFormInfo }}</div>
+        <div class="box-body">
+          <div class="row">
+
+            <!-- financial year -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="financialYear" placeholder="Financial Year" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="financialYearCtrl"
+                      [placeholderLabel]="'Find Financial Year...'"
+                      [noEntriesFoundLabel]="'No matching Financial Year found'" numberHypenOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of financialYearList |
+                      filterSelectInput:financialYearCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.financialYear.touched || (instituteMasterScreenForm.controls.financialYear.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.financialYear.errors?.required">
+                    {{errorMessages.FIN_YEAR}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- working days -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="workingDays" placeholder="Working Days" required numbersOnlyKeypress>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.workingDays.touched || (instituteMasterScreenForm.controls.workingDays.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.workingDays.errors?.required">
+                    {{errorMessages.DAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- district   -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="districtName" placeholder="District" required
+                  (selectionChange)="selectDistrict()">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="districtNameCtrl" [placeholderLabel]="'Find District Name...'"
+                      [noEntriesFoundLabel]="'No matching District Name found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of districtNameList |
+                      filterSelectInput:districtNameCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.districtName.touched || (instituteMasterScreenForm.controls.districtName.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.districtName.errors?.required">
+                    {{errorMessages.NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- taluka name -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="talukaName" placeholder="Taluka Name" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="talukaNameCtrl" [placeholderLabel]="'Find Taluka Name...'"
+                      [noEntriesFoundLabel]="'No matching Taluka Name found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of talukaNameList |
+                      filterSelectInput:talukaNameCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.talukaName.touched || (instituteMasterScreenForm.controls.talukaName.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.talukaName.errors?.required">
+                    {{errorMessages.NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute name -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="instituteName" placeholder="Institute Name" required
+                  alphabetsSpaceOnly>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.instituteName.touched || (instituteMasterScreenForm.controls.instituteName.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.instituteName.errors?.required">
+                    {{errorMessages.INST_NAME}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- institute type -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="instituteType" placeholder="Institute Type" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                      [placeholderLabel]="'Find Institute Type...'"
+                      [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of instituteTypeList |
+                      filterSelectInput:instituteTypeCtrl.value" [value]="item.value" matTooltip="{{item.viewValue}}">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.instituteType.touched || (instituteMasterScreenForm.controls.instituteType.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.instituteType.errors?.required">
+                    {{errorMessages.INSTITUTE_TYPE}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- others -->
+            <div class="col-sm-3" *ngIf="instituteMasterScreenForm.controls.instituteType.value === 'OTH'">
+              <mat-form-field>
+                <input matInput formControlName="others" placeholder="Others" required alphabetsSpaceOnly>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.others.touched || (instituteMasterScreenForm.controls.others.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.others.errors?.required">
+                    {{errorMessages.REASON}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- email -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input type="email" matInput formControlName="emailId" placeholder=" Institute Email ID" required>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.emailId.touched || (instituteMasterScreenForm.controls.emailId.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.emailId.errors?.required">
+                    {{errorMessages.EMAIL}}
+                  </mat-error>
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.emailId.errors?.email">
+                    {{errorMessages.VALID_EMAIL}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- sanctioned man days -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="sanctionedMandays" placeholder="Sanctioned Man-days"
+                  numbersOnlyKeypress required>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.sanctionedMandays.touched || (instituteMasterScreenForm.controls.sanctionedMandays.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.sanctionedMandays.errors?.required">
+                    {{errorMessages.MANDAYS}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- audit chargable or not -->
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select formControlName="auditChargable" placeholder="Audit Chargeble or Not" required>
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="auditChargableCtrl"
+                      [placeholderLabel]="'Find Audit Chargeble...'"
+                      [noEntriesFoundLabel]="'No matching Audit Chargeble found'" alphabetsSpaceOnly>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let item of auditChargableList |
+                      filterSelectInput:auditChargableCtrl.value" [value]="item.value">
+                    {{item.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <div class="error-wrapper"
+                  *ngIf="instituteMasterScreenForm.controls.auditChargable.touched || (instituteMasterScreenForm.controls.auditChargable.errors && isSubmitted)">
+                  <mat-error *ngIf="instituteMasterScreenForm.controls.auditChargable.errors?.required">
+                    {{errorMessages.YES_NO}}
+                  </mat-error>
+                </div>
+              </mat-form-field>
+            </div>
+
+            <!-- additional mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="additionalMandays" numbersOnlyKeypress
+                  placeholder="Additional Man-days">
+              </mat-form-field>
+            </div>
+
+            <!-- total mandays -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input matInput formControlName="totalMandays" placeholder="Total Man-days"
+                  [value]="calculateTotalMandays()" readonly>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- action button -->
+    <div class="form-action-button">
+
+      <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="onSaveAsDraft();">
+        <i class="material-icons" title="Save As Draft" aria-hidden="true">
+          save
+        </i>
+        Save as Draft
+      </button>
+
+      <button mat-raised-button type="submit" class="green" (click)="submitForm();" title="Submit">
+        <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+        Submit</button>
+
+      <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+        <i class="material-icons" title="Reset" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Listing"
+        [routerLink]="['../institute-master-listing']" routerLinkActive="router-link-active">
+        <i class="material-icons" title="Listing" aria-hidden="true">
+          list
+        </i>
+        Listing
+      </button>
+
+      <button type="button" mat-raised-button class="print-btn" title="Print">
+        <i class="material-icons" title="Print" aria-hidden="true">
+          print
+        </i>
+        Print
+      </button>
+
+      <button type="button" mat-raised-button class="btnClose" title="Close">
+        <i class="material-icons" title="Close" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading-section -->
+    <div class="heading-section ng-star-inserted">
+      Pending Institute Audit Master
+    </div>
+
+    <!-- breadcrumbb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Local Fund</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Pending Institute Audit Master</li>
+      </ol>
+    </nav>
+
+    <!-- Search Criteria -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search Criteria
+          </div>
+        </mat-expansion-panel-header>
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="searchForm" (ngSubmit)="searchFormData()">
+            <div class="row">
+
+              <!-- financial year -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="financialYear" placeholder="Financial Year">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="financialYearCtrl"
+                        [placeholderLabel]="'Find Financial Year...'"
+                        [noEntriesFoundLabel]="'No matching Financial Year found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let item of financialYearList |
+                        filterSelectInput:financialYearCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- district name -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="districtName" placeholder="District Name">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="districtNameCtrl"
+                        [placeholderLabel]="'Find District Name...'"
+                        [noEntriesFoundLabel]="'No matching District Name found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let item of districtNameList |
+                        filterSelectInput:districtNameCtrl.value" [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- institute name -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="instituteName" placeholder="Institute Name">
+                </mat-form-field>
+              </div>
+
+              <!-- institute type -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="instituteType" placeholder="Institute Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="instituteTypeCtrl"
+                        [placeholderLabel]="'Find Institute Type...'"
+                        [noEntriesFoundLabel]="'No matching Institute Type found'" alphabetsSpaceOnly>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>--None--</mat-option>
+                    <mat-option *ngFor="let item of instituteTypeList |
+                        filterSelectInput:instituteTypeCtrl.value" [value]="item.value"
+                      matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- action button -->
+        <div class="form-action-button">
+
+          <button type="submit" mat-raised-button color="primary" (click)="onSearch();">
+            <i class="material-icons" aria-hidden="true" title="search">search</i>
+            Search
+          </button>
+
+          <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+            <i class="material-icons" aria-hidden="true" title="reset">
+              restore
+            </i>
+            Reset
+          </button>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Listing-->
+    <div class="mat-elevation-z8 row table-responsive mt-2">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="establishmentReportListingData">
+
+        <!-- sr no -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Sr.No.
+          </th>
+          <td mat-cell *matCellDef="let row;let i =index" class="centerAlign">
+            {{i+1}}
+          </td>
+        </ng-container>
+
+        <!-- financial year -->
+        <ng-container matColumnDef="financialYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Financial Year</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.financialYear}}
+          </td>
+        </ng-container>
+
+        <!-- district name -->
+        <ng-container matColumnDef="districtName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">District Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.districtName}}
+          </td>
+        </ng-container>
+
+        <!-- institute name -->
+        <ng-container matColumnDef="instituteName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Name</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteName}}
+          </td>
+        </ng-container>
+
+        <!-- institute type -->
+        <ng-container matColumnDef="instituteType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Institute Type</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.instituteType}}
+          </td>
+        </ng-container>
+
+        <!-- sanctioned man days -->
+        <ng-container matColumnDef="sanctionedManDays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="gray-color" scope="row">Sanctioned Mandays</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.sanctionedManDays}}
+          </td>
+        </ng-container>
+
+        <!-- additional mandays -->
+        <ng-container matColumnDef="additionalManDays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Additional Mandays</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.additionalManDays}}
+          </td>
+        </ng-container>
+
+        <!-- total mandays -->
+        <ng-container matColumnDef="totalManDays">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Total Mandays</th>
+          <td mat-cell *matCellDef="let element;let i= index;">
+            {{element.totalManDays}}
+          </td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      </table>
+
+      <!-- paginator -->
+      <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+
+  </div>
+</div>

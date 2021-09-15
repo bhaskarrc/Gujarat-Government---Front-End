@@ -1,0 +1,663 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Revision of Pay</div>
+            <div class="font-heading  4">
+                <strong>Reference Number:</strong> 19-20/PVU/PCC/001</div>
+            <div class="font-heading col-sm-6 col-md-6 col-lg-4 text-right">
+                <b>Reference Date:</b> {{ Currentdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <div class="panel-group">
+            <form [formGroup]="PayCommissionChanges" (ngSubmit)="PayCommission()">
+                <div class="box box-primary">
+                    <div class="box-header">Revision of Pay</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-label>Pay commision for</mat-label>
+                                    <mat-select formControlName="paycommision" required #changeVal (selectionChange)="changeEvent($event)">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="PaycommisionCtrl" [placeholderLabel]="'Find Pay Commision...'" [noEntriesFoundLabel]="'No Matching Pay Commision found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let PC of Paycommision | filterSelectInput:PaycommisionCtrl.value" [value]="PC.value">
+                                            {{PC.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="PayCommissionChanges.controls.paycommision.touched && PayCommissionChanges.controls.paycommision.errors">
+                                        <mat-error *ngIf="PayCommissionChanges.controls.paycommision.errors.required">
+                                            {{errorMessages.PAY_COMMISSION}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="changeVal.value == 1">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" value="01/01/2006" placeholder="Pay Commission Effective Date" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="changeVal.value == 2">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" value="01/01/2016" placeholder="Pay Commission Effective Date" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="changeVal.value == 1">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" value="01/07/2006" placeholder="Date of Next Increment" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3" *ngIf="changeVal.value == 2">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" value="01/07/2016" placeholder="Date of Next Increment" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-label>Class </mat-label>
+                                    <mat-select formControlName="class">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="ClassCtrl" [placeholderLabel]="'Find Class...'" [noEntriesFoundLabel]="'No Matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let PR of Class | filterSelectInput:ClassCtrl.value" [value]="PR.value">
+                                            {{PR.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-label>Designation </mat-label>
+                                    <mat-select formControlName="designation">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="DesignationCtrl" [placeholderLabel]="'Find Designation...'" [noEntriesFoundLabel]="'No Matching Designation found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let DG of Designation | filterSelectInput:DesignationCtrl.value" [value]="DG.value">
+                                            {{DG.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" autocomplete="off" placeholder="Employee Number" formControlName="empNumber">
+                                    <mat-icon matSuffix (click)="openDialogEmployeeNumber()">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="form-action-button">
+                            <button type="search" mat-raised-button color="primary" (click)="toggle()">
+                                <i class="material-icons">search</i>Get List
+                            </button>
+                            <button type="reset" mat-raised-button color="accent" (click)="resetForm()">
+                                <i class="material-icons"> restore</i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <div *ngIf="show">
+                <div class="box box-primary">
+                    <div class="box-header" *ngIf="!sevenPayList">Employee Eligible for 6th Pay Commission</div>
+                    <div class="box-header" *ngIf="sevenPayList">Employee Eligible for 7th Pay Commission</div>
+                    <div class="box-body">
+                        <table mat-table [dataSource]="dataSource" matSort class="table-responsive" *ngIf="sevenPayList">
+                            <ng-container matColumnDef="checkBox">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Check Box
+                                </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-checkbox [(ngModel)]="SevenPaySelectedAll" (change)="checkIfAllSevenPayExeSelected()"></mat-checkbox>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="srno">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sr. No </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{i+1}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Number</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeNumber}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeName">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="office">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Office Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.office}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="dateOfJoining">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Date of Joining</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.dateOfJoining}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="payBand">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.payBand}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="payBandValue">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band Value</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.payBandValue}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="gradePay">
+                                <th mat-header-cell *matHeaderCellDef>Grade Pay </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.gradePay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="basicPaySix">
+                                <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.basicPaySix}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="payLevel">
+                                <th mat-header-cell *matHeaderCellDef>7th Pay Level</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.payLevel}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="cellId">
+                                <th mat-header-cell *matHeaderCellDef>7th Pay Cell Id</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.cellId}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="basicPaySeven">
+                                <th mat-header-cell *matHeaderCellDef>7th Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field class="full-width">
+                                        <input matInput type="text" value="12000" readonly>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="effectiveDate">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">7th Pay Effective Date </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="Effectivepicker1" placeholder="7th Pay Effective Date" [formControl]="eftDate" (dateInput)="changeDateSevenpay('input', $event)" (dateChange)="changeDateSevenpay('change', $event)">
+                                        <mat-datepicker-toggle matSuffix [for]="Effectivepicker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #Effectivepicker1></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nextIncrementDate">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Date of Next Increment</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="Increment" placeholder="Date of Next Increment" [formControl]="nextIncrement">
+                                        <mat-datepicker-toggle matSuffix [for]="Increment"></mat-datepicker-toggle>
+                                        <mat-datepicker #Increment></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonChangeEffectiveDate">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Reason for change in Effective Date</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select [(ngModel)]="element.reasonChangeEffectiveDate_name">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="reasonChangeEffectiveDateCtrl" [placeholderLabel]="'Find Reason for change in Effective Date...'" [noEntriesFoundLabel]="'no matching Reason for change in Effective Date found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let reasonChangeEffectiveDate of reasonChangeEffectiveDate_list | filterSelectInput: reasonChangeEffectiveDateCtrl.value" [value]="reasonChangeEffectiveDate.value">
+                                                {{reasonChangeEffectiveDate.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="remarks">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Remarks </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Remarks" [required]="required"></textarea>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="checkbox1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">
+                                    <mat-checkbox [(ngModel)]="SevenPaySelectedAll" (change)="selectSevenPayAll()"></mat-checkbox>
+                                </th>
+                            </ng-container>
+                            <ng-container matColumnDef="srno1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sr. No </th>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Employee Number</th>
+                            </ng-container>
+                            <ng-container matColumnDef="employeename1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Employee Name</th>
+                            </ng-container>
+                            <ng-container matColumnDef="office1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Office Name </th>
+                            </ng-container>
+                            <ng-container matColumnDef="dateofjoining1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Date of Joining</th>
+                            </ng-container>
+                            <ng-container matColumnDef="currentdetails">
+                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Current Pay Details </th>
+                            </ng-container>
+                            <ng-container matColumnDef="reviseDetails1">
+                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">Revised Pay Details</th>
+                            </ng-container>
+                            <ng-container matColumnDef="payopteddate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">7th Pay Effective Date </th>
+                            </ng-container>
+                            <ng-container matColumnDef="incrementeffectivedate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Date of Next Increment</th>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonChangeEffectiveDate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Reason for change in Effective Date</th>
+                            </ng-container>
+                            <ng-container matColumnDef="remarks1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks </th>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="['checkbox1','srno1','employeeNumber1','employeename1','office1','dateofjoining1','currentdetails','reviseDetails1','payopteddate1','incrementeffectivedate1', 'reasonChangeEffectiveDate1', 'remarks1']">
+                            </tr>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+                        </table>
+
+
+
+
+
+
+                        <table mat-table [dataSource]="dataSourceSixPay" matSort class="table-responsive" *ngIf="!sevenPayList">
+                            <ng-container matColumnDef="checkBox">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Check Box
+                                </th>
+
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-checkbox [(ngModel)]="SevenPaySelectedAll" (change)="checkIfAllSevenPayExeSelected()"></mat-checkbox>
+                                </td>
+
+                            </ng-container>
+                            <ng-container matColumnDef="srno">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Sr. No</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{i+1}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Number</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeNumber}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeName">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Employee Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="office">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Office Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.office}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="dateOfJoining">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Date of Joining</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.dateOfJoining}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="payScale">
+                                <th mat-header-cell *matHeaderCellDef>Pay Scale</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.payScale}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="basicPay">
+                                <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.basicPay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="PayBand">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.payBand}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="bandValueSix">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band Value</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.bandValueSix}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="gradePay">
+                                <th mat-header-cell *matHeaderCellDef>Grade Pay </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.gradePay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="basicPaySix">
+                                <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.basicPaySix}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="openDateSixPay">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">6th Pay Effective Date </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="sixpay1" placeholder="6th Pay Benefit effective Date" [formControl]="sixPayEffectiveDate" (dateInput)="changeDate('input', $event)" (dateChange)="changeDate('change', $event)">
+                                        <mat-datepicker-toggle matSuffix [for]="sixpay1"></mat-datepicker-toggle>
+                                        <mat-datepicker #sixpay1></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="nextIncrementDate">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Date of Next Increment</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="sixpay2" placeholder="Benefit effective Date" [formControl]="benefitSixPay">
+                                        <mat-datepicker-toggle matSuffix [for]="sixpay2"></mat-datepicker-toggle>
+                                        <mat-datepicker #sixpay2></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonChangeEffectiveDate">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Reason for change in Effective Date</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-form-field class="full-width">
+                                        <mat-select [(ngModel)]="element.reasonChangeEffectiveDate">
+                                            <mat-option>
+                                                <ngx-mat-select-search [formControl]="reasonChangeEffectiveDateCtrl" [placeholderLabel]="'Find Reason for change in Effective Date...'" [noEntriesFoundLabel]="'no matching Reason for change in Effective Date found'">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let reasonChangeEffectiveDate of reasonChangeEffectiveDate_list | filterSelectInput: reasonChangeEffectiveDateCtrl.value" [value]="reasonChangeEffectiveDate.value">
+                                                {{reasonChangeEffectiveDate.viewValue}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="remarks">
+                                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'display': 'none'}">Remarks</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Remarks" [required]="required"></textarea>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="checkbox1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">
+                                    <mat-checkbox [(ngModel)]="SevenPaySelectedAll" (change)="selectSevenPayAll()"></mat-checkbox>
+                                </th>
+
+                            </ng-container>
+                            <ng-container matColumnDef="srno1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Sr. No</th>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Employee Number</th>
+                            </ng-container>
+                            <ng-container matColumnDef="employeename1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Employee Name</th>
+                            </ng-container>
+                            <ng-container matColumnDef="office1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Office Name </th>
+                            </ng-container>
+                            <ng-container matColumnDef="dateofjoining1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Date of Joining</th>
+                            </ng-container>
+                            <ng-container matColumnDef="currentdetails">
+                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Current Pay Details </th>
+                            </ng-container>
+                            <ng-container matColumnDef="reviseDetails1">
+                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">Revised Pay Details(6 Pay Commission)</th>
+                            </ng-container>
+                            <ng-container matColumnDef="payopteddate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">6th Pay Effective Date </th>
+                            </ng-container>
+                            <ng-container matColumnDef="benefitffectivedate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Date of Next Increment</th>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonChangeEffectiveDate1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Reason for change in Effective Date</th>
+                            </ng-container>
+
+                            <ng-container matColumnDef="remarks1">
+                                <th mat-header-cell *matHeaderCellDef [attr.rowspan]="2">Remarks</th>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="['checkbox1', 'srno1', 'employeeNumber1', 'employeename1', 'office1', 'dateofjoining1', 'currentdetails', 'reviseDetails1', 'payopteddate1', 'benefitffectivedate1', 'reasonChangeEffectiveDate1', 'remarks1']">
+                            </tr>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsSix"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsSix;let i= index;"></tr>
+                        </table>
+
+                        <mat-paginator [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+                        <div class="form-action-button">
+
+                            <button type="reset" mat-raised-button color="accent" (click)="exclude()">
+                                <i class="material-icons"> done</i>Exclude
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="showList">
+
+                <div class="box box-primary">
+                    <div class="box-header">Excluded Employee List</div>
+                    <div class="box-body">
+                        <table mat-table [dataSource]="dataSourceList" matSort *ngIf="sevenPayList">
+
+                            <ng-container matColumnDef="checkBox">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox [(ngModel)]="selectedAll" (change)="selectAll()"></mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-checkbox [(ngModel)]="element.selected" (change)="checkIfAllSelected()"></mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="srno">
+                                <th mat-header-cell *matHeaderCellDef>Sr. No</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{i+1}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber">
+                                <th mat-header-cell *matHeaderCellDef>Employee Number</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeNumber}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeName">
+                                <th mat-header-cell *matHeaderCellDef>Employee Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="officeName">
+                                <th mat-header-cell *matHeaderCellDef>Office Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.officeName}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="dateOfJoining">
+                                <th mat-header-cell *matHeaderCellDef>Date of Joining</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.dateOfJoining}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="epayBand">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.epayBand}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="gradePay">
+                                <th mat-header-cell *matHeaderCellDef>Grade Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.gradePay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="PaySevenValue">
+                                <th mat-header-cell *matHeaderCellDef>Pay Band Value</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.PaySevenValue}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="basicPay">
+                                <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.basicPay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonForExclusion">
+                                <th mat-header-cell *matHeaderCellDef>Reason for Exclusion</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.reasonForExclusion}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="remarks">
+                                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Remarks"></textarea>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedListColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedListColumns;let i= index;"></tr>
+                        </table>
+
+                        <table mat-table [dataSource]="dataSourceExeSixpay" matSort *ngIf="!sevenPayList">
+
+                            <ng-container matColumnDef="checkBox">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox [(ngModel)]="selectedSixAll" (change)="selectSixAll()"></mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-checkbox [(ngModel)]="element.selected" (change)="checkIfSixAllSelected()"></mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="srno">
+                                <th mat-header-cell *matHeaderCellDef>Sr. No </th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{i+1}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeNumber">
+                                <th mat-header-cell *matHeaderCellDef>Employee Number</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeNumber}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="employeeName">
+                                <th mat-header-cell *matHeaderCellDef>Employee Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.employeeName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="officeName">
+                                <th mat-header-cell *matHeaderCellDef>Office Name</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.officeName}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="dateOfJoining">
+                                <th mat-header-cell *matHeaderCellDef>Date of Joining</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.dateOfJoining}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="epayBand">
+                                <th mat-header-cell *matHeaderCellDef>Pay Scale</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.epayBand}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="basicPay">
+                                <th mat-header-cell *matHeaderCellDef>Basic Pay</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.basicPay}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="reasonForExclusion">
+                                <th mat-header-cell *matHeaderCellDef>Reason for Exclusion</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    {{element.reasonForExclusion}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="remarks">
+                                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                                <td mat-cell *matCellDef="let element;let i= index;">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Remarks"></textarea>
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="dataSourceListSixpay"></tr>
+                            <tr mat-row *matRowDef="let row; columns: dataSourceListSixpay;let i= index;"></tr>
+                        </table>
+
+
+                        <div class="form-action-button">
+                            <div class="centerAlign">
+                                <button mat-raised-button type="submit" class="green" (click)="include()">
+                                    <i class="material-icons">done</i> Include</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-action-button" *ngIf="show">
+
+                    <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons" title="Save">save</i>Save as Draft</button>
+                    <button mat-raised-button type="submit" class="green" (click)="include()">
+                        <i class="material-icons">done</i> Submit </button>
+                    <button type="reset" mat-raised-button color="accent">
+                        <i class="material-icons">restore</i>Reset</button>
+                    <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                        <i class="material-icons" title="Budget dashboard">close</i>Close </button>
+                    <button type="button" mat-raised-button class="print-btn">
+                        <i class="material-icons"> print</i>Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

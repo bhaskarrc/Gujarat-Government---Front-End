@@ -1,0 +1,2025 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <div class="heading-section ng-star-inserted">
+            <div>Preparation of Challan</div>
+            <div class="font-heading">
+                <b>Reference No:</b> 19-20/STM/PCTO/001</div>
+            <div class="font-heading">
+                <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Preparation of Challan</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+
+            <mat-tab-group mat-stretch-tabs>
+                <mat-tab label="Preparation Of Challan" class="full-width">
+
+                    <form [formGroup]="challanForm">
+                        <div>
+                            <mat-accordion class="search-accordian">
+                                <!-- Challan Details Entry Section Starts-->
+                                <mat-expansion-panel [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <div class="heading-section">
+                                            Challan Details
+
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    <div class="box-body">
+                                        <div #parentGrids>
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div>
+                                                        <mat-form-field class="full-width disabled">
+                                                            <input matInput type="text" formControlName="finYear"
+                                                                [value]="finYearValue" placeholder="Financial Year"
+                                                                readonly>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-3">
+                                                    <div>
+                                                        <mat-form-field class="full-width disabled">
+                                                            <input matInput type="text" formControlName="temp1"
+                                                                [value]="temp1Value" #treOff
+                                                                matTooltip="{{treOff.value}}"
+                                                                placeholder="Treasury Office" readonly>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width">
+                                                        <mat-select formControlName="challanMode" #modeChallan
+                                                            placeholder="Mode of Payment" required>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search [formControl]="challanModeCtrl"
+                                                                    [placeholderLabel]="'Find Mode of Challan...'"
+                                                                    [noEntriesFoundLabel]="'no Mode of Challan found'">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option
+                                                                *ngFor="let ven of challanMode_List | filterSelectInput:challanModeCtrl.value"
+                                                                [value]="ven.value">
+                                                                {{ven.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.challanMode.touched && (challanForm.controls.challanMode.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.challanMode.errors.required">
+                                                                {{errorMessages.MODE}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3"
+                                                    *ngIf="modeChallan.value=='2' || modeChallan.value=='1' ">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput type="text" formControlName="challan"
+                                                            [value]="challanValue" placeholder="Challan Number"
+                                                            readonly>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width">
+                                                        <input matInput class="rightAlign" type="text"
+                                                            formControlName="netAmt" placeholder="Net Amount of Challan"
+                                                            numbersOnly required>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.netAmt.touched && (challanForm.controls.netAmt.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.netAmt.errors.required">
+                                                                {{errorMessages.AMOUNT}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="disabled">
+                                                        <input matInput formControlName="chDate"
+                                                            [value]="date | date: 'dd-MMM-yyyy'"
+                                                            placeholder="Date of Challan" readonly>
+                                                        <mat-datepicker-toggle matSuffix [for]="picker" disabled>
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #picker></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                                <!-- Challan Details Entry Section Ends-->
+                            </mat-accordion>
+                        </div>
+
+                        <div class="mt-3">
+                            <mat-accordion class="search-accordian">
+                                <!-- Vendor Details Entry Section Starts-->
+                                <mat-expansion-panel [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <div class="heading-section">
+                                            Vendor / Party Details
+
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    <div class="box-body">
+                                        <div #parentGrids>
+
+                                            <div class="row">
+
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width">
+                                                        <mat-select formControlName="venParty" #venPar
+                                                            placeholder="Vendor / Party Details"
+                                                            (selectionChange)="updateColumns()" required>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search [formControl]="venPartyCtrl"
+                                                                    [placeholderLabel]="'Find Vendor / Party Details...'"
+                                                                    [noEntriesFoundLabel]="'no Vendor / Party Details found'">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option
+                                                                *ngFor="let ven of venPartyCode_List | filterSelectInput:venPartyCtrl.value"
+                                                                [value]="ven.value">
+                                                                {{ven.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.venParty.touched && (challanForm.controls.venParty.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.venParty.errors.required">
+                                                                {{errorMessages.VENDOR_PARTY}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='2'">
+                                                    <mat-form-field class="full-width">
+                                                        <input matInput type="text" formControlName="partyName"
+                                                            placeholder="Party Name" required>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.partyName.touched && (challanForm.controls.partyName.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.partyName.errors.required">
+                                                                {{errorMessages.NAME}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='2'">
+                                                    <mat-form-field class="full-width">
+                                                        <input matInput type="text" formControlName="partyadd"
+                                                            placeholder="Party Address" required>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.partyadd.touched && (challanForm.controls.partyadd.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.partyadd.errors.required">
+                                                                {{errorMessages.ADDRESS}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='2'">
+                                                    <mat-form-field class="full-width">
+                                                        <input matInput type="text" formControlName="partyMobile"
+                                                            placeholder="Party Mobile Number">
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='2'">
+                                                    <mat-form-field class="full-width">
+                                                        <input matInput type="text" formControlName="partyEmail"
+                                                            placeholder="Party Email Address">
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='1'">
+                                                    <mat-form-field class="full-width">
+                                                        <mat-select formControlName="venNameCode"
+                                                            placeholder="Vendor Name and Code" required>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search [formControl]="venNameCodeCtrl"
+                                                                    [placeholderLabel]="'Find Vendor Name and Code...'"
+                                                                    [noEntriesFoundLabel]="'no Vendor Name and Code found'">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option
+                                                                *ngFor="let ven of venNameCode_List | filterSelectInput:venNameCodeCtrl.value"
+                                                                [value]="ven.viewValue">
+                                                                {{ven.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.partyName.touched && (challanForm.controls.partyName.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.partyName.errors.required">
+                                                                {{errorMessages.NAME}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='1'">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput type="text" formControlName="vendorAddress"
+                                                            [value]="venAddVal" placeholder="Vendor Address" readonly>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='1'">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput type="text" formControlName="place"
+                                                            [value]="placeVal" placeholder="Place of Business" readonly>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='1'">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput type="text" formControlName="contact"
+                                                            [value]="contVal" placeholder="Contact Number" readonly>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-3" *ngIf="venPar.value=='1'">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput type="text" formControlName="email"
+                                                            [value]="emailVal" placeholder="Email" readonly>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                                <!-- Vendor Details Entry Section Ends-->
+                            </mat-accordion>
+                        </div>
+
+                        <div class="mt-3">
+                            <mat-accordion class="search-accordian">
+                                <!-- Stamp Details Entry Section Starts-->
+                                <mat-expansion-panel [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <div class="heading-section">
+                                            Stamp Details
+
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    <div class="box-body">
+                                        <div #parentGrids>
+
+                                            <div class="row">
+
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width">
+                                                        <mat-select formControlName="stamp" placeholder="Type of Stamp"
+                                                            required #stampType (selectionChange)="changeStamp()">
+                                                            <mat-option>
+                                                                <ngx-mat-select-search [formControl]="stampCtrl"
+                                                                    [placeholderLabel]="'Find Type of Stamp...'"
+                                                                    [noEntriesFoundLabel]="'no Stamps found'">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option
+                                                                *ngFor="let stm of stamp_List | filterSelectInput:stampCtrl.value"
+                                                                [value]="stm.value">
+                                                                {{stm.viewValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+
+                                                        <div class="error-wrapper"
+                                                            *ngIf="challanForm.controls.stamp.touched && (challanForm.controls.stamp.errors)">
+                                                            <mat-error
+                                                                *ngIf="challanForm.controls.stamp.errors.required">
+                                                                {{errorMessages.STAMP_TYPE}}
+                                                            </mat-error>
+                                                        </div>
+                                                    </mat-form-field>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                                <!-- Stamp Details Entry Section Ends-->
+                            </mat-accordion>
+                        </div>
+
+                        <div class="mt-3">
+                            <mat-accordion class="search-accordian">
+                                <mat-expansion-panel [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <div class="heading-section">
+                                            Major Head Details
+
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    <div class="box-body">
+                                        <div #parentGrids>
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput formControlName="majorHead"
+                                                            placeholder="Major Head" #majHeadVal
+                                                            [matTooltip]="majHeadVal.value" readonly>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput formControlName="subMajorHead"
+                                                            placeholder="Sub Major Head" #subMajHeadVal
+                                                            [matTooltip]="subMajHeadVal.value" readonly>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput formControlName="minorHead"
+                                                            placeholder="Minor Head" #minHeadVal
+                                                            [matTooltip]="minHeadVal.value" readonly>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <mat-form-field class="full-width disabled">
+                                                        <input matInput formControlName="subHeadCode"
+                                                            placeholder="Sub Head" #subHeadVal
+                                                            [matTooltip]="subHeadVal.value" readonly>
+                                                    </mat-form-field>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
+                    </form>
+
+                    <div class="heading-section ng-star-inserted mt-1" *ngIf="stampType.value">
+                        <div class="col-md-4 col-sm-12 title">Stamp Type</div>
+                    </div>
+                    <!-- Entry Table Section Starts-->
+                    <!-- Type of Stamp -->
+
+                    <div *ngIf="stampType.value" class="recovertTitle"><b>{{stampName}}</b></div>
+                    <table mat-table *ngIf="stampType.value != null" [dataSource]="dataSourceStamp"
+                        aria-describedby="challanprep1" class="mat-elevation-z8">
+
+                        <!-- Sr. No. -->
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                        </ng-container>
+
+                        <!-- Select -->
+                        <ng-container matColumnDef="checkbox">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Select</th>
+                            <td mat-cell *matCellDef="let item;let i = index;" class="centerAlign">
+                                <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox"
+                                    [(ngModel)]="item.checkbox" title="Select" (change)="checkboxValueChange(item)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <!-- Denomination -->
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                        </ng-container>
+
+                        <!-- Discount (%) -->
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign">{{element.disc}}%
+                            </td>
+                        </ng-container>
+
+                        <!-- Denomination Value -->
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                        </ng-container>
+
+                        <!--  No. of Stamps (Label / Stamp) -->
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="number" min="0" class="leftAlign"
+                                        [(ngModel)]="element.stampNo" required>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <!-- Total Sheet -->
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <mat-form-field class="full-width">
+                                    <input matInput type="number" min="0" class="leftAlign"
+                                        [(ngModel)]="element.sheetNo" required>
+                                </mat-form-field>
+
+                            </td>
+                        </ng-container>
+
+                        <!-- Label / Stamp In Each Sheet -->
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Total Amount -->
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                                <div *ngIf="(stampType.value!='4' && stampType.value!='8'); else CourtPapNonJud">
+                                    {{
+                                        (((element.stampSheet*element.sheetNo)+element.stampNo)*element.unitVal)
+                                    }}
+                                </div>
+                                <ng-template #CourtPapNonJud>{{(element.stampNo*element.unitVal)}}</ng-template>
+                            </td>
+                        </ng-container>
+
+                        <!-- Discount (₹) -->
+                        <ng-container matColumnDef="discRs">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (₹)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign">
+                                <div *ngIf="(stampType.value!='4' && stampType.value!='8'); else CourtPapNonJud">
+                                    {{((((element.stampSheet*element.sheetNo)+element.stampNo)*element.unitVal) * element.disc)/100  | number:'1.0-0'}}
+                                </div>
+                                <ng-template #CourtPapNonJud>
+                                    {{((element.stampNo*element.unitVal) * element.disc)/100  | number:'1.0-0'}}
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <!-- Net Amount -->
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign">
+                                <div *ngIf="(stampType.value!='4' && stampType.value!='8'); else CourtPapNonJud">
+                                    {{(((element.stampSheet*element.sheetNo)+element.stampNo)*element.unitVal) - 
+                                        (((((element.stampSheet*element.sheetNo)+element.stampNo)*element.unitVal) * element.disc)/100)  | number:'1.0-0'}}
+                                </div>
+                                <ng-template #CourtPapNonJud>
+                                    {{(element.stampNo*element.unitVal) - (((element.stampNo*element.unitVal) * element.disc)/100)  | number:'1.0-0'}}
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <!-- Remarks -->
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                        </ng-container>
+
+                        <!-- Action -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a [routerLink]="'../preparation-of-challan-to'"><i
+                                            class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                </div>
+                            </td>
+                        </ng-container>
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                    <!-- Entry Table Section Ends-->
+
+                    <!-- Action Buttons -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="whenAddClick()" title="Add">
+                            <i class="material-icons" aria-hidden="true">
+                                add
+                            </i>
+                            Add
+                        </button>
+                    </div>
+
+                    <!-- Header Table -->
+                    <table mat-table *ngIf="onAdd || onAdd2 || onAdd3 || onAdd4 || onAdd5 ||
+              onAdd6 || onAdd7 || onAdd8 || onAdd9 || onAdd10 || onAdd11 || onAdd12"
+                        [dataSource]="dataSourceFinalHeading" aria-describedby="dataSourceHeading"
+                        class="mat-elevation-z8 mt-2">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Type of Stamp</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Sheet</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="discRs">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (₹)</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd && onCheck && dataSourceFinal1.data.length > 0"
+                        [dataSource]="dataSourceFinal1" aria-describedby="challanprepFin1" class="mat-elevation-z8">
+
+                        <!-- Sr. No. -->
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Denomination -->
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Discount (%) -->
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Denomination Value -->
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- No. of Stamps (Label / Stamp) -->
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <!-- No. of Sheet -->
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <!-- Label / Stamp In Each Sheet -->
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <!-- Total Amount -->
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Net Amount -->
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Remarks -->
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Action -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab1(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <!-- Header Section Of table -->
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd2 && onCheck2 && dataSourceFinal2.data.length > 0"
+                        [dataSource]="dataSourceFinal2" aria-describedby="challanprepFin2" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab2(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd3 && onCheck3 && dataSourceFinal3.data.length > 0"
+                        [dataSource]="dataSourceFinal3" aria-describedby="challanprepFin3" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab3(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd4 && onCheck4 && dataSourceFinal4.data.length > 0"
+                        [dataSource]="dataSourceFinal4" aria-describedby="challanprepFin4" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab4(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd5 && onCheck5 && dataSourceFinal5.data.length > 0"
+                        [dataSource]="dataSourceFinal5" aria-describedby="challanprepFin5" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab5(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd6 && onCheck6 && dataSourceFinal6.data.length > 0"
+                        [dataSource]="dataSourceFinal6" aria-describedby="challanprepFin6" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab6(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd7 && onCheck7 && dataSourceFinal7.data.length > 0"
+                        [dataSource]="dataSourceFinal7" aria-describedby="challanprepFin7" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab7(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd8 && onCheck8 && dataSourceFinal8.data.length > 0"
+                        [dataSource]="dataSourceFinal8" aria-describedby="challanprepFin8" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab8(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd9 && onCheck9 && dataSourceFinal9.data.length > 0"
+                        [dataSource]="dataSourceFinal9" aria-describedby="challanprepFin9" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab9(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd10 && onCheck10 && dataSourceFinal10.data.length > 0"
+                        [dataSource]="dataSourceFinal10" aria-describedby="challanprepFin10" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab10(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd11 && onCheck11 && dataSourceFinal11.data.length > 0"
+                        [dataSource]="dataSourceFinal11" aria-describedby="challanprepFin11" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab11(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+                    <table mat-table *ngIf="onAdd12 && onCheck12 && dataSourceFinal12.data.length > 0"
+                        [dataSource]="dataSourceFinal12" aria-describedby="challanprepFin12" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-cell *matCellDef="let item;let i = index;">{{item.typeOfStamp}}</td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Code</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.deno}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Discount (%)</th>
+                            <td mat-cell *matCellDef="let element" class="leftAlign"> {{element.disc}}%
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Denomination Value</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.unitVal}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Stamps (Label / Stamp)</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.stampNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallan(element)">history</i>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">No. of Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+                                {{element.sheetNo}}
+                                <i class="material-icons floatRgt btn-history" title="View History"
+                                    (click)="directiveObject.openHistoryPrepChallanTotSheet(element)">history</i>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Label / Stamp In Each Sheet</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign"> {{element.stampSheet}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Total Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.totAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <!-- Discount -->
+                        <ng-container matColumnDef="discRs">
+                            <td mat-cell *matCellDef="let element;let i=index"> {{element.discRs}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Net Amount</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="rightAlign"> {{element.netAmt}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Remarks</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="leftAlign">
+
+                                <textarea matInput class="textarea" required></textarea>
+
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="text-left">
+                                <div class="centerAlign">
+                                    <a><i class="material-icons plus edit-icon" title="Edit">edit</i></a>&nbsp;
+                                    <a><i class="material-icons plus delete" (click)="deleteFinalTab12(i)"
+                                            title="Delete">delete</i></a>
+                                </div>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayFinal;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+
+                    <!-- Final Footer Table -->
+                    <table mat-table *ngIf="onAdd || onAdd2 || onAdd3 || onAdd4 || onAdd5 ||
+               onAdd6 || onAdd7 || onAdd8 || onAdd9 || onAdd10 || onAdd11 || onAdd12"
+                        [dataSource]="dataSourceFinalHeading" aria-describedby="dataSourceFooter"
+                        class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                            <td mat-cell *matCellDef="let element;let i=index" class="centerAlign"> {{i + 1}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Gross Total</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="typeOfStamp">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deno">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="disc">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unitVal">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampNo">
+                            <td mat-footer-cell *matFooterCellDef>21</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sheetNo">
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stampSheet">
+                            <td mat-footer-cell *matFooterCellDef>4</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totAmt">
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="discRs">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="netAmt">
+                            <td mat-footer-cell *matFooterCellDef class="rightAlign">300</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="remarks">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <tr mat-footer-row *matFooterRowDef="displayFinal"></tr>
+                    </table>
+
+                    <!-- Action Buttons -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary"
+                            (click)="directiveObject.saveConfirmationPopup()">
+                            <i class="material-icons" aria-hidden="true" title="Save">
+                                save
+                            </i>
+                            Save as Draft
+                        </button>
+                        <button mat-raised-button type="submit"
+                            (click)="directiveObject.sumbit('preparationOfChallanTo')" class="green"><i
+                                class="material-icons" aria-hidden="true">
+                                done
+                            </i> Submit
+                        </button>
+                        <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                            <i class="material-icons" aria-hidden="true" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="print-btn" title="Print">
+                            <i class="material-icons" title="Print" aria-hidden="true">print</i>
+                            Print
+                        </button>
+                        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()"
+                            class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+
+                    </div>
+                </mat-tab>
+
+                <!-- Attachments Section Starts-->
+                <mat-tab label="Attachments" class="full-width">
+                    <app-common-attachment [attachemntValue]="attachmentType_list"></app-common-attachment>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" aria-hidden="true" title="Save">
+                                save
+                            </i>
+                            Upload
+                        </button>
+                        <button type="button" mat-raised-button [routerLink]="'../preparation-of-challan-to-list'"
+                            color="warn">
+                            <i class="material-icons" aria-hidden="true" title="Listing">
+                                list
+                            </i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()"
+                            class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+
+                <!-- Attachments Section Ends-->
+            </mat-tab-group>
+        </div>
+
+    </div>
+</div>

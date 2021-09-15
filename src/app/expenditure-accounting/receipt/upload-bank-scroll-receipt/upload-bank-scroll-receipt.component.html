@@ -1,0 +1,309 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Upload Bank Scroll Receipt</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EA/SU/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EA</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Bank Scroll</li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <div class="panel-group">
+
+            <!-- Attatchment Tab - Starts -->
+            <div class="box box-primary">
+                <div class="box-header">Attatchment</div>
+                <div class="box-body">
+                    <!-- Attatchment Tab - Table List Starts  -->
+                    <div class="table-data">
+                        <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable" aria-describedby="bankScrollData" *ngIf="DDO">
+                            <ng-container matColumnDef="checkBox">
+                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                    <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row" class="centerAlign">
+                                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="sr_no">
+                                <th mat-header-cell *matHeaderCellDef scope="row">
+                                    <b>Sr. No.</b>
+                                </th>
+                                <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+                                    {{ i + 1 }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="attachmentType">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Attachment Type</th>
+                                <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                                    {{item.attachment}}
+                                    <span *ngIf="i < 6" class="starSign"></span>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fileName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">File Name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                    </mat-form-field>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="browse">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Browse File</th>
+                                <td mat-cell *matCellDef="let i = index">
+                                    <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                    Browse Files
+                  </button>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="uploadedFileName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded File Name</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                    <i aria-hidden="true" class="material-icons closesmall">close</i>
+                  </span>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="uploadedBy">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                                <td mat-cell *matCellDef="let item">
+                                    <mat-label>Mr. Pratik Shah</mat-label>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                                <td mat-cell *matCellDef="let item; let i = index">
+                                    <table class="iconTable">
+                                        <tbody>
+                                            <tr>
+                                                <td class="action-btn-i centerAlign">
+                                                    <a>
+                                                        <i aria-hidden="true" class="material-icons plus add" title="Add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">add
+                            </i>
+                                                    </a>
+                                                    <a>
+                                                        <i aria-hidden="true" class="material-icons plus view-icon" title="View">remove_red_eye
+                            </i>
+                                                    </a>
+                                                    <a>
+                            <i aria-hidden="true" class="material-icons plus delete" *ngIf="(i>=0)"
+                              (click)="deleteBrowse(i)">delete
+                            </i>
+                          </a>
+                                                    <a> <i aria-hidden="true" class="material-icons plus view-icon" title="Download">
+                              vertical_align_bottom</i></a>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </ng-container>
+                            <!-- Display Attatchment Tab - Table Columns -->
+                            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                        </table>
+
+
+                        <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+
+                        <div class="legend">
+                            1. Max size of attachment is 1MB<br> 2. File type supported are: ‘xlxs’.
+                        </div>
+
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Save">
+                  save
+                </i>
+                Upload
+              </button>
+                            <button type="button" mat-raised-button class="btnClose">
+                <i aria-hidden="true" class="material-icons" title="close">
+                  close
+                </i>
+                Close
+              </button>
+                        </div>
+                    </div>
+                    <!-- Attatchment Tab - Table List Ends  -->
+                </div>
+            </div>
+            <!-- Attatchment Tab - Ends -->
+        </div>
+
+        <!-- Table List Starts-->
+        <div class="table-data">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="bankScrollList">
+                <ng-container matColumnDef="checkBox">
+                    <th mat-header-cell *matHeaderCellDef scope="row" scope="row">
+                        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="centerAlign">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header scope="row">Date</th>
+                    <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="bank">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header scope="row">Bank</th>
+                    <td mat-cell *matCellDef="let element"> {{element.bank}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="bcode">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header scope="row">Branch Code</th>
+                    <td mat-cell *matCellDef="let element"> {{element.bcode}} </td>
+                </ng-container>
+                <ng-container matColumnDef="fDescription">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header scope="row">File Description</th>
+                    <td mat-cell *matCellDef="let element"> {{element.fDescription}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fName">
+                    <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header scope="row">File Name</th>
+                    <td mat-cell *matCellDef="let element">{{element.fName}}
+                    </td>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action</th>
+                    <td mat-cell *matCellDef="let element ;let i=index" class="centerAlign">
+                        <table class="iconTable" aria-describedby="actionBtn">
+                            <tbody>
+                                <tr>
+
+                                    <td width="30">
+                                        <i aria-hidden="true" class="material-icons plus view-icon" title="View">remove_red_eye
+                    </i>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </ng-container>
+
+
+
+                <!-- Display Table Columns -->
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i= index;columns:
+              displayedColumns;" [ngClass]="{'completed': (row.status ===
+              '100%'),'incomplete': (row.status !== '100%')}">
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+        <!-- Table List Ends -->
+        <!-- Common Action Button Starts -->
+        <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green">
+        <i class="material-icons" aria-hidden="true" title="done">
+          done
+        </i> Submit</button>
+            <button type="button" mat-raised-button class="btnClose">
+        <i aria-hidden="true" class="material-icons" title="Close">close</i>
+        Close
+      </button>
+        </div>
+        <!-- Common Action Button Ends-->
+
+        <!-- Form Upload Bank Scroll Starts -->
+
+        <form [formGroup]="uploadBankReceiptForm">
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">Search Upload</div>
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="passingDate" [matDatepicker]="passingDate" placeholder="Date" readonly required>
+                                    <mat-datepicker-toggle matSuffix [for]="passingDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #passingDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="scrollType" formControlName="scrollType" placeholder="Scroll Type">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="scrollTypeCtrl" [placeholderLabel]="'Select Scroll Type ...'" [noEntriesFoundLabel]="'no matching Scroll Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let dept of type_list | filterSelectInput : scrollTypeCtrl.value : 'viewValue'" [value]="dept.value">
+                                            {{dept.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name="bank" formControlName="bank" placeholder="Select Bank">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="bankTypeCtrl" [placeholderLabel]="'Select Bank Type ...'" [noEntriesFoundLabel]="'no matching Bank Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let dept of bank_list | filterSelectInput : bankTypeCtrl.value : 'viewValue'" [value]="dept.value">
+                                            {{dept.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="branch Code" formControlName="branchCode">
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary" (click)="search()">
+              <i class="material-icons" aria-hidden="true">search</i> Search </button>
+
+                        <button type="reset" mat-raised-button color="accent">
+              <i class="material-icons" aria-hidden="true">
+                restore
+              </i>
+              Reset
+            </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <!-- Form Upload Bank Scroll Ends -->
+
+    </div>
+</div>

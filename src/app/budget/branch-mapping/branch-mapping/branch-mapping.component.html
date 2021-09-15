@@ -1,0 +1,292 @@
+<div class="container">
+  <div class="form-wrapper">
+      <div class="heading-section ng-star-inserted">
+          <div class="heading-section ng-star-inserted">
+              <div>Branch Mapping and Transfer</div>
+              <div class="font-heading">
+                <b>Reference No:</b> 19-20/BUD/BMT/001</div>
+            <div class="font-heading">
+                <b>Reference Date:</b>24-Apr-2020 10:32</div>
+          </div>
+      </div>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Budget</a></li>
+          <li class="breadcrumb-item active">Branch Mapping and Transfer</li>
+        </ol>
+      </nav>
+      <div class="panel-group">
+        <form [formGroup]="branchMap">
+        <div class="box box-primary">
+            <div class="box-header">Branch Mapping and Transfer</div>
+            <div class="box-body">
+              <div class="row">
+                <!-- Branch Action -->
+                  <div class="col-sm-3">
+                      <mat-form-field class="full-width">
+                          <mat-select formControlName="branchAction" #branchActVal placeholder="Branch Action" required>
+                              <mat-option>
+                                  <ngx-mat-select-search [formControl]="branchActionCtrl" [placeholderLabel]="'Find Branch Action...'" [noEntriesFoundLabel]="'no matching Branch Action found'">
+                                  </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option *ngFor="let va of branchAction_list | filterSelectInput: branchActionCtrl.value" [value]="va.value">
+                                  {{va.viewValue}}
+                              </mat-option>
+                          </mat-select>
+                          <div class="error-wrapper"
+                              *ngIf="branchMap.controls.branchAction.touched && (branchMap.controls.branchAction.errors)">
+                              <mat-error *ngIf="branchMap.controls.branchAction.errors.required">
+                                  {{errorMessages.BRANCH_ACTION}}
+                              </mat-error>
+                          </div>
+                      </mat-form-field>
+                  </div>
+                </div>
+
+                <!-- Branch Mapping From Entry Section Starts -->
+                <div class="box box-primary">
+                  <div class="box-header">Branch Mapping From:</div>
+                  <div class="box-body">
+
+                    <div class="row">
+                      <!-- Branch Mapping From: -->
+                      <div class="col-sm-3">
+                          <mat-form-field class="full-width">
+                            <input matInput type="text" formControlName="brMapFrom" placeholder="Branch Mapping From:" required>
+                            <div class="error-wrapper" *ngIf="branchMap.controls.brMapFrom.touched && (branchMap.controls.brMapFrom.errors)">
+                              <mat-error *ngIf="branchMap.controls.brMapFrom.errors.required">
+                                  {{errorMessages.FROM}}
+                              </mat-error>
+                            </div>
+                          </mat-form-field>
+                      </div>
+                    </div>
+                    
+                    <!-- Table Section Starts -->
+                    <div>
+                      <table mat-table [dataSource]="dataSource" aria-describedby="branchMap">
+                        <!-- Sr. No -->
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No</th>
+                            <td mat-cell *matCellDef="let item; let i=index" class="centerAlign">
+                                {{i+1}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Employee Number -->
+                        <ng-container matColumnDef="empNum">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Employee Number</th>
+                            <td mat-cell *matCellDef="let element">{{element.empNum}}</td>
+                        </ng-container>
+
+                        <!-- Employee Name -->
+                        <ng-container matColumnDef="empName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+                            <td mat-cell *matCellDef="let element">{{element.empName}}</td>
+                        </ng-container>
+
+                        <!-- Post Name -->
+                        <ng-container matColumnDef="postName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Post Name</th>
+                            <td mat-cell *matCellDef="let element">{{element.postName}}</td>
+                        </ng-container>
+
+                        <!-- Branch -->
+                        <ng-container matColumnDef="branch">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Branch</th>
+                            <td mat-cell *matCellDef="let element">                            
+                              <mat-form-field class="full-width">
+                                <mat-select formControlName="branch" placeholder="" multiple>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="branchCtrl">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let va of branch_list | filterSelectInput: branchCtrl.value" [value]="va.value">
+                                        {{va.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                      </table>
+                    </div>
+                    <!-- Table Section Ends -->
+
+                    <div class="row mt-3">
+                      <!-- To Be Transferred -->
+                      <div class="col-sm-3">
+                          <mat-form-field class="full-width">
+                            <input matInput type="text" formControlName="toBeTransfer" placeholder="To Be Transferred" required>
+                            <div class="error-wrapper" *ngIf="branchMap.controls.toBeTransfer.touched && (branchMap.controls.toBeTransfer.errors)">
+                              <mat-error *ngIf="branchMap.controls.toBeTransfer.errors.required">
+                                  {{errorMessages.TO}}
+                              </mat-error>
+                            </div>
+                          </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="row displayBlock form-action-button" *ngIf="branchMap.controls.branchAction.value=='1'">
+                      <div class="col-sm-12">
+                          <!-- Action Buttons -->
+                          <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" title="Add">
+                              <i class="material-icons" aria-hidden="true">
+                                 add
+                              </i>
+                              Add
+                           </button>
+                              <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                <i class="material-icons" title="EDP dashboard" aria-hidden="true">
+                                    close
+                                </i>
+                                Close
+                            </button>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Branch Mapping From Entry Section Ends -->
+
+                  
+                <!-- Branch Mapping To Entry Section Starts -->
+                  <div class="box box-primary" *ngIf="branchMap.controls.branchAction.value=='2'">
+                      <div class="box-header">Branch Mapping To:</div>
+                      <div class="box-body">
+
+                        <div class="row">
+                          <!-- Branch Mapping From: -->
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                <input matInput type="text" formControlName="brMapTo" placeholder="Branch Mapping To:" required>
+                                <div class="error-wrapper" *ngIf="branchMap.controls.brMapTo.touched && (branchMap.controls.brMapTo.errors)">
+                                  <mat-error *ngIf="branchMap.controls.brMapTo.errors.required">
+                                      {{errorMessages.TO}}
+                                  </mat-error>
+                                </div>
+                              </mat-form-field>
+                          </div>
+                          <!-- Employee Number -->
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="empNum" placeholder="Employee Number" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="empNumCtrl" [placeholderLabel]="'Find Employee Number...'" [noEntriesFoundLabel]="'no matching Employee Number found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let va of empNum_list | filterSelectInput: empNumCtrl.value" [value]="va.value">
+                                          {{va.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper"
+                                      *ngIf="branchMap.controls.empNum.touched && (branchMap.controls.empNum.errors)">
+                                      <mat-error *ngIf="branchMap.controls.empNum.errors.required">
+                                          {{errorMessages.NUMBER}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                        </div>
+
+                        <!-- Table Section Starts -->
+                        <div>
+                          <table mat-table [dataSource]="dataSourceSecond" aria-describedby="branchMapTable2">
+
+                            <!-- checkbox -->
+                            <ng-container matColumnDef="checkbox">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Select</th>
+                              <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                                <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox"
+                                  title="Select" (change)="checkboxValueChange(idx)"></mat-checkbox>
+                              </td>
+                            </ng-container>
+
+                            <!-- Sr. No -->
+                            <ng-container matColumnDef="position">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Sr. No</th>
+                                <td mat-cell *matCellDef="let item; let i=index" class="centerAlign">
+                                    {{i+1}}
+                                </td>
+                            </ng-container>
+    
+                            <!-- Employee Number -->
+                            <ng-container matColumnDef="empNum">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Employee Number</th>
+                                <td mat-cell *matCellDef="let element">{{element.empNum}}</td>
+                            </ng-container>
+    
+                            <!-- Employee Name -->
+                            <ng-container matColumnDef="empName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+                                <td mat-cell *matCellDef="let element">{{element.empName}}</td>
+                            </ng-container>
+    
+                            <!-- Post Name -->
+                            <ng-container matColumnDef="postName">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Post Name</th>
+                                <td mat-cell *matCellDef="let element">{{element.postName}}</td>
+                            </ng-container>
+
+                            <!-- Branch -->
+                            <ng-container matColumnDef="branch">
+                                <th mat-header-cell *matHeaderCellDef scope="row">Branch</th>
+                                <td mat-cell *matCellDef="let element">                            
+                                  <mat-form-field class="full-width">
+                                    <mat-select formControlName="branchTab2" placeholder="" disabled>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="branchCtrlTab2">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let va of branch_list1 | filterSelectInput: branchCtrlTab2.value" [value]="va.value">
+                                            {{va.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </td>
+                            </ng-container>
+    
+                            <!-- Header Section Of table -->
+                            <tr mat-header-row *matHeaderRowDef="displayColumnsSecond"></tr>
+                            <!-- Data Fetch From .TS File to table -->
+                            <tr mat-row *matRowDef="let row; columns: displayColumnsSecond;"></tr>
+                          </table>
+                        </div>
+                        <!-- Table Section Ends -->
+
+                        <div class="row displayBlock form-action-button">
+                          <div class="col-sm-12">
+                              <!-- Action Buttons -->
+                              <div class="form-action-button">
+                                  <button mat-raised-button type="submit" (click)="transfer()" class="green">
+                                    <i class="material-icons" aria-hidden="true" title="submit">
+                                        done
+                                    </i> Transfer
+                                  </button>
+                                  <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                                    <i class="material-icons" title="EDP dashboard" aria-hidden="true">
+                                        close
+                                    </i>
+                                    Close
+                                </button>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                <!-- Branch Mapping To Entry Section Ends -->
+            </div>
+        </div>
+      </form>
+
+
+      </div>
+  </div>
+</div>

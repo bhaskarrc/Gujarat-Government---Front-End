@@ -1,0 +1,437 @@
+<div class="container">
+  <div class="form-wrapper">
+    <!-- Header  -->
+    <div class="heading-section ng-star-inserted">
+      <div>Inward Details</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF-NPS/INW/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF - NPS</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inward Details</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="inwardDetailsForm" (ngSubmit)="inwardDetailsFormData()">
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)">
+          <!-- Inward Details -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Inward Details
+            </ng-template>
+
+            <div class="box box-primary">
+              <div class="box-header">Inward Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="inwardNo" placeholder="Inward No." numbersAlphabetsSpaceOnly
+                        required>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogInwardNumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.inwardNo.touched && inwardDetailsForm.controls.inwardNo.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.inwardNo.errors.required">
+                          {{errorMessages.INWARD_NUMBER}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="inwardDate" [matDatepicker]="picker1" placeholder="Inward Date"
+                        required>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1 [disabled]="false"></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.inwardDate.touched && inwardDetailsForm.controls.inwardDate.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.inwardDate.errors.required">
+                          {{errorMessages.INWARD_DATE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Letter No." formControlName="letterNo" numbersAlphabetsSpaceOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="letterDate" [matDatepicker]="picker2" placeholder="Letter Date">
+                      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker #picker2 [disabled]="false"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="typeOfInward" placeholder="Type of Inward" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="typeOfInwardCTRL"
+                            [placeholderLabel]="'Find Department...'"
+                            [noEntriesFoundLabel]="'No matching Department found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let typeOnInwardName of typeOnInwardList | filterSelectInput:typeOfInwardCTRL.value"
+                          [value]="typeOnInwardName.value">
+                          {{typeOnInwardName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.typeOfInward.touched && inwardDetailsForm.controls.typeOfInward.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.typeOfInward.errors.required">
+                          {{errorMessages.TYPE_OF_INWARD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="referenceBy" placeholder="Reference By" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="referenceByCTRL"
+                            [placeholderLabel]="'Find Reference By...'"
+                            [noEntriesFoundLabel]="'No matching Reference By found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let referenceByName of referenceByList | filterSelectInput:referenceByCTRL.value"
+                          [value]="referenceByName.value">
+                          {{referenceByName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.referenceBy.touched && inwardDetailsForm.controls.referenceBy.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.referenceBy.errors.required">
+                          {{errorMessages.REFERENCE_BY}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Other" formControlName="other" numbersAlphabetsSpaceOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="debitCredit" placeholder="Debit/Credit Card" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="debitCreditCTRL"
+                            [placeholderLabel]="'Find Reference By...'"
+                            [noEntriesFoundLabel]="'No matching Reference By found'" alphabetsSpaceOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let debitCreditName of debitCreditList | filterSelectInput:debitCreditCTRL.value"
+                          [value]="debitCreditName.value">
+                          {{debitCreditName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.debitCredit.touched && inwardDetailsForm.controls.debitCredit.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.debitCredit.errors.required">
+                          {{errorMessages.DEBIT_CREDIT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field>
+                      <input matInput placeholder="Challan Amount" formControlName="challanAmount" maxlength="15"
+                        numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field>
+                      <input matInput placeholder="Gross Amount" formControlName="grossAmount" maxlength="15"
+                        numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="tcChallan" placeholder="TC/Challan">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="tcChallanCTRL" [placeholderLabel]="'Find TC/Challan...'"
+                            [noEntriesFoundLabel]="'No matching TC/Challan found'" numbersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let tcChallanName of tcChallanList | filterSelectInput:tcChallanCTRL.value"
+                          [value]="tcChallanName.value">
+                          {{tcChallanName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3"
+                    *ngIf="inwardDetailsForm.controls.tcChallan.value == '1' && (inwardDetailsForm.controls.typeOfInward.value == '1'  || inwardDetailsForm.controls.typeOfInward.value == '6')">
+                    <mat-form-field>
+                      <input matInput placeholder="TC Amount" formControlName="tcAmount" maxlength="15" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3" *ngIf="inwardDetailsForm.controls.typeOfInward.value == '2'">
+                    <mat-form-field>
+                      <input matInput placeholder="AG Account Amount" formControlName="agAccountAmount" maxlength="15"
+                        numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3" *ngIf="inwardDetailsForm.controls.typeOfInward.value == '2'">
+                    <mat-form-field>
+                      <input matInput placeholder="AG CA Amount" formControlName="agCaAmount" maxlength="15"
+                        numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '4' || inwardDetailsForm.controls.typeOfInward.value == '5'">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="ppaNo" placeholder="PPA No." numbersAlphabetsSpaceOnly required>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogPPANumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.ppaNo.touched && inwardDetailsForm.controls.ppaNo.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.ppaNo.errors.required">
+                          {{errorMessages.PAO_NO}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '4' || inwardDetailsForm.controls.typeOfInward.value == '5'">
+                    <mat-form-field>
+                      <input matInput placeholder="Loan Holder Name" formControlName="loanHolderName" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '2'
+                  || inwardDetailsForm.controls.typeOfInward.value == '3' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="month" placeholder="Month" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="monthCTRL" [placeholderLabel]="'Find Month...'"
+                            [noEntriesFoundLabel]="'No matching Month found'" numbersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let monthName of monthList | filterSelectInput:monthCTRL.value"
+                          [value]="monthName.value">
+                          {{monthName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.month.touched && inwardDetailsForm.controls.month.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.month.errors.required">
+                          {{errorMessages.MONTH}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3"
+                    *ngIf="inwardDetailsForm.controls.typeOfInward.value == '1' || inwardDetailsForm.controls.typeOfInward.value == '2'
+                  || inwardDetailsForm.controls.typeOfInward.value == '3' || inwardDetailsForm.controls.typeOfInward.value == '6'">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="year" placeholder="Year" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="yearCTRL" [placeholderLabel]="'Find Year...'"
+                            [noEntriesFoundLabel]="'No matching Year found'" numbersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let yearName of yearList | filterSelectInput:yearCTRL.value"
+                          [value]="yearName.value">
+                          {{yearName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.year.touched && inwardDetailsForm.controls.year.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.year.errors.required">
+                          {{errorMessages.YEAR}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+            <!-- Received Details -->
+            <div class="box box-primary">
+              <div class="box-header">Received Details</div>
+              <div class="box-body">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="district" placeholder="District">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="districtCTRL" [placeholderLabel]="'Find District...'"
+                            [noEntriesFoundLabel]="'no matching District found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let districtName of district_list | filterSelectInput: districtCTRL.value"
+                          [value]="districtName.value">
+                          {{districtName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <input matInput formControlName="cardexNo" placeholder="Cardex No." numbersAlphabetsSpaceOnly>
+                      <mat-icon matSuffix class="searchIcon" (click)="openDialogCardexNumber()">
+                        search</mat-icon>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.cardexNo.touched && inwardDetailsForm.controls.cardexNo.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.cardexNo.errors.required">
+                          {{errorMessages.CARDEX_NO}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <textarea matInput placeholder="Address" formControlName="address"></textarea>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Contact Number" formControlName="contactNumber" maxlength="10"
+                        numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="treasuryPAO" placeholder="Treasury / PAO" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="treasutyCTRL"
+                            [placeholderLabel]="'Find Treasury/PAO...'"
+                            [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let treasutyPAOName of treasutyPAO_list | filterSelectInput: treasutyCTRL.value"
+                          [value]="treasutyPAOName.value">
+                          {{treasutyPAOName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="inwardDetailsForm.controls.treasuryPAO.touched && inwardDetailsForm.controls.treasuryPAO.errors">
+                        <mat-error *ngIf="inwardDetailsForm.controls.treasuryPAO.errors.required">
+                          {{errorMessages.TREASURY_PAO}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO Name" formControlName="ddoName" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <textarea matInput placeholder="Remarks" formControlName="remarks"></textarea>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Mobile No." formControlName="mobileNo" maxlength="10" numbersOnly>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENd Received Details -->
+            <!-- Common Button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary" (click)="goToNext()">
+                Save & Proceed
+                <i class="material-icons" aria-hidden="true" title="Next">
+                  chevron_right
+                </i>
+              </button>
+            </div>
+            <!-- End Common Button -->
+          </mat-tab>
+          <!-- End Inward Details -->
+          <!-- Attachment -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Attachment
+            </ng-template>
+            <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+          </mat-tab>
+          <!-- End Attachment -->
+        </mat-tab-group>
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary" title="Save as Draft">
+            <i class="material-icons" title="Save as Draft" aria-hidden="true">
+              save
+            </i>
+            Save as Draft
+          </button>
+          <button mat-raised-button type="button" class="green" (click)="workflowDetails()" title="Submit">
+            <i class="material-icons" title="Submit" aria-hidden="true">done</i> Submit
+          </button>
+          <button type="reset" mat-raised-button color="accent" title="Reset"
+            (click)="directiveObj.resetForm(inwardDetailsForm)">
+            <i class="material-icons" title="Reset" aria-hidden="true">
+              restore
+            </i>
+            Reset
+          </button>
+          <button type="button" mat-raised-button color="warn" title="Listing"
+            (click)="directiveObj.goToScreen('/dppf-nps/nps-inward-details-listing')">
+            <i class="material-icons" title="Listing" aria-hidden="true">
+              list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+    </div>
+
+  </div>
+</div>

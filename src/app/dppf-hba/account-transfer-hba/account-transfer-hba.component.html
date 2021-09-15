@@ -1,0 +1,387 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Account Transfer </div>
+            <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+                <li class="breadcrumb-item active" aria-current="page">Account Transfer </li>
+            </ol>
+        </nav>
+
+
+        <div class="panel-group">
+            <form [formGroup]="accountTransferForm" (ngSubmit)="accountTransferData()">
+                <div class="box box-primary">
+                    <div class="box-header">Inward Details
+                    </div>
+                    <div class="box-body">
+                        <!-- Account Transfer -->
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="status" placeholder="Status">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="oldCtrl"
+                                                [placeholderLabel]="'Select status ...'"
+                                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="
+                      let st of status_list" [value]="st.value">
+                                            {{ st.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="hbaNo" placeholder="HBA/MCA No. " formControlName="hbaNo"
+                                        required>
+                                    <mat-icon matSuffix class="searchIcon" (click)="hbaMca()">search
+                                    </mat-icon>
+                                    <div class="error-wrapper"
+                                        *ngIf="(accountTransferForm.controls.hbaNo.touched && accountTransferForm.controls.hbaNo.errors) || isSubmitted">
+                                        <mat-error *ngIf="accountTransferForm.controls.hbaNo.errors?.required">
+                                            {{ errorMessage.HBA }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <!-- <label style="padding: 13px 0px;"><strong>Name:</strong><span *ngIf="showNameVal">
+                                        {{name}}</span> </label> -->
+                                <mat-form-field>
+                                    <input matInput name="name" placeholder="Name" formControlName="name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="year" placeholder="Year " required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="yearCtrl"
+                                                [placeholderLabel]="'Select Year ...'"
+                                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="
+                        let year of year_list" [value]="year.value">
+                                            {{ year.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="(accountTransferForm.controls.year.touched && accountTransferForm.controls.year.errors) || isSubmitted">
+                                        <mat-error *ngIf="accountTransferForm.controls.year.errors?.required">
+                                            {{ errorMessage.YEAR }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="month" placeholder="Month " required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="monthCtrl"
+                                                [placeholderLabel]="'Select Month ...'"
+                                                [noEntriesFoundLabel]="'no matching Tange type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option>-- None --</mat-option>
+
+                                        <mat-option *ngFor="
+                          let month of month_list" [value]="month.value">
+                                            {{ month.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="(accountTransferForm.controls.month.touched && accountTransferForm.controls.month.errors) || isSubmitted">
+                                        <mat-error *ngIf="accountTransferForm.controls.month.errors?.required">
+                                            {{ errorMessage.MONTH }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+                                    <button type="button" mat-raised-button color="primary" title="Search"
+                                        (click)="viewUpDetails()">
+                                        View Details
+                                    </button>
+                                    <button type="reset" mat-raised-button color="accent">
+                                        <i class="material-icons" aria-hidden="true" title="Reset">
+                                            restore
+                                        </i>
+                                        Reset
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Account Transfer -->
+                    </div>
+                </div>
+
+                <!-- Transferable Amount Details Start -->
+                <div class="box box-primary" *ngIf="showTable">
+                    <div class="box-header"> Transferable Amount Details
+                    </div>
+                    <div class="box-body">
+                        <!-- Transferable Amount Details -->
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-checkbox>Select</mat-checkbox>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="font-heading"><strong>Transferable Amount Available </strong> 2010</div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="font-heading"><strong>Value of Amount </strong> 2000</div>
+                            </div>
+                        </div>
+                        <!-- End Transferable Amount Details -->
+                    </div>
+                </div>
+                <!-- Transferable Amount Details End -->
+
+                <!-- Account Wise Details -->
+                <div class="box box-primary" *ngIf="showTable">
+                    <div class="box-header">Account Wise Details
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="mat-elevation-z8 mt-2">
+                                    <!-- Account Wise Details -->
+                                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                                        aria-describedby="accountWiseDetailsTable">
+                                        <ng-container matColumnDef="select">
+                                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                    [checked]="selection.hasValue() && isAllSelected()"
+                                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                    [aria-label]="checkboxLabel()">
+                                                </mat-checkbox>
+                                            </th>
+                                            <td mat-cell *matCellDef="let row" class="centerAlign">
+                                                <mat-checkbox (click)="$event.stopPropagation()"
+                                                    (change)="$event ? selection.toggle(row) : null"
+                                                    [checked]="selection.isSelected(row)"
+                                                    [aria-label]="checkboxLabel(row)">
+                                                </mat-checkbox>
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="inwardNo">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Inward No.</th>
+                                            <td mat-cell *matCellDef="let element;let i = index;">
+                                                {{element.inwardNo}}
+                                                <!-- <mat-form-field>
+                                                    <input matInput>
+                                                </mat-form-field> -->
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="head">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Head</th>
+                                            <td mat-cell *matCellDef="let element;let i = index;">
+                                                {{element.head}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="voucher">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Voucher</th>
+                                            <td mat-cell *matCellDef="let element;let i = index;">
+                                                {{element.voucher}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="principleRecoveryAmount">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Principle Recovery Amount
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i = index;" class="rightAlign">
+                                                {{element.principleRecoveryAmount}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="interestRecoveryAmount">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Interest Recovery Amount
+                                            </th>
+                                            <td mat-cell *matCellDef="let element;let i = index;" class="rightAlign">
+                                                {{element.interestRecoveryAmount}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="action">
+                                            <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                                            <td mat-cell *matCellDef="let element;let i = index;" class="centerAlign">
+                                                <a>
+                                                    <i class="material-icons history-icon plus" aria-hidden="true"
+                                                        title="View
+                              History">history</i>
+                                                </a>
+                                            </td>
+                                        </ng-container>
+                                        <!-- Header Section Of table -->
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <!-- Data Fetch From .TS File to table -->
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    </table>
+                                    <!-- End Account Wise Details -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Account Wise Details -->
+
+                <!-- Transfer History Listing Starts -->
+                <div class="box box-primary" *ngIf="showTable">
+                    <div class="box-header">Transfer History</div>
+                    <div class="box-body">
+                        <div class="mat-elevation-z8 mt-2 overflow-x-auto">
+                            <!-- Transfer History Table Starts -->
+                            <table mat-table [dataSource]="TransferHistryDataSource"
+                                aria-describedby="transferHistoryTable">
+
+                                <!-- Serial Number Column -->
+                                <ng-container matColumnDef="srno">
+                                    <th mat-header-cell *matHeaderCellDef scope="row" style="width: 5%;">
+                                        Sr. No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                                        {{ i + 1 }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Inward No. Column -->
+                                <ng-container matColumnDef="inwardNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Inward No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;">
+                                        {{element.inwardNo}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Head Column -->
+                                <ng-container matColumnDef="head">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Head
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;">
+                                        {{element.head}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Voucher Column -->
+                                <ng-container matColumnDef="voucher">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Voucher
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;">
+                                        {{element.voucher}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Transferred Amount Column -->
+                                <ng-container matColumnDef="transferredAmount">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Transferred Amount
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;" class="rightAlign">
+                                        {{element.transferredAmount | number: '1.2-2'}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Account Holder Name Column -->
+                                <ng-container matColumnDef="accountHolderName">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> Account Holder Name
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;">
+                                        {{element.transferredAmount}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- To Account No. Column -->
+                                <ng-container matColumnDef="toAccountNo">
+                                    <th mat-header-cell *matHeaderCellDef scope="row"> To Account No.
+                                    </th>
+                                    <td mat-cell *matCellDef="let element;let i = index;">
+                                        {{element.toAccountNo}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Header and Footer Row Definition -->
+                                <tr mat-header-row *matHeaderRowDef="TransferHistryDataColumn"></tr>
+                                <tr mat-row *matRowDef="let row; columns: TransferHistryDataColumn;"></tr>
+                            </table>
+                            <!-- Transfer History Table Ends -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Transfer History Listing Starts -->
+
+                <!-- Transfer Details -->
+                <div class="box box-primary" *ngIf="showTransferDetails && showTable">
+                    <div class="box-header"> Transfer Details
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="hbaNo" placeholder="HBA/MCA No. " formControlName="hbaNo">
+                                    <mat-icon matSuffix class="searchIcon">search
+                                    </mat-icon>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Name" formControlName="name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput placeholder="Amount" formControlName="amount">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Transfer Details -->
+                <!-- Common Button -->
+                <div class="form-action-button" *ngIf="showTable">
+
+                    <button mat-raised-button type="submit" class="green"><i class="material-icons" aria-hidden="true"
+                            title="Transfer">
+                            send
+                        </i> Transfer
+                    </button>
+                    <button type="reset" mat-raised-button color="accent">
+                        <i class="material-icons" aria-hidden="true" title="Reset">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                    <button type="button" mat-raised-button color="warn" (click)="navigate()">
+                        <i class="material-icons" aria-hidden="true" title="Listing">
+                            list
+                        </i>
+                        Listing
+                    </button>
+
+                    <button type="button" mat-raised-button class="btnClose">
+                        <i class="material-icons" aria-hidden="true" title="Close">
+                            close
+                        </i>
+                        Close
+                    </button>
+                </div>
+                <!-- End Common Button -->
+            </form>
+        </div>
+    </div>
+</div>

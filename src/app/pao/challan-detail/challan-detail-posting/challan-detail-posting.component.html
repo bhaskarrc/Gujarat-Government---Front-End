@@ -1,0 +1,394 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Challan Detail Posting</div>
+    </div>
+
+
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Challan Detail Posting</li>
+      </ol>
+    </nav>
+
+    <form [formGroup]="challanDetailForm">
+      <div class="row">
+        <div class="col-sm-4">
+          <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="BranchWise Major-HeadWise Total in RS" numbersOnly
+              formControlName="bwMajorHeadTotal">
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-4">
+          <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="Total " numbersOnly formControlName="total">
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-4">
+          <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="Total By User  " numbersOnly formControlName="totalByUser">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="panel-group">
+        <!-- Challan Detail -->
+        <div class="box box-primary">
+          <div class="box-header">Challan Detail</div>
+          <div class="box-body">
+
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Receipt No" numbersOnly formControlName="receiptNo">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="receivedByBankDate" [max]='maxDate'
+                    [matDatepicker]="receivedByBankDate" placeholder="Received By Bank Date" readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="receivedByBankDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #receivedByBankDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.receivedByBankDate.touched || (challanDetailForm.controls.receivedByBankDate.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.receivedByBankDate.errors?.required">
+                      {{errorMessages.RECEIVED_BY_BANK_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="scrollDate" [matDatepicker]="scrollDate" placeholder="Scroll Date"
+                    [max]='maxDate' readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="scrollDate">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #scrollDate></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.scrollDate.touched || (challanDetailForm.controls.scrollDate.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.scrollDate.errors?.required">
+                      {{errorMessages.SCROLL_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='challanType' formControlName='challanType' placeholder='Challan type' required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='challanTypeCtrl'
+                        [placeholderLabel]="'Select Challan Type ...'"
+                        [noEntriesFoundLabel]="'no matching challan type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let challan of challanType_list | filterSelectInput : challanTypeCtrl.value : 'viewValue'"
+                      [value]="challan.value" matTooltip="{{challan.viewValue}}">
+                      {{challan.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.challanType.touched || (challanDetailForm.controls.challanType.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.challanType.errors?.required">
+                      {{errorMessages.CHALLAN_TYPE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input #inputBranchCode matInput type="text" placeholder="Branch Code" maxlength="11" numbersOnly
+                    (blur)='branchCode(inputBranchCode.value)' formControlName="branchCode" required>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.branchCode.touched || (challanDetailForm.controls.branchCode.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.branchCode.errors?.required">
+                      {{errorMessages.BRANCH_CODE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='bank' formControlName='bank' placeholder='Bank'
+                    (selectionChange)="bankChange($event)" required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='bankCtrl' [placeholderLabel]="'Select Bank ...'"
+                        [noEntriesFoundLabel]="'no matching Bank found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let item of bank_list | filterSelectInput : bankCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.bank.touched || (challanDetailForm.controls.bank.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.bank.errors?.required">
+                      {{errorMessages.BANK}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Branch" formControlName="branch" readonly required>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.branch.touched || (challanDetailForm.controls.branch.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.branch.errors?.required">
+                      {{errorMessages.BRANCH}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='demand' formControlName='demand' placeholder='Demand' required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='demandCtrl' [placeholderLabel]="'Select Demand ...'"
+                        [noEntriesFoundLabel]="'no matching Demand found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let demand of demand_list | filterSelectInput : demandCtrl.value : 'viewValue'"
+                      [value]="demand.value" matTooltip="{{demand.viewValue}}">
+                      {{demand.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.demand.touched || (challanDetailForm.controls.demand.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.demand.errors?.required">
+                      {{errorMessages.DEMAND}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Cardex No" maxlength="4" formControlName="cardex">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='majorHead' formControlName='majorHead' placeholder='Major Head' multiple required>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='majorHeadCtrl' [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching challan type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.majorHead.touched || (challanDetailForm.controls.majorHead.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.majorHead.errors?.required">
+                      {{errorMessages.MAJOR_HEAD}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Party Name" formControlName="partyName">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Challan Value" maxlength="16" numbersOnly
+                    formControlName="challanValue" required>
+                  <div class="error-wrapper"
+                    *ngIf="challanDetailForm.controls.challanValue.touched || (challanDetailForm.controls.challanValue.errors && isSubmitted)">
+                    <mat-error *ngIf="challanDetailForm.controls.challanValue.errors?.required">
+                      {{errorMessages.CHALLAN_DETAIL}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Challan Detail -->
+
+      </div>
+      <!-- Insert Head Detail -->
+      <div class="panel-group">
+        <div class="box box-primary">
+          <div class="box-header">Insert Head Detail</div>
+          <div class="box-body">
+
+            <table mat-table [dataSource]="insertDataSource" class="mat-elevation-z8 "
+              aria-describedby="challanDetails">
+              <ng-container matColumnDef="srNo">
+                <th mat-header-cell *matHeaderCellDef scope="row"> SR No.</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{i + 1}}
+                </td>
+                <td mat-footer-cell *matFooterCellDef>Total Amount
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="insertSubMajorheads">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sub-Major Head </th>
+                <td mat-cell *matCellDef="let element" class="centerAlign">
+
+                  <mat-form-field>
+                    <mat-select name="mlaName" formControlName="submajorHead">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="submajorHeadCtrl"
+                          [placeholderLabel]="'Select Sub-Major Head. ...'"
+                          [noEntriesFoundLabel]="'no matching Sub-Major Head  found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option>-- None --</mat-option>
+                      <mat-option
+                        *ngFor="let nm of subMajorHead_list | filterSelectInput : submajorHeadCtrl.value : 'viewValue'"
+                        [value]="nm.value" matTooltip="{{nm.viewValue}}">
+                        {{nm.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td mat-footer-cell *matFooterCellDef> </td>
+              </ng-container>
+
+              <ng-container matColumnDef="insertMinorheads">
+                <th mat-header-cell *matHeaderCellDef scope="row">Minor Head </th>
+                <td mat-cell *matCellDef="let element" class="centerAlign">
+                  <div class="dropdown-status">
+                    <mat-form-field>
+                      <mat-select formControlName="insertMinorhead">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="insertMinorheadCtrl"
+                            [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no matching Major Head
+                            found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let item of minorHead_list |
+                          filterSelectInput: insertMinorheadCtrl.value : 'viewValue'" [value]="item.value"
+                          matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+
+              <ng-container matColumnDef="insertSubHeads">
+                <th mat-header-cell *matHeaderCellDef scope="row">Sub Head </th>
+                <td mat-cell *matCellDef="let element" class="centerAlign">
+                  <div class="dropdown-status">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="insertSubHead">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="insertSubHeadCtrl"
+                            [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no matching Major Head
+                            found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option>-- None --</mat-option>
+                        <mat-option *ngFor="let item of subHead_list |
+                          filterSelectInput: insertSubHeadCtrl.value : 'viewValue'" [value]="item.value"
+                          matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+
+              <ng-container matColumnDef="insertAmount">
+                <th mat-header-cell *matHeaderCellDef scope="row">Amount (Rs)</th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-form-field floatLabel="never" class="rightAlign">
+                    <input matInput [(ngModel)]="element.insertAmount" (keypress)="decimalKeyPress($event)"
+                      value="{{element.insertAmount}}" (blur)="decimalPoint(element,'insertAmount')"
+                      [ngModelOptions]="{standalone: true}" type="text">
+                  </mat-form-field>
+                </td>
+                <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                  {{totalExpeAmount() | number:'1.2-2'}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width':'4%'}" scope="row">Action</th>
+                <td mat-cell *matCellDef="let element; let i=index">
+                  <table class="iconTable" aria-describedby="actionBtn">
+                    <tbody>
+                      <tr>
+                        <td width="30" (click)="add();">
+                          <i class="material-icons plus add" aria-hidden="true"
+                            *ngIf="(i==insertDataSource.data.length-1)">
+                            add
+                          </i>
+                        </td>
+                        <td width="30">
+                          <i class="material-icons plus delete" aria-hidden="true" (click)="delete(i)" *ngIf="(i>=1)">
+                            delete
+                          </i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td mat-footer-cell *matFooterCellDef> </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="insertDisplayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; columns: insertDisplayedColumns;"></tr>
+              <!-- Footer Section Of table -->
+              <tr mat-footer-row *matFooterRowDef="insertDisplayedColumns"></tr>
+
+            </table>
+
+          </div>
+        </div>
+      </div>
+      <!-- eEnd Insert Head Detail -->
+      <!-- Common Button -->
+      <div class="form-action-button">
+
+        <button type="submit" mat-raised-button color="primary" (click)='onSave()'>
+          <i class="material-icons" aria-hidden="true" title="Save">
+            save
+          </i>
+          Save
+        </button>
+
+        <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+            close
+          </i>
+          Close
+        </button>
+
+      </div>
+      <!-- End Common Button -->
+    </form>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>EX- Bank Scroll Payment</div>
+      <div class="font-heading"><b>Reference No:</b> 19-20/EA/BSP/001</div>
+      <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Navigations Starts -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="#">EA</a></li>
+        <li class="breadcrumb-item active" aria-current="page">EX- Bank Scroll Payment</li>
+      </ol>
+    </nav>
+    <!-- Navigations Ends-->
+    <div class="panel-group">
+      <mat-tab-group mat-stretch-tabs>
+        <!-- Bank Details Tab Starts -->
+        <mat-tab label="Bank Details">
+          <form [formGroup]="bankScroll" (ngSubmit)="bankScrollata">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="bankdate" readonly placeholder="Date" [matDatepicker]="picker"
+                    required>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="bankScroll.controls.bankdate.touched || (bankScroll.controls.bankdate.errors && isSubmitted)">
+                    <mat-error *ngIf="bankScroll.controls.bankdate.errors?.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="ifscCode" maxlength="11" placeholder="Bank IFSC Code" required>
+                  <div class="error-wrapper"
+                    *ngIf="bankScroll.controls.ifscCode.touched || (bankScroll.controls.ifscCode.errors && isSubmitted)">
+                    <mat-error *ngIf="bankScroll.controls.ifscCode.errors?.required">
+                      {{errorMessages.IFSC_CODE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="selectBank" formControlName="selectBank" placeholder="Select Bank">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="selectBankCtrl" [placeholderLabel]="'Select Bank  ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let bank of bank_list | filterSelectInput : selectBankCtrl.value : 'viewValue'"
+                      [value]="bank.value">
+                      {{bank.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <div class="row">
+                  <mat-form-field class="full-width">
+                    <textarea matInput class="textarea" autocomplete="off" name="desc" formControlName="desc"
+                      placeholder="Description"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button mat-raised-button type="submit" class="green" (click)="submitDetails()">
+                    <i class="material-icons"> done</i> Submit</button>
+
+                  <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                    <i class="material-icons" title="EDP dashboard">
+                      close
+                    </i>
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </mat-tab>
+        <!-- Bank Details Tab Endss -->
+        <!-- Attachments Tab Starts -->
+        <mat-tab label="Attachments">
+          <app-common-attachment [attachemntValue]="attachment_type_list"></app-common-attachment>
+          <!-- Common Action Button Starts -->
+          <div class="form-action-button">
+            <button mat-raised-button type="submit" class="green"><i class="material-icons">
+                done
+              </i> Submit</button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+              <i class="material-icons" title="EDP dashboard">
+                close
+              </i>
+              Close
+            </button>
+          </div>
+          <!-- Common Action Button Ends-->
+        </mat-tab>
+        <!-- Attachments Tab Endss -->
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

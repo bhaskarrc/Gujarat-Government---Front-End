@@ -1,0 +1,394 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Inward Online Bill</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Inward</li>
+        <li class="breadcrumb-item active" aria-current="page">Inward Online Bill</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="inwardOnlineBillForm" (ngSubmit)="inwardOnlineBillFormData()">
+        <!-- Search Inward Online Bill -->
+        <mat-accordion class="colapsedata">
+          <mat-expansion-panel [expanded]="true" class="nopadding">
+            <mat-expansion-panel-header>
+              <div class="heading-section">
+                Search
+              </div>
+            </mat-expansion-panel-header>
+            <div class="box-body">
+
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="cardexNo" maxlength="4" numbersOnly placeholder="Cardex No."
+                      formControlName="cardexNo" [datoAutoFocus]="true">
+                  </mat-form-field>
+
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="Billrefernum" placeholder="Reference Number" formControlName="Billrefernum">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="ddoNo" maxlength="4" numbersOnly placeholder="DDO No."
+                      formControlName="ddoNo">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="ddoName" formControlName="ddoName" placeholder="Office Name">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="ddoNameCtrl" [placeholderLabel]="'Select Office Name ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let ddonames of ddoName_list | filterSelectInput : ddoNameCtrl.value : 'viewValue'"
+                        [value]="ddonames.value">
+                        {{ddonames.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" formControlName="BillFromDate" placeholder="Bill From date"
+                      (dateChange)="FromDate( $event)">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3" *ngIf="!valueRequired">
+                  <mat-form-field>
+
+                    <input matInput [matDatepicker]="picker2" placeholder="Bill To date">
+
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3" *ngIf="valueRequired">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker2" placeholder="Bill To date" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="billType" formControlName="billType" placeholder="Bill Type" multiple>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="billTypeCtrl" [placeholderLabel]="'Select Bill Type ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let billt of billType_list | filterSelectInput : billTypeCtrl.value : 'viewValue'"
+                        [value]="billt.value">
+                        {{billt.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="majorhead" formControlName="majorhead" placeholder="Major Head" multiple>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="majorheadctrl"
+                          [placeholderLabel]="'Select Major Head ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let major of major_list | filterSelectInput : majorheadctrl.value : 'viewValue'"
+                        [value]="major.value">
+                        {{major.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="dept" formControlName="dept" placeholder="Department Name">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="deptCtrl"
+                          [placeholderLabel]="'Select Department Name ...'"
+                          [noEntriesFoundLabel]="'no matching Department Name found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let major of dept_list | filterSelectInput : deptCtrl.value : 'viewValue'"
+                        [value]="major.value">
+                        {{major.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="grossamount" decimalPoint2 decimalLimitTwoOnly placeholder="Bill Gross Amount"
+                      formControlName="grossamount">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="netamount" decimalPoint2 decimalLimitTwoOnly placeholder="Bill Net Amount"
+                      formControlName="netamount">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <mat-select name="billCategory" formControlName="billCategory" placeholder="Bill Category">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="billCategoryCtrl"
+                          [placeholderLabel]="'Select Bill Category ...'"
+                          [noEntriesFoundLabel]="'no matching Tange type found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option
+                        *ngFor="let bill of billCategory_list | filterSelectInput : billCategoryCtrl.value : 'viewValue'"
+                        [value]="bill.value">
+                        {{bill.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput name="billRegNo" maxlength="6" placeholder="Bill Reg. No."
+                      formControlName="billRegNo">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary" title="Save As Draft" (click)="search()">
+                      <i class="material-icons" aria-hidden="true">search</i> Search
+                    </button>
+                    <button type="reset" mat-raised-button color="accent">
+                      <i class="material-icons" aria-hidden="true">
+                        restore
+                      </i>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- End Search Inward Online Bill -->
+        <br>
+        <!-- Inward Details -->
+        <div class="box box-primary">
+          <div class="box-header">Inward Details</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-4">
+                <p>Last Token No. : <span class="tokenNo">10236</span></p>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="tokennumber" (click)="directiveObject.tokenDialog()">
+                  <mat-form-field class="full-width">
+                    <input matInput numbersOnly maxlength="6" placeholder=" Token No." disabled>
+                    <mat-icon matSuffix class="searchIcon" (click)="search()">search
+                    </mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <!--  Inward Details Table -->
+            <div class="mat-elevation-z8 mt-2" style="height: 300px;overflow-y: auto;">
+              <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8" aria-describedby="inwardBillFOrm">
+                <!-- Select checkbox -->
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row) " [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+                <!-- Reference Number -->
+                <ng-container matColumnDef="billRefNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Reference Number</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billRefNo}}
+                  </td>
+                </ng-container>
+                <!-- Last Used. -->
+                <ng-container matColumnDef="lastusedtoken">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Last Used.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.lastusedtoken}}
+                  </td>
+                </ng-container>
+                <!-- Cardex No. -->
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.cardexNo}}
+                  </td>
+                </ng-container>
+                <!-- Party Name -->
+                <ng-container matColumnDef="partyName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Party Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    <a (click)="directiveObject.partyDetails()"> {{element.partyName}}</a>
+                  </td>
+                </ng-container>
+                <!-- Bill Reg No. -->
+                <ng-container matColumnDef="billRegNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Reg No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billRegNo}}
+                  </td>
+                </ng-container>
+                <!-- Token No. -->
+                <ng-container matColumnDef="tokenNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Token No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field floatLabel="never" class="rightAlign">
+                      <input matInput [value]="element.tokenNo" [(ngModel)]="element.tokenNo"
+                        [ngModelOptions]="{standalone: true}" required [disabled]='toggleButton'>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <!-- Bill Gross Amount -->
+                <ng-container matColumnDef="billGrossAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Gross Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.billGrossAmount}}
+                  </td>
+                </ng-container>
+                <!-- Bill Net Amount -->
+                <ng-container matColumnDef="billAmount">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Net Amount</th>
+                  <td mat-cell *matCellDef="let element" class="rightAlign">
+                    {{element.billAmount}}
+                  </td>
+                </ng-container>
+                <!-- Bill Type -->
+                <ng-container matColumnDef="billType">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Type</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billType}}
+                  </td>
+                </ng-container>
+                <!-- Bill Date -->
+                <ng-container matColumnDef="billDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Bill Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billDate}}
+                  </td>
+                </ng-container>
+                <!-- DDO No. -->
+                <ng-container matColumnDef="ddoNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> DDO No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.ddoNo}}
+                  </td>
+                </ng-container>
+                <!-- Office Name -->
+                <ng-container matColumnDef="ddoName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Office Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.ddoName}}
+                  </td>
+                </ng-container>
+                <!-- Major Head -->
+                <ng-container matColumnDef="mhead">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Major Head</th>
+                  <td mat-cell *matCellDef="let element" [matTooltip]="element.mhead">
+                    {{element.mhead}}
+                  </td>
+                </ng-container>
+                <!-- Bill Category -->
+                <ng-container matColumnDef="billCat">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Bill Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.billCat}}
+                  </td>
+                </ng-container>
+                <!-- Auditor Name -->
+                <ng-container matColumnDef="authiorName">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Auditor Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                      <mat-select name="auditorctrl" formControlName="auditorctrl" required>
+                        <mat-option *ngFor="let auditor of auditor_list" [matTooltip]="auditor.viewValue"
+                          [value]="auditor.value">
+                          {{auditor.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <!-- Action -->
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                  <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                    <a (click)="gotopage()"><i class="material-icons plus edit-icon" aria-hidden="true" title="Edit">
+                        edit</i></a>
+                    <a (click)="gotopage()">
+                      <i class="material-icons plus view-icon" aria-hidden="true" title="View">remove_red_eye
+                      </i>
+                    </a>
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="newdisplayedColumns;sticky:true"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+              </table>
+            </div>
+            <mat-paginator [length]="175" [pageSize]="25" [pageSizeOptions]="[25, 50, 75,100]" showFirstLastButtons>
+            </mat-paginator>
+            <!-- End Inward Details Table -->
+          </div>
+        </div>
+        <!-- End Inward Details -->
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="Save">
+              save
+            </i>
+            Save
+          </button>
+          <button mat-raised-button type="submit" class="green"><i aria-hidden="true" class="material-icons">
+              done
+            </i> Receive</button>
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+    </div>
+  </div>
+</div>

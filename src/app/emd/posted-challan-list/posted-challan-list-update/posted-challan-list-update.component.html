@@ -1,0 +1,551 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Posted EMD Challan</div>
+            <div class="font-heading"><b>Reference No:</b> 19-20/EMD/PCLV/001</div>
+            <div class="font-heading"><b>Reference Date:</b> {{ initiatiomdate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+
+        </div>
+        <!-- Navigations Starts -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EMD</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Posted EMD Challan</li>
+            </ol>
+        </nav>
+        <!-- Navigations Ends-->
+        <!-- EMD Received Starts -->
+        <form [formGroup]="postedChallanListForm">
+
+            <div class="panel-group">
+                <div class="box box-primary">
+                    <div class="box-header">EMD Received</div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+
+                                <mat-checkbox [(ngModel)]="checkedVal" formControlName="checked"
+                                    (click)="ObjectionRemarks()">Sub Treasury Office</mat-checkbox>
+                            </div>
+                            <div class="col-sm-3" *ngIf="checked">
+
+                                <mat-form-field>
+                                    <mat-select name='subTLocation' formControlName='subTLocation'
+                                        placeholder='Treasury/Sub Treasury Office Name'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='subLocationTypeCtrl'
+                                                [placeholderLabel]="'Select Sub Treasury Location  ...'"
+                                                [noEntriesFoundLabel]="'no matching Sub Treasury Location  found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let typ of locationType_list | filterSelectInput : subLocationTypeCtrl.value : 'viewValue'"
+                                            [value]="typ.value" matTooltip="{{typ.viewValue}}">
+                                            {{typ.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="checked1">
+                                <mat-form-field>
+                                    <mat-select name='subTLocation1' formControlName='subTLocation1'
+                                        placeholder='Treasury/Sub Treasury Office Name'>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='subLocationTypeCtrl1'
+                                                [placeholderLabel]="'Select Sub Treasury Location  ...'"
+                                                [noEntriesFoundLabel]="'no matching Sub Treasury Location  found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let typ of locationType1_list | filterSelectInput : subLocationTypeCtrl1.value : 'viewValue'"
+                                            [value]="typ.value" matTooltip="{{typ.viewValue}}">
+                                            {{typ.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sr No" formControlName="srNo" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="entryDate" [max]='maxDate'
+                                        [matDatepicker]="entryDate" placeholder="Entry Date" required>
+                                    <mat-datepicker-toggle matSuffix [for]="entryDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #entryDate></mat-datepicker>
+                                </mat-form-field>
+                                <div class="error-wrapper"
+                                    *ngIf="postedChallanListForm.controls.entryDate.touched || (postedChallanListForm.controls.entryDate.errors && isSubmitted)">
+                                    <mat-error *ngIf="postedChallanListForm.controls.entryDate.errors?.required">
+                                        {{errorMessages.DATE}}
+                                    </mat-error>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select placeholder="Code" formControlName="code" name="code" required
+                                        (selectionChange)="selectBill($event.value)">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='codeTypeCtrl'
+                                                [placeholderLabel]="'Select Code Type  ...'"
+                                                [noEntriesFoundLabel]="'no matching code  found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let billName of codeType_list" [value]="billName.value">
+                                            {{billName.viewValue}}</mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper"
+                                        *ngIf="postedChallanListForm.controls.code.touched || (postedChallanListForm.controls.code.errors && isSubmitted)">
+                                        <mat-error *ngIf="postedChallanListForm.controls.code.errors?.required">
+                                            {{errorMessages.CODE_TYPE}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Code Description"
+                                        value="Revenue Tenancy Deposits" formControlName="codeDescription" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected1">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Code Description"
+                                        formControlName="codeDescription1" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Code Description"
+                                        formControlName="codeDescription2" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Code Description"
+                                        formControlName="codeDescription3" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" value="8443"
+                                        formControlName="majorHead" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" value="Civil Deposits"
+                                        placeholder="Major Head Description" formControlName="majorHeadDecscription"
+                                        readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelected2">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" formControlName="majorHead1"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected2">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head Description"
+                                        formControlName="majorHeadDecscription1" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" formControlName="majorHead2"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head Description"
+                                        formControlName="majorHeadDecscription2" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head" formControlName="majorHead3"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Major Head Description"
+                                        formControlName="majorHeadDecscription3" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head" value="00"
+                                        formControlName="subMajorHead" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" value="-" placeholder="Sub Major Head Description"
+                                        formControlName="subMajorHeadDecscription" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head"
+                                        formControlName="subMajorHead1" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head Description"
+                                        formControlName="subMajorHeadDecscription1" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head"
+                                        formControlName="subMajorHead2" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head Description"
+                                        formControlName="subMajorHeadDecscription2" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head"
+                                        formControlName="subMajorHead3" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Major Head Description"
+                                        formControlName="subMajorHeadDecscription3" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head" value="101"
+                                        formControlName="minorHead" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" value="Revenue Deposits"
+                                        placeholder="Minor Head Description" formControlName="minorHeadDecscription"
+                                        readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected4">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head" formControlName="minorHead1"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected4">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head Description"
+                                        formControlName="minorHeadDecscription1" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head" formControlName="minorHead2"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head Description"
+                                        formControlName="minorHeadDecscription2" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head" formControlName="minorHead3"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Minor Head Description"
+                                        formControlName="minorHeadDecscription3" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head" value="01"
+                                        formControlName="subHead" numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head Description"
+                                        value="Revenue Tenancy Deposits" formControlName="subHeadDecscription" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3" *ngIf="isSelected5">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head" formControlName="subHead1"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelected5">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head Description"
+                                        formControlName="subHeadDecscription1" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head" formControlName="subHead2"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedRD">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head Description"
+                                        formControlName="subHeadDecscription2" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head" formControlName="subHead3"
+                                        numbersOnly readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="isSelectedWDPB">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Sub Head Description"
+                                        formControlName="subHeadDecscription3" readonly>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='type' formControlName='type' placeholder='Type' required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='typeCtrl'
+                                                [placeholderLabel]="'Select Type  ...'"
+                                                [noEntriesFoundLabel]="'no matching Type found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let typ of type_list | filterSelectInput : typeCtrl.value : 'viewValue'"
+                                            [value]="typ.value">
+                                            {{typ.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div class="error-wrapper"
+                                    *ngIf="postedChallanListForm.controls.type.touched || (postedChallanListForm.controls.type.errors && isSubmitted)">
+                                    <mat-error *ngIf="postedChallanListForm.controls.type.errors?.required">
+                                        {{errorMessages.TYPE}}
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Party Name" formControlName="partyname"
+                                        required>
+                                    <div class="error-wrapper"
+                                        *ngIf="postedChallanListForm.controls.partyname.touched || (postedChallanListForm.controls.partyname.errors && isSubmitted)">
+                                        <mat-error *ngIf="postedChallanListForm.controls.partyname.errors?.required">
+                                            {{errorMessages.PARTY}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select name='code' formControlName='department' placeholder='Department'
+                                        required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]='departmentTypeCtrl'
+                                                [placeholderLabel]="'Select code  ...'"
+                                                [noEntriesFoundLabel]="'no matching code  found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let emdcode of departmentType_list | filterSelectInput : departmentTypeCtrl.value : 'viewValue'"
+                                            [value]="emdcode.value" matTooltip="{{emdcode.viewValue}}">
+                                            {{emdcode.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+
+                                    <div class="error-wrapper"
+                                        *ngIf="postedChallanListForm.controls.department.touched || (postedChallanListForm.controls.department.errors && isSubmitted)">
+                                        <mat-error *ngIf="postedChallanListForm.controls.department.errors?.required">
+                                            {{errorMessages.DEPARTMENT}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="DDO No" formControlName="ddo" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Cardex No" formControlName="cardex"
+                                        readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Office Name" formControlName="office"
+                                        readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Amount"
+                                        onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                                        numbersOnly formControlName="amount" required>
+                                    <div class="error-wrapper"
+                                        *ngIf="postedChallanListForm.controls.amount.touched || (postedChallanListForm.controls.amount.errors && isSubmitted)">
+                                        <mat-error *ngIf="postedChallanListForm.controls.amount.errors?.required">
+                                            {{errorMessages.AMOUNT}}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Amount in Rs."
+                                        formControlName="amountInWord" readonly>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Lapse Date" formControlName="lapseDate"
+                                        readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <textarea matInput class="textarea" name="narration" formControlName="narration"
+                                        placeholder="Narration"></textarea>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Common Action Button Starts -->
+            <div class="form-action-button">
+
+                <button type="submit" mat-raised-button color="primary">
+                    <i class="material-icons" aria-hidden="true" title="Save">
+                        save
+                    </i>
+                    Save As Draft
+                </button>
+
+                <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()">
+                    <i aria-hidden="true" class="material-icons">
+                        done
+                    </i> Submit
+                </button>
+
+                <button type="button" mat-raised-button color="accent" (click)="reset()">
+                    <i class="material-icons" aria-hidden="true">
+                        restore
+                    </i>
+                    Reset
+                </button>
+
+                <button type="button" mat-raised-button color="accent">
+                    <i aria-hidden="true" class="material-icons">scanner</i> Scan QR Code </button>
+
+
+                <button type="button" [routerLink]="'../posted-challan-list'" mat-raised-button color="warn">
+                    <i class="material-icons" aria-hidden="true" title="Listing">
+                        list
+                    </i>
+                    Listing
+                </button>
+                <button type="button" mat-raised-button class="btnClose">
+                    <i class="material-icons" aria-hidden="true" title="close">
+                        close
+                    </i>
+                    Close
+                </button>
+
+            </div>
+            <!-- Common Action Button Ends-->
+        </form>
+        <!-- EMD Received Ends -->
+    </div>
+</div>

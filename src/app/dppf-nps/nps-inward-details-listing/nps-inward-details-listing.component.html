@@ -1,0 +1,247 @@
+<div class="container">
+  <div class="form-wrapper">
+    <!-- Header -->
+    <div class="heading-section ng-star-inserted">
+      <div>Inward Details</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF-NPS/INW/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF - NPS</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inward Details</li>
+      </ol>
+    </nav>
+    <!-- Search Inward Details -->
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            Search
+          </div>
+        </mat-expansion-panel-header>
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="inwardDetailFormList">
+            <div class="row">
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="inwardNo" placeholder="Inward No." numbersAlphabetsSpaceOnly>
+                  <mat-icon matSuffix class="searchIcon" (click)="openDialogInwardNumber()">
+                    search</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="inwardDate" [matDatepicker]="inwardDatePicker" [max]='maxDate'
+                    placeholder="Inward  Date" dateOnly />
+                  <mat-datepicker-toggle matSuffix [for]="inwardDatePicker">
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #inwardDatePicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="typeOfInward" placeholder="Type Of Inward">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfInwardCtrl"
+                        [placeholderLabel]="'Find Type Of Inward...'" [noEntriesFoundLabel]="'no matching Class found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                      let CE of classTypeOfInward
+                        | filterSelectInput: typeOfInwardCtrl.value
+                    " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="district" placeholder="District">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfDistrictCtrl" [placeholderLabel]="'Find District...'"
+                        [noEntriesFoundLabel]="'no matching Class found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                      let CE of classTypeOfDistrict
+                        | filterSelectInput: typeOfDistrictCtrl.value
+                    " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                        [placeholderLabel]="'Find Treasury/PAO...'" [noEntriesFoundLabel]="'no matching Class found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="
+                      let CE of classTypeOfTreasuryPao
+                        | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                    " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                      {{ CE.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput formControlName="cardexNo" placeholder="Cardex No." numbersAlphabetsSpaceOnly>
+                  <mat-icon matSuffix class="searchIcon" (click)="openDialogCardexNumber()">
+                    search</mat-icon>
+
+                </mat-form-field>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="search">search</i>
+            Search</button>&nbsp;&nbsp;&nbsp;
+          <button type="reset" mat-raised-button color="accent" (click)="directiveObj.resetForm(inwardDetailFormList)">
+            <i class="material-icons" aria-hidden="true" title="reset">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!-- End Search Inward Details -->
+    <Br>
+    <!-- Inward Details -->
+    <div class="box box-primary">
+      <div class="box-header">Inward Details</div>
+      <div class="box-body">
+        <div class="overflow-x-auto">
+          <div class="mat-elevation-z8 table-responsive mt-2">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="listinginwardscreen">
+              <!-- Serial No -->
+              <ng-container matColumnDef="srno">
+                <th mat-header-cell *matHeaderCellDef scope="row">
+                  Serial No
+                </th>
+                <td mat-cell *matCellDef="let element" class="centerAlign">
+                  {{ element.srno }}
+                </td>
+              </ng-container>
+              <!-- Inward Number -->
+              <ng-container matColumnDef="inwardNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Inward Number
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ element.inwardNo }}
+                </td>
+              </ng-container>
+              <!-- Type Of Inward -->
+              <ng-container matColumnDef="inwardType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Type Of Inward
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.inwardType }}
+                </td>
+              </ng-container>
+              <!-- Inward Date -->
+              <ng-container matColumnDef="inwardDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Inward Date
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.inwardDate }}
+                </td>
+              </ng-container>
+              <!-- District -->
+              <ng-container matColumnDef="district">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  District
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.district }}
+                </td>
+              </ng-container>
+              <!-- Treasury/PAO Name -->
+              <ng-container matColumnDef="treasuryPaoName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Treasury/PAO Name
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.treasuryPaoName }}
+                </td>
+              </ng-container>
+              <!-- Cardex Number -->
+              <ng-container matColumnDef="CardexNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Cardex Number
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <mat-label>{{ element.CardexNo }}
+                  </mat-label>
+                </td>
+              </ng-container>
+              <!-- Status -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Status
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.status }}
+                </td>
+              </ng-container>
+              <!-- Lying With -->
+              <ng-container matColumnDef="lyingWith">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                  Lying With
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.lyingWith }}
+                </td>
+              </ng-container>
+              <!-- Action -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="action-btn-i centerAlign">
+                  <a><i class="material-icons plus view-icon" title="Edit" aria-hidden="true">edit</i></a>
+                  <a><i class="material-icons plus view-icon" title="View" aria-hidden="true">remove_red_eye</i></a>
+                  <a (click)="deleteRowRecovery()"><i class="material-icons plus edit-icon" title="Delete"
+                      aria-hidden="true">
+                      delete
+                    </i></a>
+                </td>
+              </ng-container>
+              <!-- Header Section Of table -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- Data Fetch From .TS File to table -->
+              <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+            </table>
+            <!-- Paginator -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Inward Details -->
+  </div>
+</div>

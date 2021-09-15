@@ -1,0 +1,231 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>User Rights Mapping List</div>
+            <!-- <div class="font-heading"><strong>Reference Number:</strong> 19-20/EDP/URM/001</div> -->
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">EDP</a></li>
+                <li class="breadcrumb-item active" aria-current="page">User Role Mapping List</li>
+            </ol>
+        </nav>
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search User Rights Mapping
+                    </div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="searchListForm" (ngSubmit)="searchEstimate()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput numbersOnly name="transNO" formControlName="transNO" placeholder="Reference Number">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="tranfromdate" placeholder="Reference from Date">
+                                    <mat-datepicker-toggle matSuffix [for]="tranfromdate"></mat-datepicker-toggle>
+                                    <mat-datepicker #tranfromdate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="transtodate" placeholder="Reference To Date">
+                                    <mat-datepicker-toggle matSuffix [for]="transtodate"></mat-datepicker-toggle>
+                                    <mat-datepicker #transtodate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput numbersOnly name="empNO" formControlName="empNO" placeholder="Employee number">
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput numbersOnly name="empName" formControlName="empName" placeholder="Employee name">
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="status" placeholder="Status" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="statusCtrl" [placeholderLabel]="'Find Status...'" [noEntriesFoundLabel]="'no matching Status found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option *ngFor="let st of status_list | filterSelectInput : statusCtrl.value : 'viewValue'" [value]="st.value">
+                                            {{st.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="ddono" formControlName="ddono" placeholder="DDO No">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput name="cardexNo" formControlName="cardexNo" placeholder="Cardex No">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="district" name="district" placeholder="District">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="districtCtrl" [placeholderLabel]="'Find District...'" [noEntriesFoundLabel]="'no matching District found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let districtName of districtNamelist | filterSelectInput : districtCtrl.value : 'viewValue'" [value]="districtName.value">
+                                            {{districtName.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="row displayBlock form-action-button">
+                    <div class="centerAlign">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons">search</i>
+                            Search
+                        </button>
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm($event);">
+                            <i class="material-icons">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+                    </div>
+
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="mat-elevation-z8 mt-2">
+            <table mat-table [dataSource]="dataSource" matSort class="text-center">
+
+
+                <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="srnowidth">
+                        Sr. No.
+                    </th>
+                    <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                        {{ i + 1 }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="requestNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference Number</th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        {{element.requestNo}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="requestDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference from Date</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.requestDate}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="district">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>District</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.district}}
+                    </td>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="ddoNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>DDO No</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.ddoNo}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cardexNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Cardex No</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.cardexNo}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ddoOfficeName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>DDO Office</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.ddoOfficeName}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="employeeNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee No.</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.employeeNo}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="userName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.userName}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lyingWith">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Lying With</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.lyingWith}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="requestStatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.requestStatus}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="remarks">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Remarks</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.remarks}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="actionwidth">Action</th>
+                    <td mat-cell *matCellDef="let element;" class="action-btn-i centerAlign">
+                        <a [routerLink]="'../user-role-mapping'"><i class="material-icons plus edit-icon" title="Edit">
+                                edit </i></a>
+                        <a [routerLink]="'../user-role-mapping'"><i class="material-icons plus view-icon"
+                                title="View">remove_red_eye</i></a>
+                        <a class="delete-icon" *ngIf="element.status !== '100%'" (click)="delete(element)"><i
+                                class="material-icons plus delete" title="delete">delete_forever</i></a>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

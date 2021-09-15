@@ -1,0 +1,559 @@
+<div class="container">
+  <div class="form-wrapper">
+      <div class="heading-section ng-star-inserted">
+          <div>  To Be Open</div>
+          <div class="font-heading"><strong>Reference Number:</strong> 19-20/BUD/NSH/001</div>
+          <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+      </div>
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Budget</a></li>
+              <li class="breadcrumb-item active" aria-current="page">New Sub Head to be open</li>
+          </ol>
+      </nav>
+      <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [(selectedIndex)]="selectedIndex">
+          <!-- Create Sub Head Tab -->
+          <mat-tab label="Create Sub Head" (click)="selectedIndex = 0">
+              <div class=" form-datatable-list">
+                  <!-- Toggle Button -->
+                  <div class="text-right col-sm-12">
+                    <mat-slide-toggle (change)="toggle($event)">
+                      <span *ngIf="!toggleVar">Sub Head</span>
+                      <span *ngIf="toggleVar">Detailed Head</span>
+                    </mat-slide-toggle>
+                  </div>
+                  <form [formGroup]="createSubHeadForm">
+                      <!-- Create Sub Head Entry Section Starts-->
+                      <div class="row">
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="finYear" placeholder="Financial Year" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="finYearCtrl" [placeholderLabel]="'Find Financial Year...'" [noEntriesFoundLabel]="'no matching Financial Year found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let finYear of finYear_list | filterSelectInput: finYearCtrl.value" [value]="finYear.value">
+                                          {{finYear.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.finYear.touched && createSubHeadForm.controls.finYear.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.finYear.errors.required">
+                                          {{errorMessage.FIN_YEAR}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="department" #deptVal placeholder="Department" disabled>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="departmentCtrl" [placeholderLabel]="'Find Department...'" [noEntriesFoundLabel]="'no matching Department found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let department of department_list | filterSelectInput: departmentCtrl.value" 
+                                      matTooltip="{{department.viewValue}}" [value]="department.value">
+                                          {{department.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.department.touched && createSubHeadForm.controls.department.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.department.errors.required">
+                                          {{errorMessage.DEPARTMENT}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="deptVal.value!='4'">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="division" placeholder="Division" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="divisionCtrl" [placeholderLabel]="'Find Division...'" [noEntriesFoundLabel]="'no matching Division found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let division of division_list | filterSelectInput: divisionCtrl.value" 
+                                      matTooltip="{{division.viewValue}}" [value]="division.value">
+                                          {{division.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.division.touched && createSubHeadForm.controls.division.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.division.errors.required">
+                                          {{errorMessage.DIVISION}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="demandCode" placeholder="Demand" (selectionChange)="changeBpn()" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="demandCodeCtrl" [placeholderLabel]="'Find Demand Code...'" [noEntriesFoundLabel]="'no matching Demand Code found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option matTooltip="{{demand.viewValue}}" *ngFor="let demand of demand_list | filterSelectInput: demandCodeCtrl.value" [value]="demand.value">
+                                          {{demand.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.demandCode.touched && createSubHeadForm.controls.demandCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.demandCode.errors.required">
+                                          {{errorMessage.DEMAND}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <input matInput placeholder="BPN Code" formControlName="bpnCode" readonly>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.bpnCode.touched && createSubHeadForm.controls.bpnCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.bpnCode.errors.required">
+                                          {{errorMessage.BPN}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="majorHeadCode" placeholder="Major Head" (selectionChange)="setEdp()" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="majorHeadCodeCtrl" [placeholderLabel]="'Find Major Head...'" [noEntriesFoundLabel]="'no matching Major Head found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let majorhead of majorHead_list | filterSelectInput: majorHeadCodeCtrl.value" matTooltip="{{majorhead.viewValue}}" [value]="majorhead.value">
+                                          {{majorhead.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.majorHeadCode.touched && createSubHeadForm.controls.majorHeadCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.majorHeadCode.errors.required">
+                                          {{errorMessage.MAJOR_HEAD}}</mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="subMajorHeadCode" placeholder="Sub Major Head" (selectionChange)="setEdp()" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="subMajorHeadCodeCtrl" [placeholderLabel]="'Find Sub Major Head...'" [noEntriesFoundLabel]="'no matching Sub Major Head found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let submajorhead of subMajorHead_list | filterSelectInput: subMajorHeadCodeCtrl.value" matTooltip="{{submajorhead.viewValue}}" [value]="submajorhead.value">
+                                          {{submajorhead.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.subMajorHeadCode.touched && createSubHeadForm.controls.subMajorHeadCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.subMajorHeadCode.errors.required">
+                                          {{errorMessage.SUB_MAJOR_HEAD}}</mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="minorHeadCode" placeholder="Minor Head" (selectionChange)="setEdp()" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="minorHeadCodeCtrl" [placeholderLabel]="'Find Minor Head...'" [noEntriesFoundLabel]="'no matching Minor Head found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let minorhead of minorHead_list | filterSelectInput: minorHeadCodeCtrl.value" matTooltip="{{minorhead.viewValue}}" [value]="minorhead.value">
+                                          {{minorhead.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.minorHeadCode.touched && createSubHeadForm.controls.minorHeadCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.minorHeadCode.errors.required">
+                                          {{errorMessage.MINOR_HEAD}}</mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="subHead" placeholder="Sub Head Code to be open" (blur)="setEdp()"
+                                  (keypress)="onlyNumberTwoDigits($event)" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.subHead.touched && createSubHeadForm.controls.subHead.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.subHead.errors.required">
+                                          {{errorMessage.SUB_HEAD_CODE}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="subHeadCodeEng" placeholder="Sub Head Description to be open(English)" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.subHeadCodeEng.touched && createSubHeadForm.controls.subHeadCodeEng.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.subHeadCodeEng.errors.required">
+                                          {{errorMessage.WRITE_UP_ENG}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" (focus)="setGujarati()" (focusout)="setEnglish()" 
+                                  formControlName="subHeadCodeGuj" placeholder="Sub Head Description to be open (ગુજરાતી)" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.subHeadCodeGuj.touched && createSubHeadForm.controls.subHeadCodeGuj.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.subHeadCodeGuj.errors.required">
+                                          {{errorMessage.WRITE_UP_GUJ}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="toggleVar">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="subHeadCode" placeholder="Sub Head" (selectionChange)="setEdp()" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="subHeadCodeCtrl" [placeholderLabel]="'Find Sub Head...'" 
+                                          [noEntriesFoundLabel]="'no matching Sub Head found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let va of subHeadCode_list | filterSelectInput: subHeadCodeCtrl.value" matTooltip="{{va.viewValue}}" [value]="va.value">
+                                          {{va.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.subHeadCode.touched && createSubHeadForm.controls.subHeadCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.subHeadCode.errors.required">
+                                          {{errorMessage.SUB_HEAD}}</mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <mat-select formControlName="css" #cssVal placeholder="CSS" required>
+                                      <mat-option>
+                                          <ngx-mat-select-search [formControl]="cssCtrl" [placeholderLabel]="'Find CSS...'" 
+                                          [noEntriesFoundLabel]="'no matching CSS found'">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let va of css_list | filterSelectInput: cssCtrl.value"  [value]="va.value">
+                                          {{va.viewValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.css.touched && createSubHeadForm.controls.css.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.css.errors.required">
+                                          {{errorMessage.YES_NO}}</mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3" *ngIf="toggleVar==false && createSubHeadForm.controls.css.value=='1'">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="cssEng" placeholder="CSS Description (English)" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.cssEng.touched && createSubHeadForm.controls.cssEng.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.cssEng.errors.required">
+                                          {{errorMessage.WRITE_UP_ENG}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-3" *ngIf="toggleVar==false && createSubHeadForm.controls.css.value=='1'">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" (focus)="setGujarati()" (focusout)="setEnglish()" 
+                                  formControlName="cssGuj" placeholder="CSS Description (Gujarati)" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.cssGuj.touched && createSubHeadForm.controls.cssGuj.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.cssGuj.errors.required">
+                                          {{errorMessage.WRITE_UP_GUJ}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-3" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="edpCode" placeholder="EDP Code" required>
+                                  <div class="error-wrapper" *ngIf="createSubHeadForm.controls.edpCode.touched && createSubHeadForm.controls.edpCode.errors">
+                                      <mat-error *ngIf="createSubHeadForm.controls.edpCode.errors.required">
+                                          {{errorMessage.EDP_CODE}}
+                                      </mat-error>
+                                  </div>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-6" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="subHeadName" placeholder="Name of the existing sub head under which new sub head is proposed to opened">
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-6" *ngIf="!toggleVar">
+                              <mat-form-field class="full-width">
+                                  <input matInput type="text" formControlName="subHeadName" placeholder="Accounting Procedure, if any, proposed for new sub head">
+                              </mat-form-field>
+                          </div>
+                      </div>
+
+                      <!-- Table Section Starts -->
+                      <table aria-describedby="newSubHead" id="tabId" class="catTable" width="100%">
+                        <tbody>
+                        <tr>
+                          <th class="text-center tabLable">Detailed Head Code*</th>
+                          <th class="text-center tabLable">Detailed Head Description (English)*</th>
+                          <th class="text-center tabLable">Detailed Head Description (ગુજરાતી)*</th>
+                          <th class="text-center tabLable">Applicable for Green Publication</th>
+                          <th class="text-center tabLable">Action</th>
+                        </tr>
+                        <tr *ngFor="let table of tables">
+                          <td>
+                            <div class="form-action-button">
+                              <mat-form-field floatLabel="never">
+                                <input matInput (keypress)="onlyNumberTwoDigits($event)">
+                              </mat-form-field>
+                              <i class="material-icons btn-history" title="View History" 
+                                        (click)="showHistoryDialog(element)">history</i>
+                            </div>
+                          </td>
+                          <td>
+                            <mat-form-field floatLabel="never">
+                              <input matInput type="text">
+                            </mat-form-field>
+                          </td>
+                          <td>
+                            <mat-form-field floatLabel="never">
+                              <input matInput type="text" (focus)="setGujarati()" (focusout)="setEnglish()">
+                            </mat-form-field>
+                          </td>
+                          <td class="action-btn-i centerAlign">
+                            <mat-checkbox title="Select"></mat-checkbox>
+                        </td>
+                          <td class="action-btn-i centerAlign">
+                                <a><i class="material-icons plus" *ngIf="(totalRowCount == tables.length - 1) || (totalRowCount == tables.length)"
+                                     (click)="addRow()">
+                                    add
+                                </i></a>
+                                <a><i class="material-icons plus delete" (click)="deleteRow(table)">
+                                    delete
+                                </i></a>
+                            <!-- <table class="iconTable noBorder" style="border:none !important">
+                                <tbody>
+                                    <tr>
+                                        <td width="30" class="rightAlign">
+                                            <i class="material-icons plus" *ngIf="(totalRowCount)" (click)="addRow()">
+                                                add
+                                            </i>
+                                        </td>
+                                        <td width="30">
+                                            <i class="material-icons plus delete" (click)="deleteRow()">
+                                                delete
+                                            </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> -->
+                          </td>
+                        </tr>
+                      </tbody>
+
+                          <!-- <ng-container matColumnDef="detailHeadCode">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Detailed Head Code*</th>
+                              <td mat-cell *matCellDef="let item">
+                                  <div class="form-action-button">
+                                      <mat-form-field floatLabel="never">
+                                          <input matInput [value]="item.detailHeadCode" (keypress)="onlyNumberTwoDigits($event)">
+                                      </mat-form-field>
+                                    <i class="material-icons btn-history" title="View History"
+                                      (click)="showHistoryDialog(element)">history</i>
+                                  </div>
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="detailHeadDesEng">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Detailed Head Description (English)*</th>
+                              <td mat-cell *matCellDef="let item">
+                                  <mat-form-field floatLabel="never">
+                                      <input matInput [value]="item.detailHeadDesEng">
+                                  </mat-form-field>
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="detailHeadDesGuj">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Detailed Head Description (ગુજરાતી)*</th>
+                              <td mat-cell *matCellDef="let item">
+                                  <mat-form-field floatLabel="never">
+                                      <input matInput type="text" (focus)="setGujarati()" (focusout)="setEnglish()" 
+                                      formControlName="subHeadCodeGuj" [value]="item.detailHeadDesGuj">
+                                  </mat-form-field>
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="greenPublication">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Applicable for Green Publication</th>
+                              <td mat-cell *matCellDef="let item" class="centerAlign">
+                                  <mat-checkbox title="Select"></mat-checkbox>
+                              </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="action">
+                              <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                              <td mat-cell *matCellDef="let item; let i = index">
+                                  <table class="iconTable">
+                                      <tbody>
+                                          <tr>
+                                              <td width="30" class="rightAlign">
+                                                  <i class="material-icons plus" *ngIf="dataSourceDetailHead && dataSourceDetailHead.data && (i == dataSourceDetailHead.data.length - 1)" (click)="addDetailHead()">
+                                                      add
+                                                  </i>
+                                              </td>
+                                              <td width="30">
+                                                  <i class="material-icons plus delete" *ngIf="dataSourceDetailHead && dataSourceDetailHead.data && dataSourceDetailHead.data.length > 1" (click)="deleteDetailHead(i)">
+                                                      delete
+                                                  </i>
+                                              </td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                              </td>
+                          </ng-container>
+                          <tr mat-header-row *matHeaderRowDef="displayedDetailHeadColumns"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedDetailHeadColumns;"></tr> -->
+                      </table>
+                      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                  </form>
+              </div>
+              <!-- Action Buttons -->
+              <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                      <i class="material-icons" aria-hidden="true" title="Save">
+                          save
+                      </i>
+                      Save as Draft
+                  </button>
+                  <button mat-raised-button type="submit" class="green" (click)="submitToNextLevel()"><i class="material-icons"
+                          aria-hidden="true">done</i>
+                      Submit
+                  </button>
+              <button type="view" mat-raised-button color="accent" (click)="directiveObject.commentDetails()">
+                  <i class="material-icons " title="View">remove_red_eye</i>
+                  View Comments
+              </button>
+
+                  <button type="reset" mat-raised-button color="accent">
+                      <i class="material-icons" aria-hidden="true"> restore </i> Reset
+                  </button>
+                  <button type="button" mat-raised-button (click)="gotoList()" color="warn">
+                      <i class="material-icons" aria-hidden="true" title="Listing"> list </i>
+                      Listing
+                  </button>
+                  <button type="button" mat-raised-button (click)="gotoTab(2)" class="btnClose">
+                      <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                          close
+                      </i>
+                      Close
+                  </button>
+              </div>
+          </mat-tab>
+          <!-- Attachments Tab -->
+          <mat-tab label="Attachments">
+              <!-- Table Section Starts -->
+              <table mat-table aria-describedby="attachmentTable" [dataSource]="dataSourceBrowse" width="100%" id="browseTable">
+
+                  <!-- Sr. No. -->
+                  <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+                    <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+                      {{ i + 1 }}
+                    </td>
+                  </ng-container>
+
+                  <!-- Attchment Type -->
+                  <ng-container matColumnDef="attachmenttype">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Attchment Type</th>
+                      <td mat-cell *matCellDef="let item">
+                          <mat-select placeholder="Attachment Type" required [(ngModel)]="item.attachmentType">
+                              <mat-option>
+                                  <ngx-mat-select-search [formControl]="attachmentTypeCtrl" [placeholderLabel]="'Find Attachment Type...'" [noEntriesFoundLabel]="'no matching Attachment Type found'">
+                                  </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option *ngFor="let AT of filteredAttachType | filterSelectInput:attachmentTypeCtrl.value" [value]="AT.value">
+                                  {{AT.viewValue}}
+                              </mat-option>
+                          </mat-select>
+                      </td>
+                  </ng-container>
+                  <!-- File Name -->
+                  <ng-container matColumnDef="fileName">
+                    <th mat-header-cell *matHeaderCellDef scope="row">File name</th>
+                    <td mat-cell *matCellDef="let item">
+                      <mat-form-field floatLabel="never">
+                        <textarea matInput [value]="item.name" [(ngModel)]="item.name"></textarea>
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  <!-- Browse File -->
+                  <ng-container matColumnDef="browse">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Browse File</th>
+                      <td mat-cell *matCellDef="let i = index" class="centerAlign">
+                          <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse Files</button>
+                      </td>
+                  </ng-container>
+
+                  <!-- Uploaded file name -->
+                  <ng-container matColumnDef="uploadedFileName">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Uploaded file name</th>
+                      <td mat-cell *matCellDef="let item">
+                          <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                      </td>
+                  </ng-container>
+
+                  <!-- Uploaded By -->
+                  <ng-container matColumnDef="uploadedBy">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                      <td mat-cell *matCellDef="let item">
+                          <mat-label>Mr. Pratik Shah</mat-label>
+                      </td>
+                  </ng-container>
+
+                  <!-- Action -->
+                  <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                      <td mat-cell *matCellDef="let item; let i = index">
+                          <table class="iconTable">
+                              <tbody>
+                                  <tr>
+                                      <td width="30" class="rightAlign">
+                                          <i class="material-icons plus" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">
+                                              add
+                                          </i>
+                                      </td>
+                                      <td width="30">
+                                          <i class="material-icons plus delete" *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1" (click)="deleteBrowse(i)">
+                                              delete
+                                          </i>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </td>
+                  </ng-container>
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+              </table>
+              <!-- Table Section Ends -->
+              <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+              <div class="legend">
+                1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’,
+                ‘JPEG’, ‘PNG’, ‘PDF’.
+              </div>
+              <!-- Action Buttons -->
+              <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary">
+                      <i class="material-icons" aria-hidden="true" title="Save">
+                          save
+                      </i>
+                      Upload
+                  </button>
+                  <button type="button" mat-raised-button color="accent" (click)="resetUpload()">
+                      <i class="material-icons" aria-hidden="true"> restore </i> Reset
+                  </button>
+                  <button type="button" mat-raised-button (click)="gotoTab(2)" color="warn">
+                      <i class="material-icons" aria-hidden="true" title="Listing">
+                          list
+                      </i>
+                      Listing
+                  </button>
+                  <button type="button" mat-raised-button (click)="gotoTab(2)" class="btnClose">
+                      <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                          close
+                      </i>
+                      Close
+                  </button>
+              </div>
+          </mat-tab>
+      </mat-tab-group>
+  </div>
+</div>

@@ -1,0 +1,180 @@
+<div class="container">
+    <div class="form-wrapper">
+        <!-- heading section -->
+        <div class="heading-section ng-star-inserted">
+            <div>PPR Comments</div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/CM/CMTS/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <!-- breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Contaract Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">PPR Comments</li>
+            </ol>
+        </nav>
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <!-- search ppr -->
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Search PPR
+                    </div>
+                </mat-expansion-panel-header>
+
+                <!-- form -->
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="pprCommentsForm" (ngSubmit)="leaveSubmit()">
+                        <div class="row">
+                            <!-- Query Id -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="pprQueryId" placeholder="Reference No.">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="pprQueryIdCtrl"
+                                                [placeholderLabel]="'Find Query id ...'"
+                                                [noEntriesFoundLabel]="'no matching Id'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let FY of pprCmt_Qid_list | filterSelectInput:pprQueryIdCtrl.value"
+                                            [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- PPR NO -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="pprCmtPprNo" placeholder="PPR No" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="pprCmtPprNoCtrl"
+                                                [placeholderLabel]="'Find PPR NO ...'"
+                                                [noEntriesFoundLabel]="'no matching Department found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let FY of pprCmt_PprNo_list | filterSelectInput:pprCmtPprNoCtrl.value"
+                                            [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- PPR NO -->
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="pprCmtProjName" placeholder="Project Name" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="pprCmtProjNameCtrl"
+                                                [placeholderLabel]="'Find Project Name ...'"
+                                                [noEntriesFoundLabel]="'no matching Project Name'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option
+                                            *ngFor="let FY of pprCmt_prjName_list | filterSelectInput:pprCmtProjNameCtrl.value"
+                                            [value]="FY.value">
+                                            {{FY.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-action-button">
+                                <button type="submit" mat-raised-button color="primary" (click)="search()">
+                                    <i aria-hidden="true" class="material-icons">search</i> Search </button>
+                                <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                                    <i aria-hidden="true" class="material-icons">restore</i>Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="mat-elevation-z8 table-responsive mt-2" *ngIf="!isSearch">
+            <table mat-table #table [dataSource]="dataSource" class="responsive-table" aria-describedby="pprComments">
+                <!-- serila no -->
+                <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{i+1}}
+                    </td>
+                </ng-container>
+                <!-- query id -->
+                <ng-container matColumnDef="queryId">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Reference No .</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.queryId}}
+                    </td>
+                </ng-container>
+                <!-- ppr no -->
+                <ng-container matColumnDef="pprNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">PPR NO</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.pprNo}}
+                    </td>
+                </ng-container>
+                <!-- project name-->
+                <ng-container matColumnDef="projectName">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Project Name</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.projectName}}
+                    </td>
+                </ng-container>
+                <!-- Sent to-->
+                <ng-container matColumnDef="sentTo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sent To</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.sentTo}}
+                    </td>
+                </ng-container>
+                <!-- Sent on-->
+                <ng-container matColumnDef="sentOn">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sent On</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.sentOn}}
+                    </td>
+                </ng-container>
+                <!--status-->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.status}}
+                    </td>
+                </ng-container>
+                <!--trans status-->
+                <ng-container matColumnDef="transStatus">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Transaction Status</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.transStatus}}
+                    </td>
+                </ng-container>
+                <!-- remark -->
+                <ng-container matColumnDef="remark">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Remark</th>
+                    <td mat-cell *matCellDef="let element;let i= index;">
+                        {{element.remark}}
+                    </td>
+                </ng-container>
+                <!-- action -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">action</th>
+                    <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+                        <a [routerLink]="'#table'"><i aria-hidden="true" class="material-icons plus view-icon"
+                                title="View">remove_red_eye</i></a>
+                        <a class="comment" (click)="onSubmit()"><i aria-hidden="true"
+                                class="material-icons plus comment" title="Responded">comment</i></a>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

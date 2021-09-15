@@ -1,0 +1,120 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+           <div>  <!-- Office Updation Listing -->  Office Summary</div> 
+            <div class="font-heading"></div>
+            <div class="font-heading"></div>
+        </div>
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">Search DDO Office Details</div>
+                </mat-expansion-panel-header>
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="searchDDOListForm" (ngSubmit)="saveDDO()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput numbersOnly name="districtCode" formControlName="districtCode"
+                                        placeholder="District Code">
+                                    <mat-icon matSuffix class="searchIcon">search</mat-icon>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <mat-select formControlName="district" name="district"
+                                        placeholder="District Name">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="districtCtrl"
+                                                [placeholderLabel]="'Find District Name...'"
+                                                [noEntriesFoundLabel]="'no matching District Name found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+
+                                        <mat-option  *ngFor="let district of districtNamelist | filterSelectInput : districtCtrl.value : 'viewValue'"
+                                        [value]="district.value">
+                                        {{district.viewValue}}
+                                    </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row displayBlock form-action-button">
+                    <div class="centerAlign">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons">search</i>
+                            Search
+                        </button>
+                        <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                            <i class="material-icons">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="form-datatable-list">
+            <table mat-table [dataSource]="dataSource"  matSort  width="100%">
+                <ng-container matColumnDef="sr_no">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="srnowidth">Sr No.</th>
+                    <td mat-cell *matCellDef="let element;let i = index;">
+                        {{i + 1}}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> Total </td>
+                </ng-container>
+                <ng-container matColumnDef="districtCode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="smallcolumn">District Code</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.districtCode}}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                </ng-container>
+                <ng-container matColumnDef="district">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>District Name</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.district}}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                </ng-container>
+                <ng-container matColumnDef="ddoType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="srnowidth">DDO</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a class="ddotype" [routerLink]="['../office-updation-list-ddo']">{{element.ddoType}}</a>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>  <a class="ddotype" [routerLink]="['../office-updation-list-ddo']"> 1250 </a> </td>
+                </ng-container>
+                <ng-container matColumnDef="nonDDO">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="smallcolumn">Non DDO</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a class="ddotype" [routerLink]="['../office-updation-list-ddo']">{{element.nonDDO}}</a>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>  <a class="ddotype" [routerLink]="['../office-updation-list-ddo']" > 600</a> </td>
+                </ng-container>
+                <ng-container matColumnDef="panchayat">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="smallcolumn">Panchayat</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a class="ddotype" [routerLink]="['../office-updation-list-ddo']">{{element.panchayat}}</a>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> <a class="ddotype" [routerLink]="['../office-updation-list-ddo']" > 250 </a> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Total">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="srnowidth">Total</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a class="ddotype" [routerLink]="['../office-updation-list-ddo']">{{element.Total}}</a>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>  <a class="ddotype" [routerLink]="['../office-updation-list-ddo']" >  2500 </a></td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedNewOfficeBrowseColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedNewOfficeBrowseColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="displayedNewOfficeBrowseColumns"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

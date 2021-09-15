@@ -1,0 +1,234 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- heading section -->
+    <div class="heading-section ng-star-inserted">
+      <div>PSE Registration Listing</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/BPE/PSEL/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">BPE</a></li>
+        <li class="breadcrumb-item active" aria-current="page">PSE Registration Listing</li>
+      </ol>
+    </nav>
+
+    <mat-accordion class="search-accordian">
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header>
+          <div class="heading-section">
+            PSE Registration Listing
+          </div>
+        </mat-expansion-panel-header>
+
+        <!-- PSE Registration Listing -->
+        <div class=" form-datatable-list">
+          <form class="col-sm-12" [formGroup]="pseRegistrationListingForm" (ngSubmit)="searchForm()">
+            <div class="row">
+
+              <!-- name of the pse -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Name of the PSE" alphabetOnly formControlName="pseName"
+                    maxlength="100">
+                </mat-form-field>
+              </div>
+
+              <!-- type of pse -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='pseType' formControlName='pseType' placeholder='Type of PSE' alphabetsSpaceOnly
+                    maxlength="20">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='pseTypeCtrl' [placeholderLabel]="'Select Type of PSE ...'"
+                        [noEntriesFoundLabel]="'no matching Type of PSE found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of pseTypeList | filterSelectInput : pseTypeCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- registration number -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="Registration Number" maxlength="20" alphabetNumberHypenOnly
+                    formControlName="regNumber">
+                </mat-form-field>
+              </div>
+
+              <!-- registration year -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='regYear' placeholder="Registration Year" numbersOnly formControlName="regYear">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='registrationYearCtrl'
+                        [placeholderLabel]="'Select Registration Year...'"
+                        [noEntriesFoundLabel]="'no matching Registration Year found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let item of registrationYearList | filterSelectInput : registrationYearCtrl.value : 'viewValue'"
+                      [value]="item.value">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- district -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name='district' formControlName='district' placeholder='District'>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]='districtCtrl' [placeholderLabel]="'Select District ...'"
+                        [noEntriesFoundLabel]="'no matching District found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option *ngFor="let item of districtList | filterSelectInput : districtCtrl.value : 'viewValue'"
+                      [value]="item.value" matTooltip="{{item.viewValue}}">
+                      {{item.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- city / village -->
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" placeholder="City / Village" maxlength="15" alphabetsSpaceOnly
+                    formControlName="city">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+        <!-- End PSE Registration Listing -->
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="search">search</i>
+            Search</button>
+          <button type="reset" mat-raised-button color="accent" (click)="clearForm()">
+            <i class="material-icons" aria-hidden="true" title="reset">
+              restore
+            </i>
+            Reset
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <br>
+
+    <!-- PSE Registration Listing  Table -->
+    <div class="mat-elevation-z8 table-responsive mt-2">
+      <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="pseregistrationlisting">
+
+        <!-- Sr.No -->
+        <ng-container matColumnDef="serialNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" class="srnowidth">
+            Sr.No
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- name of pse -->
+        <ng-container matColumnDef="pseName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Name of the PSE
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.pseName }}
+          </td>
+        </ng-container>
+
+        <!-- type of pse -->
+        <ng-container matColumnDef="pseType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Type of the PSE
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.pseType }}
+          </td>
+        </ng-container>
+
+        <!-- registration no -->
+        <ng-container matColumnDef="registrationNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Registration Number
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.registrationNo }}
+          </td>
+        </ng-container>
+
+        <!-- registration year -->
+        <ng-container matColumnDef="registrationYear">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Registration Year
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.registrationYear }}
+          </td>
+        </ng-container>
+
+        <!-- district -->
+        <ng-container matColumnDef="district">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            District
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.district }}
+          </td>
+        </ng-container>
+
+        <!-- village -->
+        <ng-container matColumnDef="village">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+            Village
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.village }}
+          </td>
+        </ng-container>
+
+        <!-- Action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+          <td mat-cell *matCellDef="let element; let i = index" class="action-btn-i centerAlign">
+
+            <a [routerLink]=""><i class="material-icons plus view-icon" title="Edit" aria-hidden="true">edit</i></a>
+            <a [routerLink]=""><i class="material-icons plus view-icon" title="View"
+                aria-hidden="true">remove_red_eye</i></a>
+            <a [routerLink]=""><i class="material-icons plus view-icon" aria-hidden="true" title="Request For Change">
+                undo
+              </i></a>
+          </td>
+        </ng-container>
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+    <!-- End PSE Registration Listing  Table -->
+  </div>
+</div>

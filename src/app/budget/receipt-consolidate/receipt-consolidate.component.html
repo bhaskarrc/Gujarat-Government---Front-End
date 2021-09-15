@@ -1,0 +1,480 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Receipt Consolidate </div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/BUD/RE/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Budget</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Receipt Consolidate </li>
+      </ol>
+    </nav>
+
+    <div class="row header-detail">
+      <div class="col-sm-6 colPadding" *ngFor="let item of headerJson">
+        <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+        <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+      </div>
+    </div>
+
+    
+    <div #parentGrids>
+    <!-- <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedindex"> -->
+    <mat-tab-group mat-stretch-tabs class="standing-est-tabing">
+    <mat-tab label="Detail">
+    <div class="font-heading"><strong>Major Head:</strong> 1601: Grants-in-aid from Central Government</div>
+    <div class="rsClass"> (₹ in Lakhs)</div>
+    <table mat-table #table [dataSource]="dataSource" aria-describedby="receiptConsolidateTable" class="responsive-table">
+      <!-- Position Column -->
+      <ng-container matColumnDef="seno">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}"> </th>
+        <td mat-cell *matCellDef="let element;let i= index;" class="centerAlign">
+          {{i + 1}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="leftAlign">Total</td>
+      </ng-container>
+
+      <ng-container matColumnDef="srno1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sr. No.</th>
+      </ng-container>
+
+      <ng-container matColumnDef="subMajorHead">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Sub Major Head</th>
+        <td mat-cell *matCellDef="let element;let i= index;" [matTooltip]="element.subMajorHeadToolTip">
+          {{element.subMajorHead}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subMajorHead1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sub Major Head</th>
+      </ng-container>
+      <ng-container matColumnDef="minoeHead">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Sub Major Head</th>
+        <td mat-cell *matCellDef="let element;let i= index;" [matTooltip]="element.minoeHeadToolTip">
+          {{element.minoeHead}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="minorHead1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Minor Head</th>
+      </ng-container>
+      <ng-container matColumnDef="subHead">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Sub Major Head</th>
+        <td mat-cell *matCellDef="let element;let i= index;" [matTooltip]="element.subHeadToolTip">
+          {{element.subHead}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subHead1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sub Head</th>
+      </ng-container>
+      <ng-container matColumnDef="detaileHead">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Sub Major Head</th>
+        <td mat-cell *matCellDef="let element;let i= index;" [matTooltip]="element.detaileHeadToolTip">
+          {{element.detaileHead}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="detailedHead1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Detailed Head</th>
+      </ng-container>
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="objecthead">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Object Head</th>
+        <td mat-cell *matCellDef="let element;let i= index;">
+          <div *ngIf="!element.isBreakup; else hyperLink" [matTooltip]="element.objectheadToolTip">
+            {{element.objecthead}}
+          </div>
+          <ng-template #hyperLink>
+            <a class="hyper-link" (click)="viewBreakup(element)">{{element.objecthead}}</a>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ObjectHead1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Object Head</th>
+      </ng-container>
+
+      <ng-container matColumnDef="accountReceipt">
+        <th mat-header-cell *matHeaderCellDef scope="row"> 2016 - 2017</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountReceipt}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountReceipt() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accountReceipt1">
+        <th mat-header-cell *matHeaderCellDef scope="row">2017 - 2018</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountReceipt1}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountReceipt1() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accountReceipt2">
+        <th mat-header-cell *matHeaderCellDef scope="row">2018 - 2019</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountReceipt2}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountReceipt2() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ac1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="3">Accounts For Receipt</th>
+      </ng-container>
+      <ng-container matColumnDef="accountDisbursement">
+        <th mat-header-cell *matHeaderCellDef scope="row"> 2016 - 2017</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountDisbursement}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountDisbursement() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accountDisbursement1">
+        <th mat-header-cell *matHeaderCellDef scope="row">2017 - 2018</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountDisbursement1}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountDisbursement1() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accountDisbursement2">
+        <th mat-header-cell *matHeaderCellDef scope="row">2018 - 2019</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.accountDisbursement2}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAccountDisbursement2() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ac2">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="3">Accounts For Disbursement</th>
+      </ng-container>
+
+      <ng-container matColumnDef="bReceipt">
+        <th mat-header-cell *matHeaderCellDef scope="row">Receipt</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.bReceipt}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcbReceipt() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="bDisbursement">
+        <th mat-header-cell *matHeaderCellDef scope="row">Disbursement</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.bDisbursement}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcbDisbursement() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="be1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">BE For 2019-2020 </th>
+      </ng-container>
+      <ng-container matColumnDef="pReceipt">
+        <th mat-header-cell *matHeaderCellDef scope="row">Receipt</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign" [ngStyle]="{'width': '8%'}">
+            {{element.pReceipt}}
+          <i aria-hidden="true" class="material-icons btn-history " title="View History" (click)="showHistoryDialog()">history</i>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcpReceipt() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="pDisbursement">
+        <th mat-header-cell *matHeaderCellDef scope="row">Disbursement</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign" [ngStyle]="{'width': '8%'}">
+            {{element.pDisbursement}}
+        <i aria-hidden="true" class="material-icons btn-history " title="View History" (click)="showHistoryDialog()">history</i>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcpDisbursement() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="proposed1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">HoD Proposed Amount for next year 2020-2021</th>
+      </ng-container>
+
+      <ng-container matColumnDef="pReceiptfd">
+        <th mat-header-cell *matHeaderCellDef scope="row">Receipt</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign" [ngStyle]="{'width': '8%'}">
+          <!-- {{element.pReceipt}} -->
+          <div class="form-action-button">
+            <mat-form-field floatLabel="never" class="rightAlign" [ngStyle]="{'width': '70%'}">
+              <input matInput [value]="element.pReceiptFd" [(ngModel)]="element.pReceiptFd"
+              (keypress)="decimalKeyPress($event)" (blur)="decimalPoint(element,'pReceiptFd')">
+            </mat-form-field>
+  
+            <i aria-hidden="true" class="material-icons btn-history " title="View History" (click)="showHistoryDialog()">
+              history</i>
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcpReceiptFd() | number : '1.2-2'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="pDisbursementfd">
+        <th mat-header-cell *matHeaderCellDef scope="row">Disbursement</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign" [ngStyle]="{'width': '8%'}">
+          <!-- {{element.pDisbursement}} -->
+          <div class="form-action-button">
+            <mat-form-field floatLabel="never" class="rightAlign" [ngStyle]="{'width': '70%'}">
+              <input matInput [value]="element.pDisbursementFd" [(ngModel)]="element.pDisbursementFd"
+              (keypress)="decimalKeyPress($event)" (blur)="decimalPoint(element,'pDisbursementFd')">
+            </mat-form-field>
+  
+            <i aria-hidden="true" class="material-icons btn-history " title="View History" (click)="showHistoryDialog()">
+              history</i>
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcpDisbursementFd() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="proposedfd1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">Provision finally admitted by FD For 2020-2021</th>
+      </ng-container>
+
+
+      <ng-container matColumnDef="deduct">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Deduct Refund Mapping</th>
+        <td mat-cell *matCellDef="let element" class="rightAlign">
+          {{element.deduct}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcDeduct() | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="deduct1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Deduct Refund Mapping</th>
+      </ng-container>
+
+      <ng-container matColumnDef="remarks">
+        <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'display': 'none'}">Remarks</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.remarks}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="rightAlign"></td>
+      </ng-container>
+
+      <ng-container matColumnDef="remarks1">
+        <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Remarks</th>
+      </ng-container>
+
+
+      <ng-container matColumnDef="1">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">1</th>
+      </ng-container>
+      <ng-container matColumnDef="2">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">2</th>
+      </ng-container>
+      <ng-container matColumnDef="3">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">3</th>
+      </ng-container>
+      <ng-container matColumnDef="4">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">4</th>
+      </ng-container>
+      <ng-container matColumnDef="5">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">5</th>
+      </ng-container>
+      <ng-container matColumnDef="6">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">6</th>
+      </ng-container>
+      <ng-container matColumnDef="7">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">7</th>
+      </ng-container>
+      <ng-container matColumnDef="8">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">8</th>
+      </ng-container>
+      <ng-container matColumnDef="9">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">9</th>
+      </ng-container>
+
+      <ng-container matColumnDef="10">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">10</th>
+      </ng-container>
+      <ng-container matColumnDef="11">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">11</th>
+      </ng-container>
+
+      <ng-container matColumnDef="12">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">12</th>
+      </ng-container>
+
+      <ng-container matColumnDef="13">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">13</th>
+      </ng-container>
+
+      <ng-container matColumnDef="14">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">14</th>
+      </ng-container>
+
+      <ng-container matColumnDef="15">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">15</th>
+      </ng-container>
+
+      <ng-container matColumnDef="16">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">16</th>
+      </ng-container>
+
+      <ng-container matColumnDef="17">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">17</th>
+      </ng-container>
+      <ng-container matColumnDef="18">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">18</th>
+      </ng-container>
+
+      <ng-container matColumnDef="19">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">19</th>
+      </ng-container>
+      <ng-container matColumnDef="20">
+        <th mat-header-cell *matHeaderCellDef scope="row" class="tblwithoutBg">20</th>
+      </ng-container>
+
+      <tr mat-header-row
+        *matHeaderRowDef="['srno1','subMajorHead1','minorHead1','subHead1','detailedHead1','ObjectHead1','ac1','ac2','be1','proposed1','proposedfd1','deduct1','remarks1']">
+      </tr>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+
+
+      <tr mat-header-row class="unsetHeight"
+        *matHeaderRowDef="['1','2','3','4','5','6','7','8','9','10','11','12','13', '14', '15','16','17','18','19','20']">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i= index;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+    </table>
+
+    <div class="form-action-button">
+      <button type="submit" mat-raised-button color="primary">
+        <i class="material-icons" aria-hidden="true" title="Save">
+          save
+        </i>
+        Save as Draft
+      </button>
+      <button mat-raised-button type="submit" (click)="submitToNextLevel()" class="green"><i class="material-icons">
+          done
+        </i> Submit
+      </button>
+      <button type="button" mat-raised-button color="warn" (click)="listing()">
+        <i class="material-icons" aria-hidden="true" title="Listing">
+          list
+        </i>
+        Listing
+      </button>
+      <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+        <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+          close
+        </i>
+        Close
+      </button>
+      <button type="reset" mat-raised-button color="accent">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Reset
+      </button>
+
+
+    </div>
+    </mat-tab>
+    <mat-tab label="Attachments">
+        <table mat-table [dataSource]="dataSourceBrowse" aria-describedby="attachmentTable" width="100%" id="browseTable">
+          <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef scope="row">Sr. No.</th>
+              <td mat-cell *matCellDef="let item; let i = index" class="centerAlign">
+              {{ i + 1 }}
+              </td>
+          </ng-container>
+            <ng-container matColumnDef="attachmentType">
+                <th mat-header-cell *matHeaderCellDef scope="row">Attachment Type</th>
+                <td mat-cell *matCellDef="let item;let i = index;">
+                    <mat-select placeholder="Attachment Type" #singleSelect1 required [(ngModel)]="item.dropDown">
+                        <mat-option>
+                            <ngx-mat-select-search [formControl]="attachmentTypeCtrl" [placeholderLabel]="'Find Attachment Type...'" [noEntriesFoundLabel]="'no matching Attachment Type found'">
+                            </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let attachment of filteredAttachmentList | filterSelectInput:attachmentTypeCtrl.value" [value]="attachment.value">
+                            {{attachment.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef scope="row">File name</th>
+                <td mat-cell *matCellDef="let item">
+                    <mat-form-field floatLabel="never">
+                        <input matInput [value]="item.name" [(ngModel)]="item.name">
+                    </mat-form-field>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="browse">
+                <th mat-header-cell *matHeaderCellDef scope="row">Dropdown</th>
+                <td mat-cell *matCellDef="let i = index">
+                    <button type="button" (click)="openFileSelector(i)" class="btn-browse">Browse
+                        Files</button>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="uploadedFileName">
+                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded file name</th>
+                <td mat-cell *matCellDef="let item">
+                    <span *ngIf="item.file && item.file.name">{{item.file.name}}</span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="uploadedBy">
+                <th mat-header-cell *matHeaderCellDef scope="row">Uploaded By</th>
+                <td mat-cell *matCellDef="let item">
+                    <mat-label>Mr. Pratik Shah</mat-label>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                <td mat-cell *matCellDef="let item; let i = index">
+                    <table class="iconTable">
+                        <tbody>
+                            <tr>
+                                <td width="30">
+                                    <i aria-hidden="true" class="material-icons plus add" *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)" (click)="addBrowse()">
+                                        add
+                                    </i>
+                                </td>
+                                <td width="30">
+                                    <i aria-hidden="true" class="material-icons plus delete" *ngIf="dataSourceBrowse && dataSourceBrowse.data && dataSourceBrowse.data.length > 1" (click)="deleteBrowse(i)">
+                                        delete
+                                    </i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+        </table>
+        <input type="file" id="fileBrowse" style="visibility: hidden;" (change)="onFileSelection($event)" />
+        <div class="legend">
+          1. Total File size should be under 2MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’,
+          ‘JPEG’, ‘PNG’, ‘PDF’.
+        </div>
+        <div class="form-action-button">
+            <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Save">
+                    save
+                </i>
+                Upload
+            </button>
+            <button type="button" mat-raised-button (click)="listing()" color="warn">
+                <i class="material-icons" aria-hidden="true" title="Listing">
+                    list
+                </i>
+                Listing
+            </button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                    close
+                </i>
+                Close
+            </button>
+        </div>
+    </mat-tab>
+  </mat-tab-group>
+  </div>
+</div>

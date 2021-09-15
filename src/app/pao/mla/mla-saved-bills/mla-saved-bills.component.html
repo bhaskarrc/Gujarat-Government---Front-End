@@ -1,0 +1,296 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Saved Bills for MLA</div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Saved Bills for MLA</li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <form [formGroup]="distributeVouchersForm" (ngSubmit)="searchMlaAuthorityData()">
+        <div class="box box-primary">
+          <div class="box-header">Saved Bills for MLA</div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="Bill Control No."
+                    formControlName="bControlNumber">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" [max]="maxDate" placeholder="Bill Date"
+                    formControlName="billDate" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="MLA No."
+                    formControlName="mlaNumber">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="MLA Name"
+                    formControlName="mlaName">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="majorHead" formControlName="majorHead" placeholder="Major Head" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching major head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let head of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="head.value" [matTooltip]="head.viewValue">
+                      {{head.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker5" [max]="maxDate" (dateChange)="FromDate( $event)"
+                    formControlName="BillFromDate" placeholder="From Bill Date" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                  <mat-datepicker #picker5></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3" *ngIf="!valueRequired">
+                <mat-form-field>
+
+                  <input matInput [matDatepicker]="picker2" placeholder="To Bill  date">
+
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="valueRequired">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker2" placeholder="Bill To date" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="Bill Net Amount"
+                    formControlName="billNetAmount">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="MLA Designation"
+                    formControlName="mlaDesignation">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="Department"
+                    formControlName="department">
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="billtypes" formControlName="billtypes" placeholder="Bill Status">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="billtypeCtrl" [placeholderLabel]="'Select Bill Type ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let billt of billtype_list | filterSelectInput : billtypeCtrl.value : 'viewValue'"
+                      [value]="billt.value" [matTooltip]="billt.viewValue">
+                      {{billt.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!-- Common Button -->
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button type="submit" mat-raised-button color="primary" (click)="clickSearch()">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+              <!-- End Common Button -->
+
+              <!-- Result for Saved Bills for MLA Search -->
+              <div class="box box-primary" *ngIf="showSearch">
+                <div class="box-header">Result for Saved Bills for MLA Search</div>
+                <div class="box-body">
+                  <div class="row">
+
+                    <div class="col-sm-3">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" [max]="maxDate" placeholder="Post Audit Received Date"
+                          readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker3" [max]="maxDate" placeholder="Post Audit Date"
+                          readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+
+
+
+
+                </div>
+              </div>
+              <!-- End Result for Saved Bills for MLA Search -->
+            </div>
+          </div>
+
+
+        </div>
+        <!-- Mla Saved Bill -->
+        <div class="mat-elevation-z8 mt-2">
+          <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="savedVills">
+
+            <ng-container matColumnDef="checkBox">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+              </th>
+              <td mat-cell *matCellDef="let row" class="centerAlign">
+                <mat-checkbox (click)="add()"></mat-checkbox>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="billControlNumber">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Control No</th>
+              <td mat-cell *matCellDef="let element"> {{element.billControlNumber}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billDate">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.billDate}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaNo">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>MLA No</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaName">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>MLA Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="majorHead">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Major Head</th>
+              <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billNetAmount">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Net Amount</th>
+              <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.billNetAmount}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaDesignation">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>MLA Designation</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaDesignation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaDepartment">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>MLA Department</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaDepartment}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billStatus">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Status</th>
+              <td mat-cell *matCellDef="let element"> {{element.billStatus}} </td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="billMonth">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Month</th>
+              <td mat-cell *matCellDef="let element"> {{element.billMonth}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billType">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Bill Type</th>
+              <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+            </ng-container>
+
+
+
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+
+                <a><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+              </td>
+            </ng-container>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+
+            </tr>
+          </table>
+
+        </div>
+        <!-- End Mla Saved Bill -->
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button mat-raised-button type="submit" class="green"><i class="material-icons" aria-hidden="true">
+              done
+            </i> Submit
+          </button>
+          <button type="button" mat-raised-button color="warn">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+              list
+            </i>
+            Listing
+          </button>
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+
+        </div>
+        <!-- End Common Button -->
+
+      </form>
+    </div>
+  </div>
+</div>

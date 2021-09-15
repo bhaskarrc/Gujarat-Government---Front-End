@@ -1,0 +1,254 @@
+<div class="container">
+    <div class="form-wrapper">
+
+        <!-- heading section -->
+        <div class="heading-section ng-star-inserted">
+            <div>PPR APPROVE/REJECT</div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/CM/PPRAR/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+
+        <!-- naviagtion -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Contaract Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">PPR APPROVE/REJECT</li>
+            </ol>
+        </nav>
+
+        <div class="panel-group">
+            <mat-tab-group mat-stretch-tabs>
+
+                <!-- PPR List  -->
+                <mat-tab label="PPR List">
+                    <mat-expansion-panel [expanded]="true">
+                        <!-- ppr search -->
+                        <mat-expansion-panel-header>
+                            <div class="heading-section">
+                                PPR Search
+                            </div>
+                        </mat-expansion-panel-header>
+
+                        <!-- form -->
+                        <div class=" form-datatable-list">
+                            <form class="col-sm-12" [formGroup]="pprApprRejeectForm" (ngSubmit)="leaveSubmit()">
+                                <div class="row">
+
+                                    <!-- ppr Id -->
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="pprApprRejeectId" placeholder="PPR ID"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pprApprRejeectIdCtrl"
+                                                        [placeholderLabel]="'Find PPR Id ...'"
+                                                        [noEntriesFoundLabel]="'no matching Id'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let FY of pprApprRej_pprid_list | filterSelectInput:pprApprRejeectIdCtrl.value"
+                                                    [value]="FY.value">
+                                                    {{FY.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    
+                                    <!-- ppr type -->
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="pprApprRejeectType" placeholder="PPR Type"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pprApprRejeectTypeCtrl"
+                                                        [placeholderLabel]="'Find PPR Id ...'"
+                                                        [noEntriesFoundLabel]="'no matching Id'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let FY of pprApprRej_pprtype_list | filterSelectInput:pprApprRejeectTypeCtrl.value"
+                                                    [value]="FY.value">
+                                                    {{FY.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <!-- project name -->
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="pprApprRejeectPname" placeholder="Project Name"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="pprApprRejeectPnameCtrl"
+                                                        [placeholderLabel]="'Find PPR Id ...'"
+                                                        [noEntriesFoundLabel]="'no matching Id'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let FY of pprApprRej_ptype_list | filterSelectInput:pprApprRejeectPnameCtrl.value"
+                                                    [value]="FY.value">
+                                                    {{FY.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- form action buttons -->
+                        <div class="form-action-button">
+                            <button type="submit" mat-raised-button color="primary" (click)="search()">
+                                <i class="material-icons" aria-hidden="true">search</i> Search </button>
+                            <button type="reset" mat-raised-button color="accent" (click)="clearForm();">
+                                <i class="material-icons" aria-hidden="true">restore</i>Reset</button>
+                        </div>
+                    </mat-expansion-panel>
+
+                    <div class ="mt-3"></div>
+                    <app-ppr-list (clickedData)="showData($event)">show data</app-ppr-list>
+                    <mat-expansion-panel [expanded]="true">
+                    </mat-expansion-panel>
+
+                    <!-- action buttons -->
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i aria-hidden="true" class="material-icons" title="Save">
+                                save
+                            </i>
+                            Save as Draft
+                        </button>
+                        <button mat-raised-button type="submit" class="green" (click)="submitDetails()">
+                            <i aria-hidden="true" class="material-icons">
+                                done </i> Submit
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i aria-hidden="true" class="material-icons" title="Close">close</i> Close
+                        </button>
+                    </div>
+                </mat-tab>
+
+                <!-- ppr rejected -->
+                <mat-tab label="PPR Rejected">
+                    <table mat-table [dataSource]="childdata" width="100%" aria-describedby="pprRejectedList">
+                        <!-- sr no -->
+                        <ng-container matColumnDef="srNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{i+1}}
+                            </td>
+                        </ng-container>
+
+                        <!-- ppr id -->
+                        <ng-container matColumnDef="pprId">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPR ID</th>
+                            <td mat-cell *matCellDef="let data"> {{data.pprId}} </td>
+                        </ng-container>
+
+                        <!-- create date -->
+                        <ng-container matColumnDef="createDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Create Date</th>
+                            <td mat-cell *matCellDef="let data"> {{data.createDate}} </td>
+                        </ng-container>
+
+                        <!-- project name -->
+                        <ng-container matColumnDef="projName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Project name</th>
+                            <td mat-cell *matCellDef="let data"> {{data.projName}} </td>
+                        </ng-container>
+
+                        <!-- agency -->
+                        <ng-container matColumnDef="agency">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Agency</th>
+                            <td mat-cell *matCellDef="let data"> {{data.agency}} </td>
+                        </ng-container>
+
+                        <!-- area -->
+                        <ng-container matColumnDef="area">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sectoral Area</th>
+                            <td mat-cell *matCellDef="let data"> {{data.area}} </td>
+                        </ng-container>
+
+                        <!-- type -->
+                        <ng-container matColumnDef="type">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPR Type</th>
+                            <td mat-cell *matCellDef="let data"> {{data.type}} </td>
+                        </ng-container>
+
+                        <!-- status -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                            <td mat-cell *matCellDef="let data"> {{data.status}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedRejectColumns">
+                        </tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedRejectColumns;">
+                        </tr>
+                    </table>
+                </mat-tab>
+
+                <!-- ppr approved -->
+                <mat-tab label="PPR Approved">
+                    <table mat-table [dataSource]="childdata1" width="100%" aria-describedby="pprApprovedList">
+                        <!-- sr no -->
+                        <ng-container matColumnDef="srNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sr. No. </th>
+                            <td mat-cell *matCellDef="let element;let i= index;">
+                                {{i+1}}
+                            </td>
+                        </ng-container>
+
+                        <!-- ppr id -->
+                        <ng-container matColumnDef="pprId">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPR ID</th>
+                            <td mat-cell *matCellDef="let data"> {{data.pprId}} </td>
+                        </ng-container>
+
+                        <!-- create date -->
+                        <ng-container matColumnDef="createDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Create Date</th>
+                            <td mat-cell *matCellDef="let data"> {{data.createDate}} </td>
+                        </ng-container>
+
+                        <!-- project name -->
+                        <ng-container matColumnDef="projName">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Project name</th>
+                            <td mat-cell *matCellDef="let data"> {{data.projName}} </td>
+                        </ng-container>
+
+                        <!-- agency -->
+                        <ng-container matColumnDef="agency">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Agency</th>
+                            <td mat-cell *matCellDef="let data"> {{data.agency}} </td>
+                        </ng-container>
+
+                        <!-- area -->
+                        <ng-container matColumnDef="area">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Sectoral Area</th>
+                            <td mat-cell *matCellDef="let data"> {{data.area}} </td>
+                        </ng-container>
+
+                        <!-- type -->
+                        <ng-container matColumnDef="type">
+                            <th mat-header-cell *matHeaderCellDef scope="row">PPR Type</th>
+                            <td mat-cell *matCellDef="let data"> {{data.type}} </td>
+                        </ng-container>
+
+                        <!-- status -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef scope="row">Status</th>
+                            <td mat-cell *matCellDef="let data"> {{data.status}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedRejectColumns">
+                        </tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedRejectColumns;">
+                        </tr>
+                    </table>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

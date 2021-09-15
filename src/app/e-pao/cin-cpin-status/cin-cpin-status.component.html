@@ -1,0 +1,159 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>CIN CPIN Status</div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/E-PAO/CCS/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">E-PAO</li>
+        <li class="breadcrumb-item active" aria-current="page">CIN CPIN Status</li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <form [formGroup]="cinStatusrForm" (ngSubmit)="cinStatusData()">
+        <!-- CIN CPIN  -->
+        <div class="box box-primary">
+          <div class="box-header">CIN CPIN Status</div>
+          <div class="box-body">
+            <div class="row">
+              <!-- Record Type -->
+              <div class="col-sm-3">
+
+                <mat-form-field>
+                  <mat-select name="recordTypeCtrl" formControlName="recordTypeCtrl" placeholder="Record Type">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="recordTypeCtrl"
+                        [placeholderLabel]="'Select Record Type ...'"
+                        [noEntriesFoundLabel]="'no matching Tange type found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let rt of recordType_list | filterSelectInput : recordTypeCtrl.value : 'viewValue'"
+                      [value]="rt.value" [matTooltip]="rt.viewValue">
+                      {{rt.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!-- Details -->
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput formControlName="details" maxlength="14" numbersOnly placeholder="CPIN/ CIN">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Common Button -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                Get Status
+              </button>
+              <button type="reset" mat-raised-button color="accent" title="Reset">
+                <i class="material-icons" title="Reset" aria-hidden="true">restore</i>
+                Reset
+              </button>
+            </div>
+            <!-- End Common Button -->
+
+
+
+          </div>
+        </div>
+        <!-- End CIN CPIN  -->
+
+        <!-- table starts -->
+        <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="blockCpinStatusTable">
+
+          <ng-container matColumnDef="srNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> SR No.</th>
+            <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+              {{i + 1}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cpin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">CPIN</th>
+            <td mat-cell *matCellDef="let element"> {{element.cpin}} </td>
+          </ng-container>
+          <ng-container matColumnDef="cin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">CIN</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.cin}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Status</th>
+            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+          </ng-container>
+
+
+
+          <ng-container matColumnDef="fileNo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">File No</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.fileNo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fileDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> File Date</th>
+            <td mat-cell *matCellDef="let element"> {{element.fileDate}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amountGovt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Amount (₹)</th>
+            <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.amountGovt}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="creditDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Govt. Account Credit Date</th>
+            <td mat-cell *matCellDef="let element"> {{element.creditDate}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="transStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Transaction status</th>
+            <td mat-cell *matCellDef="let element"> {{element.transStatus}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"> Action </th>
+            <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+              <a [routerLink]="'../block-cpin-view'">
+                <i aria-hidden="true" class="material-icons plus edit-icon" title="Edit"> edit </i></a>
+            </td>
+          </ng-container>
+
+          <!-- Header Section Of table -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data Fetch From .TS File to table -->
+          <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+          </tr>
+        </table>
+        <!-- table ends -->
+        <!-- standard button starts -->
+        <div class="form-action-button">
+
+          <button type="button" mat-raised-button class="print-btn" title="Print">
+            <i class="material-icons" title="Print" aria-hidden="true">print</i>
+            Print
+          </button>
+
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">close</i>
+            Close
+          </button>
+
+        </div>
+        <!-- standard button ends -->
+
+
+      </form>
+    </div>
+  </div>
+</div>

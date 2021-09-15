@@ -1,0 +1,215 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Bank Rate Master Listing</div>
+            <!-- <div class="font-heading"><strong>Reference Number:</strong> 19-20/E-PAO/BRML/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div> -->
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">E-PAO</li>
+                <li class="breadcrumb-item active" aria-current="page">Bank Rate Master Listing</li>
+            </ol>
+        </nav>
+        <div class="panel-group">
+
+            <form [formGroup]="bankRateMasterForm" (ngSubmit)="bankRateMasterData()">
+                <!-- bank rate master form -->
+                <div class="box box-primary">
+                    <div class="box-header">Search</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <!-- refrence no -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Reference Number" numberOnly
+                                        formControlName='referenceNumber'>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- Reference Date  -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="refrenceDate" formControlName="refrenceDate"
+                                        placeholder="Reference Date ">
+                                    <mat-datepicker-toggle matSuffix [for]="refrenceDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #refrenceDate></mat-datepicker>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- effecativeDate -->
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="effecativeDate" formControlName="effecativeDate"
+                                        placeholder="Effective From Date ">
+                                    <mat-datepicker-toggle matSuffix [for]="effecativeDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #effecativeDate></mat-datepicker>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- Bank Rate -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Bank Rate" numberOnly formControlName='bankRate'>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- Additional  Rate -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Additional  Rate" numberOnly formControlName='addRate'>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- Penalty Rate -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Penalty Rate" numberOnly formControlName='penRate'>
+
+                                </mat-form-field>
+                            </div>
+                            <!-- Status -->
+                            <div class="col-sm-6 col-md-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="status" placeholder="Status" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="statusCtrl"
+                                                [placeholderLabel]="'Select Status ...'"
+                                                [noEntriesFoundLabel]="'no matching Status found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option
+                                            *ngFor="let item of status_list | filterSelectInput: statusCtrl.value"
+                                            [value]="item.value" matTooltip="{{item.viewValue}}">
+                                            {{item.viewValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- common button -->
+                            <div class="col-sm-12">
+                                <div class="form-action-button">
+
+                                    <button type="submit" mat-raised-button color="primary" (click)="listingData()">
+                                        <i class="material-icons" aria-hidden="true">search</i>
+                                        Search
+                                    </button>
+                                    <button type="reset" mat-raised-button color="accent">
+                                        <i class="material-icons" aria-hidden="true">
+                                            restore
+                                        </i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- bank rate master form -->
+                <!-- branch rate master table -->
+                <div *ngIf="listingShow">
+                    <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8"
+                        aria-describedby="branchRateMastermapping">
+                        <!-- sr no -->
+                        <ng-container matColumnDef="srNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row">
+                                Sr No.
+                            </th>
+                            <td mat-cell *matCellDef="let row; let i = index;" class="centerAlign">
+                                {{i+1}}
+                            </td>
+                        </ng-container>
+                        <!-- refrence no -->
+                        <ng-container matColumnDef="refNo">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Reference Number</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.refNo}}
+                            </td>
+                        </ng-container>
+                        <!-- rfrence date -->
+                        <ng-container matColumnDef="refDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Reference Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.refDate}}
+                            </td>
+                        </ng-container>
+                        <!-- effective date -->
+                        <ng-container matColumnDef="effectivFromDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Effective From Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.effectivFromDate}}
+                            </td>
+                        </ng-container>
+                        <!-- effective date -->
+                        <ng-container matColumnDef="effectivToDate">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Effective To Date</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.effectivToDate}}
+                            </td>
+                        </ng-container>
+                        <!-- bank rate -->
+                        <ng-container matColumnDef="bankRate">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Bank Rate</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.bankRate}}
+                            </td>
+                        </ng-container>
+                        <!-- additional rate -->
+                        <ng-container matColumnDef="addRated">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Additional Rate</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.addRated}}
+                            </td>
+                        </ng-container>
+                        <!-- penalty rate -->
+                        <ng-container matColumnDef="penRated">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Penalty Rate</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.penRated}}
+                            </td>
+                        </ng-container>
+                        <!-- Status -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Status</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.status}}
+                            </td>
+                        </ng-container>
+                        <!-- action -->
+                        <ng-container matColumnDef="newaction">
+                            <th mat-header-cell *matHeaderCellDef scope="row"> Action</th>
+                            <td mat-cell *matCellDef="let element" class="action-btn-i centerAlign">
+                                <a (click)="openEdit()"><i class="material-icons plus edit-icon" aria-hidden="true"
+                                        title="Edit"> edit
+                                    </i></a>
+                            </td>
+                        </ng-container>
+
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+                    </table>
+                    <!-- common table -->
+                    <!-- common button -->
+                    <div class="form-action-button">
+
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                                close
+                            </i>
+                            Close
+                        </button>
+
+                    </div>
+                    <!-- End common button -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

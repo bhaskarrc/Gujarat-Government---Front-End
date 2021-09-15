@@ -1,0 +1,299 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Receipt Estimate Consolidate</div>
+      <!-- <div class="font-heading"><strong>Transaction Number:</strong> 19-20/BUD/SCE/001</div> -->
+      <!-- <div class="font-heading"><strong>Transaction Date:</strong> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div> -->
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Budget</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Receipt Estimate Consolidate</li>
+      </ol>
+    </nav>
+
+    <div class="row header-detail">
+      <div class="col-sm-6 colPadding" *ngFor="let item of headerJson">
+        <div class="col-sm-4 labelCSS">{{item.label}}<span class="floatRight">:</span></div>
+        <div class="col-sm-8 paddingUnset">{{item.value}}</div>
+      </div>
+    </div>
+
+
+    <div>
+      <!-- <div [hidden]="!isDDoListVisible"> -->
+      <!-- <mat-tab-group mat-stretch-tabs class="standing-est-tabing" [selectedIndex]="selectedIndex" (selectedIndexChange)="getTabIndex($event)"> -->
+      <mat-tab-group mat-stretch-tabs class="standing-est-tabing">
+        <mat-tab label="Receipt Estimate Prepared">
+          <div class="rsClass"> (₹ in Lakhs) </div>
+          <table mat-table [dataSource]="ddoListDataSource" aria-describedby="estimatePrepared" matSort>
+
+            <ng-container matColumnDef="srNo">
+              <th mat-header-cell *matHeaderCellDef scope="row">Sr No</th>
+              <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                <!-- {{ idx + 1 + ((ddoListPaginator.pageIndex * ddoListPaginator.pageSize))}} -->
+                {{ idx + 1}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Total</td>
+            </ng-container>
+
+            <ng-container matColumnDef="srno1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Sr. No.</th>
+            </ng-container>
+
+            <ng-container matColumnDef="checkbox">
+              <th mat-header-cell *matHeaderCellDef scope="row">Select DDO</th>
+              <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox"
+                  title="Select" (change)="checkboxValueChange()"></mat-checkbox>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoName">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Name of HoD</th>
+              <td mat-cell *matCellDef="let item;">
+                <a class="hyper-link" *ngIf="item.ddoProposedAmt > 0.00; else DDOName;" title="Detail View"
+                  (click)="loadDetailView(item)">{{item.ddoName}}</a>
+                <ng-template #DDOName>
+                  {{item.ddoName}}
+                </ng-template>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoName1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Name of HoD</th>
+            </ng-container>
+
+            <ng-container matColumnDef="receipt">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Receipt</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                {{item.receipt | number : '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAmtProposedByDdoReceipt() | number : '1.2-2'}}
+            </ng-container>
+
+            <ng-container matColumnDef="disbursement">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Disbursement</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                {{item.disbursement | number : '1.2-2'}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">{{calcAmtProposedByDdoDisbursement() | number : '1.2-2'}}
+            </ng-container>
+
+            <ng-container matColumnDef="ddoProposedAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">Proposed Amount By HoD</th>
+            </ng-container>
+
+            <ng-container matColumnDef="receiptDept">
+              <!--hodProposedAmt-->
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Receipt</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                <!-- {{item.hodAmt | number : '1.2-2'}} -->
+                <mat-form-field floatLabel="never" class="rightAlign">
+                  <!-- <input matInput value="0 " numbersOnly step="0.00"> -->
+                  <input matInput [value]="item.receiptDept" [(ngModel)]="item.receiptDept"
+                  (keypress)="decimalKeyPress($event)" (blur)="decimalPoint(item,'receiptDept')">
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                {{calcAmtProByDeptReceipt() | number : '1.2-2'}}
+            </ng-container>
+
+            <ng-container matColumnDef="disbursementDept">
+              <!--hodProposedAmt-->
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Disbursement</th>
+              <td mat-cell *matCellDef="let item" class="rightAlign">
+                <!-- {{item.hodAmt | number : '1.2-2'}} -->
+                <mat-form-field floatLabel="never" class="rightAlign">
+                  <!-- <input matInput value="0 " numbersOnly step="0.00"> -->
+                  <input matInput [value]="item.disbursementDept" [(ngModel)]="item.disbursementDept"
+                  (keypress)="decimalKeyPress($event)" (blur)="decimalPoint(item,'disbursementDept')">
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                {{calcAmtProByDeptDisb() | number : '1.2-2'}}
+            </ng-container>
+
+            <ng-container matColumnDef="hodProposedAmt1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.colspan]="2">Proposed Amount by Department</th>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoReferenceNo">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Reference No.</th>
+              <td mat-cell *matCellDef="let item">
+                {{item.ddoReferenceNo}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoReferenceNo1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Reference No.</th>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoTransactionDate">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Date of Submission</th>
+              <td mat-cell *matCellDef="let item">
+                {{item.ddoTransactionDate}}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoTransactionDate1">
+              <th mat-header-cell *matHeaderCellDef scope="row" [attr.rowspan]="2">Date of Submission</th>
+            </ng-container>
+
+            <tr mat-header-row
+              *matHeaderRowDef="['srno1','ddoName1','ddoProposedAmt','ddoReferenceNo1','ddoTransactionDate1']">
+            </tr>
+            <tr mat-header-row *matHeaderRowDef="['receipt', 'disbursement']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ddoListColumn;"></tr>
+            <tr mat-footer-row *matFooterRowDef="ddoListColumn; sticky: true"></tr>
+          </table>
+          <!-- <mat-paginator #ddoListPaginator [pageSizeOptions]="paginationSize" showFirstLastButtons></mat-paginator> -->
+
+          <div class="form-action-button">
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                close
+              </i>
+              Close
+            </button>
+            <button mat-button (click)="goToSchemeList()" mat-raised-button color="primary" class="back-button">
+              <i class="material-icons" aria-hidden="true" title="Back">
+                keyboard_return
+              </i>
+              Back
+            </button>
+          </div>
+        </mat-tab>
+        <mat-tab label="Receipt Estimate Not Prepared">
+          <div #parentGrids>
+              <form [formGroup]="hodCoForm">
+                <div class="row">
+                  <div class="col-sm-3">
+                      <mat-form-field class="full-width">
+                          <mat-select formControlName="dept" placeholder="Department" required>
+                              <mat-option>
+                                  <ngx-mat-select-search [formControl]="deptCtrl" [placeholderLabel]="'Find Department...'" [noEntriesFoundLabel]="'no matching Department found'">
+                                  </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option *ngFor="let va of dept_list | filterSelectInput:deptCtrl.value" [value]="va.value">
+                                  {{va.viewValue}}
+                              </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                      <div class="error-wrapper" *ngIf="hodCoForm.controls.dept.touched && (hodCoForm.controls.dept.errors)">
+                        <mat-error *ngIf="hodCoForm.controls.dept.errors.required">
+                            {{errorMessages.DEPARTMENT}}
+                        </mat-error>
+                      </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <mat-form-field class="full-width">
+                          <mat-select formControlName="hodCo" placeholder="HoD / CO" required>
+                              <mat-option>
+                                  <ngx-mat-select-search [formControl]="hodCoCtrl" [placeholderLabel]="'Find HoD / CO...'" [noEntriesFoundLabel]="'no matching HoD / CO found'">
+                                  </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option *ngFor="let va of hodCo_list | filterSelectInput:hodCoCtrl.value" [value]="va.value">
+                                  {{va.viewValue}}
+                              </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                      <div class="error-wrapper" *ngIf="hodCoForm.controls.hodCo.touched && (hodCoForm.controls.hodCo.errors)">
+                        <mat-error *ngIf="hodCoForm.controls.hodCo.errors.required">
+                            {{errorMessages.HOD_CO}}
+                        </mat-error>
+                      </div>
+                  </div>
+                </div>
+              </form>
+              <div class="form-action-button">
+                <button type="submit" mat-raised-button color="primary" (click)="whenAddClick()" title="Add">
+                  <i class="material-icons" aria-hidden="true">
+                     add
+                  </i>
+                  Add
+               </button>
+              </div>
+          </div>
+          <table mat-table *ngIf="onAdd" [dataSource]="ddoListNotProposedDataSource" aria-describedby="estNotPrepared" matSort>
+
+            <ng-container matColumnDef="srNo">
+              <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'width':'10%'}">Sr No</th>
+              <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                <!-- {{ idx + 1 + ((ddoNotProposedListPaginator.pageIndex * ddoNotProposedListPaginator.pageSize))}} -->
+                {{ idx + 1}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="checkbox">
+              <th mat-header-cell *matHeaderCellDef scope="row" [ngStyle]="{'width':'10%'}">
+                <mat-checkbox [checked]="checkbox" [(ngModel)]="checkbox" title="Select All" (change)="selectAll()">
+                </mat-checkbox>
+                <!-- Select HoD / CO -->
+              </th>
+              <td mat-cell *matCellDef="let item;let idx = index;" class="centerAlign">
+                <mat-checkbox [value]="item.checkbox" [checked]="item.checkbox" [(ngModel)]="item.checkbox"
+                  title="Select" (change)="checkboxValueNotProposedChange()"></mat-checkbox>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoName">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>HoD / CO Name </th>
+              <td mat-cell *matCellDef="let item;">
+                {{item.ddoName}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ddoProposedAmt">
+              <th mat-header-cell *matHeaderCellDef scope="row" mat-sort-header>Propsoed Amount by HoD / CO</th>
+              <td mat-cell *matCellDef="let item" class="centerAlign">
+                {{item.ddoProposedAmt}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef scope="row">Create Estimate</th>
+              <td mat-cell *matCellDef="let item" class="centerAlign">
+                <i class="material-icons plus edit-icon" title="Create Estimate" (click)="loadCreateEstimatePage(item)">
+                  create
+                </i>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="ddoNotProposedListColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: ddoNotProposedListColumn;"></tr>
+          </table>
+          <!-- <mat-paginator #ddoNotProposedListPaginator [pageSizeOptions]="paginationSize" showFirstLastButtons></mat-paginator> -->
+
+          <div class="form-action-button">
+            <button mat-raised-button color="primary" [disabled]="!isSendReminderEnable"
+              (click)="sendReminderNotProposed()">
+              <i class="material-icons" aria-hidden="true" title="Send Reminder">
+                send
+              </i>
+              Send Reminder
+            </button>
+            <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+              <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+                close
+              </i>
+              Close
+            </button>
+            <button mat-button (click)="goToSchemeList()" mat-raised-button color="primary" class="back-button">
+              <i class="material-icons" aria-hidden="true" title="Back">
+                keyboard_return
+              </i>
+              Back
+            </button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

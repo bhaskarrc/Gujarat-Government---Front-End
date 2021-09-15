@@ -1,0 +1,148 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Cardex Verification</div>
+      <div class="font-heading"><strong>Reference Number:</strong> 19-20/TBILL/CHQPRIN/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">Cardex</li>
+        <li class="breadcrumb-item active" aria-current="page">Cardex DDO Verification</li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <form [formGroup]="ddoverificationForm" (ngSubmit)="ddoverificationData()">
+        <div class="box box-primary">
+          <div class="box-header">DDO/Cardex Details</div>
+          <div class="box-body">
+            <!-- Table DDO/Cardex Details -->
+            <div class="mat-elevation-z8  mt-2">
+              <table mat-table [dataSource]="newdataSource" class="mat-elevation-z8 " aria-describedby="ddoLevelForm">
+                <ng-container matColumnDef="srno">
+                  <th mat-header-cell *matHeaderCellDef scope="row">
+                    <mat-checkbox (change)="$event ? directiveObject.masterToggle(Element_Data) : null"
+                      [checked]="directiveObject.selection.hasValue() && directiveObject.isAllSelected(Element_Data)"
+                      [indeterminate]="directiveObject.selection.hasValue() && !directiveObject.isAllSelected(Element_Data)"
+                      [aria-label]="directiveObject.checkboxLabel(Element_Data)">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="text-center">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? directiveObject.selection.toggle(row) : null"
+                      [checked]="directiveObject.selection.isSelected(row) "
+                      [aria-label]="directiveObject.checkboxLabel(Element_Data, row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="cardexNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> Cardex No.</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    {{element.cardexNo}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ddoNo">
+                  <th mat-header-cell *matHeaderCellDef scope="row"> DDO NO.</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    {{element.ddoNo}}
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="ddoName">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.ddoName}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fromDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Effective From Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.fromDate}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="toDate">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Effective To Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.toDate}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Type</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.type}}
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="view_image">
+                  <th mat-header-cell *matHeaderCellDef scope="row">View Image</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <a class="signaure">
+                      <i class="material-icons plus view-icon" aria-hidden="true"
+                        title="Signature">playlist_add_check</i>
+                      <div class="box-body signature-box">
+                        <div class="img centerAlign">
+                          <img src="assets/images/sign.png" alt="ifms-logo">
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="view_delete_image">
+                  <th mat-header-cell *matHeaderCellDef scope="row">Upload Image</th>
+                  <td mat-cell *matCellDef="let element" class="centerAlign">
+                    <button type="button" (click)="openFileSelector2()" class="btn-browse">
+                      <i class="material-icons" aria-hidden="true">cloud_upload</i> Browse Files
+                    </button>
+                    <input type="file" id="fileBrowse-nominee" style="visibility: hidden; width: 1px;"
+                      (change)="onFileSelection2($event, item)" />
+                  </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="newdisplayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; columns: newdisplayedColumns;"></tr>
+              </table>
+            </div>
+            <!-- End Table DDO/Cardex Details -->
+          </div>
+        </div>
+        <!-- Note  -->
+        <div class="legend">
+          1. Total File size should be under 2MB
+          <br> 2. File type supported are: 'jpg', 'jpeg', 'png', 'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+        </div>
+        <!-- COmmon Button -->
+        <div class="form-action-button">
+          <button mat-raised-button type="submit" class="green" (click)="directiveObject.workflowDetails()"><i
+              class="material-icons">
+              done
+            </i> Submit</button>
+
+          <button type="button" mat-raised-button class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+          <button type="button" mat-raised-button color="warn">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+              list
+            </i>
+            Listing
+          </button>
+        </div>
+        <!-- End COmmon Button -->
+      </form>
+    </div>
+  </div>
+</div>

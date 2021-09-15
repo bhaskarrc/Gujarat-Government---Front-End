@@ -1,0 +1,176 @@
+<form [formGroup]="searchEmployeeNo" (ngSubmit)="saveEmployeeNumber(searchEmployeeNo.value)">
+    <div class="box box-primary">
+        <!-- search -->
+        <div class="box-header">Search</div>
+        <div class="box-body">
+            <div class="row">
+                <!-- employee name -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <input matInput type="text" placeholder="Employee Name" autocomplete="off"
+                            formControlName="employeeName">
+                    </mat-form-field>
+                </div>
+                <!-- designation -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="designation" placeholder="Designation">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="designationCtrl"
+                                    [placeholderLabel]="'Find designation...'"
+                                    [noEntriesFoundLabel]="'no matching designation found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option
+                                *ngFor="let designation of designationList | filterSelectInput: designationCtrl.value"
+                                [value]="designation.value">
+                                {{designation.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- pan number -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <input matInput type="text" placeholder="PAN Number" autocomplete="off" formControlName="panNo">
+                    </mat-form-field>
+                </div>
+                <!-- ppan/gpf/cpf number -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <input matInput type="text" placeholder="PPAN / GPF / CPF Number" autocomplete="off"
+                            formControlName="ppanGpfCpfNo">
+                    </mat-form-field>
+                </div>
+                <!-- retirement date -->
+                <div class="col-sm-3">
+                    <mat-form-field>
+                        <input matInput placeholder="Retirement Date" formControlName="retirementDate"
+                            [matDatepicker]="retirementDate" [max]="maxDate">
+                        <mat-datepicker-toggle matSuffix [for]="retirementDate"></mat-datepicker-toggle>
+                        <mat-datepicker #retirementDate></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <!-- employee type -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="employeetype" placeholder="Employee Type">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="employeetypeCtrl"
+                                    [placeholderLabel]="'Find employeetype...'"
+                                    [noEntriesFoundLabel]="'no matching employeetype found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option
+                                *ngFor="let employeetype of employeeTypeList | filterSelectInput: employeetypeCtrl.value"
+                                [value]="employeetype.value">
+                                {{employeetype.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- office name -->
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="officeName" placeholder="Office Name">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="officeNameCtrl"
+                                    [placeholderLabel]="'Find officeName...'"
+                                    [noEntriesFoundLabel]="'no matching officeName found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option
+                                *ngFor="let officeName of officeNameList | filterSelectInput: officeNameCtrl.value"
+                                [value]="officeName.value">
+                                {{officeName.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- buttons -->
+            <div class="row centerbtn" style="display: flex;justify-content: center;">
+                <button type="submit" mat-raised-button color="primary" [disabled]="disabledEmpSearch.value"
+                    (click)="searchEmployee()">
+                    <i class="material-icons" aria-hidden="true">search</i>Search
+                </button>
+                <button mat-raised-button mat-dialog-close class="btnClose" style="margin-left: 5px;">
+                    <i class="material-icons" aria-hidden="true" title="Close">
+                        close
+                    </i> Close
+                </button>
+            </div>
+
+        </div>
+        <!-- search end -->
+    </div>
+</form>
+
+<div>
+    <!-- listing -->
+    <table aria-describedby="employeeSearch" mat-table #table [dataSource]="dataSourceEmploSearch"
+        class="responsive-table">
+        <!-- employee number -->
+        <ng-container matColumnDef="employeeNumber">
+            <th mat-header-cell *matHeaderCellDef scope="row">Employee Number</th>
+            <td mat-cell *matCellDef="let element;let i= index;">
+                <a (click)="onClickEmpNo()"
+                    style="cursor:pointer;text-decoration:underline">{{element.employeeNumber}}</a>
+            </td>
+        </ng-container>
+        <!-- employee name -->
+        <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="">
+                {{element.employeeName}}
+            </td>
+        </ng-container>
+        <!-- designation -->
+        <ng-container matColumnDef="designation">
+            <th mat-header-cell *matHeaderCellDef scope="row">Designation</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="">
+                {{element.designation}}
+            </td>
+        </ng-container>
+        <!-- class -->
+        <ng-container matColumnDef="class">
+            <th mat-header-cell *matHeaderCellDef scope="row">Class</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="">
+                {{element.class}}
+            </td>
+        </ng-container>
+        <!-- employee type -->
+        <ng-container matColumnDef="employeeType">
+            <th mat-header-cell *matHeaderCellDef class="gray-color" scope="row">Employee Type</th>
+            <td mat-cell *matCellDef="let element" class="">
+                {{element.employeeType}}
+            </td>
+        </ng-container>
+        <!-- pan number -->
+        <ng-container matColumnDef="panNumber">
+            <th mat-header-cell *matHeaderCellDef scope="row">PAN No</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="">
+                {{element.panNumber}}
+            </td>
+        </ng-container>
+        <!-- office name -->
+        <ng-container matColumnDef="officeName">
+            <th mat-header-cell *matHeaderCellDef scope="row">Office Name</th>
+            <td mat-cell *matCellDef="let element;let i= index;" class="">
+                {{element.officeName}}
+            </td>
+        </ng-container>
+        <!-- no data -->
+        <ng-container matColumnDef="noData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row"></th>
+            <td mat-cell *matCellDef="let element" colspan="7" class="text-center">No Data Available</td>
+        </ng-container>
+
+        <!-- Header Section Of table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsEmpSearch"></tr>
+        <!-- Data Fetch From .TS File to table -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsArray.value;let i= index;"></tr>
+    </table>
+    <!-- listing end -->
+
+</div>

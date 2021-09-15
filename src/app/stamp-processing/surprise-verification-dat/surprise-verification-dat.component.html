@@ -1,0 +1,314 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <div class="heading-section ng-star-inserted">
+      <div>Treasury Inspection Management</div>
+      <div class="font-heading">
+        <b>Reference No:</b> 19-20/TIM/SVD/001</div>
+    <div class="font-heading">
+        <b>Reference Date:</b> {{ date | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Stamp Processing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Treasury Inspection Management</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+
+      <mat-tab-group mat-stretch-tabs>
+<!-- Treasury Inspection Management Entry Section Starts-->
+        <mat-tab label="Treasury Inspection Management" class="full-width">
+          <div #parentGrids>
+            <form [formGroup]="surpriseVerificationForm" (ngSubmit)="surpriseVerificationData()">
+              <div class="row">
+                <!-- Toggle for Eng/Guj -->
+                    <div class="text-right col-sm-12 ">
+                      <button mat-raised-button type="button" class="lang-btn"
+                        (click)="toggleLanguage()">{{currentLang.value == 'Eng' ? 'Guj' : 'Eng' }}</button>
+                    </div>
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <input matInput type="text" formControlName="finYear" placeholder="Financial Year" required
+                      readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.finYear.touched && (surpriseVerificationForm.controls.finYear.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.finYear.errors.required">
+                      {{errorMessages.FIN_YEAR}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Name Of Office/Department</mat-label>
+                    <input matInput formControlName="toffice" #offDeptVal [matTooltip]="offDeptVal.value" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.toffice.touched && (surpriseVerificationForm.controls.toffice.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.toffice.errors.required">
+                      {{errorMessages.DEPT}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="treSubTre" placeholder="Treasury / Sub Treasury"
+                            required>
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="treSubTreCtrl"
+                                    [placeholderLabel]="'Find Treasury / Sub Treasury...'"
+                                    [noEntriesFoundLabel]="'no matching Treasury / Sub Treasury found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option
+                                *ngFor="let tre of treSubTre_List | filterSelectInput:treSubTreCtrl.value"
+                                [value]="tre.value">
+                                {{tre.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                        <div class="error-wrapper"
+                            *ngIf="surpriseVerificationForm.controls.treSubTre.touched && (surpriseVerificationForm.controls.treSubTre.errors)">
+                            <mat-error *ngIf="surpriseVerificationForm.controls.treSubTre.errors.required">
+                                {{errorMessages.TRE_OR_SUB}}
+                            </mat-error>
+                        </div>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-3" *ngIf="surpriseVerificationForm.controls.treSubTre.value=='1'">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="troffice" placeholder="Treasury Office" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="trofficeCtrl"
+                          [placeholderLabel]="'Find Authorized Treasury Offices...'"
+                          [noEntriesFoundLabel]="'no Authorized Treasury Office found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let ch of treasury_List | filterSelectInput:trofficeCtrl.value"
+                      [matTooltip]="ch.viewValue" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.troffice.touched && (surpriseVerificationForm.controls.troffice.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.troffice.errors.required">
+                      {{errorMessages.TRE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3" *ngIf="surpriseVerificationForm.controls.treSubTre.value=='2'">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="trofficeForSub" placeholder="Treasury Office" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="trofficeCtrl"
+                          [placeholderLabel]="'Find Authorized Treasury Offices...'"
+                          [noEntriesFoundLabel]="'no Authorized Treasury Office found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let ch of treasury_List | filterSelectInput:trofficeCtrl.value"
+                      [matTooltip]="ch.viewValue" [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.trofficeForSub.touched && (surpriseVerificationForm.controls.trofficeForSub.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.trofficeForSub.errors.required">
+                      {{errorMessages.TRE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3" *ngIf="surpriseVerificationForm.controls.treSubTre.value=='2' &&
+                    surpriseVerificationForm.controls.trofficeForSub.valid">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="subTreOff" placeholder="Sub Treasury Office" required>
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="subTreOffCtrl"
+                                    [placeholderLabel]="'Find Sub Treasury Office...'"
+                                    [noEntriesFoundLabel]="'no matching Sub Treasury Office found'">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option
+                                *ngFor="let subTre of subTre_List | filterSelectInput:subTreOffCtrl.value"
+                                matTooltip="{{subTre.viewValue}}" [value]="subTre.value">
+                                {{subTre.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                        <div class="error-wrapper"
+                            *ngIf="surpriseVerificationForm.controls.subTreOff.touched && (surpriseVerificationForm.controls.subTreOff.errors)">
+                            <mat-error *ngIf="surpriseVerificationForm.controls.subTreOff.errors.required">
+                                {{errorMessages.SUB_TRE}}
+                            </mat-error>
+                        </div>
+                    </mat-form-field>
+
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="veriType" placeholder="Type of Verification" required>
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="veriTypeCtrl"
+                          [placeholderLabel]="'Find Authorized Type of Verification...'"
+                          [noEntriesFoundLabel]="'no Authorized Type of Verification found'">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let ch of veriType_List | filterSelectInput:veriTypeCtrl.value"
+                        [value]="ch.value">
+                        {{ch.viewValue}}
+                      </mat-option>
+                    </mat-select>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.veriType.touched && (surpriseVerificationForm.controls.veriType.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.veriType.errors.required">
+                      {{errorMessages.TYPE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field>
+                    <input matInput formControlName="visitDate" placeholder="Date Of Visit" [matDatepicker]="picker"
+                      required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.visitDate.touched && (surpriseVerificationForm.controls.visitDate.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.visitDate.errors.required">
+                      {{errorMessages.DATE}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Name Of Verification Officer</mat-label>
+                    <input matInput formControlName="verificationoffice" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.verificationoffice.touched && (surpriseVerificationForm.controls.verificationoffice.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.verificationoffice.errors.required">
+                      {{errorMessages.NAME}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+                  <mat-form-field class="full-width disabled">
+                    <mat-label>Designation</mat-label>
+                    <input matInput formControlName="desi" required readonly>
+
+                  <div class="error-wrapper"
+                    *ngIf="surpriseVerificationForm.controls.desi.touched && (surpriseVerificationForm.controls.desi.errors)">
+                    <mat-error *ngIf="surpriseVerificationForm.controls.desi.errors.required">
+                      {{errorMessages.DESIGNATION}}
+                    </mat-error>
+                  </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field class="example-full-width">
+                        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="8" placeholder="Remarks"
+                            formControlName="remarks" (focus)="setGujaratiDefault()"
+                            (focusout)="hasFocusSet=1;setEnglishOnFocusOut()" [ngClass]="hasFocusSet == 1 ? 'hasfocus' : ''" required></textarea>
+                            <div class="error-wrapper"
+                                *ngIf="surpriseVerificationForm.controls.remarks.touched && surpriseVerificationForm.controls.remarks.errors">
+                                <mat-error *ngIf="surpriseVerificationForm.controls.remarks.errors.required">
+                                    {{errorMessages.REMARK}} 
+                                </mat-error>
+                            </div>
+                    </mat-form-field>
+                </div>
+
+
+
+              </div>
+            </form>
+            <!-- Action Buttons -->
+            <div class="form-action-button">
+              <button type="submit" mat-raised-button color="primary">
+                <i class="material-icons" aria-hidden="true" title="Save">
+                  save
+                </i>
+                Save as Draft
+              </button>
+      
+              <button mat-raised-button type="submit" (click)="directiveObject.submitNoWorkflow()" class="green">
+                <i aria-hidden="true" class="material-icons">
+                  done
+                </i> Submit
+              </button>
+      
+              <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+                <i class="material-icons" aria-hidden="true" title="Listing">
+                  list
+                </i>
+                Listing
+              </button>
+              <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+                <i class="material-icons" aria-hidden="true" title="Dashboard">
+                  close
+                </i>
+                Close
+              </button>
+            </div>
+
+          </div>
+        </mat-tab>
+        
+<!-- Treasury Inspection Management Entry Section ends-->
+
+<!-- Attachments Section Starts-->
+        <mat-tab label="Attachments" class="full-width">
+          <app-common-attachment [attachemntValue]="attachmentType_list"></app-common-attachment>
+
+        <!-- Action Buttons -->
+        <div class="form-action-button">
+          
+          <button type="submit" mat-raised-button color="primary">
+            <i class="material-icons" aria-hidden="true" title="Save">
+              save
+            </i>
+            Upload
+          </button>
+  
+          <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+              list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button (click)="directiveObject.closeConfirmationPopup()" class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        </mat-tab>
+        <!-- Attachments Section Starts-->
+          
+      </mat-tab-group>
+    </div>
+
+  </div>
+</div>

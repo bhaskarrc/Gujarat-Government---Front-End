@@ -1,0 +1,112 @@
+<!-- form -->
+<form [formGroup]="chequeDuplicateForm">
+  <div class="box-body">
+    <div class="box box-primary">
+
+      <!-- cheque duplicate -->
+      <div class="box-header"> Cheque Duplicate</div>
+      <div class="box-body">
+        <div class="row">
+
+          <!-- cheque no -->
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="chequeNo" maxlength="12" numbersOnly placeholder="Cheque No."
+                formControlName="chequeNo" required>
+              <div class="error-wrapper"
+                *ngIf="chequeDuplicateForm.controls.chequeNo.touched || (chequeDuplicateForm.controls.chequeNo.errors && isSubmitted)">
+                <mat-error *ngIf="chequeDuplicateForm.controls.chequeNo.errors?.required">
+                  {{errorMessages.CHEQUE_NO}}
+                </mat-error>
+              </div>
+            </mat-form-field>
+          </div>
+
+          <!-- favour of old -->
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="favourOfOld" placeholder="In favour of(OLD)" formControlName="favourOfOld">
+            </mat-form-field>
+          </div>
+
+          <!-- cheque amount -->
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput name="chequeAmount" maxlength="10" decimalLimitTwoOnly numbersOnly
+                placeholder="Cheque Amount(in Rs.)" formControlName="chequeAmount">
+            </mat-form-field>
+          </div>
+
+          <!-- cheque date -->
+          <div class="col-sm-3">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker" formControlName="chequeDate" placeholder="Cheque Date"
+                [max]='maxDate'>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- reason -->
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-select name="reason" formControlName="reason" (selectionChange)="onReason($event)"
+                placeholder="Reason">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="reasonCtrl" [placeholderLabel]="'Select Reason ...'"
+                    [noEntriesFoundLabel]="'no matching type found'">
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let item of reasonList | filterSelectInput : reasonCtrl.value : 'viewValue'"
+                  [value]="item.value">
+                  {{item.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- reason text -->
+          <div class="col-sm-3" *ngIf="isOthers">
+            <mat-form-field class="full-width">
+              <textarea matInput class="textarea" autocomplete="off" name="reasonTxtArea"
+                formControlName="reasonTxtArea" placeholder="Other Reason" required></textarea>
+            </mat-form-field>
+            <div class="error-wrapper"
+              *ngIf="chequeDuplicateForm.controls.reasonTxtArea.touched || (chequeDuplicateForm.controls.reasonTxtArea.errors && isSubmitted)">
+              <mat-error *ngIf="chequeDuplicateForm.controls.reasonTxtArea.errors?.required">
+                {{errorMessages.OTHER_REASON}}
+              </mat-error>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End cheque duplicate -->
+    </div>
+
+    <!-- form action button -->
+    <div class="form-action-button">
+
+      <button mat-raised-button type="submit" (click)="onRename()" class="green" title="Submit">
+        <i aria-hidden="true" class="material-icons">
+          done
+        </i> Submit
+      </button>
+
+      <button type="button" mat-raised-button color="warn" title="Discard">
+        <i class="material-icons" aria-hidden="true">
+          restore
+        </i>
+        Discard
+      </button>
+
+      <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose" title="Close">
+        <i class="material-icons" aria-hidden="true">
+          close
+        </i>
+        Close
+      </button>
+
+    </div>
+    <!-- End form action button -->
+  </div>
+</form>

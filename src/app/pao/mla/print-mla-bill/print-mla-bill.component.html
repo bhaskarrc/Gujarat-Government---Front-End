@@ -1,0 +1,275 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Bills for MLA</div>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">PAO</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Print Bills for MLA</li>
+      </ol>
+    </nav>
+    <div class="panel-group">
+      <form [formGroup]="distributeVouchersForm" (ngSubmit)="searchMlaAuthorityData()">
+        <!-- Saved Bills for MLA -->
+        <div class="box box-primary">
+          <div class="box-header">Saved Bills for MLA</div>
+          <div class="box-body">
+            <div class="row">
+
+
+              <div class="col-sm-3">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" maxlength="6" numbersOnly placeholder="Token No."
+                    formControlName="tokenNumber">
+
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="majorHead" formControlName="majorHead" placeholder="Major Head" multiple>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="majorHeadCtrl" [placeholderLabel]="'Select Major Head ...'"
+                        [noEntriesFoundLabel]="'no matching major head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let head of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                      [value]="head.value" [matTooltip]="head.viewValue">
+                      {{head.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" [max]="maxDate" placeholder="From Bill Date"
+                    formControlName="fromDate" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="distributeVouchersForm.controls.fromDate.touched || (distributeVouchersForm.controls.fromDate.errors && isSubmitted)">
+                    <mat-error *ngIf="distributeVouchersForm.controls.fromDate.errors?.required">
+                      {{errorMessages.NO_DATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker1" [max]="maxDate" placeholder="To Bill Date"
+                    formControlName="toDate" readonly>
+                  <div class="error-wrapper"
+                    *ngIf="distributeVouchersForm.controls.toDate.touched || (distributeVouchersForm.controls.fromDate.errors && isSubmitted)">
+                    <mat-error *ngIf="distributeVouchersForm.controls.toDate.errors?.required">
+                      {{errorMessages.NO_DATE}}
+                    </mat-error>
+                  </div>
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-select name="auditor" formControlName="auditor" placeholder="Auditor">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="auditorCtrl" [placeholderLabel]="'Select Auditor ...'"
+                        [noEntriesFoundLabel]="'no matching major head found'">
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option>-- None --</mat-option>
+                    <mat-option
+                      *ngFor="let auditor of auditorName_list | filterSelectInput : auditorCtrl.value : 'viewValue'"
+                      [value]="auditor.value" [matTooltip]="auditor.viewValue">
+                      {{auditor.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+              <div class="col-sm-12">
+                <div class="form-action-button">
+                  <button mat-raised-button color="primary" (click)="clickSearch()">
+                    <i class="material-icons" aria-hidden="true">search</i>
+                    Search
+                  </button>
+                  <button type="reset" mat-raised-button color="accent">
+                    <i class="material-icons" aria-hidden="true">
+                      restore
+                    </i>
+                    Reset
+                  </button>
+                </div>
+              </div>
+
+
+
+              <div class="box box-primary" *ngIf="showSearch">
+                <div class="box-header">Result for Saved Bills for MLA Search</div>
+                <div class="box-body">
+                  <div class="row">
+
+                    <div class="col-sm-3">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" [max]="maxDate" formControlName="postReceivedDate"
+                          placeholder="Post Audit Received Date" readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                        <div class="error-wrapper"
+                          *ngIf="distributeVouchersForm.controls.postReceivedDate.touched || (distributeVouchersForm.controls.postReceivedDate.errors && isSubmitted)">
+                          <mat-error *ngIf="distributeVouchersForm.controls.postReceivedDate.errors?.required">
+                            {{errorMessages.POST_RECEIVED_DATE}}
+                          </mat-error>
+                        </div>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker3" [max]="maxDate" formControlName="postDate"
+                          placeholder="Post Audit Date" readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                        <div class="error-wrapper"
+                          *ngIf="distributeVouchersForm.controls.postDate.touched || (distributeVouchersForm.controls.postDate.errors && isSubmitted)">
+                          <mat-error *ngIf="distributeVouchersForm.controls.postDate.errors?.required">
+                            {{errorMessages.POST_DATE}}
+                          </mat-error>
+                        </div>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <!-- End Saved Bills for MLA -->
+
+        <!-- Table Print Mla -->
+        <div class="mat-elevation-z8 mt-2">
+          <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="printmlabill">
+
+            <ng-container matColumnDef="checkBox">
+              <th mat-header-cell *matHeaderCellDef scope="row">
+              </th>
+              <td mat-cell *matCellDef="let row" class="centerAlign">
+                <mat-checkbox (click)="add()"></mat-checkbox>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="billControlNumber">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Control No</th>
+              <td mat-cell *matCellDef="let element"> {{element.billControlNumber}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Date</th>
+              <td mat-cell *matCellDef="let element"> {{element.billDate}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaNo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">MLA No</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">MLA Name</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="majorHead">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Major Head</th>
+              <td mat-cell *matCellDef="let element"> {{element.majorHead}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billNetAmount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Net Amount</th>
+              <td mat-cell *matCellDef="let element" class="rightAlign"> {{element.billNetAmount}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaDesignation">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">MLA Designation</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaDesignation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mlaDepartment">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">MLA Department</th>
+              <td mat-cell *matCellDef="let element"> {{element.mlaDepartment}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billStatus">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Status</th>
+              <td mat-cell *matCellDef="let element"> {{element.billStatus}} </td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="billMonth">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Month</th>
+              <td mat-cell *matCellDef="let element"> {{element.billMonth}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">Bill Type</th>
+              <td mat-cell *matCellDef="let element"> {{element.billType}} </td>
+            </ng-container>
+
+
+
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef scope="row"> Action </th>
+              <td mat-cell *matCellDef="let element;let i = index;" class="action-btn-i centerAlign">
+
+                <a><i class="material-icons plus view-icon" title="View">remove_red_eye</i></a>
+              </td>
+            </ng-container>
+            <!-- Header Section Of table -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Data Fetch From .TS File to table -->
+            <tr mat-row *matRowDef="let row; let i = index;columns: displayedColumns;">
+
+            </tr>
+          </table>
+
+        </div>
+        <!-- End Table Print Mla -->
+        <!-- Common Button -->
+        <div class="form-action-button">
+          <button type="submit" mat-raised-button color="primary" (click)='onPrint()' class="btn-print">
+            <i class="material-icons" aria-hidden="true">print </i>
+            Print
+          </button>
+          <button type="button" mat-raised-button (click)="gotoListing()" color="warn">
+            <i class="material-icons" aria-hidden="true" title="Listing">
+              list
+            </i>
+            Listing
+          </button>
+
+          <button type="button" mat-raised-button (click)="goToDashboard()" class="btnClose">
+            <i class="material-icons" aria-hidden="true" title="Budget dashboard">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- End Common Button -->
+      </form>
+    </div>
+  </div>
+</div>

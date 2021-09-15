@@ -1,0 +1,732 @@
+<div class="container">
+  <div class="form-wrapper">
+
+    <!-- Screen Name, Reference No and Reference Date Header -->
+    <div class="heading-section ng-star-inserted">
+      <div>LC Account Opening Request</div>
+      <div class="font-heading"><strong>Reference No:</strong> 19-20/LC/OPR/001</div>
+      <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">LC</a></li>
+        <li class="breadcrumb-item active" aria-current="page">LC Account Opening Request</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <!-- Form Starts -->
+      <form [formGroup]="lcOpeningRequestCreateForm" (ngSubmit)="lcOpeningRequestCreateFormData()">
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="directiveObject.selectedIndex"
+          (selectedIndexChange)="directiveObject.getTabIndex($event)">
+          <!-- Mat Tab for LC Opening Starts -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              LC Account Opening Request
+            </ng-template>
+            <div class="box box-primary">
+              <div class="box-header">
+                LC Account Opening Request
+                <a class="hyper-link" (click)="directiveObject.historyDialog('forLCAccountOpeningRequest')">View
+                  History</a>
+                </div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- Input Field for Office Name -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Office Name" formControlName="officeName"
+                        matTooltip="Director, Sardar Patel Zological Park, kevadia" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Division Office Address -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <textarea matInput formControlName="divisionOfficeAddress" placeholder="Division Office Address"
+                        readonly></textarea>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Administrative Department -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <textarea matInput formControlName="administrativeDepartment"
+                        placeholder="Administrative Department" readonly></textarea>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Head Of Department -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="headOfDepartment" placeholder="Head Of Department" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="headOfDepartmentCtrl"
+                            [placeholderLabel]="'Find Head Of Department...'"
+                            [noEntriesFoundLabel]="'no matching Head Of Department found'" charactersOnly>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of headOfDepartmentList | filterSelectInput : headOfDepartmentCtrl.value"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.headOfDepartment.touched && lcOpeningRequestCreateForm.controls.headOfDepartment.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.headOfDepartment.errors.required">
+                          {{errorMessage.HEAD_OF_DEPARTMENT}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+                  <!-- Input Field for Parent Head Department -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <!-- <textarea matInput formControlName="treasuryOffice" placeholder="Treasury Office"></textarea> -->
+                      <input matInput placeholder="Treasury Office" formControlName="treasuryOffice"
+                        matTooltip="District Treasury Office, Gandhinagar" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for District -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="District" formControlName="district" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Cardex Number -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Cardex No." formControlName="cardexNo" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for DDO Code -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput placeholder="DDO Code" formControlName="ddoCode" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Division Office -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <!-- <input matInput placeholder="Division Name" formControlName="divisionName"
+                        matTooltip="Director, Sardar Patel Zological Park, kevadia" required> -->
+                      <textarea matInput formControlName="divisionName" placeholder="Division Name" required></textarea>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.divisionName.touched && lcOpeningRequestCreateForm.controls.divisionName.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.divisionName.errors.required">
+                          {{errorMessage.DIVISION_OFFICE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input field for Circle Name -->
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-select formControlName="circleName" placeholder="Circle Name"
+                        (selectionChange)="onCircle($event)" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="CircleNameCtrl"
+                            [placeholderLabel]="'Find Circle Name...'"
+                            [noEntriesFoundLabel]="'No matching Circle Name found'"
+                            (keypress)="directiveObject.onlyAlphabetsAndSpace($event)">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let circleName  of CircleNameList | filterSelectInput:CircleNameCtrl.value"
+                          [value]="circleName.value" matTooltip="{{circleName.viewValue}}">
+                          {{circleName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.circleName.touched && lcOpeningRequestCreateForm.controls.circleName.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.circleName.errors.required">
+                          {{errorMessage.CIRCLE_NAME}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input field for Circle Code -->
+                  <div class="col-sm-3"
+                    *ngIf="lcOpeningRequestCreateForm.controls.circleName.value != '6' && lcOpeningRequestCreateForm.controls.circleName.value != ''">
+                    <mat-form-field>
+                      <input matInput placeholder="Circle Code" formControlName="circleCode" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input field for Circle Name -->
+                  <div class="col-sm-3" *ngIf="lcOpeningRequestCreateForm.controls.circleName.value == '6'">
+                    <mat-form-field>
+                      <input matInput placeholder="Enter Circle Name" formControlName="otherCircleName" required>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.otherCircleName.touched && lcOpeningRequestCreateForm.controls.otherCircleName.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.otherCircleName.errors.required">
+                          {{errorMessage.CIRCLE_NAME}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Remarks -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <textarea matInput formControlName="remarks" placeholder="Remarks"                        cdkTextareaAutosize cdkAutosizeMinRows="4" required></textarea>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.remarks.touched && lcOpeningRequestCreateForm.controls.remarks.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.remarks.errors.required">
+                          {{errorMessage.REMARKS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="box box-primary" *ngIf="showTreasuryVar">
+              <div class="box-header">
+                Details for AG Office
+                <a class="hyper-link" (click)="directiveObject.historyDialog('forAGOffice')">View
+                  History</a>
+              </div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- Input Field for Authorization Number -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="agAuthorizationNo" placeholder="AG Authorization No." numbersOnly
+                        required>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.agAuthorizationNo.touched && lcOpeningRequestCreateForm.controls.agAuthorizationNo.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.agAuthorizationNo.errors.required">
+                          {{errorMessage.AG_AUTHORIZATION_NO}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Authorization Date -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="agAuthorizationDate" [matDatepicker]="picker1"
+                        placeholder="AG Authorization Date" required>
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker #picker1></mat-datepicker>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.agAuthorizationDate.touched && lcOpeningRequestCreateForm.controls.agAuthorizationDate.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.agAuthorizationDate.errors.required">
+                          {{errorMessage.AG_AUTHORIZATION_DATE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Major Head -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="majorHead" placeholder="Major Head"
+                        matTooltip="8782 - Cash Remittances and adjustment between Officers" maxlength="4" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="majorHeadCtrl"
+                            [placeholderLabel]="'Select major Head ...'"
+                            [noEntriesFoundLabel]="'no matching major Head found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of majorHead_list | filterSelectInput : majorHeadCtrl.value : 'viewValue'"
+                          [value]="item.value" matTooltip="{{item.viewValue}}">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.majorHead.touched && lcOpeningRequestCreateForm.controls.majorHead.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.majorHead.errors.required">
+                          {{errorMessage.MAJOR_HEAD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Sub Major Head -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="subMajorHead" placeholder="Sub Major Head" maxlength="2" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="subMajorHeadCtrl"
+                            [placeholderLabel]="'Select Minor Head ...'"
+                            [noEntriesFoundLabel]="'no matching Minor Head found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of subMajorHead_list | filterSelectInput : subMajorHeadCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.subMajorHead.touched && lcOpeningRequestCreateForm.controls.subMajorHead.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.subMajorHead.errors.required">
+                          {{errorMessage.SUB_MAJOR_HEAD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Minor Head -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="minorHead" placeholder="Minor Head" maxlength="3" numbersOnly
+                        required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="minorHeadCtrl"
+                            [placeholderLabel]="'Select Minor Head ...'"
+                            [noEntriesFoundLabel]="'no matching Minor Head found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of minorHead_list | filterSelectInput : minorHeadCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.minorHead.touched && lcOpeningRequestCreateForm.controls.minorHead.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.minorHead.errors.required">
+                          {{errorMessage.MINOR_HEAD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Sub Head -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="subHead" placeholder="Sub Head" maxlength="2" numbersOnly required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="subHeadCtrl" [placeholderLabel]="'Select Sub Head ...'"
+                            [noEntriesFoundLabel]="'no matching Sub Head found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of subHead_list | filterSelectInput : subHeadCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.subHead.touched && lcOpeningRequestCreateForm.controls.subHead.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.subHead.errors.required">
+                          {{errorMessage.SUB_HEAD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Detailed Head -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="detailedHead" placeholder="Detailed Head" maxlength="2" numbersOnly
+                        required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="detailedHeadCtrl"
+                            [placeholderLabel]="'Select Detailed Head ...'"
+                            [noEntriesFoundLabel]="'no matching Detailed Head found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let item of detailedHead_list | filterSelectInput : detailedHeadCtrl.value : 'viewValue'"
+                          [value]="item.value">
+                          {{item.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.detailedHead.touched && lcOpeningRequestCreateForm.controls.detailedHead.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.detailedHead.errors.required">
+                          {{errorMessage.DETAILED_HEAD}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for AG remarks -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <textarea matInput formControlName="agRemarks" placeholder="Remarks" 
+                        cdkTextareaAutosize cdkAutosizeMinRows="4" required></textarea>
+                        <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.agRemarks.touched && lcOpeningRequestCreateForm.controls.agRemarks.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.agRemarks.errors.required">
+                          {{errorMessage.REMARKS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="box box-primary" *ngIf="showTreasuryVar">
+              <div class="box-header">
+                Bank Details
+                <a class="hyper-link" (click)="directiveObject.historyDialog('forBankDetails')">View
+                  History</a>
+              </div>
+              <div class="box-body">
+                <div class="row">
+
+                  <!-- Input Field for Bank Name -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="bankName" placeholder="Bank Name" required>
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="BankNameCtrl"
+                            [placeholderLabel]="'Select Bank Name ...'"
+                            [noEntriesFoundLabel]="'no matching Bank Name found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let bankNameName of BankName_list | filterSelectInput : BankNameCtrl.value : 'viewValue'"
+                          [value]="bankNameName.value">
+                          {{bankNameName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.bankName.touched && lcOpeningRequestCreateForm.controls.bankName.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.bankName.errors.required">
+                          {{errorMessage.BANK_NAME}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+
+                  <!-- Input Field for Bank Branch -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <mat-select formControlName="bankBranch" placeholder="Bank Branch" required datoAutoFocus="false"
+                        (selectionChange)="updateBankCode()">
+                        <mat-option>
+                          <ngx-mat-select-search [formControl]="BankBranchCtrl"
+                            [placeholderLabel]="'Select Bank Branch ...'"
+                            [noEntriesFoundLabel]="'no matching Bank Branch found'">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option
+                          *ngFor="let bankBranchName of BankBranch_list | filterSelectInput : BankBranchCtrl.value : 'viewValue'"
+                          [value]="bankBranchName.value" matTooltip="{{bankBranchName.viewValue}}">
+                          {{bankBranchName.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.bankBranch.touched && lcOpeningRequestCreateForm.controls.bankBranch.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.bankBranch.errors.required">
+                          {{errorMessage.BANK_BRANCH}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Bank Code -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <input matInput formControlName="bankCode" placeholder="Bank Code" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Input Field for Bank remarks -->
+                  <div class="col-sm-3">
+                    <mat-form-field>
+                      <textarea matInput formControlName="bankRemarks" placeholder="Remarks" required
+                        cdkTextareaAutosize cdkAutosizeMinRows="4"></textarea>
+                        <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.bankRemarks.touched && lcOpeningRequestCreateForm.controls.bankRemarks.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.bankRemarks.errors.required">
+                          {{errorMessage.REMARKS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="box box-primary" *ngIf="showTreasuryVar">
+              <div class="box-header">Treasury LC Details</div>
+              <div class="box-body">
+                <div class="mat-elevation-z8 mt-2">
+                  
+                  <table mat-table [dataSource]="TreasuryLCDataSource" class="mat-elevation-z8 "
+                    area-describedby="opening-request-saved">
+
+                    
+                    <ng-container matColumnDef="parent1">
+                      <th mat-header-cell *matHeaderCellDef [attr.colspan]="16" scope="row">Treasury LC Details</th>
+                    </ng-container>
+
+                    
+                    <ng-container matColumnDef="srNo">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Sr No.</th>
+                      <td mat-cell *matCellDef="let element, let i = index" class="centerAlign" style="width: 5%;">
+                        {{ i + 1}}
+                      </td>
+                    </ng-container>
+
+                    
+                    <ng-container matColumnDef="employeeNumber">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Employee Number</th>
+                      <td mat-cell *matCellDef="let element" style="width: 30%;">
+                        <mat-form-field class="example-full-width">
+                          <input matInput class="text-right" [(ngModel)]="element.employeeNumber"
+                            value="{{element.employeeNumber}}" (keypress)="directiveObject.decimalKeyPress($event)"
+                            (blur)="directiveObject.decimalPoint(element,'employeeNumber')"
+                            [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    
+                    <ng-container matColumnDef="employeeName">
+                      <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.employeeName}}
+                      </td>
+                    </ng-container>
+
+                    
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef scope="row" scope="row" [ngStyle]="{'width':'4%'}">Action
+                      </th>
+                      <td mat-cell *matCellDef="let element; let i=index">
+                        <table class="iconTable" aria-describedby="actionBtn">
+                          <tbody>
+                            <tr>
+                              <td width="30">
+                                <div *ngIf="( element.employeeNumber );then iconVisible else iconBlurred">
+                                </div>
+                                <ng-template #iconBlurred>
+                                  <i *ngIf="( TreasuryLCDataSource && TreasuryLCDataSource.data && (i == TreasuryLCDataSource.data.length - 1))"
+                                    class="material-icons plus add" aria-hidden="true"
+                                    style="color:lightgray;cursor:default;">
+                                    add
+                                  </i>
+                                </ng-template>
+                                <ng-template #iconVisible>
+                                  <i *ngIf="( TreasuryLCDataSource && TreasuryLCDataSource.data && (i == TreasuryLCDataSource.data.length - 1))"
+                                    class="material-icons plus add" aria-hidden="true"
+                                    (click)="addEmployeeTreasury(i);">
+                                    add
+                                  </i>
+                                </ng-template>
+                              </td>
+                              <td width="30" (click)="deleteEmployeeTreasury(i)">
+                                <i class="material-icons plus delete" aria-hidden="true"
+                                  *ngIf="(isDeleteTreasury && TreasuryLCDataSource.data.length > 1)">
+                                  delete
+                                </i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </ng-container>
+
+                    
+                    <tr mat-header-row *matHeaderRowDef="['parent1']"></tr>
+                    <tr mat-header-row *matHeaderRowDef="TreasuryLCDataColumn"></tr>
+                    <tr mat-row *matRowDef="let row; columns: TreasuryLCDataColumn;"></tr>
+                  </table>
+                  
+                </div>
+              </div>
+            </div> -->
+
+            <!-- <div class="box box-primary" *ngIf="showTreasuryVar">
+              <div class="box-header">Sub Treasury Details</div>
+              <div class="box-body">
+                
+                <table mat-table [dataSource]="SubTreasuryLCDataSource" class="mat-elevation-z8 "
+                  area-describedby="opening-request-saved">
+
+                  
+                  <ng-container matColumnDef="parent1">
+                    <th mat-header-cell *matHeaderCellDef [attr.colspan]="16" scope="row">Sub Treasury Details</th>
+                  </ng-container>
+
+                  
+                  <ng-container matColumnDef="srNo">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Sr No.</th>
+                    <td mat-cell *matCellDef="let element, let i = index" class="centerAlign" style="width: 5%;">
+                      {{ i + 1}}
+                    </td>
+                  </ng-container>
+
+                  
+                  <ng-container matColumnDef="employeeNumber">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Employee Number</th>
+                    <td mat-cell *matCellDef="let element" style="width: 30%;">
+                      <mat-form-field class="example-full-width">
+                        <input matInput class="text-right" [(ngModel)]="element.employeeNumber"
+                          value="{{element.employeeNumber}}" (keypress)="directiveObject.decimalKeyPress($event)"
+                          (blur)="directiveObject.decimalPoint(element,'employeeNumber')"
+                          [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+                  
+                  <ng-container matColumnDef="employeeName">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Employee Name</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.employeeName}}
+                    </td>
+                  </ng-container>
+
+                  
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row" scope="row" [ngStyle]="{'width':'4%'}">Action</th>
+                    <td mat-cell *matCellDef="let element; let i=index">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <div *ngIf="( element.employeeNumber );then iconVisible else iconBlurred">
+                              </div>
+                              <ng-template #iconBlurred>
+                                <i *ngIf="( SubTreasuryLCDataSource && SubTreasuryLCDataSource.data && (i == SubTreasuryLCDataSource.data.length - 1))"
+                                  class="material-icons plus add" aria-hidden="true"
+                                  style="color:lightgray;cursor:default;">
+                                  add
+                                </i>
+                              </ng-template>
+                              <ng-template #iconVisible>
+                                <i *ngIf="( SubTreasuryLCDataSource && SubTreasuryLCDataSource.data && (i == SubTreasuryLCDataSource.data.length - 1))"
+                                  class="material-icons plus add" aria-hidden="true"
+                                  (click)="addEmployeeSubTreasury(i);">
+                                  add
+                                </i>
+                              </ng-template>
+                            </td>
+                            <td width="30" (click)="deleteEmployeeSubTreasury(i)">
+                              <i class="material-icons plus delete" aria-hidden="true"
+                                *ngIf="(isDeleteSubTreasury && SubTreasuryLCDataSource.data.length > 1)">
+                                delete
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </ng-container>
+
+                  
+                  <tr mat-header-row *matHeaderRowDef="['parent1']"></tr>
+                  <tr mat-header-row *matHeaderRowDef="SubTreasuryLCDataColumn"></tr>
+                  <tr mat-row *matRowDef="let row; columns: SubTreasuryLCDataColumn;"></tr>
+                </table>
+                
+              </div>
+            </div> -->
+
+            <!-- Input Field for Details For Division Office -->
+            <div class="box box-primary" *ngIf="showTreasuryVar">
+              <div class="box-header">
+                Details For Division Office
+                <a class="hyper-link" (click)="directiveObject.historyDialog('forDivisionOffice')">View
+                  History</a>
+                </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <mat-form-field>
+                      <input matInput formControlName="divisionCode" placeholder="Division Code" required>
+                      <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.divisionCode.touched && lcOpeningRequestCreateForm.controls.divisionCode.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.divisionCode.errors.required">
+                          {{errorMessage.DIVISION_CODE}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                    <mat-form-field>
+                      <textarea matInput formControlName="lcRemarks" placeholder="Remarks" required
+                        cdkTextareaAutosize cdkAutosizeMinRows="4"></textarea>
+                        <div class="error-wrapper"
+                        *ngIf="lcOpeningRequestCreateForm.controls.lcRemarks.touched && lcOpeningRequestCreateForm.controls.lcRemarks.errors">
+                        <mat-error *ngIf="lcOpeningRequestCreateForm.controls.lcRemarks.errors.required">
+                          {{errorMessage.REMARKS}}
+                        </mat-error>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </mat-tab>
+          <!-- Mat Tab for LC Opening Ends -->
+
+          <!-- Mat Tab for Attachments Starts -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              Attachment
+            </ng-template>
+            <app-common-attachment [attachemntValue]="attachmentTypeCode"></app-common-attachment>
+          </mat-tab>
+          <!-- Mat Tab for Attachments Ends -->
+        </mat-tab-group>
+
+        <!-- Action Buttons Starts -->
+        <div class="form-action-button">
+          <button *ngIf="directiveObject.selectedIndex === 1" type="submit" mat-raised-button color="primary">
+            <i class="material-icons" title="Save">save</i>
+            Upload
+          </button>
+          <button *ngIf="directiveObject.selectedIndex !== 1" type="button" mat-raised-button color="primary"
+            title="Save as Draft">
+            <i class="material-icons" title="Save as Draft" aria-hidden="true">
+              save
+            </i>
+            Save as Draft
+          </button>
+          <button *ngIf="directiveObject.selectedIndex !== 1" mat-raised-button type="submit" class="green"
+            title="Submit" (click)="directiveObject.workflowDetails(workFlowData)">
+            <i class="material-icons" title="Submit" aria-hidden="true">
+              done
+            </i>
+            Submit
+          </button>
+          <button type="button" mat-raised-button color="warn" title="Listing"
+            (click)="directiveObject.goToScreen('/lc/create-lc-account-listing-division')">
+            <i class="material-icons" title="Listing" aria-hidden="true">
+              list
+            </i>
+            Listing
+          </button>
+          <button type="button" mat-raised-button class="btnClose" title="Close">
+            <i class="material-icons" title="Close" aria-hidden="true">
+              close
+            </i>
+            Close
+          </button>
+        </div>
+        <!-- Action Buttons Ends -->
+      </form>
+      <!-- Form Ends -->
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,506 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Inward Branch List</div>
+            <div class="font-heading"><strong>Reference No:</strong> 19-20/DPPF/IBL/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todaysDate | date: 'dd-MMM-yyyy HH:mm'}}</div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="javascript:void(0)">DPPF</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inward Branch List</li>
+            </ol>
+        </nav>
+
+        <mat-accordion class="search-accordian">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <div class="heading-section">
+                        Inward Branch
+                    </div>
+                </mat-expansion-panel-header>
+                <!-- Inward Branch List -->
+                <div class=" form-datatable-list">
+                    <form class="col-sm-12" [formGroup]="inwardOutwardBranchForm" (ngSubmit)="searchBill()">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="First Name" formControlName="firstName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Middle Name" formControlName="middleName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Last Name" formControlName="lastName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Inward No" formControlName="inwardNumber">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="inwardFDate" [matDatepicker]="inwardFromDate"
+                                        placeholder="Inward From Date" />
+                                    <mat-datepicker-toggle matSuffix [for]="inwardFromDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #inwardFromDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="inwardToDate" [matDatepicker]="inwardToDate"
+                                        placeholder="Inward To Date" />
+                                    <mat-datepicker-toggle matSuffix [for]="inwardToDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #inwardToDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="retirementDate" [matDatepicker]="retirementDate"
+                                        placeholder="Retirement Date" />
+                                    <mat-datepicker-toggle matSuffix [for]="retirementDate">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #retirementDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="inward" placeholder="Inward Type"
+                                        (selectionChange)="onInwardChange($event.value)" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="inwardType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classInwardType
+                          | filterSelectInput: inwardType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.inward.touched &&
+                      inwardOutwardBranchForm.controls.inward.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.inward.errors.required
+                      ">
+                                            {{ errorMessage.INWARD_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput type="text" placeholder="Letter Number"
+                                        formControlName="letterNumber" decimalLimitTwoOnly />
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field>
+                                    <input matInput formControlName="letterDate" [matDatepicker]="letterDat"
+                                        placeholder="Letter Date" />
+                                    <mat-datepicker-toggle matSuffix [for]="letterDat">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #letterDat></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="brancch" placeholder="Branch">
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="brancchType"
+                                                [placeholderLabel]="'Find Branch Types...'"
+                                                [noEntriesFoundLabel]="'no matching Branch Types found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classBrancchType
+                          | filterSelectInput: this.brancchType.value
+                      " [value]="CE.value">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.brancch.touched &&
+                      inwardOutwardBranchForm.controls.brancch.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.brancch.errors.required
+                      ">
+                                            {{ errorMessage.BRANCH_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="inwardOutwardBranchForm.controls.brancch.value == '1'">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="pension" placeholder="Pension" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="pensionType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classPensionType
+                          | filterSelectInput: pensionType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.pension.touched &&
+                      inwardOutwardBranchForm.controls.pension.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.pension.errors.required
+                      ">
+                                            {{ errorMessage.PENSION }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="inwardOutwardBranchForm.controls.pension.value == '1'">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="prr" placeholder="PR" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="prrType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classPrrType
+                          | filterSelectInput: prrType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.prr.touched &&
+                      inwardOutwardBranchForm.controls.prr.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.prr.errors.required
+                      ">
+                                            {{ errorMessage.PR_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="inwardOutwardBranchForm.controls.brancch.value == '2'">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="hbaMca" placeholder="HBA-MCA" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="hbaMcaType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classHbaMcaType
+                          | filterSelectInput: hbaMcaType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.hbaMca.touched &&
+                      inwardOutwardBranchForm.controls.hbaMca.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.hbaMca.errors.required
+                      ">
+                                            {{ errorMessage.HBA_MCA_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="inwardOutwardBranchForm.controls.brancch.value == '3'">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="nps" placeholder="NPS" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="npsType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classNpsType
+                          | filterSelectInput: npsType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.nps.touched &&
+                      inwardOutwardBranchForm.controls.nps.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.nps.errors.required
+                      ">
+                                            {{ errorMessage.NPS_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3" *ngIf="inwardOutwardBranchForm.controls.brancch.value == '4'">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="gpf" placeholder="GPF" required>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="gpfType"
+                                                [placeholderLabel]="'Find Class...'"
+                                                [noEntriesFoundLabel]="'no matching Class found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="
+                        let CE of classGpfType
+                          | filterSelectInput: gpfType.value
+                      " [value]="CE.value" matTooltip="{{ CE.viewValue }}">
+                                            {{ CE.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <div class="error-wrapper" *ngIf="
+                      inwardOutwardBranchForm.controls.gpf.touched &&
+                      inwardOutwardBranchForm.controls.gpf.errors
+                    ">
+                                        <mat-error *ngIf="
+                        inwardOutwardBranchForm.controls.gpf.errors.required
+                      ">
+                                            {{ errorMessage.GPF_TYPE }}
+                                        </mat-error>
+                                    </div>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <mat-form-field class="full-width">
+                                    <mat-select formControlName="status" placeholder="Status" #singleSelect1>
+                                        <mat-option>
+                                            <ngx-mat-select-search [formControl]="statusTypeCtrl"
+                                                [placeholderLabel]="'Find Status Types...'"
+                                                [noEntriesFoundLabel]="'no matching Status Types found'">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>-- None --</mat-option>
+                                        <mat-option *ngFor="
+                        let item of workFlowStatus_list
+                          | filterSelectInput: statusTypeCtrl.value
+                      " [value]="item.viewValue">
+                                            {{ item.viewValue }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+                <!-- End Inward Branch List -->
+                <!-- Common Button -->
+                <div class="form-action-button">
+                    <button type="submit" mat-raised-button color="primary">
+                        <i class="material-icons" aria-hidden="true" title="search">search</i>
+                        Search</button>
+                    <button type="reset" mat-raised-button color="accent" (click)="clearForm()">
+                        <i class="material-icons" aria-hidden="true" title="reset">
+                            restore
+                        </i>
+                        Reset
+                    </button>
+                </div>
+                <!-- End Common Button -->
+            </mat-expansion-panel>
+        </mat-accordion>
+        <br>
+        <!-- Inward Branch List  Table -->
+        <div class="mat-elevation-z8 table-responsive mt-2">
+            <table mat-table [dataSource]="dataSource" width="100%" matSort aria-describedby="listingpension">
+                <!-- Check Box -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef scope="row">
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="centerAlign">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <!-- Sr.No -->
+                <ng-container matColumnDef="serialNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row" class="srnowidth">
+                        Sr.No
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="centerAlign">
+                        <mat-label><a style="cursor: pointer;">{{ i + 1 }}</a></mat-label>
+                    </td>
+                </ng-container>
+                <!-- Inward Number -->
+                <ng-container matColumnDef="inwardNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Inward Number
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <mat-label><a (click)="openInwardNoDialog()" style="cursor: pointer;">{{ element.inwardNo }}</a>
+                        </mat-label>
+                    </td>
+                </ng-container>
+                <!-- Inward Type -->
+                <ng-container matColumnDef="inwardType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Inward Type
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ inwardtype }}
+                    </td>
+                </ng-container>
+                <!-- Inward Date -->
+                <ng-container matColumnDef="inwardDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Inward Date
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.inwardDate }}
+                    </td>
+                </ng-container>
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Name
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.name }}
+                    </td>
+                </ng-container>
+                <!-- Letter No. -->
+                <ng-container matColumnDef="letterNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Letter No.
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.letterNo }}
+                    </td>
+                </ng-container>
+                <!-- Letter Date -->
+                <ng-container matColumnDef="letterDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Letter Date
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.letterDate }}
+                    </td>
+                </ng-container>
+                <!-- Received From -->
+                <ng-container matColumnDef="receivedFrom">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Received From
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.receivedFrom }}
+                    </td>
+                </ng-container>
+                <!-- Branch -->
+                <ng-container matColumnDef="branch">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Branch
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.branch }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Status
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.status }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="wfStatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header scope="row">
+                        Work Flow Status
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.wfStatus }}
+                    </td>
+                </ng-container>
+                <!-- Action -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row">Action</th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="action-btn-i centerAlign">
+                        <a (click)="goToPage()"><i class="material-icons plus view-icon" title="Initiate"
+                                aria-hidden="true">
+                                open_in_new
+                            </i></a>
+                        <a [routerLink]="'../change-of-scale-emp-creation'"><i class="material-icons plus view-icon"
+                                title="Edit" aria-hidden="true">edit</i></a>
+                        <a [routerLink]="'../change-of-scale-emp-creation'"><i class="material-icons plus view-icon"
+                                title="View" aria-hidden="true">remove_red_eye</i></a>
+                        <a [routerLink]="'../change-of-scale-emp-creation'"><i class="material-icons plus edit-icon"
+                                title="Delete" aria-hidden="true">
+                                delete
+                            </i></a>
+                    </td>
+                </ng-container>
+                <!-- Header Section Of table -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Data Fetch From .TS File to table -->
+                <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            <!-- Common Button -->
+            <div class="form-action-button">
+
+                <button mat-raised-button type="submit" class="green" (click)="workflowDetails()" title="Submit">
+                    <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+                    Submit
+                </button>
+                <button type="button" mat-raised-button class="btnClose" title="Close">
+                    <i class="material-icons" title="Close" aria-hidden="true">
+                        close
+                    </i>
+                    Close
+                </button>
+                <button type="button" mat-raised-button class="print-btn" title="Print">
+                    <i class="material-icons" title="Print" aria-hidden="true">
+                        print
+                    </i>
+                    Print
+                </button>
+            </div>
+            <!-- End Common Button -->
+        </div>
+        <!-- End Inward Branch List  Table -->
+    </div>
+</div>

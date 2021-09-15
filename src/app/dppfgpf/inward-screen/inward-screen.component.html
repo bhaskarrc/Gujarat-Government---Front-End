@@ -1,0 +1,2775 @@
+<div class="container">
+    <div class="form-wrapper">
+        <div class="heading-section ng-star-inserted">
+            <div>Inward Account </div>
+            <div class="font-heading"><strong>Reference Number:</strong> 19-20/GPF/IS/001</div>
+            <div class="font-heading"><strong>Reference Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+            </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Worklist</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inward Screen </li>
+            </ol>
+        </nav>
+
+        <div class="pannel-group">
+
+            <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedIndexMain"
+                (selectedIndexChange)="getTabIndexMain($event)">
+
+                <!-- Inward Details Tab -->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Inward Details
+                    </ng-template>
+
+                    <form [formGroup]='gpfInwardDetailsForm'>
+                        <div class=" box box-primary ">
+                            <div class="box-header">
+                                Inward Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field>
+                                            <mat-label>Inward Date</mat-label>
+                                            <input matInput [matDatepicker]="picker" required
+                                                formControlName="dateInward" required [max]='maxDate' dateOnly>
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.dateInward.touched &&
+                      gpfInwardDetailsForm.controls.dateInward.errors
+                      ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.dateInward.errors
+                            .required
+                        ">
+                                                    {{ errorMessage.INWARD_DATE }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Letter  No." formControlName='LetterNumber'>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field>
+                                            <mat-label>Letter Date</mat-label>
+                                            <input matInput [matDatepicker]="letterDatePicker" required
+                                                formControlName="letterDate" [max]='maxDate' dateOnly />
+                                            <mat-datepicker-toggle matSuffix [for]="letterDatePicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #letterDatePicker></mat-datepicker>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.letterDate.touched &&
+                      gpfInwardDetailsForm.controls.letterDate.errors
+                      ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.letterDate.errors.required
+                        ">
+                                                    {{ errorMessage.LETTER_DATE }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="typeOfInward" placeholder="Type Of Inward"
+                                                required (selectionChange)="isFinalPaymentType()">
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfInwardCtrl"
+                                                        [placeholderLabel]="'Find Type Of Inward...'"
+                                                        [noEntriesFoundLabel]="'no matching Type Of Inward found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngFor="let CE of classTypeOfInward | filterSelectInput: typeOfInwardCtrl.value"
+                                                    [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper"
+                                                *ngIf="gpfInwardDetailsForm.controls.typeOfInward.touched && gpfInwardDetailsForm.controls.typeOfInward.errors">
+                                                <mat-error
+                                                    *ngIf="gpfInwardDetailsForm.controls.typeOfInward.errors.required">
+                                                    {{ errorMessage.TYPE_OF_INWARD }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee  No."
+                                                formControlName='employeeNoRequestForAccountGeneration'
+                                                (change)="receivedDetailsValueForRequest()">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='6'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee  No."
+                                                formControlName='employeeNoFinalPayment'
+                                                (change)="receivedDetailsValue()">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee  No."
+                                                formControlName='employeeNoTransferBalance'
+                                                (change)="receivedDetailsValueTransferRegister()">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee  No."
+                                                formControlName='employeeNoSupplementaryTransferPayment'
+                                                (change)="receivedDetailsValueSupplementaryTransferPayment()">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee  No."
+                                                formControlName='employeeNoSupplementaryPaymentRegister'
+                                                (change)="receivedDetailsValueSupplementaryPaymentRegister()">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='6'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="GPF No."
+                                                formControlName='gpfNumberFinalPaymentType'
+                                                (change)="inwardDetailsFinalPaymentType()" required>
+                                            <mat-icon matSuffix (click)="openGpfDialogFinalPaymentType()">search
+                                            </mat-icon>
+                                            <div class="error-wrapper"
+                                                *ngIf=" gpfInwardDetailsForm.controls.gpfNumberFinalPaymentType.touched &&gpfInwardDetailsForm.controls.gpfNumberFinalPaymentType.errors">
+                                                <mat-error
+                                                    *ngIf="gpfInwardDetailsForm.controls.gpfNumberFinalPaymentType.errors.required">
+                                                    {{ errorMessage.GPF_NUMBER }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="GPF No."
+                                                formControlName='gpfNumberTransferBalanceRegister'
+                                                (change)="inwardDetailsTransferBalanceRegister()" required>
+                                            <mat-icon matSuffix (click)="openGpfDialogTransferBalanceRegister()">search
+                                            </mat-icon>
+                                            <div class="error-wrapper"
+                                                *ngIf=" gpfInwardDetailsForm.controls.gpfNumberTransferBalanceRegister.touched &&gpfInwardDetailsForm.controls.gpfNumberTransferBalanceRegister.errors">
+                                                <mat-error
+                                                    *ngIf="gpfInwardDetailsForm.controls.gpfNumberTransferBalanceRegister.errors.required">
+                                                    {{ errorMessage.GPF_NUMBER }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="GPF No."
+                                                formControlName='gpfNumberSupplementaryTransferPayment'
+                                                (change)="inwardDetailsSupplementaryTransferPayment()" required>
+                                            <mat-icon matSuffix (click)="openGpfDialogSupplementaryTransferPayment()">
+                                                search</mat-icon>
+                                            <div class="error-wrapper"
+                                                *ngIf=" gpfInwardDetailsForm.controls.gpfNumberSupplementaryTransferPayment.touched &&gpfInwardDetailsForm.controls.gpfNumberSupplementaryTransferPayment.errors">
+                                                <mat-error
+                                                    *ngIf="gpfInwardDetailsForm.controls.gpfNumberSupplementaryTransferPayment.errors.required">
+                                                    {{ errorMessage.GPF_NUMBER }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="GPF No."
+                                                formControlName='gpfNumberSupplementaryPaymentRegister'
+                                                (change)="inwardDetailsSupplementaryPaymentRegister()" required>
+                                            <mat-icon matSuffix (click)="openGpfDialogSupplementaryPaymentRegister()">
+                                                search</mat-icon>
+                                            <div class="error-wrapper"
+                                                *ngIf=" gpfInwardDetailsForm.controls.gpfNumberSupplementaryPaymentRegister.touched &&gpfInwardDetailsForm.controls.gpfNumberSupplementaryPaymentRegister.errors">
+                                                <mat-error
+                                                    *ngIf="gpfInwardDetailsForm.controls.gpfNumberSupplementaryPaymentRegister.errors.required">
+                                                    {{ errorMessage.GPF_NUMBER }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee Name"
+                                                formControlName='employeeNameRequestForAccountGeneration'>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3" *ngIf=" 
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='6'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Employee Name"
+                                                formControlName='employeeNameFinalPayment'>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassTopSchedule"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassTopSchedule.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassTopSchedule.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassTopSchedule.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='5'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassAgteMisclassifiedEntry"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassAgteMisclassifiedEntry.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassAgteMisclassifiedEntry.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassAgteMisclassifiedEntry.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassAgCaFigure"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassAgCaFigure.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassAgCaFigure.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassAgCaFigure.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='6'
+                  ">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassFinalPaymentType"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassFinalPaymentType.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassFinalPaymentType.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassFinalPaymentType.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassTransferBalanceRegister"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassTransferBalanceRegister.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassTransferBalanceRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassTransferBalanceRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassSupplementaryTransferPayment"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassSupplementaryTransferPayment.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassSupplementaryTransferPayment.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassSupplementaryTransferPayment.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="employeeClassSupplementaryPaymentRegister"
+                                                placeholder="Employee Class" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfEmployeeClassCtrl"
+                                                        [placeholderLabel]="'Find Employee Class...'"
+                                                        [noEntriesFoundLabel]="'no matching Employee Class found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfEmployeeClass
+                          | filterSelectInput: typeOfEmployeeClassCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.employeeClassSupplementaryPaymentRegister.touched &&
+                      gpfInwardDetailsForm.controls.employeeClassSupplementaryPaymentRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.employeeClassSupplementaryPaymentRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_EMPLOYEE_CLASS}}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+
+
+
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="paymentTypeTopSchedule"
+                                                placeholder="Credit/Debit" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfPaymentCtrl"
+                                                        [placeholderLabel]="'Find Credit/Debit...'"
+                                                        [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfPayment
+                          | filterSelectInput: typeOfPaymentCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.paymentTypeTopSchedule.touched &&
+                      gpfInwardDetailsForm.controls.paymentTypeTopSchedule.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.paymentTypeTopSchedule.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_PAYMENT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="paymentTypeAgCaFigure"
+                                                placeholder="Credit/Debit" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfPaymentCtrl"
+                                                        [placeholderLabel]="'Find Credit/Debit...'"
+                                                        [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfPayment
+                          | filterSelectInput: typeOfPaymentCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.paymentTypeAgCaFigure.touched &&
+                      gpfInwardDetailsForm.controls.paymentTypeAgCaFigure.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.paymentTypeAgCaFigure.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_PAYMENT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7' ">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="paymentTypeTransferBalanceRegister"
+                                                placeholder="Credit/Debit" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfPaymentCtrl"
+                                                        [placeholderLabel]="'Find Credit/Debit...'"
+                                                        [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfPayment
+                          | filterSelectInput: typeOfPaymentCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.paymentTypeTransferBalanceRegister.touched &&
+                      gpfInwardDetailsForm.controls.paymentTypeTransferBalanceRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.paymentTypeTransferBalanceRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_PAYMENT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8' ">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="paymentTypeSupplementaryTransferPayment"
+                                                placeholder="Credit/Debit" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfPaymentCtrl"
+                                                        [placeholderLabel]="'Find Credit/Debit...'"
+                                                        [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfPayment
+                          | filterSelectInput: typeOfPaymentCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.paymentTypeSupplementaryTransferPayment.touched &&
+                      gpfInwardDetailsForm.controls.paymentTypeSupplementaryTransferPayment.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.paymentTypeSupplementaryTransferPayment.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_PAYMENT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="paymentTypeSupplementaryPaymentRegister"
+                                                placeholder="Credit/Debit" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfPaymentCtrl"
+                                                        [placeholderLabel]="'Find Credit/Debit...'"
+                                                        [noEntriesFoundLabel]="'no matching Credit/Debit found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfPayment
+                          | filterSelectInput: typeOfPaymentCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.paymentTypeSupplementaryPaymentRegister.touched &&
+                      gpfInwardDetailsForm.controls.paymentTypeSupplementaryPaymentRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.paymentTypeSupplementaryPaymentRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_PAYMENT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' && gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="tcChallan" placeholder="TC/Challan" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTcChallanCtrl"
+                                                        [placeholderLabel]="'Find TC/Challan...'"
+                                                        [noEntriesFoundLabel]="'no matching TC/Challan found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfTcChallan
+                        | filterSelectInput: typeOfTcChallanCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' && gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="tcChallanDebit" placeholder="TC/Challan"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTcChallanDebitCtrl"
+                                                        [placeholderLabel]="'Find TC/Challan...'"
+                                                        [noEntriesFoundLabel]="'no matching TC/Challan found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfTcChallanDebit
+                        | filterSelectInput: typeOfTcChallanDebitCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+
+
+
+                                    <div class="col-sm-6 col-md-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' && 
+                      gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='1'  ">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="TC Amount" formControlName='tcAmount'
+                                                decimalLimitTwoOnly (blur)="setAmount1($event.target.value)"
+                                                maxlength="16">
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' &&  gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Challan Amount" formControlName='challanAmount'
+                                                (change)="sum($event.target.value)" decimalLimitTwoOnly maxlength="16">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' &&  gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Gross Amount" formControlName='grossAmount'
+                                                decimalLimitTwoOnly maxlength="16">
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1' &&  gpfInwardDetailsForm.controls.paymentTypeTopSchedule.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Voucher Amount" formControlName='voucherAmount'
+                                                decimalLimitTwoOnly maxlength="16">
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthTopSchedule" placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthTopSchedule.touched &&
+                    gpfInwardDetailsForm.controls.monthTopSchedule.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthTopSchedule.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='5'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthAgteMisclassifiedEntry"
+                                                placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthAgteMisclassifiedEntry.touched &&
+                    gpfInwardDetailsForm.controls.monthAgteMisclassifiedEntry.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthAgteMisclassifiedEntry.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthAgCaFigure" placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthAgCaFigure.touched &&
+                    gpfInwardDetailsForm.controls.monthAgCaFigure.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthAgCaFigure.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="               
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthTransferBalanceRegister"
+                                                placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthTransferBalanceRegister.touched &&
+                    gpfInwardDetailsForm.controls.monthTransferBalanceRegister.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthTransferBalanceRegister.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthSupplementaryTransferPayment"
+                                                placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthSupplementaryTransferPayment.touched &&
+                    gpfInwardDetailsForm.controls.monthSupplementaryTransferPayment.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthSupplementaryTransferPayment.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="monthSupplementaryPaymentRegister"
+                                                placeholder="Month" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfMonthCtrl"
+                                                        [placeholderLabel]="'Find Month...'"
+                                                        [noEntriesFoundLabel]="'no matching Month found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                      let CE of classTypeOfMonth
+                        | filterSelectInput: typeOfMonthCtrl.value
+                    " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.monthSupplementaryPaymentRegister.touched &&
+                    gpfInwardDetailsForm.controls.monthSupplementaryPaymentRegister.errors
+                  ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.monthSupplementaryPaymentRegister.errors.required
+                    ">
+                                                    {{ errorMessage.TYPE_OF_MONTH }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-3" *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearTopSchedule" placeholder="Year" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearTopSchedule.touched &&
+                      gpfInwardDetailsForm.controls.yearTopSchedule.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearTopSchedule.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='5'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearAgteMisclassifiedEntry" placeholder="Year"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearAgteMisclassifiedEntry.touched &&
+                      gpfInwardDetailsForm.controls.yearAgteMisclassifiedEntry.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearAgteMisclassifiedEntry.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearAgCaFigure" placeholder="Year" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearAgCaFigure.touched &&
+                      gpfInwardDetailsForm.controls.yearAgCaFigure.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearAgCaFigure.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='7' ">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearTransferBalanceRegister" placeholder="Year"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearTransferBalanceRegister.touched &&
+                      gpfInwardDetailsForm.controls.yearTransferBalanceRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearTransferBalanceRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='8'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearSupplementaryTransferPayment"
+                                                placeholder="Year" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearSupplementaryTransferPayment.touched &&
+                      gpfInwardDetailsForm.controls.yearSupplementaryTransferPayment.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearSupplementaryTransferPayment.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3" *ngIf="
+                  gpfInwardDetailsForm.controls.typeOfInward.value=='9'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="yearSupplementaryPaymentRegister"
+                                                placeholder="Year" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfYearCtrl"
+                                                        [placeholderLabel]="'Find Year...'"
+                                                        [noEntriesFoundLabel]="'no matching Year found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfYear
+                          | filterSelectInput: typeOfYearCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.yearSupplementaryPaymentRegister.touched &&
+                      gpfInwardDetailsForm.controls.yearSupplementaryPaymentRegister.errors
+                    ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.yearSupplementaryPaymentRegister.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_YEAR }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='3' ">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="GPF No." formControlName='gpfNo' required>
+                                            <mat-icon matSuffix (click)="openGpfDialogDebitCreditCorrectionEntry()">
+                                                search</mat-icon>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.gpfNo.touched &&
+                      gpfInwardDetailsForm.controls.gpfNo.errors
+                      ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.gpfNo.errors.required
+                        ">
+                                                    {{ errorMessage.GPF_NO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='3' ">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Account Holder Name"
+                                                formControlName='accountHolderName'>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="AG Account Amount"
+                                                formControlName='agAccountAmountAgCaFigure' maxlength="16" required>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.agAccountAmountAgCaFigure.touched &&
+                      gpfInwardDetailsForm.controls.agAccountAmountAgCaFigure.errors
+                      ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.agAccountAmountAgCaFigure.errors.required
+                        ">
+                                                    {{ errorMessage.AG_ACCOUNT_AMOUNT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='5' ">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="AG Account Amount"
+                                                formControlName='agAccountAmountAgteMisclassifiedEntry' maxlength="16"
+                                                required>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.agAccountAmountAgteMisclassifiedEntry.touched &&
+                    gpfInwardDetailsForm.controls.agAccountAmountAgteMisclassifiedEntry.errors
+                    ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.agAccountAmountAgteMisclassifiedEntry.errors.required
+                      ">
+                                                    {{ errorMessage.AG_ACCOUNT_AMOUNT }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='4'">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="AG CA Amount"
+                                                formControlName='agCaAmountAgCaFigure' maxlength="16" required>
+                                            <div class="error-wrapper" *ngIf="
+                      gpfInwardDetailsForm.controls.agCaAmountAgCaFigure.touched &&
+                      gpfInwardDetailsForm.controls.agCaAmountAgCaFigure.errors
+                      ">
+                                                <mat-error *ngIf="
+                        gpfInwardDetailsForm.controls.agCaAmountAgCaFigure.errors.required
+                        ">
+                                                    {{ errorMessage.AG_CA_AMOUNT }}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3"
+                                        *ngIf="gpfInwardDetailsForm.controls.typeOfInward.value=='5' ">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="AG CA Amount"
+                                                formControlName='agCaAmountAgteMisclassifiedEntry' maxlength="16"
+                                                required>
+                                            <div class="error-wrapper" *ngIf="
+                    gpfInwardDetailsForm.controls.agCaAmountAgteMisclassifiedEntry.touched &&
+                    gpfInwardDetailsForm.controls.agCaAmountAgteMisclassifiedEntry.errors
+                    ">
+                                                <mat-error *ngIf="
+                      gpfInwardDetailsForm.controls.agCaAmountAgteMisclassifiedEntry.errors.required
+                      ">
+                                                    {{ errorMessage.AG_CA_AMOUNT }}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </form>
+
+                    <!-- received details for top schedule entry -->
+                    <form [formGroup]='receivedDetailsTopSchedule'>
+                        <div class=" box box-primary"
+                            *ngIf="!requestForAccountGeneration && !isFinalPayment && !isTransferBalanceRegister && !isSupplementaryTransferPayment && !isSupplementaryPaymentRegister  && !isAgteMisclassifiesEntry && !isAgCaFigure && !isDebitCreditCorrectionEntry">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class=" box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfDistrict
+                          | filterSelectInput: typeOfDistrictCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTopSchedule.controls.district.touched &&
+                      receivedDetailsTopSchedule.controls.district.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTopSchedule.controls.district.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsTopSchedule.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfTreasuryPao
+                          | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTopSchedule.controls.treasuryPao.touched &&
+                      receivedDetailsTopSchedule.controls.treasuryPao.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTopSchedule.controls.treasuryPao.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsTopSchedule.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfTreasuryPaoAhm
+                          | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTopSchedule.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsTopSchedule.controls.treasuryPaoAhm.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTopSchedule.controls.treasuryPaoAhm.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for account generation -->
+                    <form [formGroup]='receivedDetailsRequestForAccountGeneration'>
+                        <div class=" box box-primary" *ngIf="requestForAccountGeneration">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfDistrict
+                          | filterSelectInput: typeOfDistrictCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsRequestForAccountGeneration.controls.district.touched &&
+                      receivedDetailsRequestForAccountGeneration.controls.district.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsRequestForAccountGeneration.controls.district.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsRequestForAccountGeneration.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfTreasuryPao
+                          | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsRequestForAccountGeneration.controls.treasuryPao.touched &&
+                      receivedDetailsRequestForAccountGeneration.controls.treasuryPao.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsRequestForAccountGeneration.controls.treasuryPao.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsRequestForAccountGeneration.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                        let CE of classTypeOfTreasuryPaoAhm
+                          | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                      " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsRequestForAccountGeneration.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsRequestForAccountGeneration.controls.treasuryPaoAhm.errors
+                    ">
+                                                <mat-error *ngIf="
+                        receivedDetailsRequestForAccountGeneration.controls.treasuryPaoAhm.errors.required
+                      ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+
+                    <!-- received details for request for final payment-->
+                    <form [formGroup]='receivedDetailsFinalPayment'>
+                        <div class=" box box-primary" *ngIf="isFinalPayment">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                  let CE of classTypeOfDistrict
+                                    | filterSelectInput: typeOfDistrictCtrl.value
+                                " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                    receivedDetailsFinalPayment.controls.district.touched &&
+                    receivedDetailsFinalPayment.controls.district.errors
+                              ">
+                                                <mat-error *ngIf="
+                      receivedDetailsFinalPayment.controls.district.errors.required
+                                ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsFinalPayment.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                  let CE of classTypeOfTreasuryPao
+                                    | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    receivedDetailsFinalPayment.controls.treasuryPao.touched &&
+                    receivedDetailsFinalPayment.controls.treasuryPao.errors
+                              ">
+                                                <mat-error *ngIf="
+                      receivedDetailsFinalPayment.controls.treasuryPao.errors.required
+                                ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsFinalPayment.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                  let CE of classTypeOfTreasuryPaoAhm
+                                    | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                    receivedDetailsFinalPayment.controls.treasuryPaoAhm.touched &&
+                    receivedDetailsFinalPayment.controls.treasuryPaoAhm.errors
+                              ">
+                                                <mat-error *ngIf="
+                      receivedDetailsFinalPayment.controls.treasuryPaoAhm.errors.required
+                                ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for transfer Balance Register-->
+                    <form [formGroup]='receivedDetailsTransferBalanceRegister'>
+                        <div class=" box box-primary" *ngIf="isTransferBalanceRegister">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTransferBalanceRegister.controls.district.touched &&
+                      receivedDetailsTransferBalanceRegister.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTransferBalanceRegister.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsTransferBalanceRegister.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTransferBalanceRegister.controls.treasuryPao.touched &&
+                      receivedDetailsTransferBalanceRegister.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTransferBalanceRegister.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsTransferBalanceRegister.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsTransferBalanceRegister.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsTransferBalanceRegister.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsTransferBalanceRegister.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for supplementary transfer payment-->
+                    <form [formGroup]='receivedDetailsSupplementaryTransferPayment'>
+                        <div class=" box box-primary" *ngIf="isSupplementaryTransferPayment">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryTransferPayment.controls.district.touched &&
+                      receivedDetailsSupplementaryTransferPayment.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryTransferPayment.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsSupplementaryTransferPayment.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryTransferPayment.controls.treasuryPao.touched &&
+                      receivedDetailsSupplementaryTransferPayment.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryTransferPayment.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsSupplementaryTransferPayment.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryTransferPayment.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsSupplementaryTransferPayment.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryTransferPayment.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for supplementary payment register-->
+                    <form [formGroup]='receivedDetailsSupplementaryPaymentRegister'>
+                        <div class=" box box-primary" *ngIf="isSupplementaryPaymentRegister">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryPaymentRegister.controls.district.touched &&
+                      receivedDetailsSupplementaryPaymentRegister.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryPaymentRegister.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsSupplementaryPaymentRegister.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryPaymentRegister.controls.treasuryPao.touched &&
+                      receivedDetailsSupplementaryPaymentRegister.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryPaymentRegister.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsSupplementaryPaymentRegister.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsSupplementaryPaymentRegister.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsSupplementaryPaymentRegister.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsSupplementaryPaymentRegister.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGenerator($event.target.value)" decimalLimitTwoOnly
+                                                maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for Debit Credit Correction Entry-->
+                    <form [formGroup]='receivedDetailsDebitCreditCorrectionEntry'>
+                        <div class=" box box-primary" *ngIf="isDebitCreditCorrectionEntry">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsDebitCreditCorrectionEntry.controls.district.touched &&
+                      receivedDetailsDebitCreditCorrectionEntry.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsDebitCreditCorrectionEntry.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsDebitCreditCorrectionEntry.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPao.touched &&
+                      receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsDebitCreditCorrectionEntry.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsDebitCreditCorrectionEntry.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGeneratorDebitCreditCorrectionEntry($event.target.value)"
+                                                decimalLimitTwoOnly maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for Ag Ca Figure-->
+                    <form [formGroup]='receivedDetailsAgCaFigure'>
+                        <div class=" box box-primary" *ngIf="isAgCaFigure">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsAgCaFigure.controls.district.touched &&
+                      receivedDetailsAgCaFigure.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsAgCaFigure.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsAgCaFigure.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsAgCaFigure.controls.treasuryPao.touched &&
+                      receivedDetailsAgCaFigure.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsAgCaFigure.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsAgCaFigure.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsAgCaFigure.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsAgCaFigure.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsAgCaFigure.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGeneratorreceivedDetailsAgCaFigure($event.target.value)"
+                                                decimalLimitTwoOnly maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <!-- received details for request for Agte Misclassified Entry-->
+                    <form [formGroup]='receivedDetailsActeMisclassifiedEntry'>
+                        <div class=" box box-primary" *ngIf="isAgteMisclassifiesEntry">
+                            <div class="box-header">
+                                Received Details
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="district" placeholder="District" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfDistrictCtrl"
+                                                        [placeholderLabel]="'Find District...'"
+                                                        [noEntriesFoundLabel]="'no matching District found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfDistrict
+                                      | filterSelectInput: typeOfDistrictCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsActeMisclassifiedEntry.controls.district.touched &&
+                      receivedDetailsActeMisclassifiedEntry.controls.district.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsActeMisclassifiedEntry.controls.district.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_DISTRICT}}
+                                                </mat-error>
+                                            </div>
+
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsActeMisclassifiedEntry.controls.district.value=='1'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPao" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPao
+                                      | filterSelectInput: typeOfTreasuryPaoCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsActeMisclassifiedEntry.controls.treasuryPao.touched &&
+                      receivedDetailsActeMisclassifiedEntry.controls.treasuryPao.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsActeMisclassifiedEntry.controls.treasuryPao.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-3"
+                                        *ngIf="receivedDetailsActeMisclassifiedEntry.controls.district.value=='2'">
+                                        <mat-form-field class="full-width">
+                                            <mat-select formControlName="treasuryPaoAhm" placeholder="Treasury/PAO"
+                                                required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search [formControl]="typeOfTreasuryPaoAhmCtrl"
+                                                        [placeholderLabel]="'Find Treasury/PAO...'"
+                                                        [noEntriesFoundLabel]="'no matching Treasury/PAO found'">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="
+                                    let CE of classTypeOfTreasuryPaoAhm
+                                      | filterSelectInput: typeOfTreasuryPaoAhmCtrl.value
+                                  " [value]="CE.value">
+                                                    {{ CE.viewValue }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <div class="error-wrapper" *ngIf="
+                      receivedDetailsActeMisclassifiedEntry.controls.treasuryPaoAhm.touched &&
+                      receivedDetailsActeMisclassifiedEntry.controls.treasuryPaoAhm.errors
+                                ">
+                                                <mat-error *ngIf="
+                        receivedDetailsActeMisclassifiedEntry.controls.treasuryPaoAhm.errors.required
+                                  ">
+                                                    {{ errorMessage.TYPE_OF_TREASURY_PAO }}
+                                                </mat-error>
+                                            </div>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Cardex No." formControlName='CardexNumber'
+                                                (blur)="ddoNameGeneratorreceivedDetailsActeMisclassifiedEntry($event.target.value)"
+                                                decimalLimitTwoOnly maxlength="3">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <textarea matInput placeholder="DDO Name." formControlName='ddoName'
+                                                readonly></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Address" formControlName='address' readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Contact No." formControlName='contactNo'
+                                                decimalLimitTwoOnly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Mobile  No." formControlName='mobileNo'
+                                                decimalLimitTwoOnly maxlength="10">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <mat-form-field class="full-width">
+                                            <input matInput placeholder="Remarks" formControlName='remarks'
+                                                maxlength="50">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+
+                    <div class="form-action-button">
+
+                        <button mat-raised-button type="submit" class="green" (click)="onSubmit()" title="Submit">
+                            <i class="material-icons" title="Submit" aria-hidden="true">done</i>
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent" title="Reset" (click)="resetForm()">
+                            <i class="material-icons" title="Reset" aria-hidden="true">
+                                restore
+                            </i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button color="warn" title="Listing"
+                            [routerLink]="['inward-screen-listing']" routerLinkActive="router-link-active">
+                            <i class="material-icons" title="Listing" aria-hidden="true">
+                                list
+                            </i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose" title="Close">
+                            <i class="material-icons" title="Close" aria-hidden="true">
+                                close
+                            </i>
+                            Close
+                        </button>
+
+                    </div>
+                </mat-tab>
+                <!--Inward Details Tab Ends-->
+
+                <mat-tab label="Attachment">
+                    <table mat-table [dataSource]="dataSourceBrowse" width="100%" id="browseTable" *ngIf="DDO">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <b>Sr. No.</b>
+                            </th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="text-center">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                                {{item.attachment}}
+                                <span *ngIf="i < 6" class="starSign">*</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                                    Browse Files
+                                </button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" title="Add"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                        (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6"
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <!-- Header Section Of table -->
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <!-- Data Fetch From .TS File to table -->
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+                    <table mat-table [dataSource]="nonDdoDataSourceBrowse" width="100%" id="browseTable"
+                        *ngIf="isNonDDO">
+                        <ng-container matColumnDef="sr_no">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <b>Sr. No.</b>
+                            </th>
+                            <td mat-cell *matCellDef="let item; let i = index" class="rightAllign">
+                                {{ i + 1 }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="attachmentType">
+                            <th mat-header-cell *matHeaderCellDef>Attachment Type</th>
+                            <td class="attechmentData" mat-cell *matCellDef="let item;let i=index">
+                                {{item.attachment}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="fileName">
+                            <th mat-header-cell *matHeaderCellDef>File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-form-field floatLabel="never">
+                                    <input matInput [value]="item.name" [(ngModel)]="item.name">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="browse">
+                            <th mat-header-cell *matHeaderCellDef>Browse File</th>
+                            <td mat-cell *matCellDef="let i = index">
+                                <button type="button" (click)="openFileSelector(i)" class="btn-browse">
+                                    Browse Files
+                                </button>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedFileName">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded File Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                <span *ngIf="item.file && item.file.name">{{item.file.name}}
+                                    <i class="material-icons closesmall">close</i>
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="uploadedBy">
+                            <th mat-header-cell *matHeaderCellDef>Uploaded By</th>
+                            <td mat-cell *matCellDef="let item">
+                                <mat-label>Mr. Pratik Shah</mat-label>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef>Action</th>
+                            <td mat-cell *matCellDef="let item; let i = index">
+                                <table class="iconTable">
+                                    <tbody>
+                                        <tr>
+                                            <td class="action-btn-i centerAlign">
+                                                <a>
+                                                    <i class="material-icons plus add" title="Add"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && (i == dataSourceBrowse.data.length - 1)"
+                                                        (click)="addBrowse()">add
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus view-icon" title="View">remove_red_eye
+                                                    </i>
+                                                </a>
+                                                <a>
+                                                    <i class="material-icons plus delete"
+                                                        *ngIf="dataSourceBrowse && dataSourceBrowse.data && i > 6"
+                                                        (click)="deleteBrowse(i)">delete
+                                                    </i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedBrowseColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedBrowseColumns;"></tr>
+                    </table>
+                    <input type="file" id="fileBrowse" class="fileBrowse" (change)="onFileSelection($event)" />
+                    <div class="legend">
+                        1. Total File size should be under 4MB<br> 2. File type supported are: 'jpg', 'jpeg', 'png',
+                        'pdf', JPG’, ‘JPEG’, ‘PNG’, ‘PDF’.
+                    </div>
+                    <div class="form-action-button">
+                        <button type="submit" mat-raised-button color="primary">
+                            <i class="material-icons" title="Save" aria-hidden="true">cloud_upload</i>
+                            Upload
+                        </button>
+                        <button mat-raised-button type="submit" class="green" (click)="workflowDetails()">
+                            <i class="material-icons" aria-hidden="true">done</i>
+                            Submit
+                        </button>
+                        <button type="reset" mat-raised-button color="accent">
+                            <i class="material-icons" aria-hidden="true">restore</i>
+                            Reset
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                            <i class="material-icons" title="Listing" aria-hidden="true">list</i>
+                            Listing
+                        </button>
+                        <button type="button" mat-raised-button class="btnClose">
+                            <i class="material-icons" title="Budget dashboard" aria-hidden="true">close</i>
+                            Close
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+
+        </div>
+    </div>
+</div>

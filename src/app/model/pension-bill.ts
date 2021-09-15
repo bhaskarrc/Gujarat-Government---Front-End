@@ -1,0 +1,31 @@
+export class PensionBill {
+    employeeName: string;
+    employeeDesignaton: string;
+    officeName: string;
+    empMonth: string;
+    classOfExpenditure: string;
+    fund: string;
+    budgetType: string;
+    typeOfExpenditure: string;
+    billCategory: string;
+    schemeNo: string;
+    demand: string;
+    majorHead: string;
+    subMajorHead: string;
+    minorHead: string;
+    subHead: string;
+    detailedHead: string;
+    objectClassHead: string;
+    headChargeable: string;
+    amount: string;
+    deduction_a: string;
+    deduction_b: string;
+    expenditure: string;
+    netAmount: string;
+    paymentType: string;
+    partyName: string;
+    address: string;
+    accountNumber: string;
+    micrCode: string;
+    chequeAmount: string;
+}

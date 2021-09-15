@@ -1,0 +1,220 @@
+<div class="container">
+  <div class="form-wrapper">
+    <div class="heading-section ng-star-inserted">
+      <div>Top Schedule Entry</div>
+      <div class="font-heading"><strong>Date:</strong> {{ todayDate | date: 'dd-MMM-yyyy HH:mm'}}
+      </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item " aria-current="page">DPPF-HBA</li>
+        <li class="breadcrumb-item active" aria-current="page">Top Schedule Entry</li>
+      </ol>
+    </nav>
+
+    <div class="panel-group">
+      <form [formGroup]="topScheduleForm" (ngSubmit)="topScheduleData()">
+        <!-- Inward Details -->
+        <div class="box box-primary">
+          <div class="box-header">Inward Details</div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="inwardNo" placeholder="Inward No. " formControlName="inwardNo" required>
+                  <mat-icon matSuffix class="searchIcon" (click)="inwardNo()">search
+                  </mat-icon>
+                  <div class="error-wrapper"
+                    *ngIf="topScheduleForm.controls.inwardNo.touched || (topScheduleForm.controls.inwardNo.errors && isSubmitted)">
+                    <mat-error *ngIf="topScheduleForm.controls.inwardNo.errors?.required">
+                      {{errorMessages.INWARDNO}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" formControlName="inwardDate" placeholder="Inward Date "
+                    required>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <div class="error-wrapper"
+                    *ngIf="topScheduleForm.controls.inwardDate.touched || (topScheduleForm.controls.inwardDate.errors && isSubmitted)">
+                    <mat-error *ngIf="topScheduleForm.controls.inwardDate.errors?.required">
+                      {{errorMessages.INWARDDATE}}
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="Treasury/PAO  " formControlName="treasuryPao">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="HBA/MCA " formControlName="hbaMca">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Year" formControlName="year">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Month" formControlName="month">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput placeholder="Credit/Debit" formControlName="credir">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="TC/Challan/GrandTotal " numbersOnly
+                    formControlName="tcChallanAMount">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="TC Amount " numbersOnly formControlName="tcAmount">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="Challan Amount " numbersOnly
+                    formControlName="challanAmount">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder="Voucher Amount  " formControlName="voucherAmount">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <input matInput name="other" placeholder=" Amount  " numbersOnly formControlName="amount">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- End Inward Details -->
+        <!-- Top Schedule Details -->
+        <div class="box box-primary">
+          <div class="box-header">Top Schedule Details</div>
+
+          <!-- End Add row button -->
+          <div class="box-body">
+            <!-- top schedule Table -->
+            <div class="row">
+              <div class="col-sm-3">
+              </div>
+              <div class="col-sm-6">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                  aria-describedby="topScheduleEntryTable">
+
+                  <ng-container matColumnDef="head">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Head</th>
+                    <td mat-cell *matCellDef="let element;let i = index;">
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="element.head" [ngModelOptions]="{standalone: true}" numbersOnly
+                          maxLength="4">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>Total </td>
+                  </ng-container>
+                  <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef scope="row"> Amount</th>
+                    <td mat-cell *matCellDef="let element;let i = index;">
+                      <mat-form-field class="rightAlign">
+                        <input matInput [(ngModel)]="element.amount" [ngModelOptions]="{standalone: true}" numbersOnly
+                          maxLength="15">
+                      </mat-form-field>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="rightAlign">
+                      {{directiveObj.columnTotal(dataSource,'amount')}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef scope="row" width="7%"> Action</th>
+                    <td mat-cell *matCellDef="let elemen;let i=index" class="centerAlign">
+                      <table class="iconTable" aria-describedby="actionBtn">
+                        <tbody>
+                          <tr>
+                            <td width="30">
+                              <i aria-hidden="true" title="Add" *ngIf="i===dataSource.data.length-1"
+                                class="material-icons plus add" (click)="addRow()">
+                                add
+                              </i>
+                            </td>
+                            <td width="30">
+                              <i class="material-icons plus delete" *ngIf="i>0" aria-hidden="true" title="Delete"
+                                (click)="deleteRow(i)">delete</i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <!-- Header Section Of table -->
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <!-- Data Fetch From .TS File to table -->
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+
+              </div>
+              <div class="col-sm-3">
+              </div>
+            </div>
+            <!-- End top schedule Table -->
+
+
+          </div>
+        </div>
+        <!-- End Top Schedule Details -->
+
+      </form>
+      <!-- Common Button -->
+      <div class="form-action-button">
+        <button type="submit" mat-raised-button color="primary">
+          <i class="material-icons" aria-hidden="true" title="Save">
+            save
+          </i>
+          Save
+        </button>
+        <button type="reset" mat-raised-button color="accent">
+          <i class="material-icons" aria-hidden="true" title="Reset">
+            restore
+          </i>
+          Reset
+        </button>
+
+        <button type="button" mat-raised-button color="warn" (click)="onClickListing()">
+          <i class="material-icons" aria-hidden="true" title="Listing">
+            list
+          </i>
+          Listing
+        </button>
+        <button type="button" mat-raised-button class="btnClose">
+          <i class="material-icons" aria-hidden="true" title="Close">
+            close
+          </i>
+          Close
+        </button>
+      </div>
+      <!-- End Common Button -->
+    </div>
+  </div>
+</div>
