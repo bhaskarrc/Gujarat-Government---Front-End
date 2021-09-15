@@ -148,49 +148,53 @@ export class InwardEntryComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
+
     // this.inwardEntryForm = this.fb.group({
+    //   inwardId: ['', [Validators.required]],
     //   inwardNo: [this.inwardNoValue, [Validators.required]],
     //   inwardDate: [moment(Date.now()).format('DD-MMM-YYYY'), [Validators.required]],
-    //   inwardId: ['', [Validators.required]],
     //   inwardType: ['Letter', [Validators.required]],
-    //   letterType: ['', [Validators.required]],
-    //   letterNo: ['', [Validators.required]],
-    //   letterDate: ['', [Validators.required]],
-    //   letterDetail: ['', [Validators.required]],
-    //   branchName: ['', [Validators.required]],
-    //   chequeNo: ['', [Validators.required]],
-    //   chequeType: ['', [Validators.required]],
-    //   amount: ['', [Validators.required]],
-    //   chequeDate: ['', [Validators.required]],
-    //   bankName: ['', [Validators.required]],
-    //   bankBranchName: ['', [Validators.required]],
+    //   letter: this.fb.group({
+    //     branchName: ['', [Validators.required]],
+    //     letterType: ['', [Validators.required]],
+    //     letterNo: ['', [Validators.required]],
+    //     letterDate: ['', [Validators.required]],
+    //     letterDetail: ['', [Validators.required]]
+    //   }),
+    //   cheque: this.fb.group({
+    //     chequeNo: ['', [Validators.required]],
+    //     chequeType: ['', [Validators.required]],
+    //     amount: ['', [Validators.required]],
+    //     chequeDate: ['', [Validators.required]],
+    //     bankName: ['', [Validators.required]],
+    //     bankBranchName: ['', [Validators.required]]
+    //   }),
     //   fromWhichPlacePerson: ['', [Validators.required]],
     //   employeeName: [''],
-
     // });
 
     this.inwardEntryForm = this.fb.group({
-      inwardId: ['', [Validators.required]],
-      inwardNo: [this.inwardNoValue, [Validators.required]],
-      inwardDate: [moment(Date.now()).format('DD-MMM-YYYY'), [Validators.required]],
-      inwardType: ['Letter', [Validators.required]],
+      inwardId: [{ value: '' }],
+      inwardNo: [{ value: this.inwardNoValue, disabled: true }],
+      inwardDate: [{ value: moment(Date.now()).format('DD-MMM-YYYY'), disabled: true }],
+      inwardType: [{ value: 'Letter', disabled: false }, Validators.required],
       letter: this.fb.group({
-        branchName: ['', [Validators.required]],
-        letterType: ['', [Validators.required]],
-        letterNo: ['', [Validators.required]],
-        letterDate: ['', [Validators.required]],
-        letterDetail: ['', [Validators.required]]
+        branchName: [{ value: '', disabled: false }, Validators.required],
+        letterType: [{ value: '', disabled: false }, Validators.required],
+        letterNo: [{ value: '', disabled: false }, Validators.required],
+        letterDate: [{ value: '', disabled: false }, Validators.required],
+        letterDetail: [{ value: '', disabled: false }, Validators.required]
       }),
       cheque: this.fb.group({
-        chequeNo: ['', [Validators.required]],
-        chequeType: ['', [Validators.required]],
-        amount: ['', [Validators.required]],
-        chequeDate: ['', [Validators.required]],
-        bankName: ['', [Validators.required]],
-        bankBranchName: ['', [Validators.required]]
+        chequeNo: [{ value: '', disabled: false }, Validators.required],
+        chequeType: [{ value: '', disabled: false }, Validators.required],
+        amount: [{ value: '', disabled: false }, Validators.required],
+        chequeDate: [{ value: '', disabled: false }, Validators.required],
+        bankName: [{ value: '', disabled: false }, Validators.required],
+        bankBranchName: [{ value: '', disabled: false }, Validators.required]
       }),
-      fromWhichPlacePerson: ['', [Validators.required]],
-      employeeName: [''],
+      fromWhichPlacePerson: [{ value: '', disabled: false }, Validators.required],
+      employeeName: [{ value: '', disabled: false }],
     });
 
 
@@ -346,6 +350,7 @@ export class InwardEntryComponent implements OnInit {
             doi_employee_name: inwardForm.employeeName,
             reference_no: this.referenceNumber,
           }
+
           this.ElementData.push(obj);
           this.inwardNoValue = this.inwardEntryForm.value.inwardNo.split("/")[0]
             + "/" + String(++this.tentativeInvNoCounter);
